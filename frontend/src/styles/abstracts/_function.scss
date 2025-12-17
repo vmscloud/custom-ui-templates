@@ -1,0 +1,45 @@
+@use 'sass:string';
+@use 'sass:color';
+@use 'sass:meta';
+
+@function hexToRGB($hex) {
+  @return color.channel($hex, 'red', $space: rgb), color.channel($hex, 'green', $space: rgb),
+    color.channel($hex, 'blue', $space: rgb);
+}
+
+@function alpha($color, $opacity) {
+  $color: str-replace($color, 'var(');
+  $color: str-replace($color, ')');
+  $color-r: var(#{$color + '-r'});
+  $color-g: var(#{$color + '-g'});
+  $color-b: var(#{$color + '-b'});
+  @return rgba($color-r, $color-g, $color-b, $opacity);
+}
+
+// darken ~ mix with black function
+@function mixb($variable, $opacity) {
+  @return string.unquote(
+    'linear-gradient(to top,rgba(0, 0, 0, ' + $opacity + '), rgba(0, 0, 0, ' + $opacity + '))' + $variable
+  );
+}
+// lighten ~ mix with white function
+@function mixw($variable, $opacity) {
+  @return string.unquote(
+    'linear-gradient(to top,rgba(255, 255, 255, ' + $opacity + '), rgba(255, 255, 255, ' + $opacity + ')) ' + $variable
+  );
+}
+
+// replace substring with another string
+// credits: https://css-tricks.com/snippets/sass/str-replace-function/
+@function str-replace($string, $search, $replace: '') {
+  $index: string.index($string, $search);
+  @if $index {
+    @return string.slice($string, 1, $index - 1) + $replace +
+      str-replace(string.slice($string, $index + string.length($search)), $search, $replace);
+  }
+  @return $string;
+}
+
+@function unicode($str) {
+  @return string.unquote('"') + string.unquote(string.insert($str, '\\', 1)) + string.unquote('"');
+}

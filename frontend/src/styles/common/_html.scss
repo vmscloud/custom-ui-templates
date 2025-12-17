@@ -1,0 +1,33 @@
+html {
+  font-size: var(--font-size-body02);
+  overflow: hidden;
+  margin: 0px;
+}
+
+svg text {
+  cursor: default;
+  user-select: none;
+}
+
+svg .label {
+  font-weight: bold;
+}
+
+div .label {
+  margin-right: 0.3em;
+  //   font-weight: bold;
+}
+
+input,
+select,
+textarea {
+  color: var(--color-font);
+}
+
+select {
+  background-color: inherit;
+}
+
+label {
+  cursor: auto;
+}

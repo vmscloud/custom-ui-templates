@@ -1,0 +1,696 @@
+@use '../../styles/abstracts/mixin';
+@use '../../styles/abstracts/function';
+
+.moz-input {
+  align-items: flex-start;
+  flex-direction: column;
+  margin: 0;
+  display: flex;
+  gap: var(--size-padding1);
+  position: relative;
+
+  // 컴포넌트 라벨
+  > label {
+    height: inherit;
+    border: inherit;
+    background-color: inherit;
+    padding: inherit;
+    font-size: var(--size-input-label-font);
+    // line-height: var(--size-input-label-font);
+    color: var(--color-input-label-font);
+    font-weight: var(--font-medium);
+
+    span.require-mark {
+      color: var(--color-input-invalid);
+    }
+  }
+
+  // 컴포넌트 혹은 버튼에 라벨 없을 경우 컴포넌트 아래로 내리기
+  &:not(:has(> label)) > .moz-button,
+  &:not(:has(> label)) > .moz-input,
+  &.no-label {
+    margin-top: calc(var(--size-input-label-font) + var(--size-padding1));
+  }
+
+  // Wijmo 컴포넌트 영역
+  > .wj-control,
+  > textarea {
+    min-height: calc(var(--size-input-height));
+    height: calc(var(--size-input-height));
+    color: var(--color-grid-font);
+    border: 1px solid var(--color-input-border);
+    border-radius: var(--border-radius);
+
+    .wj-input-group {
+      // 텍스트 인풋
+      input.wj-form-control {
+        min-height: calc(var(--size-input-height) - 2px);
+        height: calc(var(--size-input-height) - 2px);
+        font-size: var(--size-input-font);
+        color: var(--color-input-font);
+      }
+
+      // 텍스트 인풋 오른쪽 버튼 영역
+      .wj-input-group-btn:last-child:not(:first-child) > .wj-btn {
+        min-height: inherit;
+
+        &:hover {
+          background-color: transparent;
+        }
+      }
+    }
+
+    // input이고 양쪽 step 버튼이 활성화되지 않을때만
+    &:not(.wj-input-show-spinner) {
+      .wj-input-group {
+        // 텍스트 인풋 오른쪽 버튼에서 보더 제거
+        .wj-input-group-btn:last-child:not(:first-child) > .wj-btn {
+          border-left: none;
+        }
+      }
+    }
+
+    // 아이콘 크기 / 색상
+    .wj-input-group-btn {
+      .wj-glyph-down:after {
+        color: var(--color-input-icon);
+      }
+    }
+
+    // 날짜 입력일 경우 달력 아이콘 변경
+    &.wj-inputdate {
+      .wj-input-group-btn {
+        .wj-glyph-down:after {
+          font-size: 14px;
+          content: function.unicode('e1d0');
+        }
+      }
+    }
+
+    // 숫자고 step 버튼 보여줄 경우
+    &.wj-inputnumber.wj-input-show-spinner {
+      input {
+        text-align: center;
+      }
+
+      .wj-input-group-btn {
+        button.wj-btn.wj-btn-default {
+          text-indent: -9999px;
+          position: relative;
+
+          &::before {
+            @include mixin.moz-icon;
+            font-size: var(--size-minimum-icon-font-size);
+            text-indent: 0px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+          }
+
+          &:enabled,
+          &:enabled:hover {
+            background-color: var(--color-accent);
+            color: var(--color-font-accent-background);
+            border: none;
+          }
+        }
+
+        &[wj-part='btn-dec'] {
+          button.wj-btn.wj-btn-default::before {
+            content: function.unicode('e1c9');
+          }
+        }
+
+        &[wj-part='btn-inc'] {
+          button.wj-btn.wj-btn-default::before {
+            content: function.unicode('e1ca');
+          }
+        }
+      }
+    }
+
+    // 비밀번호일 경우
+    &.moz-custom-password {
+      .wj-input-group {
+        position: relative;
+
+        button.password-button {
+          cursor: pointer;
+          background: none;
+          border: none;
+          padding: calc(var(--size-icon-button-padding) - 1px);
+          border-radius: var(--border-radius);
+          position: relative;
+          margin: 2px;
+
+          width: 22px;
+          height: 22px;
+
+          &:hover {
+            background-color: var(--color-button-icon-hover-background);
+          }
+
+          i.mozart-icons::before {
+            font-size: 16px;
+          }
+        }
+      }
+    }
+
+    // 드롭다운일 경우
+    &.wj-dropdown {
+      // 버튼이 오른쪽에 있는 input일 경우
+      input:has(+ span button span.wj-glyph-down) {
+        padding-right: 0px;
+      }
+    }
+
+    // 필터 영역에 있는 wj 컴포넌트 호버, 포커스 했을때
+    &:hover,
+    &:focus-within,
+    &.wj-state-focused {
+      border-color: var(--color-accent);
+
+      .wj-input-group-btn {
+        .wj-glyph-down:after {
+          color: var(--color-accent);
+        }
+      }
+    }
+
+    &.wj-state-disabled,
+    &:disabled {
+      background-color: var(--color-input-disabled-background);
+      border-color: var(--color-input-disabled-border);
+      color: var(--color-input-disabled-font);
+      opacity: 0.6;
+
+      input {
+        &::placeholder {
+          color: var(--color-input-disabled-font);
+        }
+      }
+
+      .wj-input-group {
+        // input
+        input.wj-form-control {
+          color: var(--color-input-disabled-font);
+        }
+
+        // number spinner
+        .wj-input-group-btn {
+          button.wj-btn.wj-btn-default {
+            &:enabled,
+            &:enabled:hover {
+              background-color: var(--color-input-disabled-background);
+              // border-color: var(--color-input-disabled-border);
+              color: var(--color-input-disabled-font);
+              // border-left: 1px solid rgba(0, 0, 0, 0.2);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  > textarea {
+    padding: var(--size-input-padding);
+    height: inherit;
+    resize: none;
+  }
+
+  // invalid 상태일때
+  .invalid-message {
+    font-size: var(--size-input-label-font);
+    height: var(--size-input-label-font);
+    line-height: var(--size-input-label-font);
+    font-weight: var(--font-medium);
+    color: var(--color-input-invalid);
+    padding-left: 8px;
+
+    display: none;
+    position: absolute;
+    bottom: -16px;
+  }
+
+  .wj-control.wj-state-invalid,
+  &.moz-state-invalid .wj-control {
+    border-color: var(--color-input-invalid);
+
+    & + .invalid-message {
+      opacity: 1;
+      display: block;
+
+      .invalid-message {
+        color: var(--color-input-invalid);
+      }
+    }
+  }
+
+  // radio 컴포넌트
+  .radio-container {
+    display: flex;
+
+    .radio {
+      .label-container {
+        display: flex;
+        align-items: center;
+        background-color: var(--color-background);
+        height: var(--size-input-height);
+        box-sizing: border-box;
+        border: 1px solid var(--color-input-border);
+        padding: var(--size-input-radio-item-vertical-padding) var(--size-input-radio-item-horizontal-padding);
+        gap: calc(var(--size-input-radio-item-horizontal-padding) - 2px); // border size
+        border-radius: 0px;
+
+        cursor: pointer;
+
+        & > * {
+          cursor: pointer;
+        }
+
+        input[type='radio'] {
+          display: none;
+        }
+
+        .dot {
+          width: 12px;
+          height: 12px;
+
+          border: 1px solid var(--color-input-border);
+          border-radius: 99999px;
+          position: relative;
+          box-sizing: border-box;
+
+          &::before {
+            content: '';
+            position: absolute;
+            width: 6px; //50%;
+            height: 6px; //50%;
+            border-radius: 99999px;
+            background-color: var(--color-input-border);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+            display: none;
+          }
+        }
+
+        input[type='radio']:checked {
+          & + .dot {
+            border-color: var(--color-accent);
+
+            &::before {
+              display: block;
+              background-color: var(--color-accent);
+            }
+          }
+        }
+
+        .label {
+          // width 부족하면 ...
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+
+          background: none;
+          border: none;
+          color: var(--color-input-font);
+          height: 100%;
+
+          font-size: 12px;
+          line-height: 12px;
+          display: inline-block;
+          height: 12px;
+        }
+      }
+
+      &:first-child {
+        .label-container {
+          border-top-left-radius: var(--border-radius);
+          border-bottom-left-radius: var(--border-radius);
+          border-right: none;
+        }
+      }
+
+      // 두 번째 자식부터 적용될 스타일
+      &:nth-child(n + 2) {
+        .label-container {
+          border-right: 0;
+          &:hover {
+            border-color: var(--color-accent);
+          }
+        }
+      }
+
+      &:last-child {
+        .label-container {
+          border-right: 1px solid var(--color-input-border);
+          border-top-right-radius: var(--border-radius);
+          border-bottom-right-radius: var(--border-radius);
+        }
+      }
+
+      &:hover {
+        .label-container {
+          border-color: var(--color-accent);
+        }
+
+        & + .radio > .label-container {
+          border-left-color: var(--color-accent);
+        }
+      }
+
+      .label-container:has(input:disabled) {
+        background-color: var(--color-input-disabled-background);
+        border-color: var(--color-input-disabled-border) !important;
+        color: var(--color-input-disabled-font);
+        opacity: 0.6;
+
+        input[type='radio'] {
+          & + .dot {
+            border-color: var(--color-input-disabled-border);
+
+            &::before {
+              background-color: var(--color-input-disabled-border);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.wj-control.wj-dropdown-panel:not(.ctx-menu) {
+  padding: var(--size-menu-container-vertical-padding) var(--size-menu-container-horizontal-padding);
+  box-shadow: var(--selection-menu-dropdown-shadow);
+  border: solid 1px var(--color-input-dropdown-border);
+  margin-top: var(--size-menu-gap-from-parants);
+  box-sizing: border-box;
+
+  .wj-listbox-item:not(.wj-separator):not(.wj-subitems) {
+    font-size: var(--size-input-font);
+    min-height: var(--size-input-dropdown-item-height);
+    line-height: var(--size-input-dropdown-item-height);
+    padding: var(--size-input-dropdown-item-vertical-padding) var(--size-input-dropdown-item-horizontal-padding);
+    box-sizing: border-box;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    * {
+      color: inherit;
+    }
+
+    span.empty::after {
+      content: attr(data-empty);
+      opacity: 0.7;
+      // font-size: calc(var(--size-input-font) - 1px);
+      color: inherit;
+      font-style: italic;
+    }
+
+    &.wj-state-selected,
+    .wj-state-last-selected {
+      background-color: transparent;
+      color: inherit;
+      gap: var(--size-input-dropdown-item-horizontal-padding);
+
+      &::after {
+        @include mixin.moz-icon;
+        content: function.unicode('e153');
+        // font-size: var(--size-input-font);
+        font-size: calc(var(--size-input-dropdown-item-height) / 2);
+        color: var(--color-accent);
+      }
+    }
+
+    &:hover {
+      background-color: var(--color-hover);
+    }
+  }
+}
+
+// 그리드에서 input number 사용시 spinner가 있을때 숫자 가운데 정렬
+.wj-flexgrid .wj-cell {
+  .wj-control.wj-inputnumber.wj-input-show-spinner {
+    .wj-input-group input.wj-numeric {
+      text-align: center;
+    }
+  }
+}
+
+//// 그리드에서 row header의 icon 정렬
+//.wj-flexgrid .wj-rowheaders .wj-cell.wj-header {
+//  padding: 0;
+//}
+// Pivot Grid에서 row field가 row header에 들어가게 됨 => 텍스트 입력이므로 패딩이 필요해서 제거함.
+
+// 이 위는 다 deprecated. 하위호환을 위해 남겨놓는다.
+// 이 아래가 실제 사용 스타일
+
+.moz-input2 {
+  align-items: flex-start;
+  flex-direction: column;
+  margin: 0;
+  display: flex;
+  gap: var(--size-padding1);
+  position: relative;
+
+  // 컴포넌트 라벨
+  > label {
+    height: inherit;
+    border: inherit;
+    background-color: inherit;
+    padding: inherit;
+    font-size: var(--size-input-label-font);
+    line-height: var(--size-input-label-font);
+    color: var(--color-input-label-font);
+    font-weight: var(--font-medium);
+
+    span.require-mark {
+      color: var(--color-input-invalid);
+    }
+  }
+
+  .moz-input-container {
+    min-height: calc(var(--size-input-height));
+    height: calc(var(--size-input-height));
+    border: 1px solid var(--color-input-border);
+    border-radius: var(--border-radius);
+    background-color: var(--color-input-background);
+    overflow: hidden;
+    display: flex;
+
+    input {
+      height: 100%;
+      width: 100%;
+      font-size: var(--size-input-font);
+      color: var(--color-input-font);
+
+      padding: 4px var(--size-input-padding);
+      padding-right: 0;
+
+      background-color: transparent;
+    }
+
+    .icon-container {
+      width: calc(var(--size-input-height));
+      min-width: calc(var(--size-input-height));
+      height: 100%;
+      -webkit-appearance: button;
+      background-color: transparent;
+      background-image: none;
+      border: none;
+      padding: 0;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .mozart-icons.default-icon {
+        &::before {
+          font-size: 30px;
+          position: absolute;
+        }
+      }
+    }
+  }
+
+  // 마우스 올릴때
+  &:hover,
+  &:focus-within,
+  &.is-open {
+    .moz-input-container {
+      border-color: var(--color-accent);
+
+      .icon-container {
+        .mozart-icons {
+          &::before {
+            color: var(--color-accent);
+          }
+        }
+      }
+    }
+  }
+
+  // validation fail 일때
+  &.is-invalid {
+    .moz-input-container {
+      border-color: var(--color-input-invalid);
+      box-shadow: 0 0 0 3px var(--color-system-150);
+
+      .icon-container {
+        .mozart-icons {
+          &::before {
+            color: var(--color-input-invalid);
+          }
+        }
+      }
+    }
+  }
+
+  .invalid-message {
+    font-size: var(--size-input-label-font);
+    height: var(--size-input-label-font);
+    line-height: var(--size-input-label-font);
+    font-weight: var(--font-medium);
+    color: var(--color-input-invalid);
+    padding-left: 8px;
+  }
+
+  // 리스트 영역
+  .list-box {
+    $list-height: 250px;
+
+    position: absolute;
+    //margin: 51px 0 0 0;
+    min-width: 100%;
+    background-color: white;
+    box-shadow: var(--input-dropdown-listbox-shadow);
+    border: 1px solid var(--color-input-border);
+    border-radius: 4px;
+    z-index: 1000;
+    max-height: $list-height;
+    overflow: hidden;
+
+    &:not(.show-top) {
+      // 리스트가 위로 가지 않는 경우
+      top: calc(15px + var(--size-input-height) + var(--size-menu-gap-from-parants));
+      // 15px은 label 높이값임. 따로 변수로 빠져있지 않음
+      // --size-padding1 => gap size
+    }
+
+    &.show-top {
+      // 리스트가 위로 가는 경우
+      transform: translateY(#{'calc(-100% - var(--size-menu-gap-from-parants) + 15px)'});
+    }
+
+    &.no-label {
+      &:not(.show-top) {
+        // 라벨 없을때 리스트가 위로 가지 않는 경우
+        top: calc(var(--size-input-height) + var(--size-menu-gap-from-parants));
+      }
+
+      &.show-top {
+        // 라벨 없을때 리스트가 위로 가능 경우
+        transform: translateY(#{'calc(-100% - var(--size-menu-gap-from-parants))'});
+      }
+    }
+
+    .list-box-container {
+      padding: var(--size-menu-container-vertical-padding) var(--size-menu-container-horizontal-padding);
+      max-height: $list-height;
+      overflow-y: auto;
+    }
+
+    &:has(.multi-select-all) {
+      .multi-select-all {
+        margin-top: var(--size-menu-container-vertical-padding);
+
+        &.is-scrolled {
+          box-shadow: var(--input-dropdown-listbox-shadow);
+        }
+      }
+
+      .list-box-container {
+        max-height: calc($list-height - var(--size-listbox-item-height));
+        padding-top: 0;
+      }
+    }
+
+    .filter-input {
+      border-bottom: 1px solid var(--color-input-dropdown-border);
+      position: relative;
+      height: var(--size-input-height);
+      box-sizing: border-box;
+      display: flex;
+
+      input {
+        height: 100%;
+        width: 100%;
+        font-size: var(--size-input-font);
+        padding: 5px 8px;
+      }
+
+      .mozart-icons.icon-search {
+        min-width: var(--size-input-height);
+        &::before {
+          font-size: 12px;
+        }
+      }
+    }
+
+    .list-box-item {
+      font-size: var(--size-input-font);
+      min-height: var(--size-input-dropdown-item-height);
+      line-height: var(--size-input-dropdown-item-height);
+      padding: var(--size-input-dropdown-item-vertical-padding) var(--size-input-dropdown-item-horizontal-padding);
+      box-sizing: border-box;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--color-context-font-color);
+
+      //padding-left: 30px;
+      gap: 6px; //var(--size-input-dropdown-item-horizontal-padding);
+
+      span {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      &:hover:not(.not-hover) {
+        background-color: var(--color-hover);
+      }
+
+      &.moz-multi-focus {
+        background-color: var(--color-selected);
+      }
+
+      &.list-selected:not(.multi-select-item) {
+        &::after {
+          @include mixin.moz-icon;
+          content: function.unicode('e153');
+          font-size: calc(var(--size-input-dropdown-item-height) / 2);
+          color: var(--color-accent);
+        }
+      }
+
+      &.multi-select-item {
+        justify-content: flex-start;
+        user-select: none;
+      }
+    }
+  }
+}
+
+.moz-slider {
+  accent-color: var(--color-accent);
+}

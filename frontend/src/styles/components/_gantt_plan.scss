@@ -1,0 +1,279 @@
+@use '../../styles/abstracts/mixin';
+
+.moz-gantt-root {
+  height: var(--size-content-inner-height);
+  background-color: var(--color-back);
+  border-radius: var(--border-grid-radius);
+  border: var(--border-outer);
+  border-color: var(--color-grid-border);
+  color: var(--color-grid-font);
+  font-size: var(--size-grid-font);
+  overflow: hidden;
+
+  .moz-splitter {
+    .moz-splitter-resizer {
+      &.moz-splitter-resizer-vertical,
+      &.moz-splitter-resizer-horizontal {
+        cursor: default;
+        &:hover {
+          border: none;
+        }
+      }
+
+      &.moz-splitter-resizer-vertical {
+        width: 1px;
+        margin: 0px;
+        border: none;
+      }
+      &.moz-splitter-resizer-horizontal {
+        height: 1px;
+        margin: 0px;
+        border: none;
+      }
+    }
+  }
+
+  .moz-grid .moz-grid-body {
+    table {
+      tr[style='height:0px'] {
+        border: none;
+      }
+    }
+  }
+}
+
+.moz-gantt {
+  width: 100%;
+  overflow: hidden;
+
+  .moz-splitter-pane:first-child {
+    background-color: var(--color-grid-header-background);
+    color: var(--color-grid-header-font);
+  }
+
+  .moz-gantt-body {
+    .moz-gantt-layer {
+      position: relative;
+      .moz-gantt-tasks {
+        position: relative;
+        z-index: 1;
+        -webkit-border-before: 1px solid transparent;
+        .moz-gantt-link {
+          position: absolute;
+          z-index: 2;
+        }
+      }
+      .moz-gantt-task-lines {
+        position: absolute;
+        .moz-gantt-task-line {
+          position: absolute;
+          z-index: 0;
+          border-right: 1px solid var(--color-border2);
+          // &:last-child {
+          //   border-right: none;
+          // }
+        }
+      }
+    }
+  }
+
+  .moz-gantt-task {
+    @include mixin.flex-center;
+    // margin: 1px 0px;
+    // border-radius: 2px;
+    font-size: 0.8rem;
+    position: absolute;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    cursor: pointer;
+    &:hover {
+      font-weight: bold;
+    }
+    &.moz-gantt-task-selected {
+      rect {
+        fill-opacity: 0.3;
+        stroke-width: 2px;
+      }
+      text {
+        fill: var(--color-accent);
+        font-weight: bold;
+      }
+    }
+    &.moz-gantt-task-highlight {
+      // opacity: 0.8;
+      font-weight: 700;
+      // background: var(--task-border);
+      border: 2px solid var(--color-accent);
+    }
+  }
+  .moz-gantt-milestone {
+    @include mixin.flex-center;
+    position: absolute;
+    overflow: hidden;
+    cursor: pointer;
+    .triangle-left {
+      width: 0;
+      height: 0;
+      .triangle-left-inner {
+        position: relative;
+        width: 0;
+        height: 0;
+      }
+    }
+    .triangle-right {
+      width: 0;
+      height: 0;
+      .triangle-right-inner {
+        position: relative;
+        width: 0;
+        height: 0;
+      }
+    }
+  }
+  .moz-gantt-row {
+    @include mixin.flex-center-horizontal;
+    position: relative;
+    border-bottom: 1px solid var(--color-border2);
+    // row alternative color
+    // &:nth-child(even) {
+    //   background-color: rgba(90, 90, 90, 0.03);
+    // }
+  }
+  .moz-gantt-header {
+    background-color: var(--color-grid-header-background);
+
+    .moz-gantt-header-row {
+      position: relative;
+      // border-top: 1px solid var(--color-border3);
+      color: var(--color-grid-column-header-font);
+      font-size: var(--size-grid-font);
+      font-weight: var(--font-medium);
+
+      &:first-child {
+        border-top: none;
+      }
+    }
+    .moz-gantt-header-cell {
+      display: inline-block;
+      text-align: center;
+      overflow: hidden;
+      white-space: nowrap;
+      box-shadow: inset -1px 0 0 0 var(--color-border2);
+    }
+  }
+}
+
+.moz-gantt-circle {
+  background-color: var(--color-hover);
+  border: 1px solid var(--color-border3);
+  border-radius: 50%;
+  position: absolute;
+  display: inline-block;
+}
+
+.moz-gantt-cell {
+  @include mixin.flex-center;
+  @include mixin.nowrap-text;
+}
+
+.moz-gantt-column {
+  position: absolute;
+  // border-right: 1px solid var(--color-border3);
+  // &:last-child {
+  //   border-right: none;
+  // }
+}
+
+// .moz-gantt-row-select {
+//   background-color: var(--color-selected) !important;
+// }
+
+.moz-grid {
+  overflow: hidden;
+  width: 100%;
+  .moz-splitter-pane:first-child {
+    background-color: var(--color-grid-header-background);
+    color: var(--color-grid-header-font);
+  }
+  .moz-grid-header {
+    background-color: var(--color-grid-header-background);
+    color: var(--color-grid-column-header-font);
+    font-size: var(--size-grid-font);
+    font-weight: var(--font-medium);
+
+    .moz-grid-header-row {
+      display: flex;
+      white-space: nowrap;
+    }
+    .moz-grid-header-cell {
+      display: inline-block;
+      text-align: center;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    table {
+      border-collapse: collapse;
+      tr {
+        border-top: 1px solid var(--color-border3);
+        &:first-child {
+          border-top: none;
+        }
+      }
+      td,
+      th {
+        @include mixin.nowrap-text;
+        position: relative;
+        border-right: 1px solid var(--color-border3);
+        &:last-child {
+          border-right: none;
+        }
+      }
+    }
+
+    .moz-grid-resizer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 5px;
+      cursor: col-resize;
+      user-select: none;
+      &:hover {
+        border-right: 2px solid var(--color-accent);
+      }
+    }
+    .moz-grid-resizing {
+      border-right: 2px solid var(--color-accent);
+    }
+    .moz-grid-resizable {
+      border: 1px solid gray;
+      height: 100px;
+      width: 100px;
+      position: relative;
+    }
+  }
+  .moz-grid-body {
+    table {
+      border-collapse: collapse;
+      tr {
+        position: relative;
+        // row alternative color
+        // &:nth-child(even) {
+        //   background-color: rgba(90, 90, 90, 0.03);
+        // }
+        border-bottom: 1px solid var(--color-border2);
+        &:hover {
+          background-color: var(--color-hover);
+          font-weight: bold;
+        }
+      }
+      td {
+        @include mixin.nowrap-text;
+        border-right: 1px solid var(--color-border2);
+        &:last-child {
+          border-right: none;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,86 @@
+/* 체크박스 아이콘 변수 정의 */
+$icon-default: url('@moz/icons/svg/checkbox/icon_checkbox_default.svg');
+$icon-hover: url('@moz/icons/svg/checkbox/icon_checkbox_hover.svg');
+$icon-active: url('@moz/icons/svg/checkbox/icon_checkbox_active.svg');
+$icon-disabled: url('@moz/icons/svg/checkbox/icon_checkbox_disable.svg');
+$icon-checked-disabled: url('@moz/icons/svg/checkbox/icon_checkbox_checked_disable.svg');
+$icon-indeterminate: url('@moz/icons/svg/checkbox/icon_checkbox_indeterminate.svg');
+$icon-indeterminate-disabled: url('@moz/icons/svg/checkbox/icon_checkbox_indeterminate_disable.svg');
+
+/* 체크박스 상태별 background-image 믹스인 */
+@mixin checkbox-backgrounds {
+  & + span {
+    background-image: $icon-default;
+  }
+  &:hover + span {
+    background-image: $icon-hover;
+  }
+  &:checked + span {
+    background-image: $icon-active;
+  }
+  &:disabled + span {
+    background-image: $icon-disabled;
+  }
+  &:checked:disabled + span {
+    background-image: $icon-checked-disabled;
+  }
+}
+
+/* 체크박스와 인접한 span이 포함된 컨테이너에 상대 위치 부여 */
+*:has(> input[type='checkbox']:has(+ span)) {
+  position: relative;
+}
+
+/* 기본 체크박스 (인접 span 사용) */
+input[type='checkbox']:has(+ span) {
+  accent-color: var(--color-accent);
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+
+  & + span {
+    width: var(--size-checkbox);
+    height: var(--size-checkbox);
+    cursor: pointer;
+    display: inline-block;
+    border: none;
+    background-repeat: no-repeat;
+  }
+
+  @include checkbox-backgrounds;
+}
+
+/* for 속성이 있는 레이블 클릭 가능 처리 */
+input[type='checkbox'] ~ label[for] {
+  cursor: pointer;
+}
+
+/* Firefox 전용 체크박스 (.moz-checkbox) */
+input[type='checkbox'].moz-checkbox {
+  position: relative;
+  opacity: 1;
+  cursor: pointer;
+  appearance: none;
+  width: var(--size-checkbox);
+  height: var(--size-checkbox);
+  min-width: var(--size-checkbox);
+  min-height: var(--size-checkbox);
+  margin: 0;
+  background-repeat: no-repeat;
+  @include checkbox-backgrounds;
+
+  /* indeterminate 상태 별도 처리 */
+  &.is-indeterminate {
+    background-image: $icon-indeterminate;
+    &:disabled {
+      background-image: $icon-indeterminate-disabled;
+    }
+  }
+
+  & + span {
+    width: inherit;
+    height: inherit;
+    display: inline;
+    background: none !important;
+  }
+}

@@ -1,0 +1,264 @@
+:root,
+[font='normal'] {
+  // admin 도입에 따라 색상 팔레트 제외한 CSS 변수 적용
+
+  /* Radius */
+  --rounded-none: 0;
+  --rounded-xs: 0.125rem; // 2px
+  --rounded-sm: 0.25rem; //4px
+  --rounded-xm: 6px; // 6px
+  --rounded-md: 0.5rem; // 8px
+  --rounded-xl: 999px;
+
+  /* Spacing */
+  --spacing-1: 0.125rem; // 2px
+  --spacing-2: 0.25rem; // 4px
+  --spacing-3: 0.131rem; // 5px
+  --spacing-4: 0.375rem; // 6px
+  --spacing-5: 0.5rem; // 8px
+  --spacing-6: 0.625rem; // 10px
+  --spacing-7: 0.75rem; // 12px
+  --spacing-8: 0.875rem; //14px
+  --spacing-9: 1rem; //16px
+  --spacing-10: 1.25rem; //20px
+  --spacing-11: 1.5rem; // 24px
+  --spacing-12: 1.625rem; // 26px
+  --spacing-13: 1.875rem; //30px
+  --spacing-14: 2.125rem; //34px
+
+  /* Typography */
+  --text-xs: 0.625rem; // 10px
+  --text-sm: 0.688rem; // 11px
+  --text-base: 0.75rem; // 12px
+  --text-lg: 0.813rem; // 13px
+  --text-xl: 0.875rem; // 14px
+  --text-2xl: 1rem; // 16px
+  --text-3xl: 1.5rem; // 24px
+  --text-4xl: 2.125rem; // 34px
+  --text-5xl: 2.5rem; // 40px
+
+  /* font weight */
+  --font-thin: 100;
+  --font-ultra-light: 200;
+  --font-light: 300;
+  --font-regular: 400;
+  --font-normal: var(--font-regular);
+  --font-medium: 500;
+  --font-bold: 700;
+  --font-ultra-bold: 800;
+  --font-heavy: 900;
+
+  /* Shadow */
+  --shadow-100: 0px 3px 4px 0px rgba(57, 55, 122, 0.1);
+  --shadow-200: 0px 3px 6px rgba(57, 55, 122, 0.1);
+  --shadow-300: 0px 10px 20px 0px rgba(81, 102, 110, 0.07);
+  --shadow-400: 2px 4px 8px 0px rgba(31, 79, 171, 0.25);
+
+  //
+  // 아래 값은 레거시 값으로 점차 제거되어야 함.
+  //
+
+  /* Font */
+  --font-size-heading01: 24px;
+  --font-size-heading02: 20px;
+  --font-size-heading03: 17px;
+  --font-size-heading04: 16px;
+  --font-size-body01: 15px;
+  --font-size-body02: 14px;
+  --font-size-body03: 13px;
+  --font-size-body04: 12px;
+  --font-size-button01: 12px;
+
+  --font-size-menu1: 16px;
+
+  /* Common */
+  --size-content-padding-no-scroll: 12px;
+  --size-width: 100%;
+  --size-height: 100%;
+  --size-drawer-width: 200px;
+  --size-height-without-top: 100%;
+  --size-content-height: 100%;
+  --size-content-width: 100%;
+  --size-content-inner-height: 100%;
+  --size-content-inner-height-no-padding: 100%;
+  --size-content-inner-width: 100%;
+  --size-default-font: 12px;
+
+  /* Top */
+  //--size-top-height: 45px;
+  //--size-control-height: 48px;
+  //--size-top-padding-right: 20px;
+  //--size-top-menu-between-gap: 0px;
+  //--size-top-menu-margin: 0px 13px 0px 0px;
+  //--size-top-menu-padding: 0px 14px;
+  //--size-top-parents-menu-height: 30px;
+  //--size-top-parents-menu-font: 13px;
+  //--size-top-child-menu-height: 30px;
+  //--size-top-child-menu-font: 13px;
+
+  --size-top-menu-user-context-menu-project-height: 24px;
+  --size-top-menu-user-context-menu-height: 30px;
+
+  /* Drawer */
+  --size-drawer-category-height: 50px;
+  --size-drawer-icon-font-size: 20px;
+
+  --size-drawer-menu-left-padding: 16px;
+  --size-drawer-menu-right-padding: 16px;
+  --size-drawer-root-menu-height: 44px;
+  --size-drawer-menu-height: calc(100vh - var(--size-top-height) - var(--size-drawer-root-menu-height));
+  --size-drawer-list-item-height: 30px;
+
+  /* Controller */
+  --size-padding-2to1: 8px;
+  --size-filter-height: 26px;
+
+  /* Controller filter */
+  --size-filter-padding: 10px 10px;
+  --size-filter-gap: 6px;
+
+  /* Card */
+  --size-card-title-height: 37px;
+  --size-card-title-left-padding: 10px;
+  --size-card-title-font: 12px;
+  --size-card-top-padding: 0px;
+  --size-card-rbl-padding: 10px;
+  --size-card-tab-height: 38px;
+
+  /* Icon */
+  --size-icon-button: 30px;
+  --size-icon-button-small: 20px;
+  --size-icon-font-size: 20px;
+  --size-small-icon-font-size: 14px;
+  --size-minimum-icon-font-size: 12px;
+  --size-icon-controller-font-size: 22px;
+  --size-icon-top-app: 28px;
+
+  /* Button */
+  --size-button-top-app: 40px;
+  --size-button-control-size: 28px;
+  --size-button-height: 28px;
+  --size-button-width: 72px;
+  --size-button-in-popup-height: 30px;
+  --size-button-in-popup-width: 80px;
+  --size-button-gap: 8px;
+  --size-button-padding: 0px 10px;
+  --size-icon-button-padding: 4px; // 아이콘만 있는 조그만 버튼
+
+  /* Grid */
+  --size-grid-header-height: 31px;
+  --size-grid-row-height: 31px; //32px;
+  --size-card-grid-header-height: 32px;
+  --size-card-grid-row-height: 32px;
+  --size-simple-item-height: 40px;
+  --size-filelist-header-height: 32px;
+  --size-filelist-item-height: 28px;
+  --size-filter-row-height: 28px;
+  --size-dropdown-button-left: 5px;
+  --size-select-dropdown-left: 5px;
+  --size-header-indicator-top: 18px;
+  --size-grid-cell-horizontal-padding: 10px;
+  --size-grid-cell-vertical-padding: 0px;
+  --size-grid-cell-padding: var(--size-grid-cell-vertical-padding) var(--size-grid-cell-horizontal-padding);
+  --size-cell-padding: var(--size-grid-cell-horizontal-padding);
+  --size-grid-font: 13px;
+  --size-grid-gap: 6px;
+
+  /* Padding */
+  --size-content-padding: 20px;
+  --size-padding-3to2: 12px;
+  --size-8to7: 32px;
+  --size-6to5: 24px;
+
+  /* Switch */
+  --size-switch-handle: 14px;
+  --left-switch-on: 32px;
+  --left-switch-off: 35px;
+  --handle-margin-top: 0px;
+  --size-switch-handle-width: 130%;
+  --size-switch-handle-left: 45%;
+
+  /* List */
+  --size-list-expand-icon-padding: -8px;
+  --size-arrow-button-top: 0px;
+  --size-arrow-button-left: -5px;
+  --size-listbox-item-height: 58px;
+  --size-listbox-item-padding: 0px 10px;
+
+  /* Popup */
+  --size-toolbar-bottom: 62px;
+  --size-popup-title-height: 45px;
+  --size-popup-horizontal-padding: 20px;
+  --size-popup-vertical-padding: 24px;
+  --font-size-popup-header: 16px;
+  --font-size-popup-body: 14px;
+
+  /* Input */
+  --size-dropdown-container: 32px;
+  --size-arrow-btn: 18px;
+  --size-checkbox: 12px;
+  --size-input-height: 30px;
+  --size-radio-container: 20px;
+  --size-radio-dot: 10px;
+  --size-input-padding: 8px;
+  --size-input-label-font: 12px;
+  --size-input-font: var(--text-lg);
+  --size-input-dropdown-item-height: 24px;
+  --size-input-dropdown-item-horizontal-padding: 10px;
+  --size-input-dropdown-item-vertical-padding: 0px;
+  --size-input-radio-item-horizontal-padding: 10px;
+  --size-input-radio-item-vertical-padding: 5px;
+  --radio-dot-margin-top: -15px;
+  --radio-dot-margin-left: 5px;
+  --input-dropdown-listbox-shadow: 0 3px 4px 0 var(--color-input-dropdown-shadow);
+
+  /* context menu for input(wj) component */
+  --selection-menu-dropdown-shadow: 0 3px 4px 0 var(--color-input-dropdown-shadow);
+  --selection-menu-item-height: 24px;
+  --context-menu-size-horizontal: 14px; // context menu 수평 추가
+  --context-menu-size-vertical: 0px; // context menu 수직 추가
+  --context-menu-size-separator: 0.5px; // context menu 구분선 추가
+  --context-menu-size-listbox-height: 30px; // context menu 높이 추가
+  --context-menu-size-right-angle-bracket: 17px; // context menu > px 추가
+  --context-menu-size-input-font: 13px; // context menu 폰트
+  --context-menu-container-vertical-padding: 4px;
+
+  /* Form */
+  --size-label-top-padding: 8px;
+
+  /* Menu */
+  --size-menu-item-font: 13px;
+  --size-menu-gap-from-parants: 4px; // 클릭 영역과 메뉴 사이의 간격
+  --size-menu-container-horizontal-padding: 0px;
+  --size-menu-container-vertical-padding: 6px;
+  --size-large-menu-container-horizontal-padding: 0px;
+  --size-large-menu-container-vertical-padding: 4px; // 큰 메뉴에서는 작은 패딩을 가짐
+
+  /* Menu Location Top */
+  --menu-location-top-top-height: 60px;
+  --menu-location-top-menu-width: 142px;
+  --menu-location-top-submenu-height: 40px;
+  --menu-location-top-favorite-font-size: 25px;
+
+  /* Menu Location TopAndLeft*/
+  --menu-location-topandleft-left-item-height: 36px;
+
+  /* Group Panel */
+  --size-group-panel-height: 44px;
+  --size-group-panel-margin-bottom: 10px;
+
+  --icon-drag-drop: url('data:image/svg+xml,%3Csvg%20width%3D%2226%22%20height%3D%2226%22%20viewBox%3D%220%200%2026%2026%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20clip-path%3D%22url(%23clip0_1702_837)%22%3E%3Cpath%20d%3D%22M13%2026C20.1797%2026%2026%2020.1797%2026%2013C26%205.8203%2020.1797%200%2013%200C5.8203%200%200%205.8203%200%2013C0%2020.1797%205.8203%2026%2013%2026Z%22%20fill%3D%22%23E1E9FF%22%2F%3E%3Cpath%20d%3D%22M6.985%2013.853C6.93852%2013.0157%207.19773%2012.19%207.71442%2011.5294C8.23111%2010.8689%208.97012%2010.4185%209.794%2010.262L9.245%2010.815C9.18096%2010.8789%209.13015%2010.9548%209.09549%2011.0384C9.06082%2011.1219%209.04298%2011.2115%209.04298%2011.302C9.04298%2011.3925%209.06082%2011.4821%209.09549%2011.5656C9.13015%2011.6492%209.18096%2011.7251%209.245%2011.789C9.30891%2011.853%209.38481%2011.9038%209.46838%2011.9385C9.55195%2011.9732%209.64153%2011.991%209.732%2011.991C9.82247%2011.991%209.91205%2011.9732%209.99562%2011.9385C10.0792%2011.9038%2010.1551%2011.853%2010.219%2011.789L12.012%2010C12.076%209.9361%2012.1268%209.86019%2012.1615%209.77662C12.1962%209.69306%2012.214%209.60347%2012.214%209.513C12.214%209.42253%2012.1962%209.33295%2012.1615%209.24938C12.1268%209.16582%2012.076%209.08991%2012.012%209.026L10.23%207.238C10.1661%207.17396%2010.0902%207.12316%2010.0066%207.08849C9.92305%207.05382%209.83347%207.03598%209.743%207.03598C9.65253%207.03598%209.56295%207.05382%209.47938%207.08849C9.39581%207.12316%209.31991%207.17396%209.256%207.238C9.19196%207.30191%209.14115%207.37782%209.10649%207.46138C9.07182%207.54495%209.05398%207.63453%209.05398%207.725C9.05398%207.81547%209.07182%207.90506%209.10649%207.98862C9.14115%208.07219%209.19196%208.1481%209.256%208.212L9.867%208.805V8.846C8.6293%208.99587%207.49698%209.61699%206.70545%2010.5802C5.91392%2011.5435%205.52409%2012.7747%205.617%2014.018C5.73495%2015.2545%206.314%2016.4012%207.23896%2017.2302C8.16393%2018.0592%209.36704%2018.5097%2010.609%2018.492H11.809C11.9918%2018.4912%2012.1668%2018.4183%2012.296%2018.289C12.4253%2018.1598%2012.4982%2017.9848%2012.499%2017.802C12.4982%2017.6192%2012.4253%2017.4442%2012.296%2017.315C12.1668%2017.1857%2011.9918%2017.1128%2011.809%2017.112H10.583C9.68155%2017.1272%208.80809%2016.7989%208.13988%2016.1936C7.47167%2015.5884%207.05878%2014.7516%206.985%2013.853Z%22%20fill%3D%22%234568E0%22%2F%3E%3Cpath%20d%3D%22M13.883%2015.04V17.111C13.8841%2017.4769%2014.0299%2017.8276%2014.2886%2018.0863C14.5474%2018.3451%2014.8981%2018.4909%2015.264%2018.492H18.716C19.0819%2018.4909%2019.4326%2018.3451%2019.6913%2018.0863C19.9501%2017.8276%2020.0959%2017.4769%2020.097%2017.111V15.04C20.0959%2014.6741%2019.9501%2014.3234%2019.6913%2014.0646C19.4326%2013.8059%2019.0819%2013.6601%2018.716%2013.659H15.264C14.8981%2013.6601%2014.5474%2013.8059%2014.2886%2014.0646C14.0299%2014.3234%2013.8841%2014.6741%2013.883%2015.04ZM18.716%2017.111H15.264V15.04H18.716V17.111Z%22%20fill%3D%22%234568E0%22%2F%3E%3Cpath%20d%3D%22M18.716%207.44501H15.264C14.8981%207.44606%2014.5474%207.5919%2014.2886%207.85066C14.0299%208.10942%2013.8841%208.46007%2013.883%208.82601V10.897C13.8841%2011.2629%2014.0299%2011.6136%2014.2886%2011.8724C14.5474%2012.1311%2014.8981%2012.277%2015.264%2012.278H18.716C19.0819%2012.277%2019.4326%2012.1311%2019.6913%2011.8724C19.9501%2011.6136%2020.0959%2011.2629%2020.097%2010.897V8.82601C20.0959%208.46007%2019.9501%208.10942%2019.6913%207.85066C19.4326%207.5919%2019.0819%207.44606%2018.716%207.44501Z%22%20fill%3D%22%234568E0%22%2F%3E%3C%2Fg%3E%3Cdefs%3E%3CclipPath%20id%3D%22clip0_1702_837%22%3E%3Crect%20width%3D%2226%22%20height%3D%2226%22%20fill%3D%22white%22%2F%3E%3C%2FclipPath%3E%3C%2Fdefs%3E%3C%2Fsvg%3E');
+  --icon-drag-indicator: url('data:image/svg+xml,%3Csvg%20width%3D%2210%22%20height%3D%2210%22%20viewBox%3D%220%200%2010%2010%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cg%20clip-path%3D%22url(%23clip0_1702_878)%22%3E%0A%3Cmask%20id%3D%22mask0_1702_878%22%20style%3D%22mask-type%3Aluminance%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%2210%22%20height%3D%2210%22%3E%0A%3Cpath%20d%3D%22M10%200H0V10H10V0Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fmask%3E%0A%3Cg%20mask%3D%22url(%23mask0_1702_878)%22%3E%0A%3Cpath%20d%3D%22M7.69601%201.77601C7.69601%201.97004%207.63848%202.1597%207.53068%202.32103C7.42289%202.48235%207.26968%202.60809%207.09042%202.68234C6.91117%202.75659%206.71392%202.77602%206.52363%202.73816C6.33333%202.70031%206.15853%202.60688%206.02134%202.46969C5.88414%202.33249%205.79071%202.15769%205.75286%201.9674C5.71501%201.7771%205.73443%201.57986%205.80868%201.4006C5.88293%201.22135%206.00867%201.06814%206.17%200.960342C6.33132%200.852548%206.52099%200.795013%206.71501%200.795013C6.97519%200.795013%207.22471%200.898368%207.40868%201.08234C7.59265%201.26631%207.69601%201.51584%207.69601%201.77601Z%22%20fill%3D%22%234568E0%22%2F%3E%0A%3Cpath%20d%3D%22M4.264%201.77601C4.264%201.97004%204.20647%202.1597%204.09867%202.32103C3.99088%202.48235%203.83767%202.60809%203.65841%202.68234C3.47916%202.75659%203.28191%202.77602%203.09162%202.73816C2.90132%202.70031%202.72653%202.60688%202.58933%202.46969C2.45214%202.33249%202.3587%202.15769%202.32085%201.9674C2.283%201.7771%202.30243%201.57986%202.37668%201.4006C2.45093%201.22135%202.57666%201.06814%202.73799%200.960342C2.89931%200.852548%203.08898%200.795013%203.283%200.795013C3.54318%200.795013%203.7927%200.898368%203.97667%201.08234C4.16065%201.26631%204.264%201.51584%204.264%201.77601Z%22%20fill%3D%22%234568E0%22%2F%3E%0A%3Cpath%20d%3D%22M7.69601%205.00001C7.69601%205.19408%207.63845%205.38379%207.53061%205.54513C7.42277%205.70648%207.2695%205.83221%207.09019%205.90643C6.91088%205.98065%206.71358%206.00002%206.52326%205.96209C6.33293%205.92416%206.15814%205.83063%206.02098%205.69333C5.88383%205.55603%205.79048%205.38114%205.75274%205.19078C5.715%205.00042%205.73457%204.80314%205.80897%204.62391C5.88337%204.44467%206.00927%204.29153%206.17072%204.18385C6.33218%204.07618%206.52194%204.01882%206.71601%204.01901C6.97619%204.01901%207.22571%204.12237%207.40968%204.30634C7.59365%204.49031%207.69601%204.73984%207.69601%205.00001Z%22%20fill%3D%22%234568E0%22%2F%3E%0A%3Cpath%20d%3D%22M4.264%205.00001C4.264%205.19408%204.20644%205.38379%204.0986%205.54513C3.99077%205.70648%203.8375%205.83221%203.65818%205.90643C3.47887%205.98065%203.28157%206.00002%203.09125%205.96209C2.90093%205.92416%202.72613%205.83063%202.58898%205.69333C2.45182%205.55603%202.35847%205.38114%202.32073%205.19078C2.28299%205.00042%202.30256%204.80314%202.37696%204.62391C2.45137%204.44467%202.57726%204.29153%202.73872%204.18385C2.90017%204.07618%203.08994%204.01882%203.284%204.01901C3.54418%204.01901%203.7937%204.12237%203.97767%204.30634C4.16165%204.49031%204.264%204.73984%204.264%205.00001Z%22%20fill%3D%22%234568E0%22%2F%3E%0A%3Cpath%20d%3D%22M7.69601%208.22502C7.69601%208.41904%207.63848%208.60871%207.53068%208.77003C7.42289%208.93136%207.26968%209.05709%207.09042%209.13134C6.91117%209.20559%206.71392%209.22502%206.52363%209.18717C6.33333%209.14932%206.15853%209.05589%206.02134%208.91869C5.88414%208.78149%205.79071%208.6067%205.75286%208.4164C5.71501%208.22611%205.73443%208.02886%205.80868%207.84961C5.88293%207.67035%206.00867%207.51714%206.17%207.40935C6.33132%207.30155%206.52099%207.24402%206.71501%207.24402C6.84384%207.24402%206.9714%207.26939%207.09042%207.31869C7.20944%207.36799%207.31759%207.44025%207.40868%207.53135C7.49978%207.62244%207.57204%207.73059%207.62134%207.84961C7.67064%207.96863%207.69601%208.09619%207.69601%208.22502Z%22%20fill%3D%22%234568E0%22%2F%3E%0A%3Cpath%20d%3D%22M4.264%208.22502C4.264%208.41904%204.20647%208.60871%204.09867%208.77003C3.99088%208.93136%203.83767%209.05709%203.65841%209.13134C3.47916%209.20559%203.28191%209.22502%203.09162%209.18717C2.90132%209.14932%202.72653%209.05589%202.58933%208.91869C2.45214%208.78149%202.3587%208.6067%202.32085%208.4164C2.283%208.22611%202.30243%208.02886%202.37668%207.84961C2.45093%207.67035%202.57666%207.51714%202.73799%207.40935C2.89931%207.30155%203.08898%207.24402%203.283%207.24402C3.41183%207.24402%203.53939%207.26939%203.65841%207.31869C3.77744%207.36799%203.88558%207.44025%203.97667%207.53135C4.06777%207.62244%204.14003%207.73059%204.18933%207.84961C4.23863%207.96863%204.264%208.09619%204.264%208.22502Z%22%20fill%3D%22%234568E0%22%2F%3E%0A%3C%2Fg%3E%0A%3C%2Fg%3E%0A%3Cdefs%3E%0A%3CclipPath%20id%3D%22clip0_1702_878%22%3E%0A%3Crect%20width%3D%2210%22%20height%3D%2210%22%20fill%3D%22white%22%2F%3E%0A%3C%2FclipPath%3E%0A%3C%2Fdefs%3E%0A%3C%2Fsvg%3E%0A');
+  --icon-chip-cancel: url('data:image/svg+xml,%3Csvg%20width%3D%2210%22%20height%3D%2210%22%20viewBox%3D%220%200%2010%2010%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cg%20clip-path%3D%22url(%23clip0_1702_873)%22%3E%0A%3Cpath%20d%3D%22M7.89294%202.10699L2.1074%207.89254%22%20stroke%3D%22%234568E0%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%2F%3E%0A%3Cpath%20d%3D%22M2.10706%202.10699L7.8926%207.89254%22%20stroke%3D%22%234568E0%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%2F%3E%0A%3C%2Fg%3E%0A%3Cdefs%3E%0A%3CclipPath%20id%3D%22clip0_1702_873%22%3E%0A%3Crect%20width%3D%2210%22%20height%3D%2210%22%20fill%3D%22white%22%2F%3E%0A%3C%2FclipPath%3E%0A%3C%2Fdefs%3E%0A%3C%2Fsvg%3E%0A');
+
+  /* Dashboard */
+  --size-dashboard-default-font: 12px;
+  --size-dashboard-legend-percent-font: 24px;
+
+  /* Excel Export */
+  --icon-error-row: url('data:image/svg+xml,%3Csvg%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpath%0A%20%20%20%20%20%20d%3D%22M0%206C0%204.81331%200.351894%203.65328%201.01118%202.66658C1.67047%201.67989%202.60754%200.910851%203.7039%200.456726C4.80026%200.00259972%206.00666%20-0.11622%207.17054%200.115291C8.33443%200.346802%209.40353%200.918247%2010.2426%201.75736C11.0818%202.59648%2011.6532%203.66558%2011.8847%204.82946C12.1162%205.99335%2011.9974%207.19975%2011.5433%208.2961C11.0892%209.39246%2010.3201%2010.3295%209.33342%2010.9888C8.34673%2011.6481%207.18669%2012%206%2012C4.40927%2011.9981%202.88422%2011.3654%201.75941%2010.2406C0.634589%209.11578%200.00185261%207.59073%200%206ZM1.26%206C1.26%206.93773%201.53808%207.85439%202.05907%208.63407C2.58006%209.41374%203.32057%2010.0214%204.18693%2010.3802C5.05329%2010.739%206.0066%2010.8328%206.92629%2010.6498C7.84598%2010.4668%208.69075%2010.0152%209.35375%209.35204C10.0167%208.6889%2010.4682%207.84404%2010.651%206.92431C10.8338%206.00458%2010.7398%205.05129%2010.3808%204.18501C10.0218%203.31872%209.41402%202.57835%208.63423%202.05752C7.85445%201.53669%206.93772%201.2588%206%201.259C4.74319%201.26059%203.53832%201.76063%202.64971%202.64942C1.76111%203.53822%201.26132%204.74319%201.26%206ZM5.743%209.7C5.5867%209.7%205.43678%209.63798%205.32616%209.52755C5.21554%209.41712%205.15326%209.26731%205.153%209.111V5.569C5.153%205.41243%205.21513%205.26226%205.32575%205.15146C5.43636%205.04065%205.58643%204.97827%205.743%204.978H6.163C6.31949%204.97853%206.4694%205.041%206.57996%205.15175C6.69052%205.2625%206.75274%205.41251%206.753%205.569V9.11C6.75247%209.26623%206.69011%209.41588%206.57955%209.52626C6.46899%209.63663%206.31922%209.69874%206.163%209.699L5.743%209.7ZM5.743%204.366C5.58652%204.366%205.43645%204.30384%205.32581%204.1932C5.21516%204.08255%205.153%203.93248%205.153%203.776V3.356C5.153%203.19943%205.21513%203.04926%205.32575%202.93846C5.43636%202.82765%205.58643%202.76527%205.743%202.765H6.163C6.31949%202.76553%206.4694%202.828%206.57996%202.93875C6.69052%203.04949%206.75274%203.19951%206.753%203.356V3.776C6.75274%203.9324%206.69049%204.08231%206.5799%204.1929C6.46931%204.30349%206.3194%204.36574%206.163%204.366H5.743Z%22%0A%20%20%20%20%20%20fill%3D%22%23DC5A5A%22%0A%20%20%20%20%2F%3E%0A%20%20%3C%2Fsvg%3E');
+  --icon-success-cell: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgdmlld0JveD0iMCAwIDEyIDEyIiBmaWxsPSJub25lIj4KICA8cGF0aCBkPSJNMCA2QzAgNC44MTMzMSAwLjM1MTg5NCAzLjY1MzI4IDEuMDExMTggMi42NjY1OEMxLjY3MDQ3IDEuNjc5ODkgMi42MDc1NCAwLjkxMDg1MSAzLjcwMzkgMC40NTY3MjZDNC44MDAyNiAwLjAwMjU5OTcyIDYuMDA2NjYgLTAuMTE2MjIgNy4xNzA1NCAwLjExNTI5MUM4LjMzNDQzIDAuMzQ2ODAyIDkuNDAzNTMgMC45MTgyNDcgMTAuMjQyNiAxLjc1NzM2QzExLjA4MTggMi41OTY0OCAxMS42NTMyIDMuNjY1NTggMTEuODg0NyA0LjgyOTQ2QzEyLjExNjIgNS45OTMzNSAxMS45OTc0IDcuMTk5NzUgMTEuNTQzMyA4LjI5NjFDMTEuMDg5MiA5LjM5MjQ2IDEwLjMyMDEgMTAuMzI5NSA5LjMzMzQyIDEwLjk4ODhDOC4zNDY3MyAxMS42NDgxIDcuMTg2NjkgMTIgNiAxMkM0LjQwOTI3IDExLjk5ODEgMi44ODQyMiAxMS4zNjU0IDEuNzU5NDEgMTAuMjQwNkMwLjYzNDU4OSA5LjExNTc4IDAuMDAxODUyNjEgNy41OTA3MyAwIDZaTTEuMjYgNkMxLjI2IDYuOTM3NzMgMS41MzgwOCA3Ljg1NDM5IDIuMDU5MDcgOC42MzQwN0MyLjU4MDA2IDkuNDEzNzQgMy4zMjA1NyAxMC4wMjE0IDQuMTg2OTMgMTAuMzgwMkM1LjA1MzI5IDEwLjczOSA2LjAwNjYgMTAuODMyOCA2LjkyNjI5IDEwLjY0OThDNy44NDU5OCAxMC40NjY4IDguNjkwNzUgMTAuMDE1MiA5LjM1Mzc1IDkuMzUyMDRDMTAuMDE2NyA4LjY4ODkgMTAuNDY4MiA3Ljg0NDA0IDEwLjY1MSA2LjkyNDMxQzEwLjgzMzggNi4wMDQ1OCAxMC43Mzk4IDUuMDUxMjkgMTAuMzgwOCA0LjE4NTAxQzEwLjAyMTggMy4zMTg3MiA5LjQxNDAyIDIuNTc4MzUgOC42MzQyMyAyLjA1NzUyQzcuODU0NDUgMS41MzY2OSA2LjkzNzcyIDEuMjU4OCA2IDEuMjU5QzQuNzQzMTkgMS4yNjA1OSAzLjUzODMyIDEuNzYwNjMgMi42NDk3MSAyLjY0OTQyQzEuNzYxMTEgMy41MzgyMiAxLjI2MTMyIDQuNzQzMTkgMS4yNiA2Wk01LjEyNyA4Ljc0NUg1LjExNEM1LjAwOTE4IDguNzQ1NDEgNC45MDU1OCA4LjcyMjU3IDQuODEwNjUgOC42NzgxM0M0LjcxNTcyIDguNjMzNjkgNC42MzE4MiA4LjU2ODc2IDQuNTY1IDguNDg4TDIuOTA5IDYuNUMyLjc4NzQ4IDYuMzU0NTIgMi43Mjg1MiA2LjE2Njg0IDIuNzQ1IDUuOTc4QzIuNzU3NjEgNS44MzcyMiAyLjgxMTcxIDUuNzAzMzUgMi45MDA0NyA1LjU5MzM1QzIuOTg5MjIgNS40ODMzNSAzLjEwODYyIDUuNDAyMTYgMy4yNDM1NiA1LjM2MDA4QzMuMzc4NDkgNS4zMTc5OSAzLjUyMjg3IDUuMzE2OSAzLjY1ODQyIDUuMzU2OTRDMy43OTM5OCA1LjM5Njk4IDMuOTE0NTkgNS40NzYzNSA0LjAwNSA1LjU4NUw1LjA4NCA2Ljg4MUw3LjUyNCAzLjYyN0M3LjU4MDEgMy41NTE3NyA3LjY1MDQ4IDMuNDg4MzMgNy43MzExMiAzLjQ0MDMyQzcuODExNzUgMy4zOTIzIDcuOTAxMDYgMy4zNjA2NiA3Ljk5Mzk0IDMuMzQ3MTlDOC4wODY4MiAzLjMzMzcyIDguMTgxNDQgMy4zMzg3IDguMjcyMzkgMy4zNjE4M0M4LjM2MzM0IDMuMzg0OTYgOC40NDg4NCAzLjQyNTggOC41MjQgMy40ODJDOC42NzUyNiAzLjU5NzEzIDguNzc1NDIgMy43NjY5MiA4LjgwMyAzLjk1NUM4LjgxNjYzIDQuMDQ3ODIgOC44MTE4MSA0LjE0MjQxIDguNzg4ODEgNC4yMzMzNkM4Ljc2NTgyIDQuMzI0MyA4LjcyNTEgNC40MDk4MiA4LjY2OSA0LjQ4NUw1LjY4NSA4LjQ2MUM1LjYyMDMgOC41NDY4NCA1LjUzNzA2IDguNjE2OTYgNS40NDE0OCA4LjY2NjEzQzUuMzQ1OSA4LjcxNTMxIDUuMjQwNDUgOC43NDIyNyA1LjEzMyA4Ljc0NUg1LjEyN1oiIGZpbGw9IiMzNTdFNjMiLz4KPC9zdmc+');
+
+  /* Grid Filter */
+  --icon-grid-filter: url('data:image/svg+xml,%3Csvg%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cg%20clip-path%3D%22url(%23clip0_1781_953)%22%3E%0A%3Cpath%20d%3D%22M5.41881%2011.5322C5.08392%2011.5311%204.7632%2011.3975%204.52696%2011.1601C4.29072%2010.9228%204.15827%2010.6005%204.1588%2010.2656V6.80855C3.6478%206.14955%201.83002%203.79813%200.785019%202.45113C0.639054%202.26433%200.548828%202.03951%200.524766%201.80367C0.500704%201.56783%200.543555%201.33055%200.648789%201.11812C0.75168%200.905735%200.91282%200.726282%201.11314%200.601522C1.31347%200.476761%201.54487%200.411713%201.78087%200.413045H10.2709C10.5068%200.411832%2010.7383%200.477751%2010.9386%200.602498C11.1389%200.727245%2011.3%200.90581%2011.4029%201.11812C11.5079%201.33016%2011.5509%201.56728%2011.5272%201.80269C11.5035%202.0381%2011.4141%202.26233%2011.2689%202.44918C10.2219%203.79918%208.40801%206.14855%207.90001%206.80855V10.2656C7.90028%2010.6004%207.76778%2010.9218%207.5316%2011.1591C7.29542%2011.3964%206.9748%2011.5309%206.64%2011.5322H5.41881Z%22%20fill%3D%22%234568E0%22%2F%3E%0A%3C%2Fg%3E%0A%3Cdefs%3E%0A%3CclipPath%20id%3D%22clip0_1781_953%22%3E%0A%3Crect%20width%3D%2212%22%20height%3D%2212%22%20fill%3D%22white%22%2F%3E%0A%3C%2FclipPath%3E%0A%3C%2Fdefs%3E%0A%3C%2Fsvg%3E%0A');
+}

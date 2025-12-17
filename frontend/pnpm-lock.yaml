@@ -8,24 +8,21 @@ importers:
 
   .:
     dependencies:
-      '@grapecity/wijmo':
+      '@grapecity/wijmo.all':
         specifier: 5.20232.939
         version: 5.20232.939
-      '@grapecity/wijmo.grid':
+      '@grapecity/wijmo.cultures':
         specifier: 5.20232.939
         version: 5.20232.939
       '@grapecity/wijmo.styles':
-        specifier: 5.20232.939
-        version: 5.20232.939
-      '@grapecity/wijmo.vue2.grid':
         specifier: 5.20232.939
         version: 5.20232.939
       '@tanstack/vue-query':
         specifier: ^5.28.13
         version: 5.92.1(vue@3.5.25(typescript@5.9.3))
       '@vmscloud/moz-component':
-        specifier: ^1.0.3
-        version: 1.0.3(@grapecity/wijmo.all@5.20252.42)(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)(@tanstack/vue-query@5.92.1(vue@3.5.25(typescript@5.9.3)))(@tiptap/core@2.27.1(@tiptap/pm@2.27.1))(i18next-vue@3.0.0(i18next@23.16.8)(vue@3.5.25(typescript@5.9.3)))(i18next@23.16.8)(pinia@2.3.1(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3)))(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))
+        specifier: file:../../Aleatorik-UI-Frontend/libraries/moz-component
+        version: file:../../Aleatorik-UI-Frontend/libraries/moz-component(@grapecity/wijmo.all@5.20232.939)(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)(@tanstack/vue-query@5.92.1(vue@3.5.25(typescript@5.9.3)))(@tiptap/core@2.27.1(@tiptap/pm@2.27.1))(i18next-vue@3.0.0(i18next@23.16.8)(vue@3.5.25(typescript@5.9.3)))(i18next@23.16.8)(pinia@2.3.1(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3)))(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))
       axios:
         specifier: ^1.6.7
         version: 1.13.2
@@ -244,663 +241,633 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@grapecity/wijmo.all@5.20252.42':
-    resolution: {integrity: sha512-i6h2OuZtYXOX4Uc9BVOVXlFe8kY+/kCdkWIz9JYk8z34ltjc3JPKmdMaQHttPG2+rKE4qt/8jprS9JzekYkfqQ==}
+  '@grapecity/wijmo.all@5.20232.939':
+    resolution: {integrity: sha512-aanlkVWPx0+wja2vzI0Q8Pu8D1CDSaoIEutAvbYjM8GMPojCFAyjya53xeXLUFJIisnPhmHoB6JPl8RzEWEspg==}
 
-  '@grapecity/wijmo.angular.all@5.20252.42':
-    resolution: {integrity: sha512-D21QfNA2g2tIYPoRUdw9ZDf3P6V+vtzRIfY0k4lsPxIFYcy4my7zI2smf6XplwMNwjcvcz8Zksr+4SZbT7/2FA==}
+  '@grapecity/wijmo.angular.all@5.20232.939':
+    resolution: {integrity: sha512-CZzz/FUrtF/jS11rIt7aVcyJWQs5QdYTi9pKqXyeef4zFprEhLOnGwMkhuVa3Nul8Q3n25TddmbPJCK0vo9/tQ==}
 
-  '@grapecity/wijmo.angular.base@5.20252.42':
-    resolution: {integrity: sha512-QlOujJyZT/PvzVqCSLc8H/b3MLhdcQoCQtjAyVM2vzU4a+evEuGkHfPMBz3exd6xCglg9Z5UWrDCIi+sAWFMXw==}
+  '@grapecity/wijmo.angular.base@5.20232.939':
+    resolution: {integrity: sha512-WEnq1H9xm92VJKjLk+SFK+WyrYomyVd6njNGGAYpRkw4iWJg0i2QYaj50rKjOgawZfKzGPS8ACIYpwHGDFVP/A==}
 
-  '@grapecity/wijmo.angular.chart.analytics@5.20252.42':
-    resolution: {integrity: sha512-HkknTYnuymXh8w0ZAbKUw5zfveMDjWilJVA5dsLCX7wz48erOSDKqlWmdXG/eJtVOPBBBcK9Q0XlD/MawfdDTQ==}
+  '@grapecity/wijmo.angular.chart.analytics@5.20232.939':
+    resolution: {integrity: sha512-VtjVBuMoo2eGL3V+JZqFrzVzpcfThZBwOjULVnGuqqV1Zp9fdR6rVQxaCzFHNlveXYjt15cD8SG99ipKlszcIA==}
 
-  '@grapecity/wijmo.angular.chart.animation@5.20252.42':
-    resolution: {integrity: sha512-kX7gmgpzpepUA4SkB1kseQY4RH7/y3coF9cHIvGphWwrlrcGSh2/VtAbV1FO5KphIY8B/wFBlO4DDrtWJTGZ3w==}
+  '@grapecity/wijmo.angular.chart.animation@5.20232.939':
+    resolution: {integrity: sha512-F/MHYAjKbbiOXdh6z3WbgjPb06X8mKEyIxEVNdi2OKN7q8IG+RSjfnTOqMGNQkb+wfn+Mq7K+83UDxCo2G0nZA==}
 
-  '@grapecity/wijmo.angular.chart.annotation@5.20252.42':
-    resolution: {integrity: sha512-2IrmDOy3OuC1YN3qiZKs6kwHRV8Su7Xi/0/A0CBeEKaiJZtPE/u5qBfzztiN26iIp7mPCxVJ+vpMnGc3j8BkHg==}
+  '@grapecity/wijmo.angular.chart.annotation@5.20232.939':
+    resolution: {integrity: sha512-hfW8BVufPwHyx/XfPDPKzcO2ocgKn3ur4MRAhSiS55ndR7lWQ82GT/QiTVULoVgZ5UEvWGL/oVgcQ8Dl6juI9w==}
 
-  '@grapecity/wijmo.angular.chart.finance.analytics@5.20252.42':
-    resolution: {integrity: sha512-CrGSc96iO/G1q9/wc+RnEFtW3Ml4IXYWFY98lZRB7zg4dg7J50o/6udWQS96aZPoA7U7NxzbF2RJ7MjTDDXQOQ==}
+  '@grapecity/wijmo.angular.chart.finance.analytics@5.20232.939':
+    resolution: {integrity: sha512-5kyfx1thvW3K1MGQuTQwAnVeXqF8B4jPOTrbSXxoLpTFSOIR0UZnQZzbXjuq2MdaMHB17lvHJaQ3O7e1k86d/Q==}
 
-  '@grapecity/wijmo.angular.chart.finance@5.20252.42':
-    resolution: {integrity: sha512-GGKj2YGuqRzMG1KPRCgdja0faAerB8hCmonuptb8n5zqqEw67JrMwGnxR51E6jHH6Q6K0bUrzdKkL5AUaK1tQQ==}
+  '@grapecity/wijmo.angular.chart.finance@5.20232.939':
+    resolution: {integrity: sha512-8u/HGy/vaXcgf/7Bt31JRCjwkabvrEqphJ3G00wKQ4NzUGzJVOxWSC/k5w+4y5oEN+79vla602WRuyZmrit4YQ==}
 
-  '@grapecity/wijmo.angular.chart.hierarchical@5.20252.42':
-    resolution: {integrity: sha512-BNtzNyize4Y09xW4/NFo7wjbjJ+tRoxy5+czdJFi4+Tq9oRZLEWqk3tEBHYr3XkFtf9jNzX2w8rkKAo1axnIMg==}
+  '@grapecity/wijmo.angular.chart.hierarchical@5.20232.939':
+    resolution: {integrity: sha512-fHDOhLrRnF09aiJgMcbIga3fOfoXvqycLxxHQlfk63AeTW2o4JfmierDCT75XCzH2HwT1kYc2ytZJZAhjL849Q==}
 
-  '@grapecity/wijmo.angular.chart.interaction@5.20252.42':
-    resolution: {integrity: sha512-S59gHvtgMYeMETRzZo1n8YZq5BYEDCH3VyCg3A3WMQtKusiE132kdHS0G9K8gj7PFJu9xHcfeZloN5fvn6GTHA==}
+  '@grapecity/wijmo.angular.chart.interaction@5.20232.939':
+    resolution: {integrity: sha512-Y4TZT+nYTmjacZ7/qGLP7hkX3pqrM3OqKnIoXZN0t8wi7Li4Wza/U3c1zpGd2UKb98TZxS8b3x/dDO34cAlV2A==}
 
-  '@grapecity/wijmo.angular.chart.radar@5.20252.42':
-    resolution: {integrity: sha512-mwmey7bpPrFFEULIKDZp2qTQesBRm9bN/sMKOGbMvcaun8Qt/1yngggtIeyTDy8wowp1+0yw1KZjVtylvc8oGQ==}
+  '@grapecity/wijmo.angular.chart.radar@5.20232.939':
+    resolution: {integrity: sha512-OPGyz88afM++r6czY7TG58TAXwCwbT6HjzSMIpe6cYJRaOTap3AxJzsyH2RAvfcQLuuy6uqRBIMO/c9HLF5sxg==}
 
-  '@grapecity/wijmo.angular.chart@5.20252.42':
-    resolution: {integrity: sha512-XHWMUPBgoK8+E0MX7XY+VdpgdW393OGmXgImT15inykG/+YL8LCk8FQbanLhYW8zYuGEj0GncPgxfk57eIHwIQ==}
+  '@grapecity/wijmo.angular.chart@5.20232.939':
+    resolution: {integrity: sha512-38hHAdyYtHrIHze/KTvdVdJ5fM0uNEwAxG5S//fjU9lkFlXYyVqLFhjQl/1DocDabaGUZUMeEq+UiTFfaG1gYg==}
 
-  '@grapecity/wijmo.angular.core@5.20252.42':
-    resolution: {integrity: sha512-5TqCFoTcx//zR/DY+oGN5d1CYwkeul+eoQy/nzJYbdQXCrf/0E3q2O5w83IslIPwU2eUM1Qqnr4OCIhH2MMGcA==}
+  '@grapecity/wijmo.angular.core@5.20232.939':
+    resolution: {integrity: sha512-QX/FiLut7muQTzRpwVjdmGg2O6NEGkeEVT8SnnyUISg8zL95zFhYXlXLr7RCR3JLFl5tpgvSESfWRuUsEDR2Mw==}
 
-  '@grapecity/wijmo.angular.gauge@5.20252.42':
-    resolution: {integrity: sha512-MwPh6rE2jRqXoLQzv/kJglncn4sR2YZHVfDTich87NEC/g98mKmCqsrfy1G74BSZ0NcUKyyzj7LR/4vXtXfyOA==}
+  '@grapecity/wijmo.angular.gauge@5.20232.939':
+    resolution: {integrity: sha512-BusvYQ8qMYSt+aiaL4qyecQKgN+DNf+R6hb0gEl5K5w6tpg6Ldao9KdXNVcRTiB7kVgGwrFsFkKrf8zcaMqZ7A==}
 
-  '@grapecity/wijmo.angular.grid.detail@5.20252.42':
-    resolution: {integrity: sha512-8RQp+DZBueKGONeg8zSqhWf5921gKVih7w3npfP6ycYdFk26gnaCFSRr6jvXxpbcnEtmir/KVP4+pcc1JTmF6w==}
+  '@grapecity/wijmo.angular.grid.detail@5.20232.939':
+    resolution: {integrity: sha512-Zc3Xt0SeNSd90gydNr66wasQ5FyHu4LSO6ytYj2Rks2Uz9RKTJMxhB97ipDIwDgqETElMT6/3/jkVWWSup5QgQ==}
 
-  '@grapecity/wijmo.angular.grid.filter@5.20252.42':
-    resolution: {integrity: sha512-8zWmc/2tX0Q9SdcsojQlM4irNVkHZqrHkYIQof/aZVPCca8XBuDiHIxgi+0x4rtxDgIR+GY5RVotHX2Wsh+1Mg==}
+  '@grapecity/wijmo.angular.grid.filter@5.20232.939':
+    resolution: {integrity: sha512-DO1LbGVKPxNT2GCg7ZXTOzjJvW9aztQcWSluWvKIpwzbBd5mNBKx9SlOkMQcFas5nxfHimhScfPk22/092PAWg==}
 
-  '@grapecity/wijmo.angular.grid.grouppanel@5.20252.42':
-    resolution: {integrity: sha512-b/4RcNdHhz2GsEjOEDXK3nDhShaxOMx8m1zFMy31MeekYim3BrNtHA5fqx1p0Z8vol+Jk7PElBrOuz4YSapqvg==}
+  '@grapecity/wijmo.angular.grid.grouppanel@5.20232.939':
+    resolution: {integrity: sha512-uyLS5FuQOBFafNVgpG+okliw/3urDwc3QkQl3vAA7OhaN8UG7EYyolCbCZkwB8muaaeNGGBvaEgWpxEbXQz4XQ==}
 
-  '@grapecity/wijmo.angular.grid.multirow@5.20252.42':
-    resolution: {integrity: sha512-3uKTzICywkL1k2UZYFEKanAjZ1/4kP6NUDdu32/EK35gNR8tC8eTWR/oHHx/HpcL/uDT8T2RkKhIDgPog96yeg==}
+  '@grapecity/wijmo.angular.grid.multirow@5.20232.939':
+    resolution: {integrity: sha512-p9Co3SZcG/8mX+Pwi85Cbi4ZVjwsG9A386xzZn0BA98IJH9mk8bw7Gxe/3tbbqgO2NxuYS96/81YDVSjzX0A8A==}
 
-  '@grapecity/wijmo.angular.grid.sheet@5.20252.42':
-    resolution: {integrity: sha512-PZ1jZnksHW5H3xEJPtCwfNvvcvq9GiTN4PiVtuIrDh83jDW+gEg6g2QUjXiUgFhuso9ucpJppmG0+4lM6uB7Bg==}
+  '@grapecity/wijmo.angular.grid.sheet@5.20232.939':
+    resolution: {integrity: sha512-bY7yoVLKQ1NgVWR57dMx7+tSbLwlqL4jYufkbAj5vUKljh/nXzvUii1epdImHD+OB+kdQlhIOjQ4DhO0r+TuuQ==}
 
-  '@grapecity/wijmo.angular.grid@5.20252.42':
-    resolution: {integrity: sha512-N3VY4btHVEKjo3mp1ZGHnuzNS5e+PvuIjPggDqiKQlPeMpXZxtyBi+5cHRNcTT5KPv9mypOxiqrLnbCgYuqemQ==}
+  '@grapecity/wijmo.angular.grid@5.20232.939':
+    resolution: {integrity: sha512-kN7i0oZqi8Y97+xyqFRqTRZjO1H3f85h7JFjhk32wgiepGJvgSlOpK9Y4F5pNGczmkXZR8EyAeD3mbjOhj3tEw==}
 
-  '@grapecity/wijmo.angular.input@5.20252.42':
-    resolution: {integrity: sha512-d9BKtTyHpQpFx1hNJ3YCt4jKQcnrjMjeKEhLSR3RbH+ye9ZKvsUCe5ZKV79uZECF/UkvLKD9ErGSkAaEA4NeIw==}
+  '@grapecity/wijmo.angular.input@5.20232.939':
+    resolution: {integrity: sha512-6pX3wgQO/6HYXubg923gbHcu0NvDusBEmcdv9LWYsf/r0Jpi2QHVzOw5+02FkdEds61tOsGefBioOuKdeuVFSw==}
 
-  '@grapecity/wijmo.angular.nav@5.20252.42':
-    resolution: {integrity: sha512-L2hV5aocGuGijaiHbm5ru324DIN6vNAE+3f5NWGv4qPpyuEYEY3lMAJBo3+32Ki74RGngOjrQJqseYTUuwBwGA==}
+  '@grapecity/wijmo.angular.nav@5.20232.939':
+    resolution: {integrity: sha512-FE7IkZPtfHrdN/W/Y7uF81A1MSMIgAK4hWSfatzI0NLj/TukdrL2R3Ep0a+R7lnkok/GSCNNmSFTS2y73znNAA==}
 
-  '@grapecity/wijmo.angular.olap@5.20252.42':
-    resolution: {integrity: sha512-7IUc3oS9KRqelEm7x634Hs9ACIDbQ+iwX8iwVr9d81MurtV9RANcwt0ixd1imfNnomeeH6Zt9MkDmCbkUBn5og==}
+  '@grapecity/wijmo.angular.olap@5.20232.939':
+    resolution: {integrity: sha512-4p4DIwWSyHAFVGaHyAlS8dNApmCMRD5EZLLKrQ742cbAdi8oHn+SEHiU1kCtvOvI4arfY5rC1zEBwJaxdjDdrw==}
 
-  '@grapecity/wijmo.angular.viewer@5.20252.42':
-    resolution: {integrity: sha512-Nf2f4/+zU7IWRSavzOEi85clI6uqUlz/SwQZh2VYD5pA/liQIVimYLJ4ApjlaklVLXUsXdNMML5jKOl1dub2cA==}
+  '@grapecity/wijmo.angular.viewer@5.20232.939':
+    resolution: {integrity: sha512-0B0CcfZzUJ3zudzhynG/qXQ7ksJ/XMLbQ4gDIDakVXJcPTE7Y78zws5gzugy+TmEF8hbzb3/TT/8KAURmgknrw==}
 
-  '@grapecity/wijmo.angular2.all@5.20252.42':
-    resolution: {integrity: sha512-2k/blK44cZDzR1c1CU8vY9TwxvOZ/V3tZYbHFmBGuhFYGMQUURQi2/WzysZIZzZbzkNeD3dKTh4YVyG00MhM7g==}
+  '@grapecity/wijmo.angular2.all@5.20232.939':
+    resolution: {integrity: sha512-tFn6Q1bBQmqKH+8YvqI5BExSE+Pl6t4u/4lVm5XgwAb2+ktjpCir/rkncYHoSrAxM+1cCS8RrbobOsEtomynYA==}
 
-  '@grapecity/wijmo.angular2.barcode.common@5.20252.42':
-    resolution: {integrity: sha512-UAqDeET8jCr074JAY3aCbYDTGpbHaFrgXb+f1bzaYFDR++Rc53Mh9mKYSAkttsdUYbUAhpJyNg6SHpWJ18WIKA==}
+  '@grapecity/wijmo.angular2.barcode.common@5.20232.939':
+    resolution: {integrity: sha512-4nhQm23ZYBl6rK477HchhQ2qL0nOQEd6cZXgadbNI0pQsJlUx/oeLhwI+DQ8qFGZC3GNiupEplX5g6xMVd2yLw==}
 
-  '@grapecity/wijmo.angular2.barcode.composite@5.20252.42':
-    resolution: {integrity: sha512-+GWkywFKkLM/skMqwgTkQoIsjdBj16Tz1YJRVXc8do0WC6yzQLmn9CM3hkkrGKcxY0iF5UV75Fbm7HnDGcRM1A==}
+  '@grapecity/wijmo.angular2.barcode.composite@5.20232.939':
+    resolution: {integrity: sha512-jhlNeCd7ZDcmiUf5bX/SUmvpZODRXx60TxyuBR7vvUY9paRr0GtgWhKLqgvvMAj5QpKsxfKM8IE6qWNihoWA8A==}
 
-  '@grapecity/wijmo.angular2.barcode.specialized@5.20252.42':
-    resolution: {integrity: sha512-l/O2vQpI6ZtIahO1jVFV22nAlTaKP23CeF3WwM/96J7ebLSYXU3Efo9mDHDFv0jh72kLnULtMdSF6lwh/JlXNQ==}
+  '@grapecity/wijmo.angular2.barcode.specialized@5.20232.939':
+    resolution: {integrity: sha512-vOUrAdG7hMNCWoJoYRc1w/1reu3XFwAdMIDRVyGjjUTdBPiRCyP7aRzrSzmioldBVJ5O8maaPiwD+CJDofNLDw==}
 
-  '@grapecity/wijmo.angular2.chart.analytics@5.20252.42':
-    resolution: {integrity: sha512-QjqR7zb7exA5Fppc7LQxxUqVXTeWyKOxmQB2lhvlueoTrbde2V/Uuntir5juYdoJ7lmvks5A+5+6HXhlKo8tSA==}
+  '@grapecity/wijmo.angular2.chart.analytics@5.20232.939':
+    resolution: {integrity: sha512-uLgiW/SwJA7n8HzlQBq7kLz8Hj3y4jJdfivi0m04Mvbu94xW6qJP/3EKklFpBodgdPM0c9cyYfgERM4xiMzhBQ==}
 
-  '@grapecity/wijmo.angular2.chart.animation@5.20252.42':
-    resolution: {integrity: sha512-A9KWvWAwkU//LnCpHFje8Ha7GDMwjPby0imEs3A6Tn6v1zgZ3L6jS2/RAcW9pgPwXWkBmT/TIZ//xl3pqHa2Pw==}
+  '@grapecity/wijmo.angular2.chart.animation@5.20232.939':
+    resolution: {integrity: sha512-ShCJ8qpLgKPKdPMhq207CYmFsSYqH+HqGeUNdiSIAWOh2DKXbdXIFMtXizUC4Zf16Pbk4QR1WcFEUgShsisiXg==}
 
-  '@grapecity/wijmo.angular2.chart.annotation@5.20252.42':
-    resolution: {integrity: sha512-hywxb0bf3UZJG7cYEctdwcsRI/RquvGeE8FHJyPAG6nMA+WRFYIv+baJcsbFA7KVB1HRy5tGvQeCQWZihjOVbw==}
+  '@grapecity/wijmo.angular2.chart.annotation@5.20232.939':
+    resolution: {integrity: sha512-NZPJW2zvICp0izCN8jiC0QGpWVlIXdzSxhkZxrslwIC1rF8lseJRgVbjyFL14153UrR9Tikclqjaj/4VcNIG2w==}
 
-  '@grapecity/wijmo.angular2.chart.finance.analytics@5.20252.42':
-    resolution: {integrity: sha512-PT5tvoDeKR2fyLGo8DKe1D+6NTrn9zLlnJ4DBXQvNv9bhbAFf4uWfASpDnMFzBnegNTf82xZbeReX0wLLJ8n/Q==}
+  '@grapecity/wijmo.angular2.chart.finance.analytics@5.20232.939':
+    resolution: {integrity: sha512-01kI8cs17Sqc80fnlde2M9MOQ3u/4IWF/xjMATcSQySxbvlb+tkRIrbX+4uNoN3zPLst500yE/ShqUkhgn4ukQ==}
 
-  '@grapecity/wijmo.angular2.chart.finance@5.20252.42':
-    resolution: {integrity: sha512-Em8a6OvDDpm9kWYMhiWdyN7Y87B5OSfH/jXjX886SOQD1zt7j3aJ5ApvVVWzzYBdnrDaRwy8gxVX9TCDI5XgWg==}
+  '@grapecity/wijmo.angular2.chart.finance@5.20232.939':
+    resolution: {integrity: sha512-tI/OMrUB7mDh+q85/Z3D7xZyUPVTxC4rIj30VpWEWFzGCQUgEkNmkTIjTAXqngPd9wup1hxnI+afm2qyYpJqgQ==}
 
-  '@grapecity/wijmo.angular2.chart.hierarchical@5.20252.42':
-    resolution: {integrity: sha512-FUakNUAfZX/EIvjaXtWoGWNs6gh2HiaPTdd27v9IY7cHeB/XTLkJWZeQC2VoJQ8WtvrW6aZGnNUjDrnRR1Nxuw==}
+  '@grapecity/wijmo.angular2.chart.hierarchical@5.20232.939':
+    resolution: {integrity: sha512-YgjpnmTF7BIl0vDQcsEaDoNGbSPbCMU9UyeTx3R/fNs7aU220go2Z4HWOqBnVeU94Fa7fth1T/A9pFYMa3VmCw==}
 
-  '@grapecity/wijmo.angular2.chart.interaction@5.20252.42':
-    resolution: {integrity: sha512-eA9pSpM8x6bB6XlTj7Xjnq41K3vKeMicwXOycwk+XphK0oupUqT51mKVwcGMsE3JMm1OOnb/kc75VAPaCvzCfw==}
+  '@grapecity/wijmo.angular2.chart.interaction@5.20232.939':
+    resolution: {integrity: sha512-eOWlv5SEwvUxzuUapQVx4oDYDDyI25r8iq6mNF0iSowzWvlpTfIExBE335qfdIY8F2DWkFsojJz0pEWtTvMM+w==}
 
-  '@grapecity/wijmo.angular2.chart.map@5.20252.42':
-    resolution: {integrity: sha512-lrPns/f6zZxzoiXHgjG4N1MIwu78xsdR3Lde1VmSsRVGYgqaFIWM8PXHLrl9MjQInzZDeGN/Vub0riKPuHmNdg==}
+  '@grapecity/wijmo.angular2.chart.map@5.20232.939':
+    resolution: {integrity: sha512-o+UQwEqxoTacaHCVFzek5WS1VU9l4mp0uRwsu9Sfwjtv1jAfRHOnvcKVAm9bE5U9dG8su0Uxg6cs29pOuVLmmw==}
 
-  '@grapecity/wijmo.angular2.chart.radar@5.20252.42':
-    resolution: {integrity: sha512-CAiq/0CeHHuR6mZSaeQXK5TiUDJo8TF5+R+NfPFnb+EUJGKkVt4ZqSGo1eR300G7UmlBHfMiRbnxnZzyJB1Rxw==}
+  '@grapecity/wijmo.angular2.chart.radar@5.20232.939':
+    resolution: {integrity: sha512-oOmv8k/s/EI0wBeNdlT41XlwV7eRaIfdmwO8fi7bDuvkGSasOphOADeoUGKoZwMourx3tDH5FQxPfN3vDNTtHA==}
 
-  '@grapecity/wijmo.angular2.chart@5.20252.42':
-    resolution: {integrity: sha512-G1nt7/K+9zl+XAWOVfNn9aCxNZiAeBd03SOrJsRaENecWzVf1OyFVM7Iy57MLr/b6qqBtKETnBvzoY6e/vy/7A==}
+  '@grapecity/wijmo.angular2.chart@5.20232.939':
+    resolution: {integrity: sha512-rdv/KnF94EoVgwKgCjhd2xd50CGMH6Z7/aPyxr/orGPpzry4iU01FxHnw5fXX43wU829ozVLZ75AHf/Ia/T6Tw==}
 
-  '@grapecity/wijmo.angular2.core@5.20252.42':
-    resolution: {integrity: sha512-I4cqtOYbEvWYlAMqbD8lnoTg8NS5zgqq6Nl5E8SimwxmgIhd19fh2ehH3zi5H3uecYnKfh6Sk9ARGTaJppbwpg==}
+  '@grapecity/wijmo.angular2.core@5.20232.939':
+    resolution: {integrity: sha512-8u6UeIj2Zg+acjpt/mQDG9QH9O4sisXP++x24HHdC2wkh9hqteJlrH2stFC9X3WOtpI5iRqxTNmz+YlHgj57IQ==}
 
-  '@grapecity/wijmo.angular2.directivebase@5.20252.42':
-    resolution: {integrity: sha512-6f9OtKkZcyr03SXChVD3/vLXBb8NDWJPB/J1qM23FwvEmNDoPpUSJuuSV3Ig5lS+240xPbmJXLfB2pbDxlzeFg==}
+  '@grapecity/wijmo.angular2.directivebase@5.20232.939':
+    resolution: {integrity: sha512-n6CcL48/5FsQ80oum/COCSmPaOMC5yClEU0uk45gGE1HvlRQmRsI3QwszfZ1hDs1lKA2hVk9KhywfED4qRHGkw==}
     hasBin: true
 
-  '@grapecity/wijmo.angular2.gauge@5.20252.42':
-    resolution: {integrity: sha512-57iYibU4xb5YIBznuyw+H39bewnqk1EiAoH2G9hQSJ/N+aVKMRHC4kgz2YsSJ8br8uDBRZ9N/Bw6Xv9K/xLIFA==}
+  '@grapecity/wijmo.angular2.gauge@5.20232.939':
+    resolution: {integrity: sha512-UEvB2I8T3rfO2oWM4utHqrA7wupmPzhbJC0LCv/eHneEXzbYIpa1NbxtA5TQTH2hVkf+eG5Q2vCNIJfBVkhfJg==}
 
-  '@grapecity/wijmo.angular2.grid.detail@5.20252.42':
-    resolution: {integrity: sha512-4lPH/+MXdf5Ijr0o6jm8ToMC4h43u4IYhjMnztyAzhMaX63t0IBsqulW1uAIGvk2j9vcW6do9psS+kMZWPM3+Q==}
+  '@grapecity/wijmo.angular2.grid.detail@5.20232.939':
+    resolution: {integrity: sha512-Q1dpk3qE8HxkRuvn42BF+VE144UFKclji9+AuisNbxp+0a9PaxUcRkOs0X+1f36sWDTJZkiwGegkxWQSRWMsnA==}
 
-  '@grapecity/wijmo.angular2.grid.filter@5.20252.42':
-    resolution: {integrity: sha512-Qz+pfazeA5WD2yNOewk9HByzuG074m1wrZJeUCVdjYMRQ+qx5cKsu950oYHiD9kkSXF0VW0Jc5AZ21VwxmZvsA==}
+  '@grapecity/wijmo.angular2.grid.filter@5.20232.939':
+    resolution: {integrity: sha512-Q77piOc0pmehstJMnyVFe+qGbQ9sL210FYkJkMcBYPQaZG0pYz31+FFJCO86bYVLTRRQqssNBtHWtsguvy3b2A==}
 
-  '@grapecity/wijmo.angular2.grid.grouppanel@5.20252.42':
-    resolution: {integrity: sha512-LjZIRTKAL3CDl4HvEx+04zUfN2yimpzuPviXZNEOtSRzmklV+s4ABQANvcezRopk8P8LMK1rAqDqFYLdYexQPw==}
+  '@grapecity/wijmo.angular2.grid.grouppanel@5.20232.939':
+    resolution: {integrity: sha512-DRj8jrC/ndZtEZvnDLrHI/sLxpYKey5Tlv+ZnWIH1z+g10lJbrbDl650ogD8rk/uQ5Wfkxof0I+e4jq8XN1m9g==}
 
-  '@grapecity/wijmo.angular2.grid.multirow@5.20252.42':
-    resolution: {integrity: sha512-ScRAq3vsw+Y5MZ2kcK9dfFPZp7/oEW6A0E6V413i351wqcAAgI9kJd8+b2mKPIDVzDoWhJkylDTJOFyj7KsoQg==}
+  '@grapecity/wijmo.angular2.grid.multirow@5.20232.939':
+    resolution: {integrity: sha512-jQfEhpYRJbRZ2U4nUqmG6Fs0tfxlprRqV8bglkaIIqzz78zhj/oiRfK+A7CuqC6D/H88QX9QvZ7TVe9dk5mCeg==}
 
-  '@grapecity/wijmo.angular2.grid.search@5.20252.42':
-    resolution: {integrity: sha512-yB1+GNQ6YLBQ79GwkdaPa1ZZTmznODgwIG1Gl5LH+pp/MfZyAmpMt06E76UUetreMYgNvtY/HUzEqDJXxhkpHg==}
+  '@grapecity/wijmo.angular2.grid.search@5.20232.939':
+    resolution: {integrity: sha512-+c5MZEFfc/aqP3hI/AXVDJLAz7rtcW+xP0P/3IB/SHdqqRtynUbdDvTfOy5eDRRPwmDS4KLufHbNQOMdQSWoYA==}
 
-  '@grapecity/wijmo.angular2.grid.sheet@5.20252.42':
-    resolution: {integrity: sha512-0bncxGQKNupYEBt9q0OIP82Mbn1yp4uRfJoW1Y6yS/BO3skJ86cr3ic70PBeyjtjHm5qAIyGAH0FOCF1VDm0bQ==}
+  '@grapecity/wijmo.angular2.grid.sheet@5.20232.939':
+    resolution: {integrity: sha512-KHAT3QFN+EmqJbf4QN0Dn4LM+Usr7z04qKWAVB7W+nfqGltC65hCGVLWO2xJOBGYKEXbHmjN0UXysQcRD16j0A==}
 
-  '@grapecity/wijmo.angular2.grid.transposed@5.20252.42':
-    resolution: {integrity: sha512-XjmzXvwnniSIQVjj9+Xe2/30emUwTVuGTlGnNno/quTdiQDVIc1pzg5AS11OZyFh0SxwDHFjiiEGjk8xaQH+PA==}
+  '@grapecity/wijmo.angular2.grid.transposed@5.20232.939':
+    resolution: {integrity: sha512-elXSy5cNUxrbW/uhCNtAOBqryGcwYf7mpNZfBcwG00wjdq/1fJNuBUWZQqvfCT1DiKXDTBTWzA3Dn1p55G9PrA==}
 
-  '@grapecity/wijmo.angular2.grid.transposedmultirow@5.20252.42':
-    resolution: {integrity: sha512-xsfqHD79LhlmMZ4J4VW5Yz3G0B/0uaYhwTFjopWlrk+lg0klGRu+Hh6RbPBACGzWI9vy5s+1/AArNkH6Y99P2g==}
+  '@grapecity/wijmo.angular2.grid.transposedmultirow@5.20232.939':
+    resolution: {integrity: sha512-ahO1qtAUJeR+bL1k6/xx8IS0xrHuAcdSS4dQPtcpafFnYjYCYuwn3Jeu9Bvwr2sDDmTkAVlwmQNPhulEoLhg4A==}
 
-  '@grapecity/wijmo.angular2.grid@5.20252.42':
-    resolution: {integrity: sha512-/QNROlKMwjXTRiB0C2rYugYLqp2CUnJEVHAAwywCCWycgx9ne/W0j4FfxbHIfNj8rjClybzcmBFw4r2cLNNuXA==}
+  '@grapecity/wijmo.angular2.grid@5.20232.939':
+    resolution: {integrity: sha512-Wki61jlBIEEyhcp077QqDjRgpz2pIBeypA/Zl/aPK7Kkbj4d/AvFSfLRgdGSQsxQoIcBa5Fshi2zqoGEGQwjoQ==}
 
-  '@grapecity/wijmo.angular2.input@5.20252.42':
-    resolution: {integrity: sha512-356qrbeoXlKP0Siy2K8DrCvaGIM3Cfz9pgBBUPtD4X6b5Psj17CADQy7E9nKvtz5X3cVMmg86mD0mveBhR5kCw==}
+  '@grapecity/wijmo.angular2.input@5.20232.939':
+    resolution: {integrity: sha512-wpTWUi3r6uectZ8fScX21rwwZksinBnD+XFjQtu8sKu107lvioqNSID+sw5aM0RDRhCJgUaKFGpdkBToHFMdEw==}
 
-  '@grapecity/wijmo.angular2.nav@5.20252.42':
-    resolution: {integrity: sha512-obyVUHCdx8dCO29h2seh0Z8RzCUaNyFxlYReAmC9+8iXx8QSJ2TJSEZ3nRrA1tSBLL+hwllQi4URQfK8dMIHvg==}
+  '@grapecity/wijmo.angular2.nav@5.20232.939':
+    resolution: {integrity: sha512-4pcLmiUtYjTRRijUndFejz+/kA/D6qRJeoNCvuHQbNRwOQtqvnTAwoLOVzK48+dZ08z4raMVHyb24iohXYCgAg==}
 
-  '@grapecity/wijmo.angular2.olap@5.20252.42':
-    resolution: {integrity: sha512-XaXl8gF5RLa3PiCv7Ki6Xn6JH0Q2eDZkKpjAkS0496RRxG0eGlzPvolt5JqSBhlbh0axssXXRDWujbLMA9FHeQ==}
+  '@grapecity/wijmo.angular2.olap@5.20232.939':
+    resolution: {integrity: sha512-lcC9sH63vKtmEEiKJnu6FzBcgm4B7a/NUliY9vkkKcFM7MlGF0zKLocuwVZLJUqbkuZX2LkjZtAkoBsfJeTetg==}
 
-  '@grapecity/wijmo.angular2.viewer@5.20252.42':
-    resolution: {integrity: sha512-Q4BQ0Uck5RxnfEu6KFvDh/KdcOa4W3RZLqgaPv1SHVSIEqsX9TZoQ5KE7Lgm6XdIAuRgkF29UW57BSvzNBYxxw==}
+  '@grapecity/wijmo.angular2.viewer@5.20232.939':
+    resolution: {integrity: sha512-Mn3pMPEIYMPXLCTzRixKzP0Alt2MToudw+i5ze69NME1XQX1O/Foslia0+6KnAJk+PnQ8nTaGaDxVxIkwEAgTg==}
 
-  '@grapecity/wijmo.barcode.common@5.20252.42':
-    resolution: {integrity: sha512-kfF9NZM52fA+KFvYfQ4LJQU0joo7c/ufN02cIL6GtUsmX/rl+RK0V9VEuTHbPkro+8LkfozagsHu+u1C8Ts1uQ==}
+  '@grapecity/wijmo.barcode.common@5.20232.939':
+    resolution: {integrity: sha512-oJYeMJR9ftsGo4uKkVZhFRMaxnCcH54gReSidc2laBwKQ5eZ/2pmiTvoCsHkbjFLmuB6WF3zWCo1gtNa33iIlA==}
 
-  '@grapecity/wijmo.barcode.composite@5.20252.42':
-    resolution: {integrity: sha512-7HpbJkRBjyusrQLN2rqySbwOvMWW8zKANK0U4VvUZbZdJYhCNymvyZHBHx3xCE3vLQT4GmysPUuk1eSlaFhrew==}
+  '@grapecity/wijmo.barcode.composite@5.20232.939':
+    resolution: {integrity: sha512-jPlWWY8XFFMgGZL4K0zi0ehnsIneNPh7+5JLZ8QsL/8ziWg04iyQyXdUA9d0GRMuMkwor5MpsZ3uxi+ZnYxnJQ==}
 
-  '@grapecity/wijmo.barcode.specialized@5.20252.42':
-    resolution: {integrity: sha512-j/yxNMABm+6xWR7j+Pi4LQtZEOI2O4R7+SVZhYkI/CVRd8teJ1FnDZVXe35B2FiSacgDdt7Lo5JHksa1TrnAMw==}
+  '@grapecity/wijmo.barcode.specialized@5.20232.939':
+    resolution: {integrity: sha512-aXu5untNPxNoJfNakEWOq8iQni01JztsdNOY2wuxg9SS+eIc94IDAH/NS7S+hEOiwjr0NeH3cfULXfCLIae3xQ==}
 
-  '@grapecity/wijmo.barcode@5.20252.42':
-    resolution: {integrity: sha512-NZzVMjX3eYkIw3/QF6PSplTgwOoFjFZvXoESSbkUFOsAhiuIbggy+Qo+T13ritC/6pQ4lzAGMtJiRrxEBUgJ+A==}
+  '@grapecity/wijmo.barcode@5.20232.939':
+    resolution: {integrity: sha512-18FzNyzcnCRlogYQK2B2Dvg7Vxx5JIgpZvk2nkUpAZXuHe9y210taW8dR5WNO2Vk+CbWGxRFR3N/kU3OQfOjzA==}
 
-  '@grapecity/wijmo.chart.analytics@5.20252.42':
-    resolution: {integrity: sha512-7HB5sdkTR7znW4xvA7RzMgUGyCUtHdLEElfFKK0ZO4EEkkaFq0hzfdIXs6E4j2BEYrQ2ebgUgBW3mQoiaj6J+w==}
+  '@grapecity/wijmo.chart.analytics@5.20232.939':
+    resolution: {integrity: sha512-qg0TeaKiKI2gEfIHRiv4zCf30EDbVtVLoGEAemFFU6spajU1a9ggdgh4kWs/elpJM4zkQKOZLGgnDlr1kl2k0A==}
 
-  '@grapecity/wijmo.chart.animation@5.20252.42':
-    resolution: {integrity: sha512-/xfQXmOdyEabqYB6SNlVmhvB5MNs75OzH3SPoIQmBBMxFmWRJoT6NTawUM9fJai3s3t0p28JTAPgFG1dCFV7Uw==}
+  '@grapecity/wijmo.chart.animation@5.20232.939':
+    resolution: {integrity: sha512-tn0PIkWr2THCY5zFmeVvcwGunlEV6Djvyz+4bhUFAyrCyzI+zaNuXq151zIuE28s0v8Ax+m1CDNyW7TSS8zz5g==}
 
-  '@grapecity/wijmo.chart.annotation@5.20252.42':
-    resolution: {integrity: sha512-FmedEzG8dFguIUh0nMgRmigGRbipOqbtLErJA6ZnHFawj/LUdhTfTALyjcny7o3BwzQf/m4xIc7L/x3VYmK5+g==}
+  '@grapecity/wijmo.chart.annotation@5.20232.939':
+    resolution: {integrity: sha512-6SS7hzX13ST8ktAoN7QsvTVhsQMvt5u7JLWPrBlWJgx00wuqGweFsZJkKsNy83TAi2xoM1RYwYTghx0xd7Y2Cg==}
 
-  '@grapecity/wijmo.chart.finance.analytics@5.20252.42':
-    resolution: {integrity: sha512-pPT4Yks72I9bSSROor9wSCkKhi7w3qH8vV3f2U6L8yX2yV78QjuSjDbDuGNXpWyUfLzl2GQ5JTbRGRQJLG/Oxw==}
+  '@grapecity/wijmo.chart.finance.analytics@5.20232.939':
+    resolution: {integrity: sha512-5vJn3YPO8O+4tBZyL0aVSrPo4m1dkHrPcQ8HIjA4cL2/PUeBC78PFxZgCT5zznGSek+z8+wYRMdsY84wpQ6f+g==}
 
-  '@grapecity/wijmo.chart.finance@5.20252.42':
-    resolution: {integrity: sha512-OECOrw7VIBT/WizcqYJTFSvkTvL5hnKCmoG7sTVcO/rv+RJi0Z2urbRo+U1WFxeuuz5TDi5p/WS5bOvmCQFVnw==}
+  '@grapecity/wijmo.chart.finance@5.20232.939':
+    resolution: {integrity: sha512-G5rGfg6DeV/QBKszs5HAEdEyalFOFWXcZQ9eIOArbxVPtnUw8uLS9OVhNYn9TBU+pnkwH4J9JwvniHU1a9xBzA==}
 
-  '@grapecity/wijmo.chart.hierarchical@5.20252.42':
-    resolution: {integrity: sha512-ZCGtmDBcWbPJrkoutJb2j82dDnvN0kYvee6SGMvObqCCw8iHHO6WAidukIHvJZynr/FZswn1MQAp/4tVVySQ9A==}
+  '@grapecity/wijmo.chart.hierarchical@5.20232.939':
+    resolution: {integrity: sha512-tIHnW0DZkgKFnpnxHmkMGyp6ey1ki3d6qLYHWmet/ljc0PiQ5qTdnbkZRavPyN8BP0OC7/U9rpFltWqSbmddhA==}
 
-  '@grapecity/wijmo.chart.interaction@5.20252.42':
-    resolution: {integrity: sha512-dUr0JOWzX6V+Sy5oJvRRM9y9Nnq9j8OOQ85/dSXhZdtptyKzgVgda99SsWIAReiZvrphzlyk+tRpEBWCpuZW5w==}
+  '@grapecity/wijmo.chart.interaction@5.20232.939':
+    resolution: {integrity: sha512-g2Sxw0xNVI+ivDJjOOidhll1pJOBupeDjwquuJzr0KBpEaGbnmYOuoKCk6MHJ2xjEfiYqTAhCNLVpF33kea9xQ==}
 
-  '@grapecity/wijmo.chart.map@5.20252.42':
-    resolution: {integrity: sha512-tGgDjT8XLlYhKOW4rfMfnH53bC00Toifoj5CL2Kt4YcMACTL6IdzrH2m3jXek93L7tR1RsxvHpT6447JIJDdJA==}
+  '@grapecity/wijmo.chart.map@5.20232.939':
+    resolution: {integrity: sha512-Xt9jOriNZ/3yzQp19FzXXq5jLE7uNtK2z86awXQXEIwi5cQ1LQKu2MqXFsGhCX6Rb0MXu6j1a3Fb10Wu5lQB/g==}
 
-  '@grapecity/wijmo.chart.radar@5.20252.42':
-    resolution: {integrity: sha512-pYdO+OjLg0adV2GydLPCw9R1WtX6BBVoJaJJddSw0WbqJgiftMK7sK7kBL4Lg/i6VJD3h37p4h0r9VohHLJxCQ==}
+  '@grapecity/wijmo.chart.radar@5.20232.939':
+    resolution: {integrity: sha512-X68WOhnTm7+Jy1KoWhyC0/cT9k7r1KsQQ6LT0C6jlOphLkqeUmbibCKeuwPG1bKMZVxFEAMMi9oWYtrqpdbQow==}
 
-  '@grapecity/wijmo.chart.render@5.20252.42':
-    resolution: {integrity: sha512-PjSuwjngElKye1U/VQrA8MDwBuubRtOMQxaMn4FkqEOEDXZloWp9wbsWmpcKB45R6XaCuJGT0ImyUeWU7qv5tQ==}
+  '@grapecity/wijmo.chart.render@5.20232.939':
+    resolution: {integrity: sha512-w4wIRZoUWpGaJJrzVy519tMPCVbKcyBxKnFnOX4b2y2XnLrwCM1nc8kNxRZx6Z9aaMdc6SEA/TI4hymGc3H8Bw==}
 
-  '@grapecity/wijmo.chart.webgl@5.20252.42':
-    resolution: {integrity: sha512-//v1QOLO+x3QahIU6dPk4vz/VTp1SrcQnzgTHxAnMYG4uZedK6jh/HKhgVxrbqjunyYw1WyOtQp9GlwU3oA28w==}
+  '@grapecity/wijmo.chart.webgl@5.20232.939':
+    resolution: {integrity: sha512-+9MjKWkSjTKRth5f93lGU9u7nCR8FtzF7fTgaOFCPKELZY3UDoM/lIEzfSxTFCsq5RtqtYXsSOC+fa/b6Hfs5g==}
 
-  '@grapecity/wijmo.chart@5.20252.42':
-    resolution: {integrity: sha512-NPaNVt3rrPdSgEk9rLur3lo3/hgXMIr0a63+vHRPkFEEQyLNrU/MG9ZyqFZgf5COwBjJDP+z1v+Ojccfraoyjg==}
+  '@grapecity/wijmo.chart@5.20232.939':
+    resolution: {integrity: sha512-tW9Br9wH5NQWzj/wdiW2zlivVt0p4vN5oC3YFp0s8Deo6Mf10R5045wSVupnMUeHcPeP/dqw2SCf8oBSPQlXdQ==}
 
-  '@grapecity/wijmo.cloud@5.20252.42':
-    resolution: {integrity: sha512-jgcHlcT6yAEJW2dl4sVYm3HBmQcmL4pViPlih2Nhtilu2skeU5m2KV6JLbOFSkJKe3rGaQypuywUiM/mP//Ing==}
+  '@grapecity/wijmo.cloud@5.20232.939':
+    resolution: {integrity: sha512-HE130bE8alJZUyF67y/6CxgXoF8YaJDk38K2YYrh1ov/DcGaZPj+7WwNR6SsI8hJxXromFlfkwELFWyS7ROWcw==}
 
-  '@grapecity/wijmo.cultures@5.20252.42':
-    resolution: {integrity: sha512-CO+X6MCwZ6PySeY6yOvncJBEGwUecVPyKcxHZFxA+0V+nQt4moZuKr6+eEwztq9oDfIk69rqbdhpk+iZcNoyaA==}
+  '@grapecity/wijmo.cultures@5.20232.939':
+    resolution: {integrity: sha512-78XNR0PKeO+Cu0PwsgtYjsJ2K4bxF/rE9IFRKNW0BwJPGnETET07D9bCI+ldO42cV4PtQAj0R7pyErxr+zNI3w==}
 
-  '@grapecity/wijmo.gauge@5.20252.42':
-    resolution: {integrity: sha512-8HomPrbSX0F1w+O0ebYflt26vujMWtIwueuGqLpf7QB69C6PLbrJ6aGfVi9XIBxfknwdK7sbdvnY9lUfascOwQ==}
+  '@grapecity/wijmo.gauge@5.20232.939':
+    resolution: {integrity: sha512-pDyPG+LeO3Ldtl5jxaYNkVwiNegjaLlDDk+DLg+bsVkeQNe5Ub5doPx9xb6V5WsggQX3eGd0Y4a1G8Fstei9vA==}
 
-  '@grapecity/wijmo.grid.cellmaker@5.20252.42':
-    resolution: {integrity: sha512-7JP6PaB9eppFUou7YcSz3A+qqurgnG8fw2eTUVjxADRBXvwo+2a7vdmp5wgJQ/r5xKsZs1NKghGWi3DsJXSnPg==}
+  '@grapecity/wijmo.grid.cellmaker@5.20232.939':
+    resolution: {integrity: sha512-h7mUM16qjq24BXIF4JUuXXvQl3BO4pzww3vDNBXdXZILz2/Z90jP1eTQ42ofNbquVnYpnWz7xOz8L7aMb5Y8/w==}
 
   '@grapecity/wijmo.grid.detail@5.20232.939':
     resolution: {integrity: sha512-lQttXROyqOceb7hyiFSPMC0VNdLzuQILVVQd0CTF5EoYufmRSVDdBuGlEuiWeBsQ8zgjTO+geuy53sOwz22Qyg==}
 
-  '@grapecity/wijmo.grid.detail@5.20252.42':
-    resolution: {integrity: sha512-YagB5HE2PAXv0P6sBXUIsLK50ta4eClIWEuzX++JwZAVUCR7i0juoZcOSA0O0TqiRFy2hHKf/DyiDSCukc9HQQ==}
+  '@grapecity/wijmo.grid.filter@5.20232.939':
+    resolution: {integrity: sha512-g4Exz6BZY2AaXfoiZR4NPkWasE1DPtNnuO6k3FgGpQ7SOAqiu8ExbwJ/SSo7BBEiRkCRgPAbl2me0tYQEVxGcw==}
 
-  '@grapecity/wijmo.grid.filter@5.20252.42':
-    resolution: {integrity: sha512-0EiiACkjm/1vxkFjMJwWLWlaMgnYE2j0ohIJ16g4p+8bNGQU9t4X9MMOSyniZprCrLrKt9iRxIL0FutfVdPA0w==}
+  '@grapecity/wijmo.grid.grouppanel@5.20232.939':
+    resolution: {integrity: sha512-UzDZ/69WvY1+v0iW8/U+ec8/ezoy9tzIL0TNkO4B5nyfUHFnKfelyKcTyBvxrHzJ/Zff8RjDzTE4Pkj5I3sHUQ==}
 
-  '@grapecity/wijmo.grid.grouppanel@5.20252.42':
-    resolution: {integrity: sha512-5Y6LvfygAD9LTVsp/xM8OPn3WSlzajM6O6mnP+ZC0JCUW9GjjSZCoO8/Z4pNv4EZ+R75r+ohXRMir6dEiHIwyg==}
+  '@grapecity/wijmo.grid.immutable@5.20232.939':
+    resolution: {integrity: sha512-BLfvsB5RrLMOTRve/6hvFGYr9bBqK+oqwt68S7uqjkkHDGuu/rmK3LEa/RqdfOpiarBB38XVRNZC22hoT1z/jA==}
 
-  '@grapecity/wijmo.grid.immutable@5.20252.42':
-    resolution: {integrity: sha512-bVO/Tg0WrmFHFXhCKTSWtenyg4dAya97O6GVeXwU/JVPkwu9miLhi1ZhUJnqyuiLL+5oXxrtd9PI0Z/jNXibsg==}
+  '@grapecity/wijmo.grid.multirow@5.20232.939':
+    resolution: {integrity: sha512-W7aZ3Rv9DY55VhLdLkl24kMbCUvCVGfEgU28k/bAkHn0yG75RPXu/I4yFIoe9BEz0V3v1AAbnvcqvxELIlgOxQ==}
 
-  '@grapecity/wijmo.grid.multirow@5.20252.42':
-    resolution: {integrity: sha512-nWhUPSxG4T/byxSMh579zELFVxJCUQH3lhksGKjIIQ8DKgNhsvi8K0AGBOoNx6oNnbHf/XYGeKWbYr8/3L5FZg==}
+  '@grapecity/wijmo.grid.pdf@5.20232.939':
+    resolution: {integrity: sha512-mVyca+itzKYduc3kIK/11tLmTVqAe94y/lLxmfc2/Uy7cV+GxhueXClpJwqXn4p63J7jNb8kJXPwu9V9YiOhIw==}
 
-  '@grapecity/wijmo.grid.pdf@5.20252.42':
-    resolution: {integrity: sha512-ce57muSTSW+Dyl6nFykRMCEcdBV0D/Tw8tLdhCxRDId78dEer3snw2hCg6UFwCWwZAJPD3cornwuRjjBPipnhg==}
+  '@grapecity/wijmo.grid.search@5.20232.939':
+    resolution: {integrity: sha512-PemQyYT9b2tXjEJY70keJUokzcBnuL9ElR4y/ZQOEXgz58vKPWkMaKZQrR9IxMKb1EE3Q+T9jy08rO3Q89WNuA==}
 
-  '@grapecity/wijmo.grid.search@5.20252.42':
-    resolution: {integrity: sha512-mOSThNsUH1hQNZd1Mqs/U8GD0YHsZoypVDnZrClVqsfKoqpn9LpA0fCGjYhKTV5Fc+snT6rvwxwJbWL+jsJ0+g==}
+  '@grapecity/wijmo.grid.selector@5.20232.939':
+    resolution: {integrity: sha512-qetxoKOj+/PgePkNbas25teWRAp2IBLZjckzuKQGrvBpLBd/VNArDqm+bDrGX6eGQrl29KdxVoCU204K4zuI/w==}
 
-  '@grapecity/wijmo.grid.selector@5.20252.42':
-    resolution: {integrity: sha512-1s/ecCXDsjueiYgna9x4r2tSQAHzdscOyMdxbsBz1bhz3PW4TlsfB7EvWK+he8UB6fTxWgPW9FHorN2/iEml8A==}
+  '@grapecity/wijmo.grid.sheet@5.20232.939':
+    resolution: {integrity: sha512-ID+ZXtG2Cz/muyvBqCPsJ0rxoJ0fqIbDbPbRPHVajWQdelcGcgCeMJz3mI0NL9dQlrImPJ47nxC7noar9Pa78Q==}
 
-  '@grapecity/wijmo.grid.sheet@5.20252.42':
-    resolution: {integrity: sha512-KGazjprPg530hDP0andFHggL/lSSyy5AJXbdOyM19twbBMD+/Uj0VsVRuycuo3K+ZUMwVM+QUh6kzBmqlx6z4w==}
+  '@grapecity/wijmo.grid.transposed@5.20232.939':
+    resolution: {integrity: sha512-LmjOfh8527mUR3FIGXz7H8F/BZ6Wgri9WagIv+lOT+JKNmNHaqwXtyB+Jb6bgsa8uzzQk4p/l9Ywpm+GTs8NQA==}
 
-  '@grapecity/wijmo.grid.style@5.20252.42':
-    resolution: {integrity: sha512-yFeW/pflPbkybT+5My2fEbd/WtXhXxWIH7VpeqcM+9TQhYoFOtILvRFm5f9QfIC5OoUGTH0D08NeiI1K6oZb+Q==}
+  '@grapecity/wijmo.grid.transposedmultirow@5.20232.939':
+    resolution: {integrity: sha512-MdlATFIwnOYxQjugjUHOnCoprJQku6auGuNDummIuIJON08hEQ8dtwIy1NKhDP9fOj7EB2SyxuRKY9W26K/97A==}
 
-  '@grapecity/wijmo.grid.transposed@5.20252.42':
-    resolution: {integrity: sha512-BIuHtn/vYra9wjUF4C6fO0c51eUdt1ABIett5XEN/raEtLtoM280wLCTiZT4ehqLkk6f4vp0xvP+v76GQnUx/A==}
-
-  '@grapecity/wijmo.grid.transposedmultirow@5.20252.42':
-    resolution: {integrity: sha512-Td0hvRo40FmzmCMNQJDbREoOuOXTy7Uk0S3rcR5clJNcTrzcfDcgRS1GXufqJZB9O9iTKP7AHh2Jlj37LGDmcw==}
-
-  '@grapecity/wijmo.grid.xlsx@5.20252.42':
-    resolution: {integrity: sha512-1cIhPf5qBKiGu92VWUhLGXpxg1SFj7AFWwwUCo2Om/n863qAB0DZ55ncGfHFdP06Dnmyr7qO87QgNBrWFHz49w==}
+  '@grapecity/wijmo.grid.xlsx@5.20232.939':
+    resolution: {integrity: sha512-kLA9ONUdiihhnX5ki7vS3dhtvkkLvX0+ABDtW+6z5hkzAK0m7DFTPH/nIDpreN2dEuli9XKsTwPmaXf4cXYVuQ==}
 
   '@grapecity/wijmo.grid@5.20232.939':
     resolution: {integrity: sha512-AFmMpDp7sUvdcssz+r8/C/Ne7fLnfaEffaF+MpQBAM1WVcraZNnZrkFkBnRX8BttXtpIasngjk76mlDynGsFqA==}
 
-  '@grapecity/wijmo.grid@5.20252.42':
-    resolution: {integrity: sha512-k08PH/MVs061EiGe753p228emhdQ3HEYlUHJ31nQ7cRwgnWXuJIl6L5/3t2Jm85h8UJcvbLhIHKNtAnKV77zZw==}
-
   '@grapecity/wijmo.input@5.20232.939':
     resolution: {integrity: sha512-EmO5MGNGQimxYUljX58wTM0qgI/jwLrT5P4MTRCfZfWAJyHo89b0ZqeMjWClDe/ChuT6+4ZgPbdVYXHuKaXBFw==}
-
-  '@grapecity/wijmo.input@5.20252.42':
-    resolution: {integrity: sha512-ABuI0JQftQjitERLjgCRkAfOoGUBz8BjJcPgj1X+b8AonKk9zJqjRSaO+6AFjtoL5z8odkAk1zBDazNix0yt+A==}
 
   '@grapecity/wijmo.interop.grid@5.20232.939':
     resolution: {integrity: sha512-BYiA6OnnEGGRxM5hjtMZhzbmZ1YNsf6/hqoWoUJPnno6LFHgawGiMuOd1Ggb6zZdM/K7KK6KGcmlKoMF9xtgjA==}
 
-  '@grapecity/wijmo.interop.grid@5.20252.42':
-    resolution: {integrity: sha512-2p1G/+j4CTEj0ozV45CXFJ91vJ01KwOQVAT+WFIcsd4IexgslzEmv1uAmFq33+xBv0TC6GRt4ZtFAUftGvuE+A==}
+  '@grapecity/wijmo.knockout.all@5.20232.939':
+    resolution: {integrity: sha512-Vkhv2VJxL1ZwQXNeaiRA1S966IjDhAaTJvtQJrnLXj3fP//GoZgk2Pd1R6K8qEOkbS78W+3Xe6Bh2pzUP+wXfA==}
 
-  '@grapecity/wijmo.knockout.all@5.20252.42':
-    resolution: {integrity: sha512-mDROvypAsz5Vm9Wh8R9bKsZzzPeCH7uhLodGZ/ocW2poOqGuTKBT72otoHYM0QakB4hCYvnQ3sTZ2xVxlVQJ0A==}
+  '@grapecity/wijmo.knockout.base@5.20232.939':
+    resolution: {integrity: sha512-LthqMfIA60dZ2qgSsdXHvcfCJjyc0Ps80Z3EJaPj+z7OvObIgx/kRSDqw7DATuGzVW0/eVsOBfxcTtkZtD+SBw==}
 
-  '@grapecity/wijmo.knockout.base@5.20252.42':
-    resolution: {integrity: sha512-OxAMOe7gvx3xV6eeziOluSquF7YG2I170ZvePTREqPkNvr4qA6cjuy4X8ggJQcL1JRlt0gr7ApSTXieU3eACNA==}
+  '@grapecity/wijmo.knockout.chart.analytics@5.20232.939':
+    resolution: {integrity: sha512-3j9xSNissi7yttjNOGGBLoLEsEhaop0VVOByR4OTKmjhfd2/PCm25LyHWLkWwOrhb4ZjJcFLlwTPRLLyQ4GwBQ==}
 
-  '@grapecity/wijmo.knockout.chart.analytics@5.20252.42':
-    resolution: {integrity: sha512-KC+UGrzx1xDsnxsEHTjSO1AnkAugrK/Y/n1fhQiNeRl9VIOagcAYWGSs1Nj/Ilo5J8KmNnU8Qt08lDZxS4WZqA==}
+  '@grapecity/wijmo.knockout.chart.animation@5.20232.939':
+    resolution: {integrity: sha512-jO/0i+qIpVjQ9mPYFdOnEwc9V+OqOe/V3W+aM7Oc3han969/dzKyds16B74FyJ58h8lVTg3nXaj4sUJrWCDw3Q==}
 
-  '@grapecity/wijmo.knockout.chart.animation@5.20252.42':
-    resolution: {integrity: sha512-0FoPBDTfy15LVA6HHppixmQW9OV1txXApNwra0Lzs8yBho/QCG8XvuiGvuVSzx7nvL+dSTUNwtre0c93MfAEUQ==}
+  '@grapecity/wijmo.knockout.chart.annotation@5.20232.939':
+    resolution: {integrity: sha512-tb/PMND/NwDp5ygPnRJTgqNWHZOM79saUQtb521Oz6SLpGo8X2YyllM7bK+CS9bfQYk1a76NSw2yCR8iyFLlMA==}
 
-  '@grapecity/wijmo.knockout.chart.annotation@5.20252.42':
-    resolution: {integrity: sha512-+VAq+kNrkW+/Tb0VLUSlYQ4VLxm7Jq6BjkMzJEjS+DLGmcCQHyWPQtUpfUhvczrqbtqUN0YbGfcI1mPGU9+B7Q==}
+  '@grapecity/wijmo.knockout.chart.finance.analytics@5.20232.939':
+    resolution: {integrity: sha512-euu5vKakJNdjRFyHNrEGVOdmrh62jeH5UHijCSC/SUWXWaxtbYLO6B2jDNx0S1E11/uM4W8sd9R6zM2H4WFYaQ==}
 
-  '@grapecity/wijmo.knockout.chart.finance.analytics@5.20252.42':
-    resolution: {integrity: sha512-a8Z9G2MZ213GrpKhitjuOXd+LiPYD0xZq024yVam1Tanr7bTWYCah0t+7wV9Pj3tBPSy7dmQRO2NsZIPAeuekw==}
+  '@grapecity/wijmo.knockout.chart.finance@5.20232.939':
+    resolution: {integrity: sha512-ATi+5Dp54GopBXLXZOB8WAr0XFF6uGjlFIFOFcrrhVISjBmU7g/TFKrK0Np61F/D3rxWhEjLna+5gOq3xX6t2Q==}
 
-  '@grapecity/wijmo.knockout.chart.finance@5.20252.42':
-    resolution: {integrity: sha512-SA6+hH9zA0TplGtb6ZXYkUJl5yJKpnAKzGmh/4P4EZEl/ffM71aQbmy0CTqqevkrrvrORJk6Scx07Ipa76WTSA==}
+  '@grapecity/wijmo.knockout.chart.interaction@5.20232.939':
+    resolution: {integrity: sha512-fKKPUH37vyh3UzBOXDWIES9ItIZD5pdSOaSjGAxlXz8aB/DGCjoBDinzBKq2Edleob4oM7lpbVInB7+PfHbCFQ==}
 
-  '@grapecity/wijmo.knockout.chart.interaction@5.20252.42':
-    resolution: {integrity: sha512-K2LvQZ/njX2Old0ppW3Q6TC/GAX+XZSiwgSgrGhs8kyYLt4NVgiOM9VpDu0VUwKR9SBSUA0UG3d2pOusmQHOuA==}
+  '@grapecity/wijmo.knockout.chart@5.20232.939':
+    resolution: {integrity: sha512-/HJt4iel3/Qt3sLPOkOFRiOUcCg2GzGuml6j7TPUUI4HCBJ4wisLHAdiQaiaEFP57NEX9xS/4ETn4k+EplSXjA==}
 
-  '@grapecity/wijmo.knockout.chart@5.20252.42':
-    resolution: {integrity: sha512-c4SMORAkWSWhSryAZ4Y9SUgLZVjxk1mUVrRPWTrYX2P9c0Blswur6P6sp7eTPavCFCZJlTPFFE9O22qjuzAl4A==}
+  '@grapecity/wijmo.knockout.core@5.20232.939':
+    resolution: {integrity: sha512-hTDvCxk4wEnNbpkygvW9oPC/TT/dhXMhKx8qRCRmQXTN2ScAmngnMIZC5nfiBB/JYv20JbbHkoeTgcT6N3IU1Q==}
 
-  '@grapecity/wijmo.knockout.core@5.20252.42':
-    resolution: {integrity: sha512-VE72wAad1y6h1jGq2mtDHpZsjwh/RN4uISjCN7HJZNuznN3aKHJ2gf3+bqyHWgliPR64isKGud+rOOlZnLNpaw==}
+  '@grapecity/wijmo.knockout.gauge@5.20232.939':
+    resolution: {integrity: sha512-6cEZpnVuKEdr8GJ3sZQ4e8MDkMbodEfrPMwvkHh2VooPETKoNnfiWsndLyO93lISgebQZsFFbaLKLISJ4DJSCg==}
 
-  '@grapecity/wijmo.knockout.gauge@5.20252.42':
-    resolution: {integrity: sha512-z/xw5j/A2gw7rNrCfpF3fHhFxB++c/mdCdH7dSrlvrdPA5+UqSJxAdbE/K9u4EzFRJhr6cPIkmpC1hngdk6Ocg==}
+  '@grapecity/wijmo.knockout.grid.filter@5.20232.939':
+    resolution: {integrity: sha512-xY3zpfa3Yum01QT2hp2rlfdLt8UUQ5m5/dCrNgin+i3xL9iA7NnpiZqOXryid/3lBCrFLVkJoehcm6UPLEqKVg==}
 
-  '@grapecity/wijmo.knockout.grid.filter@5.20252.42':
-    resolution: {integrity: sha512-Z5K03vstFO8pV+BFK/vWVzLzRnqUf8PpbPIMDtBVpy1iOtFjlrfWwwqtBf2pIvDuOxRMbHRJN8SYOnyGjsnlUg==}
+  '@grapecity/wijmo.knockout.grid.grouppanel@5.20232.939':
+    resolution: {integrity: sha512-EM9fLWUUA0UzNzg8g9/0Njk1vx3KBsFYhnJQkCengH8kNPKoh7nmH/dPiXUV+TjQEyBWofKIs8/eO4GK5pRvdQ==}
 
-  '@grapecity/wijmo.knockout.grid.grouppanel@5.20252.42':
-    resolution: {integrity: sha512-GodBDI+HqT832BoV0/jumff/T7VQcMA3KiVTohX93NtTe3VJ9fRHRkqIUIMscsODUfZp4eXWLeR3r4x0fsNs7w==}
+  '@grapecity/wijmo.knockout.grid.multirow@5.20232.939':
+    resolution: {integrity: sha512-pkX7sW2Oi7eQ4GgKT7vq9IgATYf63K3IaIyEMs5jvZv7nndoN/H1FNCt2G5uUYiusSMLQua0lw5DXjp3Kql6yQ==}
 
-  '@grapecity/wijmo.knockout.grid.multirow@5.20252.42':
-    resolution: {integrity: sha512-cRp73rBDP8fGW9y2/eJohlH9FEfi914j8I3uFtVLAuwH00LdRNCfMR04O9mxYQ4cGGnQH0a4gcU42PT9Wi0biw==}
+  '@grapecity/wijmo.knockout.grid.sheet@5.20232.939':
+    resolution: {integrity: sha512-Aq2Y012a9EOWpp83Z7BG+QiIhFE0QlrLATYkxG7JdJFu3ukWolUId/3M8w9HZ0BBQDdkl0DFDr0i1MvXDI6QLw==}
 
-  '@grapecity/wijmo.knockout.grid.sheet@5.20252.42':
-    resolution: {integrity: sha512-SXd0ixdPP1GpqDPwoQkou4LmYf6lSt6dgvj1g0zXCi0KIHO0RBZcMcdmMqkW1inFiaID7OzMl9sr60UM37K6mQ==}
+  '@grapecity/wijmo.knockout.grid@5.20232.939':
+    resolution: {integrity: sha512-LWpgCHVvqSwvLsbu6nRW3JeMZBbiClalZNI4Eoj2Legu/ZA1vsxz7keW66Lw/s5g4bmJTQOZw9bBapFnfQL75Q==}
 
-  '@grapecity/wijmo.knockout.grid@5.20252.42':
-    resolution: {integrity: sha512-RJ2Y+kfLjnLHMQeSndbLknBOTe8BUJT+xZXcVy99kXlkHvNmQqcMDOHWxm3pUT69ofbMPIISjqMEK2OXWBiOuQ==}
+  '@grapecity/wijmo.knockout.input@5.20232.939':
+    resolution: {integrity: sha512-L1GoYzHEFl/FNeBzOyYOuiJXF8rpChAfqNGBnES4a+lLwOxyazG8zWqfDeBanZ/ymUgucg6Tpdz6PtkDjQc8Dw==}
 
-  '@grapecity/wijmo.knockout.input@5.20252.42':
-    resolution: {integrity: sha512-x3YePExKrnBg4U8rWmDFq/g1V/m22szS8owjQ5LFSGoCG3ETaKKy4wp+h2AkGm/OsZK75aEzV8lGPysCt7lC9Q==}
+  '@grapecity/wijmo.knockout.nav@5.20232.939':
+    resolution: {integrity: sha512-7hvPk8zbCkU+aYrCwqAuWNtthPGmJfi4dTTrWd52nv207USv+SJiH77MkLa/vh959LtWHzoJVWxXUtBzjAVT9Q==}
 
-  '@grapecity/wijmo.knockout.nav@5.20252.42':
-    resolution: {integrity: sha512-LbA3OmLvuZYVCAr1QzT3u7CamQ8sCOXGIJTxH2Swg7GmwxaUwkF0woFKSxRXvpSqHnWzZdpuJHGRxUuMtKlMlw==}
+  '@grapecity/wijmo.knockout.olap@5.20232.939':
+    resolution: {integrity: sha512-qWnLLAb1jWPV1pylMwaOeKqy8MlSLqGocN+euBXHOsvA0TfBA1mjyvYf7+nImQEAcxBhBA/uOZ0+R0Exe7XfTg==}
 
-  '@grapecity/wijmo.knockout.olap@5.20252.42':
-    resolution: {integrity: sha512-3OwfWbIGW0ku5REWTvUIEw+pd9agBXIKc6hbKJyUjAMbQdRiqilo7bJt/OlrYDRYdWjcRMD6q4yskkaitT/Dpg==}
+  '@grapecity/wijmo.meta@5.20232.939':
+    resolution: {integrity: sha512-lXiLBmySwlRXkeefzr0pEJT8awkE9gQvChWASxka08hS1RzCDpornApWVeVIgxJV4RgIRE5YflmJIcry8Sr/Fw==}
 
-  '@grapecity/wijmo.meta@5.20252.42':
-    resolution: {integrity: sha512-icqjT4VVQ6DyFY/XgPoy3BRBsavOtEOkM8o6BIXJf9xDUaM0F7Ledm2BfRJOcR+Z8etlQPU6f2/x9LrtciuTMw==}
+  '@grapecity/wijmo.nav@5.20232.939':
+    resolution: {integrity: sha512-Z5CprZu0MgyiLFGH5cAlwon+HnWOZWc/tk9OqUL/pp6ZcpJPjZhOuky66gTIpaX6Jj4ND+Tqe7fJGPBSEWPtDA==}
 
-  '@grapecity/wijmo.nav@5.20252.42':
-    resolution: {integrity: sha512-z8OBOBVr+gQ1S3GAs6DKhfqfQI/DvgUKHrk1r3X4azc4S/Bh3F6ZUj+DZ9ZfbHm7TV/f8B0KOZ0QCqYmhMDVyA==}
+  '@grapecity/wijmo.odata@5.20232.939':
+    resolution: {integrity: sha512-850JreQ//60AQ/8eGqQXFLd3RMc2imhC4nHbTGpHdDjVGGMnsxvoN8cJCPgJsMpFjLcbQ4tFsb8zvlThOWxr4A==}
 
-  '@grapecity/wijmo.odata@5.20252.42':
-    resolution: {integrity: sha512-1UE/VHEhuwjES88owGCsr6ApiLYYCQiBw6OoBQd97LyKEdLuI/HFvj3PXSSV2hwhpguCl+zwFjBAhb/5qFhsvw==}
+  '@grapecity/wijmo.olap@5.20232.939':
+    resolution: {integrity: sha512-oQcIzIkWcZt5+W4XeNyKBrsIMCP8e+R1i9ji8Pf0xihf81ke7Fr1oax1LZCFTQt73Bc5FxZxNPYQa3dIeqbuXQ==}
 
-  '@grapecity/wijmo.olap@5.20252.42':
-    resolution: {integrity: sha512-veBTnQDERIOVPMzqs/vU8iK44w6jQ4Bm3LrtWYdhsFKA2746FiFjs0JTa72iuFQMhFlE5bZQNbTsBzgAdzZsIw==}
+  '@grapecity/wijmo.pdf.security@5.20232.939':
+    resolution: {integrity: sha512-nod4b4FmhagjpWyExAtEEYxovW7TzogAT7VqaPM2Gtx7+pHfedyYKURHY7obI5MIvOl8JllvsmCkC8pvMeqRfQ==}
 
-  '@grapecity/wijmo.pdf.security@5.20252.42':
-    resolution: {integrity: sha512-lWIOdXOhNxoz04GjHaLtUOsz0J8+JFps7wH2NWcOMfbU5IT9b0bq12mlLm7BSprKpo2xFAM12oKtFVSSExHYcw==}
+  '@grapecity/wijmo.pdf@5.20232.939':
+    resolution: {integrity: sha512-kPjMa+GR4zWmDkv1Q9b0vmEGXSPVfJdotYs0CyzzcRKPPyXXe8Ds24eBEVGh/hsiihPKw8/F3OY0frBueuT/mg==}
 
-  '@grapecity/wijmo.pdf@5.20252.42':
-    resolution: {integrity: sha512-BhABo1gkGSXy6A1jtU58SQlrc+Pr1PTTejg5RCl3MeXnM0BCrodQ8lBGc70BVr7sC4yiUiz+eR3B2JbE8irtGw==}
+  '@grapecity/wijmo.purejs.all@5.20232.939':
+    resolution: {integrity: sha512-YK8IRQ5NKqOXa2K2dzvdGoMIhju8hyq4FI/V+aeYFdwrDV7T0rm6TOnkdsy/h4rVPmq0o+vil5VZa4ZrSFO2Lw==}
 
-  '@grapecity/wijmo.purejs.all@5.20252.42':
-    resolution: {integrity: sha512-7rXRPNioAsLP9dadsTNs4g2dr1OMEyJdFiyFC7wYdnTQ6Ewnfp6osn1SO3kaZS9lEQpq4loJFLRZCbkdnEPt6g==}
+  '@grapecity/wijmo.react.all@5.20232.939':
+    resolution: {integrity: sha512-5NdIjAynoBq51u15AM0V/OX6eMVXNCMYvpE4LNxu/zJ9tqnJBqEn/K5aPhUCgZmYyKKxxPZB/7JXubbudQ+Ihw==}
 
-  '@grapecity/wijmo.react.all@5.20252.42':
-    resolution: {integrity: sha512-tUWNX3gVtmQBUwWOmnbYO87kuCNp1HzSQ1hMXL3THEXTBj78LCuRfZ1OmlCWy0O30EfFw3p+pAETr/T4C0e0SQ==}
+  '@grapecity/wijmo.react.barcode.common@5.20232.939':
+    resolution: {integrity: sha512-SlxKnbBqBfe5VQzyeJrm8796toA3NZwI2DtSAGet+4evBEqx+pmbwKIFStWmVjsV7I/0p+1FmLJ9yStRGT+gYQ==}
 
-  '@grapecity/wijmo.react.barcode.base@5.20252.42':
-    resolution: {integrity: sha512-CfgEih7YG5Q/n41beBc6ITTajlZMHWyKGrBvrpysWzQr9CLXauLgR0AVTGGI/pxA264gjD/ZpBJTiMQeGIxYeg==}
+  '@grapecity/wijmo.react.barcode.composite@5.20232.939':
+    resolution: {integrity: sha512-X/o+Ax8Zqk6AkEJCpJvv93Yl2yTs2Dr91O/TJ12Vt7wa47o3HaJ1/Izo2VEWhAvbU+rfQ2wY/BqLDFl/ijZhQA==}
 
-  '@grapecity/wijmo.react.barcode.common@5.20252.42':
-    resolution: {integrity: sha512-KvzK3fpMlHokF4o/qV1TC5FXUKA7jHg3O4j8UaE7U/nrKBB2qQEzTCZnyflVIeqrzdW7Wzpk07mquUwARhnJOA==}
+  '@grapecity/wijmo.react.barcode.specialized@5.20232.939':
+    resolution: {integrity: sha512-7xhqKZiy/cTj7D+56SENVEsYDelDLv2RPOaW5YdpIhKfYmO+gc6ngp/YgVDNcoKnEf5GhXIrERsCrP+Onho/RQ==}
 
-  '@grapecity/wijmo.react.barcode.composite@5.20252.42':
-    resolution: {integrity: sha512-wy3qfZOuQTpL+KF39KJw+qMFW0zOcAuz6dE1vIhHnhBAjNUTbYUlWkmnrZcDkCTaam2OFVDWO/w/FOVLTvbjZA==}
+  '@grapecity/wijmo.react.base@5.20232.939':
+    resolution: {integrity: sha512-SDgWIELKFdqKTpFFQ/Ab3eAS9FG1DNneEmS39oVlXcaMhSIpbz7gd5kkp2eACynvfjRvQrTnoBh5f+lLPEdfOw==}
 
-  '@grapecity/wijmo.react.barcode.specialized@5.20252.42':
-    resolution: {integrity: sha512-rQA5/PriGawEIHRWBqXq0MU8II0tZ3wz1hbHbY5Ia/lzdzybknhbjeZJ6YHHzyRpY1Mdg/C/7qiWBZLKYGV5aw==}
+  '@grapecity/wijmo.react.chart.analytics@5.20232.939':
+    resolution: {integrity: sha512-1G+TXpNuQOjrylJ/b5NUYMu0wIvVeOKPT7hVegRGbkjRpBcbfRcAAOaMYGBdt0aTDxkgEoBkPFNPUl2FbolI5g==}
 
-  '@grapecity/wijmo.react.base@5.20252.42':
-    resolution: {integrity: sha512-EOfxXt5eBve4YKCPuu3VDE6v2RpsLnTfT8ygQNg7eXw2boDXFGynzpm05dgYWscljFf4iprmQbQt+1AKnw+RfA==}
+  '@grapecity/wijmo.react.chart.animation@5.20232.939':
+    resolution: {integrity: sha512-/PfuVmwu570wQB41iaBsg+8LY6T2+7PD6BmH9HveuQBFg3UKTXoMFO2wUWqE2aTc+MGemU3lfQ1I+/KDMoPnUA==}
 
-  '@grapecity/wijmo.react.chart.analytics@5.20252.42':
-    resolution: {integrity: sha512-aukiPaxY/kjRAAS6RlSV7+4RIvrdoX0ZNUFWUDSn8lvIBGy6xz7wIXjirfAUQaUXoQnFboV52miPyjxfmR0Rkg==}
+  '@grapecity/wijmo.react.chart.annotation@5.20232.939':
+    resolution: {integrity: sha512-POH2BrTPE8NMlor8xbLDe+bYL0fJl8JsNIVucjKh8TBdqrp9rnyEJmxy1faf9VczOq1g+OLHVvfb3mvkxeFVlg==}
 
-  '@grapecity/wijmo.react.chart.animation@5.20252.42':
-    resolution: {integrity: sha512-yiPTbgwpSJEE2ziBKMAIFVQfAUWAa5lEKNem4PfrN4NccZxP08LHYxeyF1C2FsS2RcTLdOcEKvstCIPOfXzumQ==}
+  '@grapecity/wijmo.react.chart.finance.analytics@5.20232.939':
+    resolution: {integrity: sha512-dsaQpBXN575+KQ/tFphmvCnUp8Mcl8soGnBsr+4upTv2LApSZDUnut1VNobqjyU/lh3c4JAzxGFrzRDCYuq6qw==}
 
-  '@grapecity/wijmo.react.chart.annotation@5.20252.42':
-    resolution: {integrity: sha512-mXOXDAA4kxDIycjM4uDAqKhaB6okCzDrzjxhXag9Ev0Y3vRiEcTVVqWNqcJV5SkhVCUMx3xb6iKOovDrMwveig==}
+  '@grapecity/wijmo.react.chart.finance@5.20232.939':
+    resolution: {integrity: sha512-s5j993Tqkwz7xOCWdyfodsG2R6T3jU+LvutOcNWbwdW1X4cV/8B4EXcMriP/78brqmnef5jZeNYfwPqio/40tQ==}
 
-  '@grapecity/wijmo.react.chart.finance.analytics@5.20252.42':
-    resolution: {integrity: sha512-H2mJzaNi8go2N7bhZg3cXUTxoERcpqCGk666Pg8bDCKO2vLjA12wq2BhPcA5u2PjV/U+cJb0oNbsYjtxf9wTkA==}
+  '@grapecity/wijmo.react.chart.hierarchical@5.20232.939':
+    resolution: {integrity: sha512-6PzsDjfrmfKFVPG6FosQGk2E4dk25cwlIApy1AhigWVZelizqDl73Rn7NhxicqZ8Du53fI2GIRBpxlzO+QRZEA==}
 
-  '@grapecity/wijmo.react.chart.finance@5.20252.42':
-    resolution: {integrity: sha512-2FDfSc/MFUpBbJ5IfSLLJXq3hsbI487V0vWLXHe9KvWJKZqsLeYsPBg7kSdms3ddllHS5QD4rF3Dk/L5vN9eSg==}
+  '@grapecity/wijmo.react.chart.interaction@5.20232.939':
+    resolution: {integrity: sha512-TunFgY35iRlJP0tMnfFDv+7XTo9IwwJlzouQBsoP0sDdUGl3ZipNOkCkcKiYKgOIzp0j6FM/82/l1526+GrWJQ==}
 
-  '@grapecity/wijmo.react.chart.hierarchical@5.20252.42':
-    resolution: {integrity: sha512-9XBQiQzC/R+IKZHBpAq8cOjVl9YCTTCgMUkCcAZzvkIAMaVwRkEq/EKhyt/cR4u5TSZ7wPKOLgNnMwCJwaaKNw==}
+  '@grapecity/wijmo.react.chart.map@5.20232.939':
+    resolution: {integrity: sha512-cE1HiwijGh+n8cnLY4u7nRPyg4hgS7jlh1a2SuBHJXiwNe3g90IflEdC7R6Ynb91O1VUyBQz7RWR4++7ASJ21A==}
 
-  '@grapecity/wijmo.react.chart.interaction@5.20252.42':
-    resolution: {integrity: sha512-Z2O6Rs5wEHouIJsFbgTbUAnT6og0ayvMLCsWSMUjRteNaCvXXQ7aM9oWoawhY0tJ3O5e7VtZb8tBWC2un33ydA==}
+  '@grapecity/wijmo.react.chart.radar@5.20232.939':
+    resolution: {integrity: sha512-5kP78oAUAPRy1/LS1uiapANQcgwm5AQ4njefsbmYgA3aw/PlWrQGAnBdf2/Oz7MLkDG/HsElqDYnoFWnEmlC5Q==}
 
-  '@grapecity/wijmo.react.chart.map@5.20252.42':
-    resolution: {integrity: sha512-nuAC676cKO0+sDehik3ZZLZwauW03dU2FBqLrko1xe22eZ0IpPWs4XA3VjvCkEBW5aJPrsaoTjsijJna+CHUMg==}
+  '@grapecity/wijmo.react.chart@5.20232.939':
+    resolution: {integrity: sha512-9VmcULyhWwvvACP0HZaKavZyVZqJYFRy7S9zidS8Qx8aL+uHfLhhDnKibyI2QmNmf0wM5Ga+wViW9Pc5ERYBcA==}
 
-  '@grapecity/wijmo.react.chart.radar@5.20252.42':
-    resolution: {integrity: sha512-ZfZhpgWwVoy47N1HNo59MYLsvs0NUa5xUQhM87C97xK5woUZkCs5fUT9LOV5dkHTuTYC+EcRsL859ljr2VgMBg==}
+  '@grapecity/wijmo.react.gauge@5.20232.939':
+    resolution: {integrity: sha512-Y/uBfrQW1AzEdiiPh3eVL73+dpN9Wxc1adN5FJ1Q60O835XoHvBu8+C+5+2rE+Wu2q7x2R7xbnKz/jiU6BlFcw==}
 
-  '@grapecity/wijmo.react.chart@5.20252.42':
-    resolution: {integrity: sha512-nJfRCaScSMfKR1NPr7+BHR2CY2+UP8LISVCvWOeA+8gnYh47OU4kpsaVtLG1Hw16Smle/pBTo6hL/CN/y05MHw==}
+  '@grapecity/wijmo.react.grid.detail@5.20232.939':
+    resolution: {integrity: sha512-Dk6ZOQGHQZ4p933C3U4wfXEn2rUnK7g2ae/M9/8GXqog1FiExOAl29PWk3M6ChgoyDuD1zm8fpDfRAKuyUwwjQ==}
 
-  '@grapecity/wijmo.react.gauge@5.20252.42':
-    resolution: {integrity: sha512-SNkmaQEDgwW+kSVUrAryBwYk3vSXdgBQWeLPqU0N7X6048kYIm/QjV1IuO6N0kNh7CZ97lL0UXQVGTyp9CqNyA==}
+  '@grapecity/wijmo.react.grid.filter@5.20232.939':
+    resolution: {integrity: sha512-YG3MO6UvEQrpSXBzEkverpkdAIW8FoQX+yJuV90jxIblYOVxzS3Qzwri3HgDyTYsx7NkqrhJA7fGueJ5+o624Q==}
 
-  '@grapecity/wijmo.react.grid.detail@5.20252.42':
-    resolution: {integrity: sha512-ZdqknDux7Uz3lD6ynxJq4S4MvrsmaKNYjQarhTHf+CP1Pc3vqZF8n3zfoJvBjOmK0yyilVC5bRgfh9e2g1b03Q==}
+  '@grapecity/wijmo.react.grid.grouppanel@5.20232.939':
+    resolution: {integrity: sha512-gsh2iaHBd29lwG5iv2EjSC6PPT0e1XxzV/D+rZgqGlSY/GylUZWFZ8F1SB+IpfUztnysYAjKW62+bT4qcnVMpQ==}
 
-  '@grapecity/wijmo.react.grid.filter@5.20252.42':
-    resolution: {integrity: sha512-E5JTRo272n9yaSJfCLZJRLBamwGl12yfTqQtSbAhRTKInJkU6YSuwmZStwiUGzCbUXGac5pHP5u/kHEtDy4peA==}
+  '@grapecity/wijmo.react.grid.immutable@5.20232.939':
+    resolution: {integrity: sha512-a515OZnVcljhUwLt5v+l8grIQat87yQL9EpVPrqhm/vLgery+Pi6gUh6v71/xyxJSgsRceyrqIshK8mQm8HgVA==}
 
-  '@grapecity/wijmo.react.grid.grouppanel@5.20252.42':
-    resolution: {integrity: sha512-fl+UFHUo5UEPl7Ynu91Ai8xKRjgsJ+sq4VCfq93dy6MUOPHQjx/pXgsR0e7ade+ucnAMM8EujZorsjwliZ0UNQ==}
+  '@grapecity/wijmo.react.grid.multirow@5.20232.939':
+    resolution: {integrity: sha512-fK6CWQvHpWaq9jR49pX+alu+s4G3DYTSl3bwB2Rybxylq04arYHcZdbC6wqcTTBwhXhbkr6aHKUP+k5zX9cgxQ==}
 
-  '@grapecity/wijmo.react.grid.immutable@5.20252.42':
-    resolution: {integrity: sha512-yhaToxCjq46DmqNXtlnYKvBNJg4h/2ZkQLnrZS5V5nyrSiC8Gl3H3Lxs8wT8xCfECsid+G1BcKl/07Zsv55urg==}
+  '@grapecity/wijmo.react.grid.search@5.20232.939':
+    resolution: {integrity: sha512-PpRmrvjrgf18g7ag37qUJ7vn58ln0ysNYYOilf+Guk8yg3DH6lhVRti8jeWAd5xW8bM5eYbl7XnWLlTI8bhH9A==}
 
-  '@grapecity/wijmo.react.grid.multirow@5.20252.42':
-    resolution: {integrity: sha512-Ub4bbsNLfT+FDfmVmFzl5anrh3M57xBF2Lbt4NuplMGOf/jvBMW6xL1j9m4swrYBh0dX7v6hUhY5KHZh3Dr0XA==}
+  '@grapecity/wijmo.react.grid.sheet@5.20232.939':
+    resolution: {integrity: sha512-U66ATdOGMTqYPSLaPwPERpMKEIdn8cqI5LNGrSYvYZ7IsqKCi8lu0wUD9D1XZ9edxkIAXo4uYA4yxaBXR1MGdA==}
 
-  '@grapecity/wijmo.react.grid.search@5.20252.42':
-    resolution: {integrity: sha512-vPD9+CNrPxM//eoJtS5IQxs7BE2hYOLxE8usxrpybjqFSlkooZWtFe9iCSXJkBOsRsOd71/fGDdGqcb1pw/98A==}
+  '@grapecity/wijmo.react.grid.transposed@5.20232.939':
+    resolution: {integrity: sha512-K9ceScglMOY/+ocsG/1aLwBJcdT3RuE+BK1hDO9bknhfTRMagVNfohVyCEaHK5N5AjWy8uiOcNHIPX2zY8GTeQ==}
 
-  '@grapecity/wijmo.react.grid.sheet@5.20252.42':
-    resolution: {integrity: sha512-nE6xzH1x4ZELD+HRwoh3JKz7iA3BToEj3dV8rNxAaN5NqJtQjbND4H0725nQyoFQ/wfxZhcMXRuGtnGEqQ70Vg==}
+  '@grapecity/wijmo.react.grid.transposedmultirow@5.20232.939':
+    resolution: {integrity: sha512-AE6NShk6yMgll++6qRgkJ/7gUa7MoYv29Z42uT5dVgNwm0cxDEI9eaif9/Bu3Ejtymg3BvtGdhoo+CLefatsAQ==}
 
-  '@grapecity/wijmo.react.grid.transposed@5.20252.42':
-    resolution: {integrity: sha512-XgqWBORpjxzrlUEtXBrLatGkjNnv/eiIYYg1dL89lYoNtV2dhYRrFnAAMELOU8toxs5nfy7wJttC3JXywtAPag==}
+  '@grapecity/wijmo.react.grid@5.20232.939':
+    resolution: {integrity: sha512-L6Om/utiEQiEN7F33Q2+sqKVDjJD+GiaFe0TFgzpm2kvLoOBYiGcxaWy3/FMB3B4j0ra6JV2uampLNSWHT7FLw==}
 
-  '@grapecity/wijmo.react.grid.transposedmultirow@5.20252.42':
-    resolution: {integrity: sha512-5FboJE838zCqmqfbrdtvuhew44PMerOMSGEn4/lZomvaSc2jlkA0SJ1jALHtZLU2jQYr/x969J/JCYdM/V0GhQ==}
+  '@grapecity/wijmo.react.input@5.20232.939':
+    resolution: {integrity: sha512-VHGZbW24y1epPhMhlR+qD1HE9WWWY0LxFTC4SH+sSN4M6YfsKEhhfKMeEwN1DIPSdgyqnhM3Daxc3daSGjtIkw==}
 
-  '@grapecity/wijmo.react.grid@5.20252.42':
-    resolution: {integrity: sha512-tTa1u3k/m0JdOGyUuIkdnhJim35bDz8EjuPkVJpLV6rkx5vyFhVYqHVqlEMimbBWS6ToGC0jt18Garz4mNsDrg==}
+  '@grapecity/wijmo.react.nav@5.20232.939':
+    resolution: {integrity: sha512-BVz9RsLHk5yrKL/bR0WG/lTvZG7kh99wVz/aYlJ6QgHLw2JqByEgwu+P+ryZ7HqRxt7viTrk+X9UOANRmPZEKg==}
 
-  '@grapecity/wijmo.react.input@5.20252.42':
-    resolution: {integrity: sha512-mweCs1CCsfoOF4sgq6P/YNvLYL2AuZdsYmYQdIUAvccHMi7mFKua+Hd4OAPryYnENme+euch41OkpuZsz690hw==}
+  '@grapecity/wijmo.react.olap@5.20232.939':
+    resolution: {integrity: sha512-FtVHhq5H81g2CGRtW4eLUvu2m7Zpcq0XLcE9xKqwtaCtGzRQIQuowVETiRpSpil2LA9os/Q6KotNHt49F5XagQ==}
 
-  '@grapecity/wijmo.react.nav@5.20252.42':
-    resolution: {integrity: sha512-76KaJdZj/t/rAVj7gVEGCql3NNBcGPZmW31d5++jUAVyECRi41bypv4b0uaHfARE2kuSyHlsBJpwNhnlP4xccg==}
+  '@grapecity/wijmo.react.viewer@5.20232.939':
+    resolution: {integrity: sha512-whWYxTOLV8FgcaWPUuNp2s94ejV4V3QH0Dv0whqJtCKG05L4Of51YVSs//G7C7dB3WjzMuhEWW8CfdgtGb0p6w==}
 
-  '@grapecity/wijmo.react.olap@5.20252.42':
-    resolution: {integrity: sha512-47wTNz8rWo1AlKhTeTn9FmF5m9IcPc+kYIBrKfwiSo2vgLfMXMm9cUppg1xb1c4B5ZFdakjndiKSYTtsC7OuMg==}
-
-  '@grapecity/wijmo.react.viewer@5.20252.42':
-    resolution: {integrity: sha512-D8Ycc48UsnXOlyUkZBtS9t8uF/bAG1iVeeHvUSOCXJ8XhddcEU7FqGzsijP8wupVNPGp5lmf5iAs4NPziCOcFg==}
-
-  '@grapecity/wijmo.rest@5.20252.42':
-    resolution: {integrity: sha512-m2EMubDm1K2bigKQsqPw2BL4IuM+Jblnkltvcp9LNZuc9a8hM++Y5DZzFEvYS1W8HDWVwKiXTEnz1cEI0CYUUQ==}
+  '@grapecity/wijmo.rest@5.20232.939':
+    resolution: {integrity: sha512-GfScOByEu7jv9Ab1Dp8DhrJoLZ0LkDNq74GX9tRa3k0Exq0/v8rW/X1dSP0XTTsNx8MlEq6sxDrdf6tx/jITnw==}
 
   '@grapecity/wijmo.styles@5.20232.939':
     resolution: {integrity: sha512-tOv9ZnZNaFElV67aAF5R3OBr5T4dBdPDMxAjeMZKKZGRBWrDA+Gx275qXATE27Qw4TMMlZ4BlyaZkaBIvQfG9g==}
 
-  '@grapecity/wijmo.styles@5.20252.42':
-    resolution: {integrity: sha512-M36BRmcd7+5PjQYsQR2UwNPNH2SqQ6xxavqcvxkO1EsLJl8QtuEv7wVliiJIRY/620I4QTWm1yEoT+R2ILmEMA==}
+  '@grapecity/wijmo.touch@5.20232.939':
+    resolution: {integrity: sha512-qzroywVY0F4E68yTeEasSOktLfG1oJKfrJsx4Q2JFjd6WhUiYOLzW3vB2ddOTZqoSqYX74R31FWjrM4Sq26oYA==}
 
-  '@grapecity/wijmo.touch@5.20252.42':
-    resolution: {integrity: sha512-E1lKvDiZyeTrBlxF7f0pUWrhOHyRRUH2fJkEQU63jguh5Fca77bij/j32YEQ/0Gq4PFfLm6hC9tgzuXOeOUb7A==}
+  '@grapecity/wijmo.undo@5.20232.939':
+    resolution: {integrity: sha512-eyrW3k5B95/2rqSgsGnnAkVMyjhvP8XyQAEA0h9UEAhAJrZPiUljui25ghZa5zZAeK5inNqqQW/uWI6pmNpR9Q==}
 
-  '@grapecity/wijmo.undo@5.20252.42':
-    resolution: {integrity: sha512-jny9/yUbBvtuBFVaSWsrz70pn+HYAwDjm13WZXztJ173CXUzVZMhqm3HgKNlm7pvnWUCFVLRpO4SXg0yD/B0Vw==}
+  '@grapecity/wijmo.viewer@5.20232.939':
+    resolution: {integrity: sha512-FOW01523kE6mQBVXYj3a8lIFonZxinQf7t5O8y9Rxkwwy1xpy/OYcM9s4itbwcPqh3JL3JhlafUm4EJNCwD1Sg==}
 
-  '@grapecity/wijmo.viewer@5.20252.42':
-    resolution: {integrity: sha512-7n+gvGBXVBfseKxQhBq5AJCdmgNgccDGY17lrkI0GA5KjWcwLzNtAxOvyz+O4pzItxQN1zbat01RbHSeEb6dPA==}
+  '@grapecity/wijmo.vue2.all@5.20232.939':
+    resolution: {integrity: sha512-IGbZ7hqPjHGQ27pkpy/xvoEzzFq7admVEDessRO6QtWLRL3tePLJhFE1hsiW/PW7l/9I8Bc05lc6SMYyjlE+0Q==}
 
-  '@grapecity/wijmo.vue2.all@5.20252.42':
-    resolution: {integrity: sha512-Cf+fnOIQEJvU3LQoXyna4jeHGOJMfd2swjIHgAYCkxMCzKnlP9y2FcY3BOHdLDe5J8dDLerFvG0buIAJisCk4w==}
+  '@grapecity/wijmo.vue2.barcode.common@5.20232.939':
+    resolution: {integrity: sha512-45zyULkH46moBcieSiuPpCxoDcaDWUzwb/bdAd+5PK0VTodsUp0t8uwyK/QFPEkbqTkA+lNMFAIHbv+cvCe7ow==}
 
-  '@grapecity/wijmo.vue2.barcode.common@5.20252.42':
-    resolution: {integrity: sha512-3ETbLr84C+qiT/ItXOH+WkBG3Vl6TBjHtWxr8FyllOzI9G13F7Hn7e2pevTncof9IYax9lqU5ElNaXlF4+pFtQ==}
+  '@grapecity/wijmo.vue2.barcode.composite@5.20232.939':
+    resolution: {integrity: sha512-EDQHPpU9uSnWv3bg7p9JX/IinFA7adAJIP1auRUTk+8TQz9ZO6Q3nUN2fejxCsEnKpz62cvJsgO81NYfZDAuPw==}
 
-  '@grapecity/wijmo.vue2.barcode.composite@5.20252.42':
-    resolution: {integrity: sha512-D70qgQR1EbyZeIBe3FrPIbQjdSzBzrg8RJOkJvvajJpHHqp7CFgFh2U44NdOLTQhf01aP4qqbAwNuJyphpucaQ==}
-
-  '@grapecity/wijmo.vue2.barcode.specialized@5.20252.42':
-    resolution: {integrity: sha512-zvxIfRzKQ8LIpBc0iSC2rQh0DlmHmR5oFiqFYfYXJdW+r5xzwowXfGT6OSEotX+fgpaWC8XyieDjM2upPrfelw==}
+  '@grapecity/wijmo.vue2.barcode.specialized@5.20232.939':
+    resolution: {integrity: sha512-/b/nIDEM6kUJRGyg8AiJqRRkQqHITNk9sjFeyh+GLv/woy9NI+0JihBQ7zaWGwCpAUl7+JljCW1okSj0cBvAiw==}
 
   '@grapecity/wijmo.vue2.base@5.20232.939':
     resolution: {integrity: sha512-zHCUDSZsWuOY1XVpZamSr0m7NkRYhNVSCou6J1MP0mPEwqxJ5djILaX09IRUk7EtS8oOd27vbA3eHRIapj0MQA==}
 
-  '@grapecity/wijmo.vue2.base@5.20252.42':
-    resolution: {integrity: sha512-+IJT9aGmxYGnzs660xbFiYacBIUZq1pScFJtv727/O6PJ6mHZRtVGZS2GXkzOVVJa4wa+oYEBQVqlsKEeLzgZw==}
+  '@grapecity/wijmo.vue2.chart.analytics@5.20232.939':
+    resolution: {integrity: sha512-2unalnK4M/v15Tc/o/ICuXk47Pz/nD7EhJotAnjkYA7vqCBlopx8xuAmnY/aDBfkABTYwngyQsP4IaXQ+tJH3w==}
 
-  '@grapecity/wijmo.vue2.chart.analytics@5.20252.42':
-    resolution: {integrity: sha512-SpBQs+yyhutQvWdaRIRlszuD3Ts1wrymzL/Qut1Wy0JdooQ2CzbRgNjkSa27PF6aoK2z8+DeJN8eQqKDe8j9vQ==}
+  '@grapecity/wijmo.vue2.chart.animation@5.20232.939':
+    resolution: {integrity: sha512-AUpy1TPBLeAatD9cKj0wFq1PEnJk4l0/xiLqDlXutPNrxaHKsLKBhYwEx/LpPpOGGBh3LfM2w0kvfgqTXEPQbA==}
 
-  '@grapecity/wijmo.vue2.chart.animation@5.20252.42':
-    resolution: {integrity: sha512-VzO5h4Nys25pq/TZDK2Qd/mZk8GEqSc2OMXvAcXHLSMnTR7hZn7y6EZ/s4mh/pUPRGwpdZEGe5ckLPXuVQRrJA==}
+  '@grapecity/wijmo.vue2.chart.annotation@5.20232.939':
+    resolution: {integrity: sha512-XZasSLJj0efFGtHtIPK5GOBBTDfkuNqiqz/oyg9LVq0aGfFjHi3nChd/Z++Yu8NPAl5aQ7W9f6cBJTq1Qb22vg==}
 
-  '@grapecity/wijmo.vue2.chart.annotation@5.20252.42':
-    resolution: {integrity: sha512-/woXx+53Swr8bKBRD7WS/IDo8X/iNQu+z8cBZ33apCg8RWTZhYLEcRNoxdC21rIu++a5ddmH84sL35ApLbXcBw==}
+  '@grapecity/wijmo.vue2.chart.finance.analytics@5.20232.939':
+    resolution: {integrity: sha512-k7ij0/xZk+I4EA1XsJo9nA1Dx2o0s4KjGwJ91TIR2H89ejR0aNGNrVUIGom45stSPKtOmEzV2THo2tc5KCFunQ==}
 
-  '@grapecity/wijmo.vue2.chart.finance.analytics@5.20252.42':
-    resolution: {integrity: sha512-4qeHJoah7+5Yr6G9S+Q/K1ivUuA74s1PXQbJU+/vyZeKX39jqBzzJW0pj30rg79Cnl4pO9XoWQMiqj1yXSf7Sw==}
+  '@grapecity/wijmo.vue2.chart.finance@5.20232.939':
+    resolution: {integrity: sha512-bOKcvq5AxrLOCsUF7Q/QrIHsAfTaH3ym8GZlkealvFePNqnvBMALBuwkrd2cL2v5YB7OjHcC4UaHPv2cghCwWQ==}
 
-  '@grapecity/wijmo.vue2.chart.finance@5.20252.42':
-    resolution: {integrity: sha512-ChGzuicwtHUJ7JL+O0tCoSBKV1+ImqztH+BzrtIJWioOHBpMVI0zTfuV3TpvVY+FllG0SlqbWW96XeLrccsb3Q==}
+  '@grapecity/wijmo.vue2.chart.hierarchical@5.20232.939':
+    resolution: {integrity: sha512-ZQAfRrGnDzNkh/AwGKzGfkgC7n2hS7bRVg+CSg6mEbRVkRJ+4f89BQ0PR7P7fQ4H/0WwcdDeCzNcu/7qQ9UT8w==}
 
-  '@grapecity/wijmo.vue2.chart.hierarchical@5.20252.42':
-    resolution: {integrity: sha512-rWeZ9DRYMMTYjZVmH0/utJsTmg7Cd2pIAq3AC+phcqOIGGrhJ4Hknsaolz0s3AEo74djwIZZvHqXRwE3vUbaQw==}
+  '@grapecity/wijmo.vue2.chart.interaction@5.20232.939':
+    resolution: {integrity: sha512-Ha0Wq1Jxn9lApGGTW1ahzTzx9JN0SbQh5pqIw9v++VqeKfpJqcztFWs4bDqafd0jR+GJ/ovmE12AdUswZLTu4A==}
 
-  '@grapecity/wijmo.vue2.chart.interaction@5.20252.42':
-    resolution: {integrity: sha512-Ow0Yq+yFALsEbbtcoZTbqXlZeVA2ybGk99PjCamrUYfB9IEx1FVhQdzn2H01c5JddqXsepftAziqwu1JAq/PTQ==}
+  '@grapecity/wijmo.vue2.chart.map@5.20232.939':
+    resolution: {integrity: sha512-GXweCGT5dd1koVENhDY8Lv1dQiCNuWo0LTLgtdAdGI6EWI05C4mMUE2NTOfIDX/kAfQBjMz/mJkWhkcaQdsWDg==}
 
-  '@grapecity/wijmo.vue2.chart.map@5.20252.42':
-    resolution: {integrity: sha512-RDtieezcijaRSFcM3osM+tXv2bILp0UAoAzkOV4A/bzf+12OR0btAYEO0S+B8KBMPr2AG7+dNKakH/v3LtDv7w==}
+  '@grapecity/wijmo.vue2.chart.radar@5.20232.939':
+    resolution: {integrity: sha512-dckJoc7nCGmZNsrTQn+4Y+kFcEB5spvLenrwP3FuyHzhxGY3/pw5Hcog+UfZfVVJm+FEf40SRuljtNbcJoZ7qQ==}
 
-  '@grapecity/wijmo.vue2.chart.radar@5.20252.42':
-    resolution: {integrity: sha512-cUpZDPbbLVx9CV6wA2gyF+cZnFbfv+fWZKYPsyx1hoVHS6yNyiQpSkJz5aTInKH4tapmqa4p09vBOx6VJeY8Sg==}
+  '@grapecity/wijmo.vue2.chart@5.20232.939':
+    resolution: {integrity: sha512-bu4hXGSXOAV7vmzT7dTh1o+nFHLUnRnBQk+rPH/ad0lQhyo3TEXg9R2b8MADfAu0cTboq9FzpWQfps5L/po3nw==}
 
-  '@grapecity/wijmo.vue2.chart@5.20252.42':
-    resolution: {integrity: sha512-Ls3YaB06dsq1U2x/yIxZslEL6Mc7bhmtMLH+tUNEXfDcDYnJtyjVaZT/h7oO3yT1xIbZgUh8QLO92rdpOwcz5w==}
+  '@grapecity/wijmo.vue2.core@5.20232.939':
+    resolution: {integrity: sha512-vbcPGSIvZ35bDmA09ZomJVwy7IY5hz/MGWg+6Sul9PeigYfGpITEbg05DyHccpk/MwdBk3ZqQaDcCX/ubOpEOA==}
 
-  '@grapecity/wijmo.vue2.core@5.20252.42':
-    resolution: {integrity: sha512-1DsZ2XovMn3haoVkIS4TU44XD64SkcW0Fs36fI+tCHTf5kC3mc+Z2NfVzguLMaC9D3ICXw7N8GqZdG6Sfis8yg==}
+  '@grapecity/wijmo.vue2.gauge@5.20232.939':
+    resolution: {integrity: sha512-RzJBoUMsmHPjq5e29qAXvnk+wLbbwv2xaMiVo8lrQ0eKYprHZc2U8Ren+Q7PlpXtg3q9gu1NFSPmHHIw2Tk7Og==}
 
-  '@grapecity/wijmo.vue2.gauge@5.20252.42':
-    resolution: {integrity: sha512-oVTZXfxwO0th73BC/+Dqgtj/qQv27mqSMKiXPEiKOCvuRT7UX+qylJAv/uT0BeaB9Bfva1zx6btYYhb8Ubsq4A==}
+  '@grapecity/wijmo.vue2.grid.detail@5.20232.939':
+    resolution: {integrity: sha512-3gX+W0mdYaNocHWesfg9/rHtLUZeLK0R1TbkIjHjxDt04JXHEwTU/TrFuwKpJHWFvf+osNjcvkLoc7wXQnYqEA==}
 
-  '@grapecity/wijmo.vue2.grid.detail@5.20252.42':
-    resolution: {integrity: sha512-2kSimIY5eSsNgXJ2/yIBtfMwPwqzBNGD0j5yNEZC+OUCxkN/yslFJFajpo7vLKUwuVj0dku6BaEcfroFLl/bXQ==}
+  '@grapecity/wijmo.vue2.grid.filter@5.20232.939':
+    resolution: {integrity: sha512-dDOPqVVQeBzIgt2OEMFk1MPNlj59ykKKhRFsl161wM2TizDXQqnMdzT7w8J/frffCB7MWdc33O6HNLH98ZjOCA==}
 
-  '@grapecity/wijmo.vue2.grid.filter@5.20252.42':
-    resolution: {integrity: sha512-PUObONUYshIodZ3t58jCjnSrBKM80qvURix8VthGbFWgMHMX0DaA8SsyS0NQdoRS/aqaEcQkCQN2zSK64gIRLg==}
+  '@grapecity/wijmo.vue2.grid.grouppanel@5.20232.939':
+    resolution: {integrity: sha512-oP8qT823znaVafrv/OURF+rUwITA5Y2nh9j56R7XbE+nN5rv1A9s06mJGDr5crd2tHnFxayASKFpHw6JT6CLWw==}
 
-  '@grapecity/wijmo.vue2.grid.grouppanel@5.20252.42':
-    resolution: {integrity: sha512-eFmEyATx1I99AqgZJk9oMlKgDoaI6qJdZ/ItgeFStDW0AhHtrsSFCxbsqBNTY9q5npbvo1ZqDsuRYIiLQyYrlQ==}
+  '@grapecity/wijmo.vue2.grid.multirow@5.20232.939':
+    resolution: {integrity: sha512-i55uXWiiasxne+q7J3CqhIikgYjKdq63OQFrHO8d+xtxkVGXYHwMD+sH7rX/YgMnf9gdLJBABigdGA3i3btlSA==}
 
-  '@grapecity/wijmo.vue2.grid.multirow@5.20252.42':
-    resolution: {integrity: sha512-kehtpW6ovCE0N5LFQZlUWxKCiF+mprNEzhEPNr9SBpzc87P/i+U6uC2TciC/q3c4lYwkRejKYkrn/11ArW95Bg==}
+  '@grapecity/wijmo.vue2.grid.search@5.20232.939':
+    resolution: {integrity: sha512-w3reELJ0OPD2z1+HGhv6gvk5AV1aDmfhlB92YwAiJncPhiw5iD8unm837GvHMM07o8AhhlICc5yrNYdvHhmvMA==}
 
-  '@grapecity/wijmo.vue2.grid.search@5.20252.42':
-    resolution: {integrity: sha512-ZNj5YHbaQVaTdZhi37Rgpt5AOCAHWBEjJeK81znzTj6EGcV5hTISza5xb3lKkG/pyR9iOuC6u5N7RSBl6dKvMA==}
+  '@grapecity/wijmo.vue2.grid.sheet@5.20232.939':
+    resolution: {integrity: sha512-yF+4Vxv5aRfrX36g1RVjOC+Kk3aCUNUl3QMCOd4f2RpA5Y/jyB+TJZ/3hufexLT6vmMrAhjlfuoTBqIxt+DbtA==}
 
-  '@grapecity/wijmo.vue2.grid.sheet@5.20252.42':
-    resolution: {integrity: sha512-cMoM2sykTyzNV/5onYTZTZFhe6ESbEj+OHlldhPl4V6t1XG00EtPloKc3LQXOjEoLmzX7ehW+azr5JT7Qvdddg==}
+  '@grapecity/wijmo.vue2.grid.transposed@5.20232.939':
+    resolution: {integrity: sha512-ov70fb/VJ2dA0aSE8i/CMSpCyQ7qm7p83UqzV7geD69d+tcGwHc2QcSibYfr8sgtdXI1Zmt077jjA2POKaz9Hw==}
 
-  '@grapecity/wijmo.vue2.grid.transposed@5.20252.42':
-    resolution: {integrity: sha512-1Iotom697BbR+DhLH/DCeL9bmNW08KJy0Tole5PrGbojy3jvA7TpbZZcGJ4DnHe9HvWfFF5gi/RCyn+SrdNCCA==}
-
-  '@grapecity/wijmo.vue2.grid.transposedmultirow@5.20252.42':
-    resolution: {integrity: sha512-iwNnXbHb1zHcP7d3Ur2UcyTWyvO2LTfQgJckCQgyShoFd2TiOuMLaqh+G76gn+tcW6uJzzo4C9ON103+CiQk5g==}
+  '@grapecity/wijmo.vue2.grid.transposedmultirow@5.20232.939':
+    resolution: {integrity: sha512-OiaUqUW1nzTC61DPK+VBNdzffRPpEYoWxjJV5/kL42xt8cwGjcfTcqUm88Fda0jbnPPDQKurSiZe9ST+rLCO6A==}
 
   '@grapecity/wijmo.vue2.grid@5.20232.939':
     resolution: {integrity: sha512-AsKXet+gxuZbawhvsa0b9UsZDA+Ehykb7Tay51KFrSxiGvOIIADkLP2E6raIn2mWKzqZu9UFr78u9QOFMqtllw==}
 
-  '@grapecity/wijmo.vue2.grid@5.20252.42':
-    resolution: {integrity: sha512-gtxGjN8bz1QGyJLsgJmLS6Tzg2KJTqwUjx82PRqy8txxzyLjv8YG7uJoDJDiludOTszUh0065tJaWu7e1rxUZg==}
+  '@grapecity/wijmo.vue2.input@5.20232.939':
+    resolution: {integrity: sha512-wDemCYNt14YDdv/dDfQdQR6n0i74YXvG+ZOnZ8aHEcu/jcdobGMiCsn72nPy224N7YjoxGgOnj1XZnqGSLQeww==}
 
-  '@grapecity/wijmo.vue2.input@5.20252.42':
-    resolution: {integrity: sha512-+C2dBUgPbt8F7nhWpX9BmyEJs66d07cBENBn0NIxsDJjwg2GNFkrPWDqlS5dN/krskpKINuixzWxRmeG2GZjew==}
+  '@grapecity/wijmo.vue2.nav@5.20232.939':
+    resolution: {integrity: sha512-Kb2a5rjRuKFwaY4vXATrSxdhyNGwllf1ThcI53ennyE6g1YabRfLnaMWA+x0wL8RVXZX5DJK52Z8/+Z2IubWFw==}
 
-  '@grapecity/wijmo.vue2.nav@5.20252.42':
-    resolution: {integrity: sha512-7HLsAVsSTaA3av8btmz/Bu2wIpz5yETwwsiO6YK80O5AzYPjcIz3ojP5KJt06R30sAapk3Z9+U2JUbz+pG7ArA==}
+  '@grapecity/wijmo.vue2.olap@5.20232.939':
+    resolution: {integrity: sha512-FJdrXFpLfzCsWsWlgefIhjq49IucOXpK5fW3WYgd+VAUeC7tIETJ3ESplmgUoorMMcw4M5+Z20sk+Fa4B6TdEg==}
 
-  '@grapecity/wijmo.vue2.olap@5.20252.42':
-    resolution: {integrity: sha512-I57dN4Kyg3TVJRE39jXR3SI7+Jg4gxSZTNKU8kW86GUXiQsZjDLXk5QCx+3xkoY4syduoMHvggS0bFUe6ZS2PQ==}
+  '@grapecity/wijmo.vue2.viewer@5.20232.939':
+    resolution: {integrity: sha512-DgYT4/mxYgMSaOfXauIy3I2ylVD1yi8Hj/DBqEP7pKx+PNLOJ3fM6IuhxWmgY6/6TjN0hkILiUV7GnLuJlK5eA==}
 
-  '@grapecity/wijmo.vue2.viewer@5.20252.42':
-    resolution: {integrity: sha512-cXzDR1zsO2Ep9VV/ogV4NHob8CyusCLQ7cStTSatlv1u+CpXHfzjVKzbD3wP2+CpLxjwsoP722k7Kq/SENxGGg==}
+  '@grapecity/wijmo.webcomponents.all@5.20232.939':
+    resolution: {integrity: sha512-y9pgIrL4Y8HSyvILfIMXMDDMviTjIh4s7VICuE5OS6vAo+DGUDOGVqfGR6YGS4iBnQll5rPV4u/AI0FH0b/EZQ==}
 
-  '@grapecity/wijmo.webcomponents.all@5.20252.42':
-    resolution: {integrity: sha512-V7LT7qxGs5S5Aj9aHgA+ERIeBusJOckBHmg/cDxbkCqOxTh3KZAdtc//Kq6N6Aww4nfUS97sokw3b1qw6soTTA==}
+  '@grapecity/wijmo.webcomponents.barcode.common@5.20232.939':
+    resolution: {integrity: sha512-UknuEv2Q66D7B3nmQvLUCkDTO2vIGSRh6h51mFgzrBtyeSMTYYH6dUkDV9sTubI6AGau8eXHd5L7dmNNMZH/QA==}
 
-  '@grapecity/wijmo.webcomponents.barcode.common@5.20252.42':
-    resolution: {integrity: sha512-kIwTYg4CopvVhks08QIHWZa+TRHAbjfTUjLkRY3kD3T8TGijYW6ysyUNqGNBjRGM10TImAP5vG7df5idxdGvpA==}
+  '@grapecity/wijmo.webcomponents.barcode.composite@5.20232.939':
+    resolution: {integrity: sha512-RQ2yyakQ/Cu9tDF4J3jdYZxVq1QdIGu1GLXWGNTchXwjpBYzpSnI6FuVYquNIuUoBF8h3mYEwnqBEiIYfhNMOA==}
 
-  '@grapecity/wijmo.webcomponents.barcode.composite@5.20252.42':
-    resolution: {integrity: sha512-E1WfcLAmRHYRCGzyz3rYkt4xvU53UQkuV/XYYnHBa/XyJJcCtAccqMRW/i+kkE3qr/8vNjEMmsA74fsLJg2qSg==}
+  '@grapecity/wijmo.webcomponents.barcode.specialized@5.20232.939':
+    resolution: {integrity: sha512-KcaauIEAryiSgmevSzBwzR2QT31H5dMzhOYylo4bEl9WD6+7z8P6vJD29S/b7gCpoCOa/iZWrC71YsNXPGDuIw==}
 
-  '@grapecity/wijmo.webcomponents.barcode.specialized@5.20252.42':
-    resolution: {integrity: sha512-vw+gTeEDs+FPhSzg5XyTZ+lgqjYrCWJneVqBq6WZqaKW8rVrYkWRv2IhaDA8mVICugIzovjEu5uOIBx45UYBIQ==}
+  '@grapecity/wijmo.webcomponents.base@5.20232.939':
+    resolution: {integrity: sha512-duNyzBFskPtdAkcq1xH+tabGVz1zPPdXbZOdbbHWbPZb9NH0sU3esTcPvk/I9Exnayvg6oi1S1nZzENmQP+SZA==}
 
-  '@grapecity/wijmo.webcomponents.base@5.20252.42':
-    resolution: {integrity: sha512-cnjUHr/aQHSs4/HBXreibkOLnzY5Nhj0yZX4ttsYWL5SPqrBFgAqGCnQodH/Bp7RjE3czcmtPC2PKOS55TxKbg==}
+  '@grapecity/wijmo.webcomponents.chart.analytics@5.20232.939':
+    resolution: {integrity: sha512-kN5VXsWdwDtUvKHz4pKfH23xFfh3DZOJy4SszxAD8BGa9pqNGa1EuzxA+SKdn/++mdEhsmDkCvSjSBeAsbvmcA==}
 
-  '@grapecity/wijmo.webcomponents.chart.analytics@5.20252.42':
-    resolution: {integrity: sha512-XfuiezZReO2HNIAv8CWQrAycGKooJnBQbg5v/EEGj9ZaqwdzNY7Lu09QA9nb0DglMMplU2L7DarcF3RhMGiRiA==}
+  '@grapecity/wijmo.webcomponents.chart.animation@5.20232.939':
+    resolution: {integrity: sha512-BXt648PbvLnG8WMLyT8K/3zVzHF3VYZ08fGoJIZQ6CEx0HxcEBzQgjKfrmbX6vutVPIrVU7VLpokEAqeAyqG9g==}
 
-  '@grapecity/wijmo.webcomponents.chart.animation@5.20252.42':
-    resolution: {integrity: sha512-jb7xWpQG65n+pch3Nr6YNJPjtnjZbV2Z8Ra+MAoE0hSbd57sfDwcLKJrwZFUd7Thxs3+/BXRz2sn4SXQtndF2A==}
+  '@grapecity/wijmo.webcomponents.chart.finance.analytics@5.20232.939':
+    resolution: {integrity: sha512-CqlLv3el+izQOlAE950Cii0UTZMuQXInj0IA/EGmgEk8E7ws1f2kA7LF7OLXY2c+CvV3KIrj7ACRpaL29tB5BA==}
 
-  '@grapecity/wijmo.webcomponents.chart.finance.analytics@5.20252.42':
-    resolution: {integrity: sha512-JUamC984JQCv4MxVLFNaO0T7bK5vnUH2OZSYWqZULIp5NErm3LyOU9YQ3ZbDo4BS3RBMPeZ0Q6oZ/pnajGHXhQ==}
+  '@grapecity/wijmo.webcomponents.chart.finance@5.20232.939':
+    resolution: {integrity: sha512-vGoivZHWaFtky3sut/LsHX9EyOkB8Ky+yf0Ya9yFX6w1uLJpnbhe2EyryHXcw3cnEA51gCPkTVEbrLp5rs/tUA==}
 
-  '@grapecity/wijmo.webcomponents.chart.finance@5.20252.42':
-    resolution: {integrity: sha512-w0+dr8Sye48tDlv05+ys6GAhjvmFBx3ol9tti6P6HQQDOTvZmYKCf6gSKhqjiglbPA+4HkVCBDWY//yIFgQKfQ==}
+  '@grapecity/wijmo.webcomponents.chart.hierarchical@5.20232.939':
+    resolution: {integrity: sha512-txVKaPJqCLtZ+V6ascI6edwjosPoom1WUUlCeJe1ciDOceR4SigxpQr1PCtApsggBqMz1XZQsMDqP7q1wneyIQ==}
 
-  '@grapecity/wijmo.webcomponents.chart.hierarchical@5.20252.42':
-    resolution: {integrity: sha512-BKas48J2AnHR1/1sTEYghC0/cQJ/nKQByf6tYUuflYD24pVEm0ZZguT8Dc1if4fWT3Lycy5ENWyLEx4QJqaA9Q==}
+  '@grapecity/wijmo.webcomponents.chart.interaction@5.20232.939':
+    resolution: {integrity: sha512-DIiAIQs+KcQ9ndaaWd6XidThAe0RTfluGITB3kPBdj43aBPBR9ThuXSng5TIFTNDXxkaUBTEBTFDUnAeXKNuLA==}
 
-  '@grapecity/wijmo.webcomponents.chart.interaction@5.20252.42':
-    resolution: {integrity: sha512-S/JAMA+xnmhYi35/T0cGAr/f6wLfm/v0v/TJFjATXF4tIoRoQ5uh0Em2msmpMD2+zwTpit8rZdBP4Btb04qT8Q==}
+  '@grapecity/wijmo.webcomponents.chart.map@5.20232.939':
+    resolution: {integrity: sha512-UgMeYem089fwP4M/QrWmelmn6aYxsf8Q6fZ+XgHGwCNAo8p4NzoZD8cpOeMcGOmlv56+rBYO/z4R/CEbBBz8Jw==}
 
-  '@grapecity/wijmo.webcomponents.chart.map@5.20252.42':
-    resolution: {integrity: sha512-SKEdLFprpJjwV/d1IFEABCS+RDblxAnkf9Lc2mOBoH7AL60xrurBlZuB5eRQFOlXB4tKfC3O5+d4amEQobFqHQ==}
+  '@grapecity/wijmo.webcomponents.chart.radar@5.20232.939':
+    resolution: {integrity: sha512-5u+HxC0mLPePSwTq8aNqG4Y+Y4mYYPoutcRwW0vQqah/yBzb3hZl5EwSr8pbrL2WTUDSEctNhhQE9McFPE3jSw==}
 
-  '@grapecity/wijmo.webcomponents.chart.radar@5.20252.42':
-    resolution: {integrity: sha512-4yc1b4xiTby3oZPA0J6qv0vqzODPD1GoA9r86UnLg357HAP4azXEhZcwz2aoM5pSCq86jCzkQkNUmixpsSrMxQ==}
+  '@grapecity/wijmo.webcomponents.chart@5.20232.939':
+    resolution: {integrity: sha512-1Ys1hjZdgwDp8Qv+v/99v67+DO7TbwBcSLwIWZvqGfyvFNfXnSJWZabb1TCtwKSu8xO9yqgppG7oPvXQa1uC3A==}
 
-  '@grapecity/wijmo.webcomponents.chart@5.20252.42':
-    resolution: {integrity: sha512-l7Mb2XTGK+hC2Hv2FqdTgNNXwcfcR25+5naifH41yebGcVPbhbh9Bhlj4JUo+Ow23qawj+oMpDEUjqsJGXEZcg==}
+  '@grapecity/wijmo.webcomponents.gauge@5.20232.939':
+    resolution: {integrity: sha512-+SM1sJBF3tPe2hkrdkOwtIyyELINjC83KVl4dnA06T3miPhK/LFMIMlJpNCODZXFykxLuJuTtPDBsxCA6Gzoew==}
 
-  '@grapecity/wijmo.webcomponents.gauge@5.20252.42':
-    resolution: {integrity: sha512-F1wOqs9D/wFA7tlInC8gzhgsOr9mcwM3COZkDrzQE7NF6IhyLw6dek3JFYEBelGczq6BWJLefgT4Bvs1DJQ44w==}
+  '@grapecity/wijmo.webcomponents.grid.filter@5.20232.939':
+    resolution: {integrity: sha512-9MN9uAKnpGmDPYBMxaRswD8BKaO7MU7yUSueXSLft85/O7zdUdtemnsIMw0OYAN7e3uzDhImGXekOdsLXaLv0g==}
 
-  '@grapecity/wijmo.webcomponents.grid.filter@5.20252.42':
-    resolution: {integrity: sha512-FoBObX/PXSNofVpSXRkReVZ8HwY+7EcKiWC4i/GpSeX4dCUDacQ4wVfdgBpVrjV9DiQ4HWgk8s9XAH9syJ/5sg==}
+  '@grapecity/wijmo.webcomponents.grid.grouppanel@5.20232.939':
+    resolution: {integrity: sha512-3YMbXn4lGzu1GFCqTK1mUSY+8tNcQ5BKtyNSC85z+2PcfBa0BFmLw0lfJiexmSLUibWzKApfYPjV+6gfb3UJ1g==}
 
-  '@grapecity/wijmo.webcomponents.grid.grouppanel@5.20252.42':
-    resolution: {integrity: sha512-PgytukIMoP7BvKLKbugXS0yqVwCLZ75OXu08dI1hU/4Ha6SmhdlTJE+GDFY6ix4MF0KAQQu0P2Fp4N/uHFYMtw==}
+  '@grapecity/wijmo.webcomponents.grid.multirow@5.20232.939':
+    resolution: {integrity: sha512-VTIeobwVuaqzNyXAsi0tW99fEj9Og3XVJRSWKZVF0yMmyP0OFYyS844Km8n9o4/Nh3xBeqFV+Qcjow22hFPQ2w==}
 
-  '@grapecity/wijmo.webcomponents.grid.multirow@5.20252.42':
-    resolution: {integrity: sha512-RV0r7TvyYYXYBaj7OErJ11KHb5CKFnx6RxNn/0qZzpMukWuDUVe0Xi4RBI9RwMdrzZyyMLogQkjudVg+sSTivw==}
+  '@grapecity/wijmo.webcomponents.grid.search@5.20232.939':
+    resolution: {integrity: sha512-zGaJp43X8VetV3URV8ckAeK5QeVNGpD+TAp4T01l2sHAIQTFLQl/Pvl+PiHFEMiog5Y2cEOApviirfL+8ibKyA==}
 
-  '@grapecity/wijmo.webcomponents.grid.search@5.20252.42':
-    resolution: {integrity: sha512-0LUHZy6u2xpZ/VElmoOvTcGuCG1i9oFsMQfLQI3dljmhkKZJtwnD2cKf6kkQpZn31I5zQjblmdgHOwIfsAoTjg==}
+  '@grapecity/wijmo.webcomponents.grid.sheet@5.20232.939':
+    resolution: {integrity: sha512-l1FV0GRUq33hq/HabkrC4IldhmnnlADFM7ZW4oOTlDMMsezhnSZdug9ck6ebrL6tDBiOiuhHhd9yz3zA1UrRzg==}
 
-  '@grapecity/wijmo.webcomponents.grid.sheet@5.20252.42':
-    resolution: {integrity: sha512-DEdots7jW/60/Y15AXoOmfASrghHt/d2ZSrrS4/hycTWcWcNSqVj5BvMcyUGVUjrV+H+vS19AuG/kOewUXxxAA==}
+  '@grapecity/wijmo.webcomponents.grid.transposed@5.20232.939':
+    resolution: {integrity: sha512-/I6cN6mzH7CD9A00hpgm5s3UEO9KlbPMBGtaY2dCF9w1R/X9rnfHRbLCb3bxQBrrfEiXIlK3Pn1xaDvG09p22A==}
 
-  '@grapecity/wijmo.webcomponents.grid.transposed@5.20252.42':
-    resolution: {integrity: sha512-Y0T6hhbJQOI00b4jpWvlCG5hgJl7S6o/tH4bPfHmo4yw+GHnZyt5NsagmajtriLEoZ43yHTupX58olMixA0k5g==}
+  '@grapecity/wijmo.webcomponents.grid.transposedmultirow@5.20232.939':
+    resolution: {integrity: sha512-1JZZkg8FD/VirS02j6H56jYhnYdxFPY04pK4Zn811VFrE1Xzb4Mn+CovmXgSR7lTFqwZpHdY8t/o334g45zcRQ==}
 
-  '@grapecity/wijmo.webcomponents.grid.transposedmultirow@5.20252.42':
-    resolution: {integrity: sha512-Sj2d8InFQRWwvyDoCNWN3WxBklvDgVzSU8/JqWsYbmt9H73qJWBLea4gwy7DwzGqYRsWUMRjx4717ZEKUJJOUA==}
+  '@grapecity/wijmo.webcomponents.grid@5.20232.939':
+    resolution: {integrity: sha512-5oEkXiJaZUp99HL3WgY8YPRWNHa4tstAuXuOH11M15Ni8TY/Vv05jJVDPSj0aDra7yQwz/iPtfmHKUcMKRicTA==}
 
-  '@grapecity/wijmo.webcomponents.grid@5.20252.42':
-    resolution: {integrity: sha512-9qDl+C1ta0fID4eLsJqOSpRWoDgL6dgqDDbGQEGr8slMNoiOVZf7IQg6g4Onmjvj0ZJW9ZA3JYvsyX6b09aEWw==}
+  '@grapecity/wijmo.webcomponents.input@5.20232.939':
+    resolution: {integrity: sha512-yOX5/IfHoEJDJZaPqDwa3d3wHh8hPZOzGMFfN3kQSCOWHA/giKfPO8dccQHfZpWi2xCplaD/SIB0xMPu3bf1pA==}
 
-  '@grapecity/wijmo.webcomponents.input@5.20252.42':
-    resolution: {integrity: sha512-flB2G4l/wlHqvN9MzYE+iG7EivInB1tf/lP6jNBk7zvux1pXCaOBZWNccw1RQ4k8PWOgfD2UA8jskcZa1ToZTg==}
+  '@grapecity/wijmo.webcomponents.nav@5.20232.939':
+    resolution: {integrity: sha512-CLVqFnfjV6i0IvnRKfSjYHywmKUIeRp7AzyLRe1PjNQSuFD7Mg+HmmjdcaeQWI0q/qZb/aPuMwqiMcMAWwzo0w==}
 
-  '@grapecity/wijmo.webcomponents.nav@5.20252.42':
-    resolution: {integrity: sha512-of0dgmnlq+TX6LwZcYz3Ny0qpQav8wFbN42nrZvab6Prn8d75q8scnaIec7JEfNTTav1A+4VHqMhZcPLs/d0sg==}
+  '@grapecity/wijmo.webcomponents.olap@5.20232.939':
+    resolution: {integrity: sha512-FXHHI7RhxlC//Kj9KW7x9MoKSOp4mUPzg181AexrqiBI8apdK7mrtOg8zN8gElmjKUhTVnO93Y6rPQG2qSIpwA==}
 
-  '@grapecity/wijmo.webcomponents.olap@5.20252.42':
-    resolution: {integrity: sha512-1j57ehrOVZaPB0q5EpT5xcS1szSch4GbT3LZH3F1vECYeOyRTtEqlBG4JlbmFh4qe1vjPop0ixaqjCB7fBI8ug==}
+  '@grapecity/wijmo.webcomponents.viewer@5.20232.939':
+    resolution: {integrity: sha512-slcyHWonBK3cgigSTIV49MWPOSmzXOXsoo+spx+XJcJelvfJEhW89ln6oQVXL9GcD2CEWyu2Ndi5aM2uR7JpfA==}
 
-  '@grapecity/wijmo.webcomponents.viewer@5.20252.42':
-    resolution: {integrity: sha512-ELfUKCf6a2AnYSd6jG3cUezrPX+gZybysQXrjN6Iz6Cuaif9boEH/xdlHzAElr4y+bNCW/bpuRJpE0HMRUbFwg==}
-
-  '@grapecity/wijmo.xlsx@5.20252.42':
-    resolution: {integrity: sha512-8tIL0CoLuhLogxYyJETjE9N8uKob+07x8aiYexSAQz5BtY5qcXn3IF7UbdIFBfmMCHKFq8n9W2xLVyiw6ZJLmw==}
+  '@grapecity/wijmo.xlsx@5.20232.939':
+    resolution: {integrity: sha512-dttuEQLqs06UtU7bG8kbJkTjE+tDaNZoUzLBJJLfH3bx1m3ajT4i5s04uBRyeAByL84TcsVmns/TQ2JRCXMJ8Q==}
 
   '@grapecity/wijmo@5.20232.939':
     resolution: {integrity: sha512-oejxTH7dPm09fqtMOKovULOPKz+hty0+hwa7HHxWK/keBLTEM98/diaVZUgyh6xovXDNisFDJ2PS4bh6L/a0Eg==}
-
-  '@grapecity/wijmo@5.20252.42':
-    resolution: {integrity: sha512-6SNT7UsiywvH10m5r9SUxMBA+KLHifU4E+qNBtGVHvGQVeF/PZUmgMEzwRDxfO0/CzNNCRlhwOkjpEI5EFYZOA==}
 
   '@interactjs/actions@1.10.27':
     resolution: {integrity: sha512-FCRg5KwB+stkPcAMx/Cn0fgGP6p4LyMX9S/Upcn/W+hpYme31bPi54PCqmOebzz6myTthN6zFf9jMyLOqtI/gg==}
@@ -1380,8 +1347,8 @@ packages:
       vite: ^5.0.0 || ^6.0.0
       vue: ^3.2.25
 
-  '@vmscloud/moz-component@1.0.3':
-    resolution: {integrity: sha512-q34f+27thU2xfxSke3R9q4owBDv+WiT46tyXFaWKGaZaMCjgSYR2y55MSr6bvD2nEiJu2cZdPpDdihsL6OHKcA==, tarball: https://npm.pkg.github.com/download/@vmscloud/moz-component/1.0.3/0cb0e248e77b0b9b61a1ba9b4d861355b825ec41}
+  '@vmscloud/moz-component@file:../../Aleatorik-UI-Frontend/libraries/moz-component':
+    resolution: {directory: ../../Aleatorik-UI-Frontend/libraries/moz-component, type: directory}
     peerDependencies:
       '@grapecity/wijmo.all': '>=5.20232.0'
       '@tanstack/vue-query': '>=5.0.0'
@@ -1389,6 +1356,9 @@ packages:
       i18next-vue: '>=3.0.0'
       pinia: '>=2.1.0'
       vue: '>=3.4.0'
+    peerDependenciesMeta:
+      '@grapecity/wijmo.all':
+        optional: true
 
   '@volar/language-core@2.4.15':
     resolution: {integrity: sha512-3VHw+QZU0ZG9IuQmzT68IyN4hZNd9GchGPhbD9+pa8CVv7rnoOZwo7T8weIbrRmihqy3ATpdfXFnqRrfPVK6CA==}
@@ -2303,512 +2273,512 @@ snapshots:
   '@esbuild/win32-x64@0.21.5':
     optional: true
 
-  '@grapecity/wijmo.all@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo.angular.all': 5.20252.42
-      '@grapecity/wijmo.angular2.all': 5.20252.42
-      '@grapecity/wijmo.knockout.all': 5.20252.42
-      '@grapecity/wijmo.purejs.all': 5.20252.42
-      '@grapecity/wijmo.react.all': 5.20252.42
-      '@grapecity/wijmo.vue2.all': 5.20252.42
-      '@grapecity/wijmo.webcomponents.all': 5.20252.42
-
-  '@grapecity/wijmo.angular.all@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.angular.chart': 5.20252.42
-      '@grapecity/wijmo.angular.chart.analytics': 5.20252.42
-      '@grapecity/wijmo.angular.chart.animation': 5.20252.42
-      '@grapecity/wijmo.angular.chart.annotation': 5.20252.42
-      '@grapecity/wijmo.angular.chart.finance': 5.20252.42
-      '@grapecity/wijmo.angular.chart.finance.analytics': 5.20252.42
-      '@grapecity/wijmo.angular.chart.hierarchical': 5.20252.42
-      '@grapecity/wijmo.angular.chart.interaction': 5.20252.42
-      '@grapecity/wijmo.angular.chart.radar': 5.20252.42
-      '@grapecity/wijmo.angular.core': 5.20252.42
-      '@grapecity/wijmo.angular.gauge': 5.20252.42
-      '@grapecity/wijmo.angular.grid': 5.20252.42
-      '@grapecity/wijmo.angular.grid.detail': 5.20252.42
-      '@grapecity/wijmo.angular.grid.filter': 5.20252.42
-      '@grapecity/wijmo.angular.grid.grouppanel': 5.20252.42
-      '@grapecity/wijmo.angular.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.angular.grid.sheet': 5.20252.42
-      '@grapecity/wijmo.angular.input': 5.20252.42
-      '@grapecity/wijmo.angular.nav': 5.20252.42
-      '@grapecity/wijmo.angular.olap': 5.20252.42
-      '@grapecity/wijmo.angular.viewer': 5.20252.42
-      '@grapecity/wijmo.purejs.all': 5.20252.42
-
-  '@grapecity/wijmo.angular.base@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.chart.analytics': 5.20252.42
-      '@grapecity/wijmo.chart.animation': 5.20252.42
-      '@grapecity/wijmo.chart.annotation': 5.20252.42
-      '@grapecity/wijmo.chart.finance': 5.20252.42
-      '@grapecity/wijmo.chart.finance.analytics': 5.20252.42
-      '@grapecity/wijmo.chart.hierarchical': 5.20252.42
-      '@grapecity/wijmo.chart.interaction': 5.20252.42
-      '@grapecity/wijmo.chart.radar': 5.20252.42
-      '@grapecity/wijmo.chart.render': 5.20252.42
-      '@grapecity/wijmo.gauge': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
-      '@grapecity/wijmo.grid.grouppanel': 5.20252.42
-      '@grapecity/wijmo.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.grid.pdf': 5.20252.42
-      '@grapecity/wijmo.grid.sheet': 5.20252.42
-      '@grapecity/wijmo.grid.xlsx': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.meta': 5.20252.42
-      '@grapecity/wijmo.nav': 5.20252.42
-      '@grapecity/wijmo.odata': 5.20252.42
-      '@grapecity/wijmo.olap': 5.20252.42
-      '@grapecity/wijmo.pdf': 5.20252.42
-      '@grapecity/wijmo.viewer': 5.20252.42
-      '@grapecity/wijmo.xlsx': 5.20252.42
-
-  '@grapecity/wijmo.angular.chart.analytics@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.angular.chart': 5.20252.42
-      '@grapecity/wijmo.chart.analytics': 5.20252.42
-
-  '@grapecity/wijmo.angular.chart.animation@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.chart.animation': 5.20252.42
-
-  '@grapecity/wijmo.angular.chart.annotation@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.chart.annotation': 5.20252.42
-
-  '@grapecity/wijmo.angular.chart.finance.analytics@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.angular.chart': 5.20252.42
-      '@grapecity/wijmo.chart.finance.analytics': 5.20252.42
-
-  '@grapecity/wijmo.angular.chart.finance@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.angular.chart': 5.20252.42
-      '@grapecity/wijmo.chart.finance': 5.20252.42
-
-  '@grapecity/wijmo.angular.chart.hierarchical@5.20252.42':
+  '@grapecity/wijmo.all@5.20232.939':
+    dependencies:
+      '@grapecity/wijmo.angular.all': 5.20232.939
+      '@grapecity/wijmo.angular2.all': 5.20232.939
+      '@grapecity/wijmo.knockout.all': 5.20232.939
+      '@grapecity/wijmo.purejs.all': 5.20232.939
+      '@grapecity/wijmo.react.all': 5.20232.939
+      '@grapecity/wijmo.vue2.all': 5.20232.939
+      '@grapecity/wijmo.webcomponents.all': 5.20232.939
+
+  '@grapecity/wijmo.angular.all@5.20232.939':
+    dependencies:
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.angular.chart': 5.20232.939
+      '@grapecity/wijmo.angular.chart.analytics': 5.20232.939
+      '@grapecity/wijmo.angular.chart.animation': 5.20232.939
+      '@grapecity/wijmo.angular.chart.annotation': 5.20232.939
+      '@grapecity/wijmo.angular.chart.finance': 5.20232.939
+      '@grapecity/wijmo.angular.chart.finance.analytics': 5.20232.939
+      '@grapecity/wijmo.angular.chart.hierarchical': 5.20232.939
+      '@grapecity/wijmo.angular.chart.interaction': 5.20232.939
+      '@grapecity/wijmo.angular.chart.radar': 5.20232.939
+      '@grapecity/wijmo.angular.core': 5.20232.939
+      '@grapecity/wijmo.angular.gauge': 5.20232.939
+      '@grapecity/wijmo.angular.grid': 5.20232.939
+      '@grapecity/wijmo.angular.grid.detail': 5.20232.939
+      '@grapecity/wijmo.angular.grid.filter': 5.20232.939
+      '@grapecity/wijmo.angular.grid.grouppanel': 5.20232.939
+      '@grapecity/wijmo.angular.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.angular.grid.sheet': 5.20232.939
+      '@grapecity/wijmo.angular.input': 5.20232.939
+      '@grapecity/wijmo.angular.nav': 5.20232.939
+      '@grapecity/wijmo.angular.olap': 5.20232.939
+      '@grapecity/wijmo.angular.viewer': 5.20232.939
+      '@grapecity/wijmo.purejs.all': 5.20232.939
+
+  '@grapecity/wijmo.angular.base@5.20232.939':
+    dependencies:
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
+      '@grapecity/wijmo.chart.analytics': 5.20232.939
+      '@grapecity/wijmo.chart.animation': 5.20232.939
+      '@grapecity/wijmo.chart.annotation': 5.20232.939
+      '@grapecity/wijmo.chart.finance': 5.20232.939
+      '@grapecity/wijmo.chart.finance.analytics': 5.20232.939
+      '@grapecity/wijmo.chart.hierarchical': 5.20232.939
+      '@grapecity/wijmo.chart.interaction': 5.20232.939
+      '@grapecity/wijmo.chart.radar': 5.20232.939
+      '@grapecity/wijmo.chart.render': 5.20232.939
+      '@grapecity/wijmo.gauge': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.detail': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
+      '@grapecity/wijmo.grid.grouppanel': 5.20232.939
+      '@grapecity/wijmo.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.grid.pdf': 5.20232.939
+      '@grapecity/wijmo.grid.sheet': 5.20232.939
+      '@grapecity/wijmo.grid.xlsx': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
+      '@grapecity/wijmo.meta': 5.20232.939
+      '@grapecity/wijmo.nav': 5.20232.939
+      '@grapecity/wijmo.odata': 5.20232.939
+      '@grapecity/wijmo.olap': 5.20232.939
+      '@grapecity/wijmo.pdf': 5.20232.939
+      '@grapecity/wijmo.viewer': 5.20232.939
+      '@grapecity/wijmo.xlsx': 5.20232.939
+
+  '@grapecity/wijmo.angular.chart.analytics@5.20232.939':
+    dependencies:
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.angular.chart': 5.20232.939
+      '@grapecity/wijmo.chart.analytics': 5.20232.939
+
+  '@grapecity/wijmo.angular.chart.animation@5.20232.939':
+    dependencies:
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.chart.animation': 5.20232.939
+
+  '@grapecity/wijmo.angular.chart.annotation@5.20232.939':
+    dependencies:
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.chart.annotation': 5.20232.939
+
+  '@grapecity/wijmo.angular.chart.finance.analytics@5.20232.939':
+    dependencies:
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.angular.chart': 5.20232.939
+      '@grapecity/wijmo.chart.finance.analytics': 5.20232.939
+
+  '@grapecity/wijmo.angular.chart.finance@5.20232.939':
+    dependencies:
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.angular.chart': 5.20232.939
+      '@grapecity/wijmo.chart.finance': 5.20232.939
+
+  '@grapecity/wijmo.angular.chart.hierarchical@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.angular.chart': 5.20252.42
-      '@grapecity/wijmo.chart.hierarchical': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.angular.chart': 5.20232.939
+      '@grapecity/wijmo.chart.hierarchical': 5.20232.939
 
-  '@grapecity/wijmo.angular.chart.interaction@5.20252.42':
+  '@grapecity/wijmo.angular.chart.interaction@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.chart.interaction': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.chart.interaction': 5.20232.939
 
-  '@grapecity/wijmo.angular.chart.radar@5.20252.42':
+  '@grapecity/wijmo.angular.chart.radar@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.angular.chart': 5.20252.42
-      '@grapecity/wijmo.chart.radar': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.angular.chart': 5.20232.939
+      '@grapecity/wijmo.chart.radar': 5.20232.939
 
-  '@grapecity/wijmo.angular.chart@5.20252.42':
+  '@grapecity/wijmo.angular.chart@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
 
-  '@grapecity/wijmo.angular.core@5.20252.42':
+  '@grapecity/wijmo.angular.core@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
 
-  '@grapecity/wijmo.angular.gauge@5.20252.42':
+  '@grapecity/wijmo.angular.gauge@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.gauge': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.gauge': 5.20232.939
 
-  '@grapecity/wijmo.angular.grid.detail@5.20252.42':
+  '@grapecity/wijmo.angular.grid.detail@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.detail': 5.20232.939
 
-  '@grapecity/wijmo.angular.grid.filter@5.20252.42':
+  '@grapecity/wijmo.angular.grid.filter@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
 
-  '@grapecity/wijmo.angular.grid.grouppanel@5.20252.42':
+  '@grapecity/wijmo.angular.grid.grouppanel@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.grid.grouppanel': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.grid.grouppanel': 5.20232.939
 
-  '@grapecity/wijmo.angular.grid.multirow@5.20252.42':
+  '@grapecity/wijmo.angular.grid.multirow@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.angular.grid': 5.20252.42
-      '@grapecity/wijmo.grid.multirow': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.angular.grid': 5.20232.939
+      '@grapecity/wijmo.grid.multirow': 5.20232.939
 
-  '@grapecity/wijmo.angular.grid.sheet@5.20252.42':
+  '@grapecity/wijmo.angular.grid.sheet@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.angular.grid': 5.20252.42
-      '@grapecity/wijmo.grid.sheet': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.angular.grid': 5.20232.939
+      '@grapecity/wijmo.grid.sheet': 5.20232.939
 
-  '@grapecity/wijmo.angular.grid@5.20252.42':
+  '@grapecity/wijmo.angular.grid@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.detail': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
 
-  '@grapecity/wijmo.angular.input@5.20252.42':
+  '@grapecity/wijmo.angular.input@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
 
-  '@grapecity/wijmo.angular.nav@5.20252.42':
+  '@grapecity/wijmo.angular.nav@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.nav': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.nav': 5.20232.939
 
-  '@grapecity/wijmo.angular.olap@5.20252.42':
+  '@grapecity/wijmo.angular.olap@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.angular.grid': 5.20252.42
-      '@grapecity/wijmo.olap': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.angular.grid': 5.20232.939
+      '@grapecity/wijmo.olap': 5.20232.939
 
-  '@grapecity/wijmo.angular.viewer@5.20252.42':
+  '@grapecity/wijmo.angular.viewer@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular.base': 5.20252.42
-      '@grapecity/wijmo.viewer': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular.base': 5.20232.939
+      '@grapecity/wijmo.viewer': 5.20232.939
 
-  '@grapecity/wijmo.angular2.all@5.20252.42':
+  '@grapecity/wijmo.angular2.all@5.20232.939':
     dependencies:
-      '@grapecity/wijmo.angular2.barcode.common': 5.20252.42
-      '@grapecity/wijmo.angular2.barcode.composite': 5.20252.42
-      '@grapecity/wijmo.angular2.barcode.specialized': 5.20252.42
-      '@grapecity/wijmo.angular2.chart': 5.20252.42
-      '@grapecity/wijmo.angular2.chart.analytics': 5.20252.42
-      '@grapecity/wijmo.angular2.chart.animation': 5.20252.42
-      '@grapecity/wijmo.angular2.chart.annotation': 5.20252.42
-      '@grapecity/wijmo.angular2.chart.finance': 5.20252.42
-      '@grapecity/wijmo.angular2.chart.finance.analytics': 5.20252.42
-      '@grapecity/wijmo.angular2.chart.hierarchical': 5.20252.42
-      '@grapecity/wijmo.angular2.chart.interaction': 5.20252.42
-      '@grapecity/wijmo.angular2.chart.map': 5.20252.42
-      '@grapecity/wijmo.angular2.chart.radar': 5.20252.42
-      '@grapecity/wijmo.angular2.core': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.angular2.gauge': 5.20252.42
-      '@grapecity/wijmo.angular2.grid': 5.20252.42
-      '@grapecity/wijmo.angular2.grid.detail': 5.20252.42
-      '@grapecity/wijmo.angular2.grid.filter': 5.20252.42
-      '@grapecity/wijmo.angular2.grid.grouppanel': 5.20252.42
-      '@grapecity/wijmo.angular2.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.angular2.grid.search': 5.20252.42
-      '@grapecity/wijmo.angular2.grid.sheet': 5.20252.42
-      '@grapecity/wijmo.angular2.grid.transposed': 5.20252.42
-      '@grapecity/wijmo.angular2.grid.transposedmultirow': 5.20252.42
-      '@grapecity/wijmo.angular2.input': 5.20252.42
-      '@grapecity/wijmo.angular2.nav': 5.20252.42
-      '@grapecity/wijmo.angular2.olap': 5.20252.42
-      '@grapecity/wijmo.angular2.viewer': 5.20252.42
-      '@grapecity/wijmo.purejs.all': 5.20252.42
+      '@grapecity/wijmo.angular2.barcode.common': 5.20232.939
+      '@grapecity/wijmo.angular2.barcode.composite': 5.20232.939
+      '@grapecity/wijmo.angular2.barcode.specialized': 5.20232.939
+      '@grapecity/wijmo.angular2.chart': 5.20232.939
+      '@grapecity/wijmo.angular2.chart.analytics': 5.20232.939
+      '@grapecity/wijmo.angular2.chart.animation': 5.20232.939
+      '@grapecity/wijmo.angular2.chart.annotation': 5.20232.939
+      '@grapecity/wijmo.angular2.chart.finance': 5.20232.939
+      '@grapecity/wijmo.angular2.chart.finance.analytics': 5.20232.939
+      '@grapecity/wijmo.angular2.chart.hierarchical': 5.20232.939
+      '@grapecity/wijmo.angular2.chart.interaction': 5.20232.939
+      '@grapecity/wijmo.angular2.chart.map': 5.20232.939
+      '@grapecity/wijmo.angular2.chart.radar': 5.20232.939
+      '@grapecity/wijmo.angular2.core': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.angular2.gauge': 5.20232.939
+      '@grapecity/wijmo.angular2.grid': 5.20232.939
+      '@grapecity/wijmo.angular2.grid.detail': 5.20232.939
+      '@grapecity/wijmo.angular2.grid.filter': 5.20232.939
+      '@grapecity/wijmo.angular2.grid.grouppanel': 5.20232.939
+      '@grapecity/wijmo.angular2.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.angular2.grid.search': 5.20232.939
+      '@grapecity/wijmo.angular2.grid.sheet': 5.20232.939
+      '@grapecity/wijmo.angular2.grid.transposed': 5.20232.939
+      '@grapecity/wijmo.angular2.grid.transposedmultirow': 5.20232.939
+      '@grapecity/wijmo.angular2.input': 5.20232.939
+      '@grapecity/wijmo.angular2.nav': 5.20232.939
+      '@grapecity/wijmo.angular2.olap': 5.20232.939
+      '@grapecity/wijmo.angular2.viewer': 5.20232.939
+      '@grapecity/wijmo.purejs.all': 5.20232.939
 
-  '@grapecity/wijmo.angular2.barcode.common@5.20252.42':
+  '@grapecity/wijmo.angular2.barcode.common@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.barcode.common': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.barcode.common': 5.20232.939
 
-  '@grapecity/wijmo.angular2.barcode.composite@5.20252.42':
+  '@grapecity/wijmo.angular2.barcode.composite@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.barcode.composite': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.barcode.composite': 5.20232.939
 
-  '@grapecity/wijmo.angular2.barcode.specialized@5.20252.42':
+  '@grapecity/wijmo.angular2.barcode.specialized@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.barcode.specialized': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.barcode.specialized': 5.20232.939
 
-  '@grapecity/wijmo.angular2.chart.analytics@5.20252.42':
+  '@grapecity/wijmo.angular2.chart.analytics@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.analytics': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.analytics': 5.20232.939
 
-  '@grapecity/wijmo.angular2.chart.animation@5.20252.42':
+  '@grapecity/wijmo.angular2.chart.animation@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.chart.animation': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.chart.animation': 5.20232.939
 
-  '@grapecity/wijmo.angular2.chart.annotation@5.20252.42':
+  '@grapecity/wijmo.angular2.chart.annotation@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.chart.annotation': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.chart.annotation': 5.20232.939
 
-  '@grapecity/wijmo.angular2.chart.finance.analytics@5.20252.42':
+  '@grapecity/wijmo.angular2.chart.finance.analytics@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.chart.finance.analytics': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.chart.finance.analytics': 5.20232.939
 
-  '@grapecity/wijmo.angular2.chart.finance@5.20252.42':
+  '@grapecity/wijmo.angular2.chart.finance@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.chart.finance': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.chart.finance': 5.20232.939
 
-  '@grapecity/wijmo.angular2.chart.hierarchical@5.20252.42':
+  '@grapecity/wijmo.angular2.chart.hierarchical@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.chart.hierarchical': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.chart.hierarchical': 5.20232.939
 
-  '@grapecity/wijmo.angular2.chart.interaction@5.20252.42':
+  '@grapecity/wijmo.angular2.chart.interaction@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.chart.interaction': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.chart.interaction': 5.20232.939
 
-  '@grapecity/wijmo.angular2.chart.map@5.20252.42':
+  '@grapecity/wijmo.angular2.chart.map@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.chart.map': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.chart.map': 5.20232.939
 
-  '@grapecity/wijmo.angular2.chart.radar@5.20252.42':
+  '@grapecity/wijmo.angular2.chart.radar@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.chart.radar': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.chart.radar': 5.20232.939
 
-  '@grapecity/wijmo.angular2.chart@5.20252.42':
+  '@grapecity/wijmo.angular2.chart@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
 
-  '@grapecity/wijmo.angular2.core@5.20252.42':
+  '@grapecity/wijmo.angular2.core@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
 
-  '@grapecity/wijmo.angular2.directivebase@5.20252.42':
+  '@grapecity/wijmo.angular2.directivebase@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
 
-  '@grapecity/wijmo.angular2.gauge@5.20252.42':
+  '@grapecity/wijmo.angular2.gauge@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.gauge': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.gauge': 5.20232.939
 
-  '@grapecity/wijmo.angular2.grid.detail@5.20252.42':
+  '@grapecity/wijmo.angular2.grid.detail@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.detail': 5.20232.939
 
-  '@grapecity/wijmo.angular2.grid.filter@5.20252.42':
+  '@grapecity/wijmo.angular2.grid.filter@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
 
-  '@grapecity/wijmo.angular2.grid.grouppanel@5.20252.42':
+  '@grapecity/wijmo.angular2.grid.grouppanel@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.grid.grouppanel': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.grid.grouppanel': 5.20232.939
 
-  '@grapecity/wijmo.angular2.grid.multirow@5.20252.42':
+  '@grapecity/wijmo.angular2.grid.multirow@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.multirow': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.multirow': 5.20232.939
 
-  '@grapecity/wijmo.angular2.grid.search@5.20252.42':
+  '@grapecity/wijmo.angular2.grid.search@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.grid.search': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.grid.search': 5.20232.939
 
-  '@grapecity/wijmo.angular2.grid.sheet@5.20252.42':
+  '@grapecity/wijmo.angular2.grid.sheet@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.grid.sheet': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.grid.sheet': 5.20232.939
 
-  '@grapecity/wijmo.angular2.grid.transposed@5.20252.42':
+  '@grapecity/wijmo.angular2.grid.transposed@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.grid.transposed': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.grid.transposed': 5.20232.939
 
-  '@grapecity/wijmo.angular2.grid.transposedmultirow@5.20252.42':
+  '@grapecity/wijmo.angular2.grid.transposedmultirow@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.grid.transposedmultirow': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.grid.transposedmultirow': 5.20232.939
 
-  '@grapecity/wijmo.angular2.grid@5.20252.42':
+  '@grapecity/wijmo.angular2.grid@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.interop.grid': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.detail': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
+      '@grapecity/wijmo.interop.grid': 5.20232.939
 
-  '@grapecity/wijmo.angular2.input@5.20252.42':
+  '@grapecity/wijmo.angular2.input@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
 
-  '@grapecity/wijmo.angular2.nav@5.20252.42':
+  '@grapecity/wijmo.angular2.nav@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.nav': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.nav': 5.20232.939
 
-  '@grapecity/wijmo.angular2.olap@5.20252.42':
+  '@grapecity/wijmo.angular2.olap@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.olap': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.olap': 5.20232.939
 
-  '@grapecity/wijmo.angular2.viewer@5.20252.42':
+  '@grapecity/wijmo.angular2.viewer@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.angular2.directivebase': 5.20252.42
-      '@grapecity/wijmo.viewer': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.angular2.directivebase': 5.20232.939
+      '@grapecity/wijmo.viewer': 5.20232.939
 
-  '@grapecity/wijmo.barcode.common@5.20252.42':
+  '@grapecity/wijmo.barcode.common@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.barcode': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.barcode': 5.20232.939
 
-  '@grapecity/wijmo.barcode.composite@5.20252.42':
+  '@grapecity/wijmo.barcode.composite@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.barcode': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.barcode': 5.20232.939
 
-  '@grapecity/wijmo.barcode.specialized@5.20252.42':
+  '@grapecity/wijmo.barcode.specialized@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.barcode': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.barcode': 5.20232.939
 
-  '@grapecity/wijmo.barcode@5.20252.42':
+  '@grapecity/wijmo.barcode@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
 
-  '@grapecity/wijmo.chart.analytics@5.20252.42':
+  '@grapecity/wijmo.chart.analytics@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
 
-  '@grapecity/wijmo.chart.animation@5.20252.42':
+  '@grapecity/wijmo.chart.animation@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
 
-  '@grapecity/wijmo.chart.annotation@5.20252.42':
+  '@grapecity/wijmo.chart.annotation@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
 
-  '@grapecity/wijmo.chart.finance.analytics@5.20252.42':
+  '@grapecity/wijmo.chart.finance.analytics@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.chart.finance': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
+      '@grapecity/wijmo.chart.finance': 5.20232.939
 
-  '@grapecity/wijmo.chart.finance@5.20252.42':
+  '@grapecity/wijmo.chart.finance@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
 
-  '@grapecity/wijmo.chart.hierarchical@5.20252.42':
+  '@grapecity/wijmo.chart.hierarchical@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
 
-  '@grapecity/wijmo.chart.interaction@5.20252.42':
+  '@grapecity/wijmo.chart.interaction@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
 
-  '@grapecity/wijmo.chart.map@5.20252.42':
+  '@grapecity/wijmo.chart.map@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
 
-  '@grapecity/wijmo.chart.radar@5.20252.42':
+  '@grapecity/wijmo.chart.radar@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
 
-  '@grapecity/wijmo.chart.render@5.20252.42':
+  '@grapecity/wijmo.chart.render@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
 
-  '@grapecity/wijmo.chart.webgl@5.20252.42':
+  '@grapecity/wijmo.chart.webgl@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
 
-  '@grapecity/wijmo.chart@5.20252.42':
+  '@grapecity/wijmo.chart@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
 
-  '@grapecity/wijmo.cloud@5.20252.42':
+  '@grapecity/wijmo.cloud@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
 
-  '@grapecity/wijmo.cultures@5.20252.42': {}
+  '@grapecity/wijmo.cultures@5.20232.939': {}
 
-  '@grapecity/wijmo.gauge@5.20252.42':
+  '@grapecity/wijmo.gauge@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
 
-  '@grapecity/wijmo.grid.cellmaker@5.20252.42':
+  '@grapecity/wijmo.grid.cellmaker@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
 
   '@grapecity/wijmo.grid.detail@5.20232.939':
     dependencies:
@@ -2816,111 +2786,89 @@ snapshots:
       '@grapecity/wijmo.grid': 5.20232.939
       '@grapecity/wijmo.input': 5.20232.939
 
-  '@grapecity/wijmo.grid.detail@5.20252.42':
+  '@grapecity/wijmo.grid.filter@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
 
-  '@grapecity/wijmo.grid.filter@5.20252.42':
+  '@grapecity/wijmo.grid.grouppanel@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.nav': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
 
-  '@grapecity/wijmo.grid.grouppanel@5.20252.42':
+  '@grapecity/wijmo.grid.immutable@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
 
-  '@grapecity/wijmo.grid.immutable@5.20252.42':
+  '@grapecity/wijmo.grid.multirow@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
 
-  '@grapecity/wijmo.grid.multirow@5.20252.42':
+  '@grapecity/wijmo.grid.pdf@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.detail': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
+      '@grapecity/wijmo.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.grid.sheet': 5.20232.939
+      '@grapecity/wijmo.grid.transposed': 5.20232.939
+      '@grapecity/wijmo.grid.transposedmultirow': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
+      '@grapecity/wijmo.pdf': 5.20232.939
+      '@grapecity/wijmo.xlsx': 5.20232.939
 
-  '@grapecity/wijmo.grid.pdf@5.20252.42':
+  '@grapecity/wijmo.grid.search@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
-      '@grapecity/wijmo.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.grid.sheet': 5.20252.42
-      '@grapecity/wijmo.grid.transposed': 5.20252.42
-      '@grapecity/wijmo.grid.transposedmultirow': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.pdf': 5.20252.42
-      '@grapecity/wijmo.xlsx': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
 
-  '@grapecity/wijmo.grid.search@5.20252.42':
+  '@grapecity/wijmo.grid.selector@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
 
-  '@grapecity/wijmo.grid.selector@5.20252.42':
+  '@grapecity/wijmo.grid.sheet@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
 
-  '@grapecity/wijmo.grid.sheet@5.20252.42':
+  '@grapecity/wijmo.grid.transposed@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
 
-  '@grapecity/wijmo.grid.style@5.20252.42':
+  '@grapecity/wijmo.grid.transposedmultirow@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
 
-  '@grapecity/wijmo.grid.transposed@5.20252.42':
+  '@grapecity/wijmo.grid.xlsx@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-
-  '@grapecity/wijmo.grid.transposedmultirow@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-
-  '@grapecity/wijmo.grid.xlsx@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
-      '@grapecity/wijmo.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.xlsx': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.detail': 5.20232.939
+      '@grapecity/wijmo.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
+      '@grapecity/wijmo.xlsx': 5.20232.939
 
   '@grapecity/wijmo.grid@5.20232.939':
     dependencies:
       '@grapecity/wijmo': 5.20232.939
       '@grapecity/wijmo.input': 5.20232.939
 
-  '@grapecity/wijmo.grid@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-
   '@grapecity/wijmo.input@5.20232.939':
     dependencies:
       '@grapecity/wijmo': 5.20232.939
-
-  '@grapecity/wijmo.input@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo': 5.20252.42
 
   '@grapecity/wijmo.interop.grid@5.20232.939':
     dependencies:
@@ -2929,752 +2877,692 @@ snapshots:
       '@grapecity/wijmo.grid.detail': 5.20232.939
       '@grapecity/wijmo.input': 5.20232.939
 
-  '@grapecity/wijmo.interop.grid@5.20252.42':
+  '@grapecity/wijmo.knockout.all@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
+      '@grapecity/wijmo.knockout.base': 5.20232.939
+      '@grapecity/wijmo.knockout.chart': 5.20232.939
+      '@grapecity/wijmo.knockout.chart.analytics': 5.20232.939
+      '@grapecity/wijmo.knockout.chart.animation': 5.20232.939
+      '@grapecity/wijmo.knockout.chart.annotation': 5.20232.939
+      '@grapecity/wijmo.knockout.chart.finance': 5.20232.939
+      '@grapecity/wijmo.knockout.chart.finance.analytics': 5.20232.939
+      '@grapecity/wijmo.knockout.chart.interaction': 5.20232.939
+      '@grapecity/wijmo.knockout.core': 5.20232.939
+      '@grapecity/wijmo.knockout.gauge': 5.20232.939
+      '@grapecity/wijmo.knockout.grid': 5.20232.939
+      '@grapecity/wijmo.knockout.grid.filter': 5.20232.939
+      '@grapecity/wijmo.knockout.grid.grouppanel': 5.20232.939
+      '@grapecity/wijmo.knockout.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.knockout.grid.sheet': 5.20232.939
+      '@grapecity/wijmo.knockout.input': 5.20232.939
+      '@grapecity/wijmo.knockout.nav': 5.20232.939
+      '@grapecity/wijmo.knockout.olap': 5.20232.939
+      '@grapecity/wijmo.purejs.all': 5.20232.939
 
-  '@grapecity/wijmo.knockout.all@5.20252.42':
+  '@grapecity/wijmo.knockout.base@5.20232.939':
     dependencies:
-      '@grapecity/wijmo.knockout.base': 5.20252.42
-      '@grapecity/wijmo.knockout.chart': 5.20252.42
-      '@grapecity/wijmo.knockout.chart.analytics': 5.20252.42
-      '@grapecity/wijmo.knockout.chart.animation': 5.20252.42
-      '@grapecity/wijmo.knockout.chart.annotation': 5.20252.42
-      '@grapecity/wijmo.knockout.chart.finance': 5.20252.42
-      '@grapecity/wijmo.knockout.chart.finance.analytics': 5.20252.42
-      '@grapecity/wijmo.knockout.chart.interaction': 5.20252.42
-      '@grapecity/wijmo.knockout.core': 5.20252.42
-      '@grapecity/wijmo.knockout.gauge': 5.20252.42
-      '@grapecity/wijmo.knockout.grid': 5.20252.42
-      '@grapecity/wijmo.knockout.grid.filter': 5.20252.42
-      '@grapecity/wijmo.knockout.grid.grouppanel': 5.20252.42
-      '@grapecity/wijmo.knockout.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.knockout.grid.sheet': 5.20252.42
-      '@grapecity/wijmo.knockout.input': 5.20252.42
-      '@grapecity/wijmo.knockout.nav': 5.20252.42
-      '@grapecity/wijmo.knockout.olap': 5.20252.42
-      '@grapecity/wijmo.purejs.all': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
+      '@grapecity/wijmo.chart.analytics': 5.20232.939
+      '@grapecity/wijmo.chart.animation': 5.20232.939
+      '@grapecity/wijmo.chart.annotation': 5.20232.939
+      '@grapecity/wijmo.chart.finance': 5.20232.939
+      '@grapecity/wijmo.chart.finance.analytics': 5.20232.939
+      '@grapecity/wijmo.chart.hierarchical': 5.20232.939
+      '@grapecity/wijmo.chart.interaction': 5.20232.939
+      '@grapecity/wijmo.chart.radar': 5.20232.939
+      '@grapecity/wijmo.chart.render': 5.20232.939
+      '@grapecity/wijmo.gauge': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.detail': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
+      '@grapecity/wijmo.grid.grouppanel': 5.20232.939
+      '@grapecity/wijmo.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.grid.pdf': 5.20232.939
+      '@grapecity/wijmo.grid.sheet': 5.20232.939
+      '@grapecity/wijmo.grid.xlsx': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
+      '@grapecity/wijmo.meta': 5.20232.939
+      '@grapecity/wijmo.nav': 5.20232.939
+      '@grapecity/wijmo.odata': 5.20232.939
+      '@grapecity/wijmo.olap': 5.20232.939
+      '@grapecity/wijmo.pdf': 5.20232.939
+      '@grapecity/wijmo.viewer': 5.20232.939
+      '@grapecity/wijmo.xlsx': 5.20232.939
 
-  '@grapecity/wijmo.knockout.base@5.20252.42':
+  '@grapecity/wijmo.knockout.chart.analytics@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.chart.analytics': 5.20252.42
-      '@grapecity/wijmo.chart.animation': 5.20252.42
-      '@grapecity/wijmo.chart.annotation': 5.20252.42
-      '@grapecity/wijmo.chart.finance': 5.20252.42
-      '@grapecity/wijmo.chart.finance.analytics': 5.20252.42
-      '@grapecity/wijmo.chart.hierarchical': 5.20252.42
-      '@grapecity/wijmo.chart.interaction': 5.20252.42
-      '@grapecity/wijmo.chart.radar': 5.20252.42
-      '@grapecity/wijmo.chart.render': 5.20252.42
-      '@grapecity/wijmo.gauge': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
-      '@grapecity/wijmo.grid.grouppanel': 5.20252.42
-      '@grapecity/wijmo.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.grid.pdf': 5.20252.42
-      '@grapecity/wijmo.grid.sheet': 5.20252.42
-      '@grapecity/wijmo.grid.xlsx': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.meta': 5.20252.42
-      '@grapecity/wijmo.nav': 5.20252.42
-      '@grapecity/wijmo.odata': 5.20252.42
-      '@grapecity/wijmo.olap': 5.20252.42
-      '@grapecity/wijmo.pdf': 5.20252.42
-      '@grapecity/wijmo.viewer': 5.20252.42
-      '@grapecity/wijmo.xlsx': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.analytics': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
+      '@grapecity/wijmo.knockout.chart': 5.20232.939
 
-  '@grapecity/wijmo.knockout.chart.analytics@5.20252.42':
+  '@grapecity/wijmo.knockout.chart.animation@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.analytics': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
-      '@grapecity/wijmo.knockout.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.animation': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
 
-  '@grapecity/wijmo.knockout.chart.animation@5.20252.42':
+  '@grapecity/wijmo.knockout.chart.annotation@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.animation': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.annotation': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
 
-  '@grapecity/wijmo.knockout.chart.annotation@5.20252.42':
+  '@grapecity/wijmo.knockout.chart.finance.analytics@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.annotation': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.finance.analytics': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
+      '@grapecity/wijmo.knockout.chart': 5.20232.939
 
-  '@grapecity/wijmo.knockout.chart.finance.analytics@5.20252.42':
+  '@grapecity/wijmo.knockout.chart.finance@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.finance.analytics': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
-      '@grapecity/wijmo.knockout.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.finance': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
+      '@grapecity/wijmo.knockout.chart': 5.20232.939
 
-  '@grapecity/wijmo.knockout.chart.finance@5.20252.42':
+  '@grapecity/wijmo.knockout.chart.interaction@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.finance': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
-      '@grapecity/wijmo.knockout.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.interaction': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
 
-  '@grapecity/wijmo.knockout.chart.interaction@5.20252.42':
+  '@grapecity/wijmo.knockout.chart@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.interaction': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
 
-  '@grapecity/wijmo.knockout.chart@5.20252.42':
+  '@grapecity/wijmo.knockout.core@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
 
-  '@grapecity/wijmo.knockout.core@5.20252.42':
+  '@grapecity/wijmo.knockout.gauge@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.gauge': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
 
-  '@grapecity/wijmo.knockout.gauge@5.20252.42':
+  '@grapecity/wijmo.knockout.grid.filter@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.gauge': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
 
-  '@grapecity/wijmo.knockout.grid.filter@5.20252.42':
+  '@grapecity/wijmo.knockout.grid.grouppanel@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.grouppanel': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
 
-  '@grapecity/wijmo.knockout.grid.grouppanel@5.20252.42':
+  '@grapecity/wijmo.knockout.grid.multirow@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.grouppanel': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
+      '@grapecity/wijmo.knockout.grid': 5.20232.939
 
-  '@grapecity/wijmo.knockout.grid.multirow@5.20252.42':
+  '@grapecity/wijmo.knockout.grid.sheet@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
-      '@grapecity/wijmo.knockout.grid': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.sheet': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
+      '@grapecity/wijmo.knockout.grid': 5.20232.939
 
-  '@grapecity/wijmo.knockout.grid.sheet@5.20252.42':
+  '@grapecity/wijmo.knockout.grid@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.sheet': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
-      '@grapecity/wijmo.knockout.grid': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.detail': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
 
-  '@grapecity/wijmo.knockout.grid@5.20252.42':
+  '@grapecity/wijmo.knockout.input@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
 
-  '@grapecity/wijmo.knockout.input@5.20252.42':
+  '@grapecity/wijmo.knockout.nav@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
+      '@grapecity/wijmo.nav': 5.20232.939
 
-  '@grapecity/wijmo.knockout.nav@5.20252.42':
+  '@grapecity/wijmo.knockout.olap@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
-      '@grapecity/wijmo.nav': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.knockout.base': 5.20232.939
+      '@grapecity/wijmo.knockout.grid': 5.20232.939
+      '@grapecity/wijmo.olap': 5.20232.939
 
-  '@grapecity/wijmo.knockout.olap@5.20252.42':
+  '@grapecity/wijmo.meta@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.knockout.base': 5.20252.42
-      '@grapecity/wijmo.knockout.grid': 5.20252.42
-      '@grapecity/wijmo.olap': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.barcode': 5.20232.939
+      '@grapecity/wijmo.barcode.common': 5.20232.939
+      '@grapecity/wijmo.barcode.composite': 5.20232.939
+      '@grapecity/wijmo.barcode.specialized': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
+      '@grapecity/wijmo.chart.analytics': 5.20232.939
+      '@grapecity/wijmo.chart.animation': 5.20232.939
+      '@grapecity/wijmo.chart.annotation': 5.20232.939
+      '@grapecity/wijmo.chart.finance': 5.20232.939
+      '@grapecity/wijmo.chart.finance.analytics': 5.20232.939
+      '@grapecity/wijmo.chart.hierarchical': 5.20232.939
+      '@grapecity/wijmo.chart.interaction': 5.20232.939
+      '@grapecity/wijmo.chart.map': 5.20232.939
+      '@grapecity/wijmo.chart.radar': 5.20232.939
+      '@grapecity/wijmo.chart.render': 5.20232.939
+      '@grapecity/wijmo.gauge': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.detail': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
+      '@grapecity/wijmo.grid.grouppanel': 5.20232.939
+      '@grapecity/wijmo.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.grid.pdf': 5.20232.939
+      '@grapecity/wijmo.grid.search': 5.20232.939
+      '@grapecity/wijmo.grid.selector': 5.20232.939
+      '@grapecity/wijmo.grid.sheet': 5.20232.939
+      '@grapecity/wijmo.grid.transposed': 5.20232.939
+      '@grapecity/wijmo.grid.transposedmultirow': 5.20232.939
+      '@grapecity/wijmo.grid.xlsx': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
+      '@grapecity/wijmo.nav': 5.20232.939
+      '@grapecity/wijmo.odata': 5.20232.939
+      '@grapecity/wijmo.olap': 5.20232.939
+      '@grapecity/wijmo.pdf': 5.20232.939
+      '@grapecity/wijmo.viewer': 5.20232.939
+      '@grapecity/wijmo.xlsx': 5.20232.939
 
-  '@grapecity/wijmo.meta@5.20252.42':
+  '@grapecity/wijmo.nav@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.barcode': 5.20252.42
-      '@grapecity/wijmo.barcode.common': 5.20252.42
-      '@grapecity/wijmo.barcode.composite': 5.20252.42
-      '@grapecity/wijmo.barcode.specialized': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.chart.analytics': 5.20252.42
-      '@grapecity/wijmo.chart.animation': 5.20252.42
-      '@grapecity/wijmo.chart.annotation': 5.20252.42
-      '@grapecity/wijmo.chart.finance': 5.20252.42
-      '@grapecity/wijmo.chart.finance.analytics': 5.20252.42
-      '@grapecity/wijmo.chart.hierarchical': 5.20252.42
-      '@grapecity/wijmo.chart.interaction': 5.20252.42
-      '@grapecity/wijmo.chart.map': 5.20252.42
-      '@grapecity/wijmo.chart.radar': 5.20252.42
-      '@grapecity/wijmo.chart.render': 5.20252.42
-      '@grapecity/wijmo.gauge': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
-      '@grapecity/wijmo.grid.grouppanel': 5.20252.42
-      '@grapecity/wijmo.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.grid.pdf': 5.20252.42
-      '@grapecity/wijmo.grid.search': 5.20252.42
-      '@grapecity/wijmo.grid.selector': 5.20252.42
-      '@grapecity/wijmo.grid.sheet': 5.20252.42
-      '@grapecity/wijmo.grid.style': 5.20252.42
-      '@grapecity/wijmo.grid.transposed': 5.20252.42
-      '@grapecity/wijmo.grid.transposedmultirow': 5.20252.42
-      '@grapecity/wijmo.grid.xlsx': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.nav': 5.20252.42
-      '@grapecity/wijmo.odata': 5.20252.42
-      '@grapecity/wijmo.olap': 5.20252.42
-      '@grapecity/wijmo.pdf': 5.20252.42
-      '@grapecity/wijmo.viewer': 5.20252.42
-      '@grapecity/wijmo.xlsx': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
 
-  '@grapecity/wijmo.nav@5.20252.42':
+  '@grapecity/wijmo.odata@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
 
-  '@grapecity/wijmo.odata@5.20252.42':
+  '@grapecity/wijmo.olap@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
 
-  '@grapecity/wijmo.olap@5.20252.42':
+  '@grapecity/wijmo.pdf.security@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
 
-  '@grapecity/wijmo.pdf.security@5.20252.42':
+  '@grapecity/wijmo.pdf@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
 
-  '@grapecity/wijmo.pdf@5.20252.42':
+  '@grapecity/wijmo.purejs.all@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.barcode': 5.20232.939
+      '@grapecity/wijmo.barcode.common': 5.20232.939
+      '@grapecity/wijmo.barcode.composite': 5.20232.939
+      '@grapecity/wijmo.barcode.specialized': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
+      '@grapecity/wijmo.chart.analytics': 5.20232.939
+      '@grapecity/wijmo.chart.animation': 5.20232.939
+      '@grapecity/wijmo.chart.annotation': 5.20232.939
+      '@grapecity/wijmo.chart.finance': 5.20232.939
+      '@grapecity/wijmo.chart.finance.analytics': 5.20232.939
+      '@grapecity/wijmo.chart.hierarchical': 5.20232.939
+      '@grapecity/wijmo.chart.interaction': 5.20232.939
+      '@grapecity/wijmo.chart.map': 5.20232.939
+      '@grapecity/wijmo.chart.radar': 5.20232.939
+      '@grapecity/wijmo.chart.render': 5.20232.939
+      '@grapecity/wijmo.chart.webgl': 5.20232.939
+      '@grapecity/wijmo.cloud': 5.20232.939
+      '@grapecity/wijmo.cultures': 5.20232.939
+      '@grapecity/wijmo.gauge': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.cellmaker': 5.20232.939
+      '@grapecity/wijmo.grid.detail': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
+      '@grapecity/wijmo.grid.grouppanel': 5.20232.939
+      '@grapecity/wijmo.grid.immutable': 5.20232.939
+      '@grapecity/wijmo.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.grid.pdf': 5.20232.939
+      '@grapecity/wijmo.grid.search': 5.20232.939
+      '@grapecity/wijmo.grid.selector': 5.20232.939
+      '@grapecity/wijmo.grid.sheet': 5.20232.939
+      '@grapecity/wijmo.grid.transposed': 5.20232.939
+      '@grapecity/wijmo.grid.transposedmultirow': 5.20232.939
+      '@grapecity/wijmo.grid.xlsx': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
+      '@grapecity/wijmo.interop.grid': 5.20232.939
+      '@grapecity/wijmo.meta': 5.20232.939
+      '@grapecity/wijmo.nav': 5.20232.939
+      '@grapecity/wijmo.odata': 5.20232.939
+      '@grapecity/wijmo.olap': 5.20232.939
+      '@grapecity/wijmo.pdf': 5.20232.939
+      '@grapecity/wijmo.pdf.security': 5.20232.939
+      '@grapecity/wijmo.rest': 5.20232.939
+      '@grapecity/wijmo.styles': 5.20232.939
+      '@grapecity/wijmo.touch': 5.20232.939
+      '@grapecity/wijmo.undo': 5.20232.939
+      '@grapecity/wijmo.viewer': 5.20232.939
+      '@grapecity/wijmo.xlsx': 5.20232.939
 
-  '@grapecity/wijmo.purejs.all@5.20252.42':
+  '@grapecity/wijmo.react.all@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.barcode': 5.20252.42
-      '@grapecity/wijmo.barcode.common': 5.20252.42
-      '@grapecity/wijmo.barcode.composite': 5.20252.42
-      '@grapecity/wijmo.barcode.specialized': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.chart.analytics': 5.20252.42
-      '@grapecity/wijmo.chart.animation': 5.20252.42
-      '@grapecity/wijmo.chart.annotation': 5.20252.42
-      '@grapecity/wijmo.chart.finance': 5.20252.42
-      '@grapecity/wijmo.chart.finance.analytics': 5.20252.42
-      '@grapecity/wijmo.chart.hierarchical': 5.20252.42
-      '@grapecity/wijmo.chart.interaction': 5.20252.42
-      '@grapecity/wijmo.chart.map': 5.20252.42
-      '@grapecity/wijmo.chart.radar': 5.20252.42
-      '@grapecity/wijmo.chart.render': 5.20252.42
-      '@grapecity/wijmo.chart.webgl': 5.20252.42
-      '@grapecity/wijmo.cloud': 5.20252.42
-      '@grapecity/wijmo.cultures': 5.20252.42
-      '@grapecity/wijmo.gauge': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.cellmaker': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
-      '@grapecity/wijmo.grid.grouppanel': 5.20252.42
-      '@grapecity/wijmo.grid.immutable': 5.20252.42
-      '@grapecity/wijmo.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.grid.pdf': 5.20252.42
-      '@grapecity/wijmo.grid.search': 5.20252.42
-      '@grapecity/wijmo.grid.selector': 5.20252.42
-      '@grapecity/wijmo.grid.sheet': 5.20252.42
-      '@grapecity/wijmo.grid.style': 5.20252.42
-      '@grapecity/wijmo.grid.transposed': 5.20252.42
-      '@grapecity/wijmo.grid.transposedmultirow': 5.20252.42
-      '@grapecity/wijmo.grid.xlsx': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.interop.grid': 5.20252.42
-      '@grapecity/wijmo.meta': 5.20252.42
-      '@grapecity/wijmo.nav': 5.20252.42
-      '@grapecity/wijmo.odata': 5.20252.42
-      '@grapecity/wijmo.olap': 5.20252.42
-      '@grapecity/wijmo.pdf': 5.20252.42
-      '@grapecity/wijmo.pdf.security': 5.20252.42
-      '@grapecity/wijmo.rest': 5.20252.42
-      '@grapecity/wijmo.styles': 5.20252.42
-      '@grapecity/wijmo.touch': 5.20252.42
-      '@grapecity/wijmo.undo': 5.20252.42
-      '@grapecity/wijmo.viewer': 5.20252.42
-      '@grapecity/wijmo.xlsx': 5.20252.42
+      '@grapecity/wijmo.purejs.all': 5.20232.939
+      '@grapecity/wijmo.react.barcode.common': 5.20232.939
+      '@grapecity/wijmo.react.barcode.composite': 5.20232.939
+      '@grapecity/wijmo.react.barcode.specialized': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
+      '@grapecity/wijmo.react.chart': 5.20232.939
+      '@grapecity/wijmo.react.chart.analytics': 5.20232.939
+      '@grapecity/wijmo.react.chart.animation': 5.20232.939
+      '@grapecity/wijmo.react.chart.annotation': 5.20232.939
+      '@grapecity/wijmo.react.chart.finance': 5.20232.939
+      '@grapecity/wijmo.react.chart.finance.analytics': 5.20232.939
+      '@grapecity/wijmo.react.chart.hierarchical': 5.20232.939
+      '@grapecity/wijmo.react.chart.interaction': 5.20232.939
+      '@grapecity/wijmo.react.chart.map': 5.20232.939
+      '@grapecity/wijmo.react.chart.radar': 5.20232.939
+      '@grapecity/wijmo.react.gauge': 5.20232.939
+      '@grapecity/wijmo.react.grid': 5.20232.939
+      '@grapecity/wijmo.react.grid.detail': 5.20232.939
+      '@grapecity/wijmo.react.grid.filter': 5.20232.939
+      '@grapecity/wijmo.react.grid.grouppanel': 5.20232.939
+      '@grapecity/wijmo.react.grid.immutable': 5.20232.939
+      '@grapecity/wijmo.react.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.react.grid.search': 5.20232.939
+      '@grapecity/wijmo.react.grid.sheet': 5.20232.939
+      '@grapecity/wijmo.react.grid.transposed': 5.20232.939
+      '@grapecity/wijmo.react.grid.transposedmultirow': 5.20232.939
+      '@grapecity/wijmo.react.input': 5.20232.939
+      '@grapecity/wijmo.react.nav': 5.20232.939
+      '@grapecity/wijmo.react.olap': 5.20232.939
+      '@grapecity/wijmo.react.viewer': 5.20232.939
 
-  '@grapecity/wijmo.react.all@5.20252.42':
+  '@grapecity/wijmo.react.barcode.common@5.20232.939':
     dependencies:
-      '@grapecity/wijmo.purejs.all': 5.20252.42
-      '@grapecity/wijmo.react.barcode.base': 5.20252.42
-      '@grapecity/wijmo.react.barcode.common': 5.20252.42
-      '@grapecity/wijmo.react.barcode.composite': 5.20252.42
-      '@grapecity/wijmo.react.barcode.specialized': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.react.chart': 5.20252.42
-      '@grapecity/wijmo.react.chart.analytics': 5.20252.42
-      '@grapecity/wijmo.react.chart.animation': 5.20252.42
-      '@grapecity/wijmo.react.chart.annotation': 5.20252.42
-      '@grapecity/wijmo.react.chart.finance': 5.20252.42
-      '@grapecity/wijmo.react.chart.finance.analytics': 5.20252.42
-      '@grapecity/wijmo.react.chart.hierarchical': 5.20252.42
-      '@grapecity/wijmo.react.chart.interaction': 5.20252.42
-      '@grapecity/wijmo.react.chart.map': 5.20252.42
-      '@grapecity/wijmo.react.chart.radar': 5.20252.42
-      '@grapecity/wijmo.react.gauge': 5.20252.42
-      '@grapecity/wijmo.react.grid': 5.20252.42
-      '@grapecity/wijmo.react.grid.detail': 5.20252.42
-      '@grapecity/wijmo.react.grid.filter': 5.20252.42
-      '@grapecity/wijmo.react.grid.grouppanel': 5.20252.42
-      '@grapecity/wijmo.react.grid.immutable': 5.20252.42
-      '@grapecity/wijmo.react.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.react.grid.search': 5.20252.42
-      '@grapecity/wijmo.react.grid.sheet': 5.20252.42
-      '@grapecity/wijmo.react.grid.transposed': 5.20252.42
-      '@grapecity/wijmo.react.grid.transposedmultirow': 5.20252.42
-      '@grapecity/wijmo.react.input': 5.20252.42
-      '@grapecity/wijmo.react.nav': 5.20252.42
-      '@grapecity/wijmo.react.olap': 5.20252.42
-      '@grapecity/wijmo.react.viewer': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.barcode.common': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.barcode.base@5.20252.42':
+  '@grapecity/wijmo.react.barcode.composite@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.barcode': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.barcode.composite': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.barcode.common@5.20252.42':
+  '@grapecity/wijmo.react.barcode.specialized@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.barcode': 5.20252.42
-      '@grapecity/wijmo.barcode.common': 5.20252.42
-      '@grapecity/wijmo.react.barcode.base': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.barcode.specialized': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.barcode.composite@5.20252.42':
+  '@grapecity/wijmo.react.base@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.barcode': 5.20252.42
-      '@grapecity/wijmo.barcode.composite': 5.20252.42
-      '@grapecity/wijmo.react.barcode.base': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
 
-  '@grapecity/wijmo.react.barcode.specialized@5.20252.42':
+  '@grapecity/wijmo.react.chart.analytics@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.barcode': 5.20252.42
-      '@grapecity/wijmo.barcode.specialized': 5.20252.42
-      '@grapecity/wijmo.react.barcode.base': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.analytics': 5.20232.939
 
-  '@grapecity/wijmo.react.base@5.20252.42':
+  '@grapecity/wijmo.react.chart.animation@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.animation': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.chart.analytics@5.20252.42':
+  '@grapecity/wijmo.react.chart.annotation@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.chart.analytics': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.react.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.annotation': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.chart.animation@5.20252.42':
+  '@grapecity/wijmo.react.chart.finance.analytics@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.chart.animation': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.react.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.finance.analytics': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.chart.annotation@5.20252.42':
+  '@grapecity/wijmo.react.chart.finance@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.chart.annotation': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.react.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.finance': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.chart.finance.analytics@5.20252.42':
+  '@grapecity/wijmo.react.chart.hierarchical@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.chart.finance.analytics': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.react.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.hierarchical': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.chart.finance@5.20252.42':
+  '@grapecity/wijmo.react.chart.interaction@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.chart.finance': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.react.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.interaction': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.chart.hierarchical@5.20252.42':
+  '@grapecity/wijmo.react.chart.map@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.chart.hierarchical': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.react.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.map': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.chart.interaction@5.20252.42':
+  '@grapecity/wijmo.react.chart.radar@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.chart.interaction': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.react.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.radar': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.chart.map@5.20252.42':
+  '@grapecity/wijmo.react.chart@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.chart.map': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.react.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.chart.radar@5.20252.42':
+  '@grapecity/wijmo.react.gauge@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.chart.radar': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.react.chart': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.gauge': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.chart@5.20252.42':
+  '@grapecity/wijmo.react.grid.detail@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.detail': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.gauge@5.20252.42':
+  '@grapecity/wijmo.react.grid.filter@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.gauge': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.grid.detail@5.20252.42':
+  '@grapecity/wijmo.react.grid.grouppanel@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.grouppanel': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.grid.filter@5.20252.42':
+  '@grapecity/wijmo.react.grid.immutable@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.immutable': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.grid.grouppanel@5.20252.42':
+  '@grapecity/wijmo.react.grid.multirow@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
-      '@grapecity/wijmo.grid.grouppanel': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.grid.immutable@5.20252.42':
+  '@grapecity/wijmo.react.grid.search@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.immutable': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.search': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.grid.multirow@5.20252.42':
+  '@grapecity/wijmo.react.grid.sheet@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.react.grid': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.sheet': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.grid.search@5.20252.42':
+  '@grapecity/wijmo.react.grid.transposed@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.search': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.transposed': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.grid.sheet@5.20252.42':
+  '@grapecity/wijmo.react.grid.transposedmultirow@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.sheet': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.react.grid': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.transposedmultirow': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.grid.transposed@5.20252.42':
+  '@grapecity/wijmo.react.grid@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.transposed': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.react.grid': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.detail': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
+      '@grapecity/wijmo.interop.grid': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.grid.transposedmultirow@5.20252.42':
+  '@grapecity/wijmo.react.input@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.transposedmultirow': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.react.grid': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.grid@5.20252.42':
+  '@grapecity/wijmo.react.nav@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.interop.grid': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.nav': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.input@5.20252.42':
+  '@grapecity/wijmo.react.olap@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.olap': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
 
-  '@grapecity/wijmo.react.nav@5.20252.42':
+  '@grapecity/wijmo.react.viewer@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.nav': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.react.base': 5.20232.939
+      '@grapecity/wijmo.viewer': 5.20232.939
 
-  '@grapecity/wijmo.react.olap@5.20252.42':
+  '@grapecity/wijmo.rest@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.olap': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.react.grid': 5.20252.42
-
-  '@grapecity/wijmo.react.viewer@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.react.base': 5.20252.42
-      '@grapecity/wijmo.viewer': 5.20252.42
-
-  '@grapecity/wijmo.rest@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
 
   '@grapecity/wijmo.styles@5.20232.939': {}
 
-  '@grapecity/wijmo.styles@5.20252.42': {}
-
-  '@grapecity/wijmo.touch@5.20252.42':
+  '@grapecity/wijmo.touch@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
 
-  '@grapecity/wijmo.undo@5.20252.42':
+  '@grapecity/wijmo.undo@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.gauge': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.nav': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.gauge': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
+      '@grapecity/wijmo.nav': 5.20232.939
 
-  '@grapecity/wijmo.viewer@5.20252.42':
+  '@grapecity/wijmo.viewer@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
 
-  '@grapecity/wijmo.vue2.all@5.20252.42':
+  '@grapecity/wijmo.vue2.all@5.20232.939':
     dependencies:
-      '@grapecity/wijmo.purejs.all': 5.20252.42
-      '@grapecity/wijmo.vue2.barcode.common': 5.20252.42
-      '@grapecity/wijmo.vue2.barcode.composite': 5.20252.42
-      '@grapecity/wijmo.vue2.barcode.specialized': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
-      '@grapecity/wijmo.vue2.chart': 5.20252.42
-      '@grapecity/wijmo.vue2.chart.analytics': 5.20252.42
-      '@grapecity/wijmo.vue2.chart.animation': 5.20252.42
-      '@grapecity/wijmo.vue2.chart.annotation': 5.20252.42
-      '@grapecity/wijmo.vue2.chart.finance': 5.20252.42
-      '@grapecity/wijmo.vue2.chart.finance.analytics': 5.20252.42
-      '@grapecity/wijmo.vue2.chart.hierarchical': 5.20252.42
-      '@grapecity/wijmo.vue2.chart.interaction': 5.20252.42
-      '@grapecity/wijmo.vue2.chart.map': 5.20252.42
-      '@grapecity/wijmo.vue2.chart.radar': 5.20252.42
-      '@grapecity/wijmo.vue2.core': 5.20252.42
-      '@grapecity/wijmo.vue2.gauge': 5.20252.42
-      '@grapecity/wijmo.vue2.grid': 5.20252.42
-      '@grapecity/wijmo.vue2.grid.detail': 5.20252.42
-      '@grapecity/wijmo.vue2.grid.filter': 5.20252.42
-      '@grapecity/wijmo.vue2.grid.grouppanel': 5.20252.42
-      '@grapecity/wijmo.vue2.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.vue2.grid.search': 5.20252.42
-      '@grapecity/wijmo.vue2.grid.sheet': 5.20252.42
-      '@grapecity/wijmo.vue2.grid.transposed': 5.20252.42
-      '@grapecity/wijmo.vue2.grid.transposedmultirow': 5.20252.42
-      '@grapecity/wijmo.vue2.input': 5.20252.42
-      '@grapecity/wijmo.vue2.nav': 5.20252.42
-      '@grapecity/wijmo.vue2.olap': 5.20252.42
-      '@grapecity/wijmo.vue2.viewer': 5.20252.42
+      '@grapecity/wijmo.purejs.all': 5.20232.939
+      '@grapecity/wijmo.vue2.barcode.common': 5.20232.939
+      '@grapecity/wijmo.vue2.barcode.composite': 5.20232.939
+      '@grapecity/wijmo.vue2.barcode.specialized': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
+      '@grapecity/wijmo.vue2.chart': 5.20232.939
+      '@grapecity/wijmo.vue2.chart.analytics': 5.20232.939
+      '@grapecity/wijmo.vue2.chart.animation': 5.20232.939
+      '@grapecity/wijmo.vue2.chart.annotation': 5.20232.939
+      '@grapecity/wijmo.vue2.chart.finance': 5.20232.939
+      '@grapecity/wijmo.vue2.chart.finance.analytics': 5.20232.939
+      '@grapecity/wijmo.vue2.chart.hierarchical': 5.20232.939
+      '@grapecity/wijmo.vue2.chart.interaction': 5.20232.939
+      '@grapecity/wijmo.vue2.chart.map': 5.20232.939
+      '@grapecity/wijmo.vue2.chart.radar': 5.20232.939
+      '@grapecity/wijmo.vue2.core': 5.20232.939
+      '@grapecity/wijmo.vue2.gauge': 5.20232.939
+      '@grapecity/wijmo.vue2.grid': 5.20232.939
+      '@grapecity/wijmo.vue2.grid.detail': 5.20232.939
+      '@grapecity/wijmo.vue2.grid.filter': 5.20232.939
+      '@grapecity/wijmo.vue2.grid.grouppanel': 5.20232.939
+      '@grapecity/wijmo.vue2.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.vue2.grid.search': 5.20232.939
+      '@grapecity/wijmo.vue2.grid.sheet': 5.20232.939
+      '@grapecity/wijmo.vue2.grid.transposed': 5.20232.939
+      '@grapecity/wijmo.vue2.grid.transposedmultirow': 5.20232.939
+      '@grapecity/wijmo.vue2.input': 5.20232.939
+      '@grapecity/wijmo.vue2.nav': 5.20232.939
+      '@grapecity/wijmo.vue2.olap': 5.20232.939
+      '@grapecity/wijmo.vue2.viewer': 5.20232.939
 
-  '@grapecity/wijmo.vue2.barcode.common@5.20252.42':
+  '@grapecity/wijmo.vue2.barcode.common@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.barcode.common': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.barcode.common': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.barcode.composite@5.20252.42':
+  '@grapecity/wijmo.vue2.barcode.composite@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.barcode.composite': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.barcode.composite': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.barcode.specialized@5.20252.42':
+  '@grapecity/wijmo.vue2.barcode.specialized@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.barcode.specialized': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.barcode.specialized': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
   '@grapecity/wijmo.vue2.base@5.20232.939':
     dependencies:
       '@grapecity/wijmo': 5.20232.939
 
-  '@grapecity/wijmo.vue2.base@5.20252.42':
+  '@grapecity/wijmo.vue2.chart.analytics@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.analytics': 5.20232.939
 
-  '@grapecity/wijmo.vue2.chart.analytics@5.20252.42':
+  '@grapecity/wijmo.vue2.chart.animation@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.analytics': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.animation': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.chart.animation@5.20252.42':
+  '@grapecity/wijmo.vue2.chart.annotation@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.animation': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.annotation': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.chart.annotation@5.20252.42':
+  '@grapecity/wijmo.vue2.chart.finance.analytics@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.annotation': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.finance.analytics': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.chart.finance.analytics@5.20252.42':
+  '@grapecity/wijmo.vue2.chart.finance@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.finance.analytics': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.finance': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.chart.finance@5.20252.42':
+  '@grapecity/wijmo.vue2.chart.hierarchical@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.finance': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.hierarchical': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.chart.hierarchical@5.20252.42':
+  '@grapecity/wijmo.vue2.chart.interaction@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.hierarchical': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.interaction': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.chart.interaction@5.20252.42':
+  '@grapecity/wijmo.vue2.chart.map@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.interaction': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.map': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.chart.map@5.20252.42':
+  '@grapecity/wijmo.vue2.chart.radar@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.map': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.radar': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.chart.radar@5.20252.42':
+  '@grapecity/wijmo.vue2.chart@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.radar': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.chart@5.20252.42':
+  '@grapecity/wijmo.vue2.core@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.core@5.20252.42':
+  '@grapecity/wijmo.vue2.gauge@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.gauge': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.gauge@5.20252.42':
+  '@grapecity/wijmo.vue2.grid.detail@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.gauge': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.detail': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.grid.detail@5.20252.42':
+  '@grapecity/wijmo.vue2.grid.filter@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.grid.filter@5.20252.42':
+  '@grapecity/wijmo.vue2.grid.grouppanel@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.grouppanel': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.grid.grouppanel@5.20252.42':
+  '@grapecity/wijmo.vue2.grid.multirow@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.grouppanel': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.grid.multirow@5.20252.42':
+  '@grapecity/wijmo.vue2.grid.search@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.search': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.grid.search@5.20252.42':
+  '@grapecity/wijmo.vue2.grid.sheet@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.search': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.sheet': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.grid.sheet@5.20252.42':
+  '@grapecity/wijmo.vue2.grid.transposed@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.sheet': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.transposed': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.grid.transposed@5.20252.42':
+  '@grapecity/wijmo.vue2.grid.transposedmultirow@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.transposed': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
-
-  '@grapecity/wijmo.vue2.grid.transposedmultirow@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.transposedmultirow': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.transposedmultirow': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
   '@grapecity/wijmo.vue2.grid@5.20232.939':
     dependencies:
@@ -3685,238 +3573,225 @@ snapshots:
       '@grapecity/wijmo.interop.grid': 5.20232.939
       '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.grid@5.20252.42':
+  '@grapecity/wijmo.vue2.input@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.interop.grid': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.input@5.20252.42':
+  '@grapecity/wijmo.vue2.nav@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.nav': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.nav@5.20252.42':
+  '@grapecity/wijmo.vue2.olap@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.nav': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.olap': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.olap@5.20252.42':
+  '@grapecity/wijmo.vue2.viewer@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.olap': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.viewer': 5.20232.939
+      '@grapecity/wijmo.vue2.base': 5.20232.939
 
-  '@grapecity/wijmo.vue2.viewer@5.20252.42':
+  '@grapecity/wijmo.webcomponents.all@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.viewer': 5.20252.42
-      '@grapecity/wijmo.vue2.base': 5.20252.42
+      '@grapecity/wijmo.purejs.all': 5.20232.939
+      '@grapecity/wijmo.webcomponents.barcode.common': 5.20232.939
+      '@grapecity/wijmo.webcomponents.barcode.composite': 5.20232.939
+      '@grapecity/wijmo.webcomponents.barcode.specialized': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
+      '@grapecity/wijmo.webcomponents.chart': 5.20232.939
+      '@grapecity/wijmo.webcomponents.chart.analytics': 5.20232.939
+      '@grapecity/wijmo.webcomponents.chart.animation': 5.20232.939
+      '@grapecity/wijmo.webcomponents.chart.finance': 5.20232.939
+      '@grapecity/wijmo.webcomponents.chart.finance.analytics': 5.20232.939
+      '@grapecity/wijmo.webcomponents.chart.hierarchical': 5.20232.939
+      '@grapecity/wijmo.webcomponents.chart.interaction': 5.20232.939
+      '@grapecity/wijmo.webcomponents.chart.map': 5.20232.939
+      '@grapecity/wijmo.webcomponents.chart.radar': 5.20232.939
+      '@grapecity/wijmo.webcomponents.gauge': 5.20232.939
+      '@grapecity/wijmo.webcomponents.grid': 5.20232.939
+      '@grapecity/wijmo.webcomponents.grid.filter': 5.20232.939
+      '@grapecity/wijmo.webcomponents.grid.grouppanel': 5.20232.939
+      '@grapecity/wijmo.webcomponents.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.webcomponents.grid.search': 5.20232.939
+      '@grapecity/wijmo.webcomponents.grid.sheet': 5.20232.939
+      '@grapecity/wijmo.webcomponents.grid.transposed': 5.20232.939
+      '@grapecity/wijmo.webcomponents.grid.transposedmultirow': 5.20232.939
+      '@grapecity/wijmo.webcomponents.input': 5.20232.939
+      '@grapecity/wijmo.webcomponents.nav': 5.20232.939
+      '@grapecity/wijmo.webcomponents.olap': 5.20232.939
+      '@grapecity/wijmo.webcomponents.viewer': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.all@5.20252.42':
+  '@grapecity/wijmo.webcomponents.barcode.common@5.20232.939':
     dependencies:
-      '@grapecity/wijmo.purejs.all': 5.20252.42
-      '@grapecity/wijmo.webcomponents.barcode.common': 5.20252.42
-      '@grapecity/wijmo.webcomponents.barcode.composite': 5.20252.42
-      '@grapecity/wijmo.webcomponents.barcode.specialized': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
-      '@grapecity/wijmo.webcomponents.chart': 5.20252.42
-      '@grapecity/wijmo.webcomponents.chart.analytics': 5.20252.42
-      '@grapecity/wijmo.webcomponents.chart.animation': 5.20252.42
-      '@grapecity/wijmo.webcomponents.chart.finance': 5.20252.42
-      '@grapecity/wijmo.webcomponents.chart.finance.analytics': 5.20252.42
-      '@grapecity/wijmo.webcomponents.chart.hierarchical': 5.20252.42
-      '@grapecity/wijmo.webcomponents.chart.interaction': 5.20252.42
-      '@grapecity/wijmo.webcomponents.chart.map': 5.20252.42
-      '@grapecity/wijmo.webcomponents.chart.radar': 5.20252.42
-      '@grapecity/wijmo.webcomponents.gauge': 5.20252.42
-      '@grapecity/wijmo.webcomponents.grid': 5.20252.42
-      '@grapecity/wijmo.webcomponents.grid.filter': 5.20252.42
-      '@grapecity/wijmo.webcomponents.grid.grouppanel': 5.20252.42
-      '@grapecity/wijmo.webcomponents.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.webcomponents.grid.search': 5.20252.42
-      '@grapecity/wijmo.webcomponents.grid.sheet': 5.20252.42
-      '@grapecity/wijmo.webcomponents.grid.transposed': 5.20252.42
-      '@grapecity/wijmo.webcomponents.grid.transposedmultirow': 5.20252.42
-      '@grapecity/wijmo.webcomponents.input': 5.20252.42
-      '@grapecity/wijmo.webcomponents.nav': 5.20252.42
-      '@grapecity/wijmo.webcomponents.olap': 5.20252.42
-      '@grapecity/wijmo.webcomponents.viewer': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.barcode.common': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.barcode.common@5.20252.42':
+  '@grapecity/wijmo.webcomponents.barcode.composite@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.barcode.common': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.barcode.composite': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.barcode.composite@5.20252.42':
+  '@grapecity/wijmo.webcomponents.barcode.specialized@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.barcode.composite': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.barcode.specialized': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.barcode.specialized@5.20252.42':
+  '@grapecity/wijmo.webcomponents.base@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.barcode.specialized': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.meta': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.base@5.20252.42':
+  '@grapecity/wijmo.webcomponents.chart.analytics@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.meta': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.analytics': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.chart.analytics@5.20252.42':
+  '@grapecity/wijmo.webcomponents.chart.animation@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.analytics': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.animation': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.chart.animation@5.20252.42':
+  '@grapecity/wijmo.webcomponents.chart.finance.analytics@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.animation': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.finance.analytics': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.chart.finance.analytics@5.20252.42':
+  '@grapecity/wijmo.webcomponents.chart.finance@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.finance.analytics': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.finance': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.chart.finance@5.20252.42':
+  '@grapecity/wijmo.webcomponents.chart.hierarchical@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.finance': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.hierarchical': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.chart.hierarchical@5.20252.42':
+  '@grapecity/wijmo.webcomponents.chart.interaction@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.hierarchical': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.interaction': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.chart.interaction@5.20252.42':
+  '@grapecity/wijmo.webcomponents.chart.map@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.interaction': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.map': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.chart.map@5.20252.42':
+  '@grapecity/wijmo.webcomponents.chart.radar@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.map': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart.radar': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.chart.radar@5.20252.42':
+  '@grapecity/wijmo.webcomponents.chart@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart.radar': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.chart': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.chart@5.20252.42':
+  '@grapecity/wijmo.webcomponents.gauge@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.chart': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.gauge': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.gauge@5.20252.42':
+  '@grapecity/wijmo.webcomponents.grid.filter@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.gauge': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.filter': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.grid.filter@5.20252.42':
+  '@grapecity/wijmo.webcomponents.grid.grouppanel@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.filter': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.grouppanel': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.grid.grouppanel@5.20252.42':
+  '@grapecity/wijmo.webcomponents.grid.multirow@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.grouppanel': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.multirow': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.grid.multirow@5.20252.42':
+  '@grapecity/wijmo.webcomponents.grid.search@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.multirow': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.search': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.grid.search@5.20252.42':
+  '@grapecity/wijmo.webcomponents.grid.sheet@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.search': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.sheet': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.grid.sheet@5.20252.42':
+  '@grapecity/wijmo.webcomponents.grid.transposed@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.sheet': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.transposed': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.grid.transposed@5.20252.42':
+  '@grapecity/wijmo.webcomponents.grid.transposedmultirow@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.transposed': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid.transposedmultirow': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.grid.transposedmultirow@5.20252.42':
+  '@grapecity/wijmo.webcomponents.grid@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid.transposedmultirow': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.grid': 5.20232.939
+      '@grapecity/wijmo.grid.detail': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
+      '@grapecity/wijmo.interop.grid': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.grid@5.20252.42':
+  '@grapecity/wijmo.webcomponents.input@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.grid': 5.20252.42
-      '@grapecity/wijmo.grid.detail': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.interop.grid': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.input': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.input@5.20252.42':
+  '@grapecity/wijmo.webcomponents.nav@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.input': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.nav': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.nav@5.20252.42':
+  '@grapecity/wijmo.webcomponents.olap@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.nav': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.olap': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.olap@5.20252.42':
+  '@grapecity/wijmo.webcomponents.viewer@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.olap': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
+      '@grapecity/wijmo.viewer': 5.20232.939
+      '@grapecity/wijmo.webcomponents.base': 5.20232.939
 
-  '@grapecity/wijmo.webcomponents.viewer@5.20252.42':
+  '@grapecity/wijmo.xlsx@5.20232.939':
     dependencies:
-      '@grapecity/wijmo': 5.20252.42
-      '@grapecity/wijmo.viewer': 5.20252.42
-      '@grapecity/wijmo.webcomponents.base': 5.20252.42
-
-  '@grapecity/wijmo.xlsx@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo': 5.20252.42
+      '@grapecity/wijmo': 5.20232.939
 
   '@grapecity/wijmo@5.20232.939':
     dependencies:
       '@grapecity/wijmo.styles': 5.20232.939
-
-  '@grapecity/wijmo@5.20252.42':
-    dependencies:
-      '@grapecity/wijmo.styles': 5.20252.42
 
   '@interactjs/actions@1.10.27(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)':
     dependencies:
@@ -4345,9 +4220,8 @@ snapshots:
       vite: 5.4.21(@types/node@20.19.27)(sass@1.97.0)
       vue: 3.5.25(typescript@5.9.3)
 
-  '@vmscloud/moz-component@1.0.3(@grapecity/wijmo.all@5.20252.42)(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)(@tanstack/vue-query@5.92.1(vue@3.5.25(typescript@5.9.3)))(@tiptap/core@2.27.1(@tiptap/pm@2.27.1))(i18next-vue@3.0.0(i18next@23.16.8)(vue@3.5.25(typescript@5.9.3)))(i18next@23.16.8)(pinia@2.3.1(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3)))(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))':
+  '@vmscloud/moz-component@file:../../Aleatorik-UI-Frontend/libraries/moz-component(@grapecity/wijmo.all@5.20232.939)(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)(@tanstack/vue-query@5.92.1(vue@3.5.25(typescript@5.9.3)))(@tiptap/core@2.27.1(@tiptap/pm@2.27.1))(i18next-vue@3.0.0(i18next@23.16.8)(vue@3.5.25(typescript@5.9.3)))(i18next@23.16.8)(pinia@2.3.1(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3)))(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))':
     dependencies:
-      '@grapecity/wijmo.all': 5.20252.42
       '@tanstack/vue-query': 5.92.1(vue@3.5.25(typescript@5.9.3))
       '@tiptap/extension-color': 2.27.1(@tiptap/core@2.27.1(@tiptap/pm@2.27.1))(@tiptap/extension-text-style@2.27.1(@tiptap/core@2.27.1(@tiptap/pm@2.27.1)))
       '@tiptap/extension-image': 2.27.1(@tiptap/core@2.27.1(@tiptap/pm@2.27.1))
@@ -4380,6 +4254,8 @@ snapshots:
       vue: 3.5.25(typescript@5.9.3)
       vue-grid-layout-v3: 3.1.2(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)(typescript@5.9.3)
       vue3-smooth-dnd: 0.0.6(vue@3.5.25(typescript@5.9.3))
+    optionalDependencies:
+      '@grapecity/wijmo.all': 5.20232.939
     transitivePeerDependencies:
       - '@interactjs/core'
       - '@interactjs/utils'

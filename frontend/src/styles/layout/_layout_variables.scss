@@ -1,0 +1,19 @@
+:root {
+  // js에 의해 변하지 않고 항상 고정된 값을 유지하면서
+  // 레이아웃과 관련된 CSS 변수 값들을 정의합니다.
+
+  // 화면 왼쪽에 표시되는 전역 툴바의 가로 사이즈
+  --layout-global-toolbar-width: 54px;
+  // 상단 앱바의 높이
+  --layout-topappbar-height: 55px;
+  // 상단 컨트롤 영역 높이
+  --layout-control-height: 62px;
+
+  // 컨텐츠 영역 가로 사이즈
+  --layout-contents-width: calc(100dvw - var(--layout-global-toolbar-width));
+
+  /* 화면이 1280px x 720px 보다 작을 때 적용 */
+  @media (max-width: 1280px) {
+    --layout-contents-width: calc(1280px - var(--layout-global-toolbar-width));
+  }
+}
