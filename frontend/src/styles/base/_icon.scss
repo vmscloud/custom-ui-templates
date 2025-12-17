@@ -1,0 +1,43 @@
+@use '../../styles/abstracts/mixin';
+@use '../../styles/abstracts/function';
+@use './font-icons/mozart-icons';
+
+.mozart-icons {
+  color: var(--color-icon-text);
+  @include mixin.flex-center;
+
+  &.icon-close::before {
+    @include mixin.moz-icon;
+    content: function.unicode('e113');
+  }
+  &.icon-new-tab::before {
+    @include mixin.moz-icon;
+    content: function.unicode('e157');
+  }
+  &.icon-arrow-left::before {
+    @include mixin.moz-icon;
+    content: function.unicode('e17d');
+  }
+  &.icon-arrow-right::before {
+    @include mixin.moz-icon;
+    content: function.unicode('e17f');
+  }
+  &.icon-user::before {
+    @include mixin.moz-icon;
+    content: function.unicode('e1d5');
+  }
+}
+
+// SVG ICONS
+.mozart-svg-icons {
+  min-width: 12px;
+  min-height: 12px;
+
+  &.icon-grid-key {
+    background-image: url('@/styles/base/svg-icons/icon_key.svg');
+  }
+
+  &.icon-grid-prop {
+    background-image: url('@/styles/base/svg-icons/icon_prop.svg');
+  }
+}

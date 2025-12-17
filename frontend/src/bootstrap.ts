@@ -2,21 +2,24 @@
  * 애플리케이션 부트스트랩
  * Module Federation의 비동기 로딩을 위한 분리
  */
-import { createApp } from 'vue';
-import { createPinia } from 'pinia';
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
-import { VueQueryPlugin } from '@tanstack/vue-query';
-import { createSharedStoresPlugin } from '@vmscloud/moz-component';
-import App from './App.vue';
-import router from './router';
-import { useProjectInfoStore } from './stores/mainStore';
-import i18nPlugin from './plugins/i18n';
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import { VueQueryPlugin } from "@tanstack/vue-query";
+import { createSharedStoresPlugin } from "@vmscloud/moz-component";
+import App from "./App.vue";
+import router from "./router";
+import { useProjectInfoStore } from "./stores/mainStore";
+import i18nPlugin from "./plugins/i18n";
 
-// Wijmo 스타일 임포트
-import '@grapecity/wijmo.styles/wijmo.css';
+// 1. 로컬 테마/CSS 변수 (moz-component 스타일보다 먼저 로드)
+import "./styles/index.scss";
 
-// moz-component 스타일 임포트
-import '@vmscloud/moz-component/style.css';
+// 2. moz-component (Wijmo 스타일 포함)
+import "@vmscloud/moz-component/style.css";
+
+// Wijmo 한국어 문화 설정
+import "@grapecity/wijmo.cultures/wijmo.culture.ko";
 
 // Pinia 설정
 const pinia = createPinia();
@@ -36,7 +39,7 @@ i18nPlugin(app);
 app.use(
   createSharedStoresPlugin({
     projectInfo: () => useProjectInfoStore(),
-  }),
+  })
 );
 
-app.mount('#app');
+app.mount("#app");

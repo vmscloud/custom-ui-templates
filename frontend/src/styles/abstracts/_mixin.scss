@@ -1,0 +1,154 @@
+@mixin flex {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+@mixin align-item-start {
+  -webkit-box-align: start;
+  -moz-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+}
+
+@mixin align-item-center {
+  -webkit-box-align: center;
+  -moz-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+@mixin align-item-end {
+  -webkit-box-align: end;
+  -moz-align-items: flex-end;
+  -ms-flex-align: end;
+  align-items: flex-end;
+}
+
+@mixin justify-content-start {
+  -webkit-box-pack: start;
+  -moz-box-justify-content: flex-start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+}
+
+@mixin justify-content-center {
+  -webkit-box-pack: center;
+  -moz-box-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+@mixin justify-content-end {
+  -webkit-box-pack: end;
+  -moz-box-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+@mixin flex-center-horizontal {
+  @include flex;
+  @include align-item-center;
+}
+
+@mixin flex-center-horizontal-start {
+  @include flex;
+  @include align-item-center;
+  @include justify-content-start;
+}
+
+@mixin flex-center-horizontal-end {
+  @include flex;
+  @include align-item-center;
+  @include justify-content-end;
+}
+
+@mixin flex-start-horizontal-start {
+  @include flex;
+  @include align-item-start;
+  @include justify-content-start;
+}
+
+@mixin flex-start-horizontal-end {
+  @include flex;
+  @include align-item-start;
+  @include justify-content-end;
+}
+
+@mixin flex-end-horizontal {
+  @include flex;
+  @include align-item-end;
+}
+
+@mixin flex-center-vertical {
+  @include flex;
+  @include justify-content-center;
+}
+
+@mixin flex-center {
+  @include flex;
+  @include justify-content-center;
+  @include align-item-center;
+}
+
+@mixin nowrap-text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+  overflow: hidden;
+}
+
+@mixin moz-icon {
+  font-family: 'mozart-icons';
+  display: block;
+  font-size: var(--size-icon-font-size);
+  position: relative;
+  font-style: normal;
+}
+
+@mixin mozart-icons {
+  font-family: mozart-icons;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: liga;
+}
+
+// component에서 2번 이상 사용되는 공통 mixin
+// TODO: 아래 해당하는 mixin이 많아질 경우 위치를 조정하거나 다른 파일로 빼는 것을 고려해야 할 것 같음
+
+@mixin tree-icon($color, $margin) {
+  font-size: var(--size-icon-font-size);
+  font-family: 'mozart-icons';
+  visibility: unset;
+  color: $color;
+  @if ($margin) {
+    margin-right: 5px;
+  }
+}
+
+@mixin toolbar-widget {
+  height: var(--size-input-height);
+  border: 1px solid var(--color-border3);
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+}

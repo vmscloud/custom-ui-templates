@@ -1,14 +1,6 @@
 <template>
   <div class="item-master-page">
-    <!-- 페이지 헤더 -->
-    <div class="page-header">
-      <h1 class="page-title">Item Master (Wijmo)</h1>
-      <p class="page-description">
-        Item Master 데이터를 Wijmo 그리드로 조회합니다.
-      </p>
-    </div>
-
-    <!-- 검색 조건 -->
+    <!-- 검색 조건 (APS 컨트롤러 스타일) -->
     <section class="search-section">
       <div class="search-form">
         <div class="form-group">
@@ -120,32 +112,16 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .item-master-page {
-  padding: 1.5rem;
+  // APS Main.vue의 페이지 구조와 동일
+  padding: var(--spacing-9, 1rem);
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-}
-
-.page-header {
-  margin-bottom: 1.5rem;
-
-  .page-title {
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: var(--color-text-primary, #1f2937);
-    margin: 0 0 0.5rem 0;
-  }
-
-  .page-description {
-    color: var(--color-text-secondary, #6b7280);
-    margin: 0;
-  }
+  gap: var(--spacing-6, 0.5rem);
 }
 
 .search-section {
-  margin-bottom: 1rem;
-
   .search-form {
     display: flex;
     gap: 1rem;
@@ -202,7 +178,6 @@ onMounted(() => {
 }
 
 .result-info {
-  margin-bottom: 0.5rem;
   font-size: 0.875rem;
   color: var(--color-text-secondary, #6b7280);
 

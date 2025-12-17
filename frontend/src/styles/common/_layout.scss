@@ -1,0 +1,42 @@
+@use '../../styles/abstracts/mixin';
+
+.spacer {
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-center-horizontal {
+  @include flex-center-horizontal;
+}
+
+.flex-center-horizontal-start {
+  @include flex-center-horizontal-start;
+}
+
+.flex-center-horizontal-end {
+  @include flex-center-horizontal-end;
+}
+
+.flex-start-horizontal-start {
+  @include flex-start-horizontal-start;
+}
+
+.flex-start-horizontal-end {
+  @include flex-start-horizontal-end;
+}
+
+.flex-center-vertical {
+  @include flex-center-vertical;
+}
+
+.flex-center {
+  @include mixin.flex-center;
+}
+
+.nowrap-text {
+  @include mixin.nowrap-text;
+}
