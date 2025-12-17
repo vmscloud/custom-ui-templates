@@ -12,8 +12,14 @@
     "build:license": "node scripts/license.js"
   },
   "dependencies": {
+    "@grapecity/wijmo": "5.20232.939",
+    "@grapecity/wijmo.grid": "5.20232.939",
+    "@grapecity/wijmo.styles": "5.20232.939",
+    "@grapecity/wijmo.vue2.grid": "5.20232.939",
     "@tanstack/vue-query": "^5.28.13",
-    "@vmscloud/moz-component": "^1.0.2",
+    "i18next": "^23.7.18",
+    "i18next-vue": "^3.0.0",
+    "@vmscloud/moz-component": "^1.0.3",
     "axios": "^1.6.7",
     "dayjs": "^1.11.10",
     "pinia": "^2.1.7",

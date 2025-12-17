@@ -2,8 +2,10 @@
   <div class="item-master-page">
     <!-- 페이지 헤더 -->
     <div class="page-header">
-      <h1 class="page-title">Item Master</h1>
-      <p class="page-description">Item Master 데이터를 조회합니다.</p>
+      <h1 class="page-title">Item Master (Wijmo)</h1>
+      <p class="page-description">
+        Item Master 데이터를 Wijmo 그리드로 조회합니다.
+      </p>
     </div>
 
     <!-- 검색 조건 -->
@@ -39,50 +41,28 @@
       <span v-if="error" class="error-text">{{ error }}</span>
     </section>
 
-    <!-- 그리드 -->
+    <!-- Wijmo 그리드 -->
     <section class="grid-section">
-      <div v-if="loading" class="loading-state">로딩 중...</div>
-      <div v-else-if="data.length > 0" class="table-wrapper">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Item ID</th>
-              <th>Item Name</th>
-              <th>Item Type</th>
-              <th>Item Group</th>
-              <th>Description</th>
-              <th>Procurement Type</th>
-              <th>Prod Type</th>
-              <th>Item Spec</th>
-              <th>Priority</th>
-              <th>Create User</th>
-              <th>Update Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in data" :key="item.item_id">
-              <td>{{ item.item_id }}</td>
-              <td>{{ item.item_name }}</td>
-              <td>{{ item.item_type }}</td>
-              <td>{{ item.item_group_id }}</td>
-              <td>{{ item.description }}</td>
-              <td>{{ item.procurement_type }}</td>
-              <td>{{ item.prod_type }}</td>
-              <td>{{ item.item_spec }}</td>
-              <td>{{ item.item_priority }}</td>
-              <td>{{ item.create_user_id }}</td>
-              <td>{{ formatDate(item.update_datetime) }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <ExtendFlexGrid
+        v-if="data.length > 0"
+        name="itemMasterGrid"
+        :itemsSource="data"
+        :isReadOnly="true"
+        :loading="loading"
+        :initialized="onGridInitialized"
+        height="100%"
+        :useToolBox="true"
+        :useExtendFooter="true"
+      />
+      <div v-else-if="loading" class="loading-state">로딩 중...</div>
       <div v-else class="empty-state">조회된 데이터가 없습니다.</div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted } from "vue";
+import { reactive, onMounted, ref } from "vue";
+import { ExtendFlexGrid } from "@vmscloud/moz-component";
 import { useItemMaster, type ItemMasterParams } from "./itemMaster";
 
 // Item Master 컴포저블
@@ -94,13 +74,36 @@ const searchParams = reactive<ItemMasterParams>({
   planVer: "20251103-P-TEST",
 });
 
-// 날짜 포맷
-function formatDate(dateStr: string | null): string {
-  if (!dateStr) return "-";
-  try {
-    return new Date(dateStr).toLocaleString("ko-KR");
-  } catch {
-    return dateStr;
+// 그리드 참조
+const flexGrid = ref<any>(null);
+
+// 그리드 초기화 핸들러
+function onGridInitialized(grid: any) {
+  flexGrid.value = grid;
+
+  // 컬럼 설정 (선택사항 - 자동 생성되지만 커스터마이징 가능)
+  if (grid.columns) {
+    // 불필요한 컬럼 숨기기
+    const hiddenColumns = [
+      "partition_key",
+      "project_id",
+      "plan_ver",
+      "prop01",
+      "prop02",
+      "prop03",
+      "prop04",
+      "prop05",
+      "prop06",
+      "prop07",
+      "prop08",
+      "prop09",
+      "prop10",
+    ];
+    grid.columns.forEach((col: any) => {
+      if (hiddenColumns.includes(col.binding)) {
+        col.visible = false;
+      }
+    });
   }
 }
 
@@ -213,45 +216,8 @@ onMounted(() => {
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  border: 1px solid var(--color-border, #e5e7eb);
   border-radius: 0.5rem;
   background: white;
-}
-
-.table-wrapper {
-  height: 100%;
-  overflow: auto;
-}
-
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-
-  th,
-  td {
-    padding: 0.75rem 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--color-border, #e5e7eb);
-    white-space: nowrap;
-  }
-
-  th {
-    background: var(--color-bg-secondary, #f9fafb);
-    font-weight: 600;
-    color: var(--color-text-secondary, #6b7280);
-    position: sticky;
-    top: 0;
-    z-index: 1;
-  }
-
-  tbody tr:hover {
-    background: var(--color-bg-hover, #f3f4f6);
-  }
-
-  tbody tr:last-child td {
-    border-bottom: none;
-  }
 }
 
 .loading-state,
@@ -262,5 +228,7 @@ onMounted(() => {
   height: 200px;
   color: var(--color-text-secondary, #9ca3af);
   font-size: 0.875rem;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 0.5rem;
 }
 </style>

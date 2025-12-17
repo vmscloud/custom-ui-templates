@@ -19,7 +19,22 @@ export default defineConfig({
         "./expose": "./src/expose.ts",
       },
       // Host와 공유할 의존성
-      shared: ["vue", "pinia", "vue-router", "@tanstack/vue-query", "dayjs"],
+      shared: [
+        "vue",
+        "pinia",
+        "vue-router",
+        "@tanstack/vue-query",
+        "dayjs",
+        // i18next (moz-component에서 useTranslation 사용)
+        "i18next",
+        "i18next-vue",
+        // Wijmo 그리드 패키지 공유 (moz-component에서 사용)
+        "@grapecity/wijmo",
+        "@grapecity/wijmo.grid",
+        "@grapecity/wijmo.vue2.grid",
+        // moz-component 공유
+        "@vmscloud/moz-component",
+      ],
     }),
   ],
   resolve: {
