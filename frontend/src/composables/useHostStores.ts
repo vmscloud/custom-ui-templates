@@ -1,84 +1,120 @@
 /**
  * Host(APS)에서 주입된 스토어에 접근하는 컴포저블
+ *
+ * RemoteLoader.vue에서 provide('hostData', hostData)로 주입된 데이터를 inject합니다.
+ * 컴포넌트 방식에서는 같은 Vue 인스턴스를 공유하므로 provide/inject가 정상 작동합니다.
  */
-import { inject, ref, computed, shallowRef, onMounted } from "vue";
+import { inject, ref, computed, type ComputedRef } from "vue";
 import type { HostStores } from "@/types/host.d";
 
-// 문자열 키 사용 (Module Federation 환경에서 Symbol은 번들 간 공유 불가)
+// RemoteLoader.vue에서 provide하는 키
+export const HOST_DATA_KEY = "hostData";
+
+// 레거시 호환을 위한 키 (기존 코드에서 사용 시)
 export const HOST_STORES_KEY = "aps:hostStores";
 
-// 독립 실행 모드용 스토어 캐시 (지연 로드)
-let standaloneStoreCache: any = null;
-
 /**
- * 독립 실행 모드용 스토어를 지연 로드
+ * Host에서 provide된 hostData 타입
+ * RemoteLoader.vue의 hostData computed 구조와 일치
  */
-async function loadStandaloneStore() {
-  if (standaloneStoreCache) return standaloneStoreCache;
-
-  try {
-    const module = await import("@/stores/mainStore");
-    standaloneStoreCache = module.useProjectInfoStore();
-    return standaloneStoreCache;
-  } catch (error) {
-    console.warn(
-      "[External App] Failed to load local projectInfoStore:",
-      error
-    );
-    return null;
-  }
+interface HostData {
+  projectInfo: {
+    currentProjectID: string;
+    currentProject: {
+      projectID: string;
+      projectNM: string;
+      initMenuPath?: string;
+      manualUrl?: string;
+    } | null;
+    userInfo: {
+      id: string;
+      name: string;
+      email: string;
+    } | null;
+    isAdmin: boolean;
+  };
+  planCycle: {
+    planVer: string;
+    fromDate: any; // Dayjs
+    toDate: any; // Dayjs
+  };
+  menu: {
+    items: any[];
+    currentMenuId: string;
+    currentMenu: any | null;
+  };
 }
 
 /**
  * Host 스토어 접근 컴포저블
- * Host(APS)에서 로드된 경우 주입된 스토어 반환
- * 독립 실행 시 자체 스토어 사용
+ * Host(APS)에서 로드된 경우 주입된 hostData를 HostStores 형태로 변환하여 반환
  */
 export function useHostStores(): HostStores {
-  const injected = inject(HOST_STORES_KEY, null);
+  // RemoteLoader.vue에서 provide한 hostData inject
+  const hostData = inject<ComputedRef<HostData> | null>(HOST_DATA_KEY, null);
 
   // Host에서 주입된 경우 (APS에서 로드됨)
-  if (injected) {
-    return injected;
+  if (hostData) {
+    // hostData는 computed이므로 .value로 접근
+    // HostStores 형태에 맞게 ref/computed로 감싸서 반환
+    return {
+      planCycle: {
+        planVer: computed(() => hostData.value?.planCycle?.planVer ?? ""),
+        fromDate: computed(() => hostData.value?.planCycle?.fromDate ?? null),
+        toDate: computed(() => hostData.value?.planCycle?.toDate ?? null),
+      },
+      projectInfo: {
+        currentProjectID: computed(
+          () => hostData.value?.projectInfo?.currentProjectID ?? ""
+        ),
+        currentProject: computed(
+          () => hostData.value?.projectInfo?.currentProject ?? null
+        ),
+        userInfo: computed(() => hostData.value?.projectInfo?.userInfo ?? null),
+        isAdmin: computed(() => hostData.value?.projectInfo?.isAdmin ?? false),
+      },
+      menu: {
+        items: computed(() => hostData.value?.menu?.items ?? []),
+        currentMenuId: computed(
+          () => hostData.value?.menu?.currentMenuId ?? ""
+        ),
+        currentMenu: computed(() => hostData.value?.menu?.currentMenu ?? null),
+      },
+    } as HostStores;
   }
 
-  // 독립 실행: 자체 스토어 사용
+  // Host에서 로드되지 않은 경우 - 빈 값 반환
   console.warn(
-    "[External App] Host stores not found. Using local stores for standalone mode."
+    "[Custom Extension App] Host data not found. This component should be loaded from APS Host."
   );
-
-  // 독립 실행 모드에서 스토어를 비동기로 로드
-  const projectInfoStore = shallowRef<any>(null);
-
-  // 컴포넌트 마운트 시 스토어 로드
-  onMounted(async () => {
-    projectInfoStore.value = await loadStandaloneStore();
-  });
 
   return {
     planCycle: {
-      // PlanCycle은 독립 실행 시 사용 불가 (APS 전용)
       planVer: ref(""),
       fromDate: ref(null),
       toDate: ref(null),
     },
     projectInfo: {
-      currentProjectID: computed(
-        () => projectInfoStore.value?.currentProjectID ?? ""
-      ),
-      currentProject: computed(
-        () => projectInfoStore.value?.currentProject ?? null
-      ),
-      userInfo: computed(() => projectInfoStore.value?.userInfo ?? null),
-      isAdmin: computed(() => projectInfoStore.value?.isAdmin ?? false),
+      currentProjectID: computed(() => ""),
+      currentProject: computed(() => null),
+      userInfo: computed(() => null),
+      isAdmin: computed(() => false),
     },
     menu: {
-      // Menu는 독립 실행 시 사용 불가 (APS 전용)
       items: ref([]),
       currentMenuId: ref(""),
       currentMenu: ref(null),
     },
   };
+}
+
+/**
+ * Host 데이터 직접 접근 (원본 형태)
+ * provide된 hostData를 그대로 반환
+ */
+export function useHostData(): ComputedRef<HostData | null> {
+  const hostData = inject<ComputedRef<HostData> | null>(HOST_DATA_KEY, null);
+  return hostData ?? computed(() => null);
 }
 
 /**
@@ -106,4 +142,13 @@ export function useHostUser() {
     userInfo: stores.projectInfo.userInfo,
     isAdmin: stores.projectInfo.isAdmin,
   };
+}
+
+/**
+ * Host 환경에서 실행 중인지 확인
+ */
+export function isRunningInHost(): boolean {
+  return (
+    typeof window !== "undefined" && window.__POWERED_BY_APS_HOST__ === true
+  );
 }

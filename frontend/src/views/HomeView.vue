@@ -3,15 +3,27 @@
     <h2>개발용 홈</h2>
     <p>아래 메뉴 중 하나를 선택하여 테스트하세요:</p>
     <nav>
-      <router-link to="/custom-menu-1">CustomMenu1</router-link>
-      <router-link to="/item-master">ItemMaster</router-link>
-      <router-link to="/item-master-wijmo">ItemMaster Wijmo</router-link>
+      <router-link
+        v-for="route in menuRoutes"
+        :key="route.path"
+        :to="route.path"
+      >
+        {{ route.name }}
+      </router-link>
     </nav>
   </div>
 </template>
 
 <script setup lang="ts">
-// 개발용 홈 뷰
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+// Home을 제외한 라우트를 메뉴로 표시
+const menuRoutes = computed(() =>
+  router.getRoutes().filter((route) => route.name && route.name !== "Home")
+);
 </script>
 
 <style scoped>

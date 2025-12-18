@@ -1,5 +1,5 @@
 /**
- * 외주 앱용 ProjectInfo 스토어
+ * 커스텀 확장앱용 ProjectInfo 스토어
  * 독립 실행 시 사용됩니다.
  * APS에서 로드될 때는 Host의 스토어가 inject됩니다.
  */
