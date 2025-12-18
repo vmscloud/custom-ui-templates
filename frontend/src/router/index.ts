@@ -28,6 +28,9 @@ const routes: RouteRecordRaw[] = [
     path: "/item-master-wijmo",
     name: "ItemMasterWijmo",
     component: () => import("@/views/templates/basic2/ItemMasterWijmo.vue"),
+    meta: {
+      navis: ["text-item_master", "text-wijmo_grid"],
+    },
   },
 ];
 
