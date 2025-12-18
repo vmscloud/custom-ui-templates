@@ -1,31 +1,38 @@
 <template>
   <div class="item-master-page">
-    <!-- 검색 조건 (APS 컨트롤러 스타일) -->
-    <section class="search-section">
-      <div class="search-form">
-        <div class="form-group">
-          <label for="projectId">Project ID</label>
-          <input
-            id="projectId"
-            v-model="searchParams.projectId"
-            type="text"
-            placeholder="Project ID"
-          />
+    <!-- APS Controller 스타일 헤더 -->
+    <Controller
+      :showFilterButton="true"
+      :showPreset="false"
+      :customNavis="['Item Master', 'Wijmo Grid']"
+      :actions="controllerActions"
+    >
+      <!-- 검색 조건 필터 -->
+      <template #filter>
+        <div class="filter-form">
+          <div class="filter-item">
+            <label for="projectId">Project ID</label>
+            <input
+              id="projectId"
+              v-model="searchParams.projectId"
+              type="text"
+              placeholder="Project ID"
+              class="filter-input"
+            />
+          </div>
+          <div class="filter-item">
+            <label for="planVer">Plan Version</label>
+            <input
+              id="planVer"
+              v-model="searchParams.planVer"
+              type="text"
+              placeholder="Plan Version"
+              class="filter-input"
+            />
+          </div>
         </div>
-        <div class="form-group">
-          <label for="planVer">Plan Version</label>
-          <input
-            id="planVer"
-            v-model="searchParams.planVer"
-            type="text"
-            placeholder="Plan Version"
-          />
-        </div>
-        <button class="search-button" :disabled="loading" @click="handleSearch">
-          {{ loading ? "조회중..." : "조회" }}
-        </button>
-      </div>
-    </section>
+      </template>
+    </Controller>
 
     <!-- 결과 정보 -->
     <section class="result-info">
@@ -53,8 +60,9 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted, ref } from "vue";
+import { reactive, onMounted, ref, computed } from "vue";
 import { ExtendFlexGrid } from "@vmscloud/moz-component";
+import Controller from "@/components/layout/Controller.vue";
 import { useItemMaster, type ItemMasterParams } from "./itemMaster";
 
 // Item Master 컴포저블
@@ -68,6 +76,15 @@ const searchParams = reactive<ItemMasterParams>({
 
 // 그리드 참조
 const flexGrid = ref<any>(null);
+
+// Controller Action 버튼 정의
+const controllerActions = computed(() => [
+  {
+    action: "Search" as const,
+    loading: loading.value,
+    click: handleSearch,
+  },
+]);
 
 // 그리드 초기화 핸들러
 function onGridInitialized(grid: any) {
@@ -113,73 +130,56 @@ onMounted(() => {
 <style scoped lang="scss">
 .item-master-page {
   // APS Main.vue의 페이지 구조와 동일
-  padding: var(--spacing-9, 1rem);
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  gap: var(--spacing-6, 0.5rem);
 }
 
-.search-section {
-  .search-form {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-end;
-    flex-wrap: wrap;
-  }
+.filter-form {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
 
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
-    label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--color-text-secondary, #6b7280);
-    }
-
-    input {
-      padding: 0.5rem 0.75rem;
-      border: 1px solid var(--color-border, #d1d5db);
-      border-radius: 0.375rem;
-      font-size: 0.875rem;
-      min-width: 280px;
-
-      &:focus {
-        outline: none;
-        border-color: var(--color-primary, #3b82f6);
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-      }
-    }
-  }
-
-  .search-button {
-    padding: 0.5rem 1.5rem;
-    background-color: var(--color-primary, #3b82f6);
-    color: white;
-    border: none;
-    border-radius: 0.375rem;
+  label {
     font-size: 0.875rem;
     font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    color: var(--color-text-400, #6b7280);
+    white-space: nowrap;
+  }
+}
 
-    &:hover:not(:disabled) {
-      background-color: var(--color-primary-hover, #2563eb);
-    }
+.filter-input {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--color-border-750, #d1d5db);
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  min-width: 220px;
+  background-color: var(--color-bg-100, #fff);
+  color: var(--color-text-900, #1f2937);
 
-    &:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+  &:focus {
+    outline: none;
+    border-color: var(--color-accent-400, #3b82f6);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+
+  &::placeholder {
+    color: var(--color-text-300, #9ca3af);
   }
 }
 
 .result-info {
   font-size: 0.875rem;
-  color: var(--color-text-secondary, #6b7280);
+  color: var(--color-text-400, #6b7280);
+  padding: 0 var(--size-content-padding, 20px);
 
   .error-text {
     color: var(--color-error, #ef4444);
@@ -191,8 +191,8 @@ onMounted(() => {
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  border-radius: 0.5rem;
-  background: white;
+  margin: 0 var(--size-content-padding, 20px);
+  margin-bottom: var(--spacing-6, 10px);
 }
 
 .loading-state,
@@ -201,9 +201,9 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   height: 200px;
-  color: var(--color-text-secondary, #9ca3af);
+  color: var(--color-text-300, #9ca3af);
   font-size: 0.875rem;
-  border: 1px solid var(--color-border, #e5e7eb);
+  border: 1px solid var(--color-border-750, #e5e7eb);
   border-radius: 0.5rem;
 }
 </style>
