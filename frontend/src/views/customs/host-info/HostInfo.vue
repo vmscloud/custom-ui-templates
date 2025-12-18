@@ -46,40 +46,16 @@
       </div>
     </section>
 
-    <!-- 샘플 데이터 그리드 -->
-    <section class="data-section">
-      <h2>샘플 데이터</h2>
-      <div class="sample-grid">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Status</th>
-              <th>Created</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in sampleData" :key="item.id">
-              <td>{{ item.id }}</td>
-              <td>{{ item.name }}</td>
-              <td>
-                <span :class="['status-badge', `status-${item.status}`]">
-                  {{ item.status }}
-                </span>
-              </td>
-              <td>{{ item.created }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <!-- 샘플 컴포넌트 -->
+    <section class="sample-section">
+      <Toggle label="Toggle Label" />
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { useHostStores } from "@/composables/useHostStores";
+import { Toggle } from "@vmscloud/moz-ui-components";
 
 // Host 스토어에서 정보 가져오기
 const hostStores = useHostStores();
@@ -90,15 +66,6 @@ const { planVer, fromDate, toDate } = hostStores.planCycle;
 // 프로젝트 정보
 const { currentProjectID, currentProject, userInfo, isAdmin } =
   hostStores.projectInfo;
-
-// 샘플 데이터
-const sampleData = ref([
-  { id: 1, name: "Item A", status: "active", created: "2024-01-15" },
-  { id: 2, name: "Item B", status: "pending", created: "2024-01-16" },
-  { id: 3, name: "Item C", status: "completed", created: "2024-01-17" },
-  { id: 4, name: "Item D", status: "active", created: "2024-01-18" },
-  { id: 5, name: "Item E", status: "inactive", created: "2024-01-19" },
-]);
 </script>
 
 <style scoped lang="scss">
@@ -125,7 +92,7 @@ const sampleData = ref([
 }
 
 .info-section,
-.data-section {
+.sample-section {
   margin-bottom: 2rem;
 
   h2 {

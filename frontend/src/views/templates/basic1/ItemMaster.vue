@@ -11,7 +11,7 @@
       <div class="search-form">
         <div class="form-group">
           <label for="projectId">Project ID</label>
-          <input
+          <Input
             id="projectId"
             v-model="searchParams.projectId"
             type="text"
@@ -20,16 +20,11 @@
         </div>
         <div class="form-group">
           <label for="planVer">Plan Version</label>
-          <input
-            id="planVer"
-            v-model="searchParams.planVer"
-            type="text"
-            placeholder="Plan Version"
-          />
+          <Input id="planVer" v-model="searchParams.planVer" :options="[]" />
         </div>
-        <button class="search-button" :disabled="loading" @click="handleSearch">
+        <Button class="search-button" :disabled="loading" @click="handleSearch">
           {{ loading ? "조회중..." : "조회" }}
-        </button>
+        </Button>
       </div>
     </section>
 
@@ -84,6 +79,7 @@
 <script setup lang="ts">
 import { reactive, onMounted } from "vue";
 import { useItemMaster, type ItemMasterParams } from "./itemMaster";
+import { Input, Button } from "@vmscloud/moz-ui-components";
 
 // Item Master 컴포저블
 const { data, loading, error, count, loadData } = useItemMaster();

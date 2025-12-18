@@ -8,7 +8,7 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview --port 5300 --host",
     "type-check": "vue-tsc --noEmit",
-    "install:moz": "pnpm add @vmscloud/moz-component",
+    "install:moz": "pnpm add @vmscloud/moz-ui-components",
     "build:license": "node scripts/license.js"
   },
   "dependencies": {
@@ -21,7 +21,7 @@
     "@tanstack/vue-query": "^5.28.13",
     "i18next": "^23.7.18",
     "i18next-vue": "^3.0.0",
-    "@vmscloud/moz-component": "^1.0.5",
+    "@vmscloud/moz-ui-components": "^1.0.1",
     "axios": "^1.6.7",
     "dayjs": "^1.11.10",
     "pinia": "^2.1.7",
