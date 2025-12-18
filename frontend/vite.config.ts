@@ -5,6 +5,8 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // Nginx를 통해 /ext/ 경로로 서빙되므로 base 설정
+  base: "/ext/",
   plugins: [
     vue(),
     federation({
@@ -12,29 +14,16 @@ export default defineConfig({
       filename: "remoteEntry.js",
       // Host(APS)에서 로드할 수 있도록 노출
       exposes: {
-        // 개별 뷰 컴포넌트
-        "./CustomMenu1": "./src/views/CustomMenu1/CustomMenu1.vue",
-        "./CustomMenu2": "./src/views/CustomMenu2/CustomMenu2.vue",
         // 뷰 레지스트리 (동적 로딩용)
         "./expose": "./src/expose.ts",
       },
-      // Host와 공유할 의존성
-      shared: [
-        "vue",
-        "pinia",
-        "vue-router",
-        "@tanstack/vue-query",
-        "dayjs",
-        // i18next (moz-component에서 useTranslation 사용)
-        "i18next",
-        "i18next-vue",
-        // Wijmo 그리드 패키지 공유 (moz-component에서 사용)
-        "@grapecity/wijmo",
-        "@grapecity/wijmo.grid",
-        "@grapecity/wijmo.vue2.grid",
-        // moz-component 공유
-        "@vmscloud/moz-component",
-      ],
+      // Host(APS)와 공유할 의존성
+      // Vue, pinia만 공유 (singleton으로 단일 인스턴스 보장)
+      // moz-component는 현재 미사용 (향후 커스텀 확장앱 전용 패키지 분리 예정)
+      shared: {
+        vue: { singleton: true },
+        pinia: { singleton: true },
+      } as any,
     }),
   ],
   resolve: {

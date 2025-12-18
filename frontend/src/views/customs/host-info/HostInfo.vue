@@ -3,7 +3,7 @@
     <!-- 페이지 헤더 -->
     <div class="page-header">
       <h1 class="page-title">Custom Menu 1</h1>
-      <p class="page-description">외주 개발자가 만든 샘플 메뉴입니다.</p>
+      <p class="page-description">커스텀 확장 개발자가 만든 샘플 메뉴입니다.</p>
     </div>
 
     <!-- Host 정보 표시 -->

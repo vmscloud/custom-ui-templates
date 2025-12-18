@@ -15,8 +15,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/views/HomeView.vue"),
   },
   {
-    path: "/custom-menu-1",
-    name: "CustomMenu1",
+    path: "/host-info",
+    name: "HostInfo",
     component: () => import("@/views/customs/host-info/HostInfo.vue"),
   },
   {
@@ -35,7 +35,7 @@ const routes: RouteRecordRaw[] = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
 
