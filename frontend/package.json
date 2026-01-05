@@ -19,7 +19,7 @@
     "@grapecity/wijmo.vue2.grid": "5.20232.939",
     "@tanstack/vue-query": "^5.28.13",
     "@tanstack/vue-virtual": "^3.12.0",
-    "@vmscloud/moz-ui-components": "^1.0.7",
+    "@vmscloud/moz-ui-components": "^1.0.9",
     "arquero": "^5.0.0",
     "axios": "^1.6.7",
     "dayjs": "^1.11.10",

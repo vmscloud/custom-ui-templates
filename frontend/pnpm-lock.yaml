@@ -33,8 +33,8 @@ importers:
         specifier: ^3.12.0
         version: 3.13.16(vue@3.5.26(typescript@5.9.3))
       '@vmscloud/moz-ui-components':
-        specifier: ^1.0.7
-        version: 1.0.7(@grapecity/wijmo.grid.filter@5.20232.939)(@grapecity/wijmo.grid.grouppanel@5.20232.939)(@grapecity/wijmo.grid.selector@5.20232.939)(@grapecity/wijmo.grid@5.20232.939)(@grapecity/wijmo.input@5.20232.939)(@grapecity/wijmo.rest@5.20232.939)(@grapecity/wijmo.undo@5.20232.939)(@grapecity/wijmo@5.20232.939)(@tanstack/vue-virtual@3.13.16(vue@3.5.26(typescript@5.9.3)))(arquero@5.4.1)(dayjs@1.11.19)(echarts-stat@1.2.0)(echarts@5.6.0)(es-toolkit@1.43.0)(vue-echarts@7.0.3(@vue/runtime-core@3.5.26)(echarts@5.6.0)(vue@3.5.26(typescript@5.9.3)))(vue@3.5.26(typescript@5.9.3))
+        specifier: ^1.0.9
+        version: 1.0.9(@grapecity/wijmo.grid.filter@5.20232.939)(@grapecity/wijmo.grid.grouppanel@5.20232.939)(@grapecity/wijmo.grid.selector@5.20232.939)(@grapecity/wijmo.grid@5.20232.939)(@grapecity/wijmo.input@5.20232.939)(@grapecity/wijmo.rest@5.20232.939)(@grapecity/wijmo.undo@5.20232.939)(@grapecity/wijmo@5.20232.939)(@tanstack/vue-virtual@3.13.16(vue@3.5.26(typescript@5.9.3)))(arquero@5.4.1)(dayjs@1.11.19)(echarts-stat@1.2.0)(echarts@5.6.0)(es-toolkit@1.43.0)(vue-echarts@7.0.3(@vue/runtime-core@3.5.26)(echarts@5.6.0)(vue@3.5.26(typescript@5.9.3)))(vue@3.5.26(typescript@5.9.3))
       arquero:
         specifier: ^5.0.0
         version: 5.4.1
@@ -1163,8 +1163,8 @@ packages:
       vite: ^5.0.0 || ^6.0.0
       vue: ^3.2.25
 
-  '@vmscloud/moz-ui-components@1.0.7':
-    resolution: {integrity: sha512-05Bvzz6W+hSkXywKDbeBpcIwAYM7kfKyJXdw755Zu84ZqTvlW+rBO/g24fqvY5jOZjpDzrPmT9wn76Ki1C1I6w==, tarball: https://npm.pkg.github.com/download/@vmscloud/moz-ui-components/1.0.7/7f5037b490119ca3252bca63ea489500a79075fb}
+  '@vmscloud/moz-ui-components@1.0.9':
+    resolution: {integrity: sha512-6Btw8GsBhHkFonV1AJ+llJQcnw6ZT3KNtpVYREKW3HgUPpbMc5UD/nqXHTmD7tD0gtPEcctat8+SFfH9qOkmRg==, tarball: https://npm.pkg.github.com/download/@vmscloud/moz-ui-components/1.0.9/152726a92837a2c88956b75c691b161231645190}
     peerDependencies:
       '@grapecity/wijmo': '>=5.20232.0'
       '@grapecity/wijmo.grid': '>=5.20232.0'
@@ -3563,7 +3563,7 @@ snapshots:
       vite: 6.4.1(@types/node@20.19.27)(sass@1.97.1)
       vue: 3.5.26(typescript@5.9.3)
 
-  '@vmscloud/moz-ui-components@1.0.7(@grapecity/wijmo.grid.filter@5.20232.939)(@grapecity/wijmo.grid.grouppanel@5.20232.939)(@grapecity/wijmo.grid.selector@5.20232.939)(@grapecity/wijmo.grid@5.20232.939)(@grapecity/wijmo.input@5.20232.939)(@grapecity/wijmo.rest@5.20232.939)(@grapecity/wijmo.undo@5.20232.939)(@grapecity/wijmo@5.20232.939)(@tanstack/vue-virtual@3.13.16(vue@3.5.26(typescript@5.9.3)))(arquero@5.4.1)(dayjs@1.11.19)(echarts-stat@1.2.0)(echarts@5.6.0)(es-toolkit@1.43.0)(vue-echarts@7.0.3(@vue/runtime-core@3.5.26)(echarts@5.6.0)(vue@3.5.26(typescript@5.9.3)))(vue@3.5.26(typescript@5.9.3))':
+  '@vmscloud/moz-ui-components@1.0.9(@grapecity/wijmo.grid.filter@5.20232.939)(@grapecity/wijmo.grid.grouppanel@5.20232.939)(@grapecity/wijmo.grid.selector@5.20232.939)(@grapecity/wijmo.grid@5.20232.939)(@grapecity/wijmo.input@5.20232.939)(@grapecity/wijmo.rest@5.20232.939)(@grapecity/wijmo.undo@5.20232.939)(@grapecity/wijmo@5.20232.939)(@tanstack/vue-virtual@3.13.16(vue@3.5.26(typescript@5.9.3)))(arquero@5.4.1)(dayjs@1.11.19)(echarts-stat@1.2.0)(echarts@5.6.0)(es-toolkit@1.43.0)(vue-echarts@7.0.3(@vue/runtime-core@3.5.26)(echarts@5.6.0)(vue@3.5.26(typescript@5.9.3)))(vue@3.5.26(typescript@5.9.3))':
     dependencies:
       '@grapecity/wijmo': 5.20232.939
       '@grapecity/wijmo.grid': 5.20232.939
