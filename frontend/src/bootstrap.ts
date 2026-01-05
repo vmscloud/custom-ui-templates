@@ -10,10 +10,10 @@ import App from "./App.vue";
 import router from "./router";
 import i18nPlugin from "./plugins/i18n";
 
-// 1. 로컬 테마/CSS 변수 (moz-component 스타일보다 먼저 로드)
-import "./styles/index.scss";
+// 1. Wijmo 기본 스타일 (가장 먼저)
+import "@grapecity/wijmo.styles/wijmo.css";
 
-// 2. moz-ui-components 스타일 (Tailwind CSS 포함)
+// 2. moz-ui-components 스타일 (Wijmo Grid 커스터마이징 포함, 마지막에 덮어쓰기)
 import "@vmscloud/moz-ui-components/style.css";
 
 // Wijmo 한국어 문화 설정

@@ -17,12 +17,27 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/host-info",
     name: "HostInfo",
-    component: () => import("@/views/customs/host-info/HostInfo.vue"),
+    component: () => import("@/views/templates/basic/HostInfo.vue"),
   },
   {
     path: "/item-master",
     name: "ItemMaster",
-    component: () => import("@/views/templates/basic1/ItemMaster.vue"),
+    component: () => import("@/views/templates/basic/ItemMaster.vue"),
+  },
+  {
+    path: "/sales-chart",
+    name: "SalesChart",
+    component: () => import("@/views/templates/chart/SalesChart.vue"),
+  },
+  {
+    path: "/product-grid",
+    name: "ProductGrid",
+    component: () => import("@/views/templates/grid/ProductGrid.vue"),
+  },
+  {
+    path: "/components-showcase",
+    name: "ComponentsShowcase",
+    component: () => import("@/views/templates/basic/ComponentsShowcase.vue"),
   },
 ];
 
