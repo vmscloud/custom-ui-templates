@@ -299,8 +299,10 @@
           <div class="component-example">
             <Button @click="togglePopup">팝업 열기</Button>
             <Popup v-model:visible="popupVisible" title="샘플 팝업">
-              <p>팝업 콘텐츠입니다.</p>
-              <p>여기에 원하는 내용을 추가할 수 있습니다.</p>
+              <template #default>
+                <p>팝업 콘텐츠입니다.</p>
+                <p>여기에 원하는 내용을 추가할 수 있습니다.</p>
+              </template>
               <template #footer>
                 <Button @click="togglePopup">닫기</Button>
               </template>
@@ -330,7 +332,7 @@
           <h3 class="component-name">Validator</h3>
           <p class="component-desc">폼 유효성 검증 컨텍스트</p>
           <div class="component-example">
-            <Validator v-slot="validatorSlot">
+            <Validator v-slot="{ validate, initValidator }">
               <div class="validator-form">
                 <Input
                   v-model="validatorInput"
@@ -339,12 +341,8 @@
                   :rules="validatorRules"
                 />
                 <div class="validator-buttons">
-                  <Button @click="() => validatorSlot?.validate?.()"
-                    >검증</Button
-                  >
-                  <Button
-                    variant="outlined"
-                    @click="() => validatorSlot?.initValidator?.()"
+                  <Button @click="() => validate()">검증</Button>
+                  <Button variant="outlined" @click="() => initValidator()"
                     >초기화</Button
                   >
                 </div>
