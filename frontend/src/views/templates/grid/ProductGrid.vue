@@ -27,7 +27,6 @@
         :useSort="true"
         :isReadOnly="false"
         :loading="loading"
-        :messages="gridMessages"
         :initialized="onGridInitialized"
       >
         <WjFlexGridColumn binding="id" header="ID" :width="60" :isReadOnly="true" />
@@ -58,31 +57,12 @@ import { useProductGrid } from "./productGrid";
 import {
   ExtendFlexGrid,
   type ExtendGrid,
-  type GridMessages,
-  defaultGridMessages,
 } from "@vmscloud/moz-ui-components";
 import { WjFlexGridColumn } from "@grapecity/wijmo.vue2.grid";
 import type { FlexGrid } from "@grapecity/wijmo.grid";
 
 // 상품 그리드 컴포저블
 const { data, loading, error, count, loadData } = useProductGrid();
-
-// 한국어 메시지
-const gridMessages: GridMessages = {
-  ...defaultGridMessages,
-  confirm: "확인",
-  cancel: "취소",
-  save: "저장",
-  noData: "표시할 데이터가 없습니다",
-  resetSuccess: "초기화 완료",
-  tooltipRequired: "필수 입력 항목입니다",
-  filter: "필터",
-  sort: "정렬",
-  layoutSetting: "레이아웃 설정",
-  viewToolbar: "툴바 보기",
-  viewFooter: "푸터 보기",
-  columnPicker: "열 선택",
-};
 
 // 그리드 초기화 핸들러
 const onGridInitialized = (flexGrid: FlexGrid, extendGrid: ExtendGrid) => {

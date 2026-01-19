@@ -6,6 +6,10 @@
  * 동적 import를 사용하는 viewRegistry만 제공합니다.
  */
 
+// Module Federation으로 로드될 때 필요한 스타일
+import "@grapecity/wijmo.styles/wijmo.css";
+import "@vmscloud/moz-ui-components/style.css";
+
 // 뷰 목록 (Host에서 동적 라우팅에 사용)
 // 동적 import를 사용하여 필요한 컴포넌트만 로드
 export const viewRegistry = {

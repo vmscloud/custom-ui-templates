@@ -8,7 +8,7 @@ import {
   type RouteRecordRaw,
 } from "vue-router";
 
-const routes: RouteRecordRaw[] = [
+export const routes: RouteRecordRaw[] = [
   {
     path: "/",
     name: "Home",
@@ -36,7 +36,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: "/components-showcase",
-    name: "ComponentsShowcase",
+    name: "ShowCase",
     component: () => import("@/views/templates/basic/ComponentsShowcase.vue"),
   },
 ];
