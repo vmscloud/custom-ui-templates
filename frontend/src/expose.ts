@@ -7,7 +7,6 @@
  */
 
 // Module Federation으로 로드될 때 필요한 스타일
-import "@grapecity/wijmo.styles/wijmo.css";
 import "@vmscloud/moz-ui-components/style.css";
 
 // 뷰 목록 (Host에서 동적 라우팅에 사용)
@@ -18,6 +17,7 @@ export const viewRegistry = {
   HostInfo: () => import("./views/templates/basic/HostInfo.vue"),
   SalesChart: () => import("./views/templates/chart/SalesChart.vue"),
   ProductGrid: () => import("./views/templates/grid/ProductGrid.vue"),
+  DemandDistribution: () => import("./views/templates/dm/DemandDistribution.vue"),
 } as const;
 
 export type ViewName = keyof typeof viewRegistry;

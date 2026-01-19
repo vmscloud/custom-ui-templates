@@ -32,6 +32,19 @@ export default defineConfig({
           singleton: true,
           requiredVersion: '^1.0.10',
         },
+        // ECharts 관련 - Host와 동일한 인스턴스 사용
+        'echarts': {
+          singleton: true,
+          requiredVersion: '^5.0.0',
+        },
+        'echarts/core': {
+          singleton: true,
+          requiredVersion: '^5.0.0',
+        },
+        'vue-echarts': {
+          singleton: true,
+          requiredVersion: '^7.0.0',
+        },
       } as any,
     }),
   ],
@@ -46,6 +59,17 @@ export default defineConfig({
         api: "modern-compiler",
       },
     },
+  },
+  optimizeDeps: {
+    include: [
+      'echarts',
+      'echarts/core',
+      'echarts/charts',
+      'echarts/components',
+      'echarts/renderers',
+      'echarts-stat',
+      'vue-echarts',
+    ],
   },
   build: {
     target: "esnext",
