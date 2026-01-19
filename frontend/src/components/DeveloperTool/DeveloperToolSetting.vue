@@ -30,9 +30,9 @@
 </template>
 
 <script setup lang="ts">
-import {computed, inject, onMounted, ref, watch} from "vue";
+import {computed, inject, ref, watch} from "vue";
 import {HOST_DATA_KEY} from "@/composables/useHostStores.ts";
-import {Button, ContextMenu, Input, TextArea, Toggle} from "@vmscloud/moz-ui-components";
+import {Button, ContextMenu, Input, Toggle} from "@vmscloud/moz-ui-components";
 import { DeveloperToolType } from "./DeveloperTool.ts";
 
 const settingsRef = defineModel<any>({required: true})

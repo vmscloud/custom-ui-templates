@@ -39,6 +39,11 @@ export const routes: RouteRecordRaw[] = [
     name: "ShowCase",
     component: () => import("@/views/templates/basic/ComponentsShowcase.vue"),
   },
+  {
+    path: "/demand-distribution",
+    name: "DemandDistribution",
+    component: () => import("@/views/templates/dm/DemandDistribution.vue"),
+  },
 ];
 
 const router = createRouter({
