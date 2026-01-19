@@ -38,24 +38,18 @@
             <dt>Plan Version</dt>
             <dd>{{ planVer || "-" }}</dd>
             <dt>From Date</dt>
-            <dd>{{ fromDate?.format?.("YYYY-MM-DD") || "-" }}</dd>
+            <dd>{{ fromDate }}</dd>
             <dt>To Date</dt>
-            <dd>{{ toDate?.format?.("YYYY-MM-DD") || "-" }}</dd>
+            <dd>{{ toDate }}</dd>
           </dl>
         </div>
       </div>
-    </section>
-
-    <!-- 샘플 컴포넌트 -->
-    <section class="sample-section">
-      <Toggle label="Toggle Label" />
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useHostStores } from "@/composables/useHostStores";
-import { Toggle } from "@vmscloud/moz-ui-components";
 
 // Host 스토어에서 정보 가져오기
 const hostStores = useHostStores();
