@@ -18,11 +18,33 @@ export default defineConfig({
         "./expose": "./src/expose.ts",
       },
       // Host(APS)와 공유할 의존성
-      // Vue, pinia만 공유 (singleton으로 단일 인스턴스 보장)
-      // moz-component는 현재 미사용 (향후 커스텀 확장앱 전용 패키지 분리 예정)
+      // Vue, Pinia, moz-ui-components를 singleton으로 공유
       shared: {
-        vue: { singleton: true },
-        pinia: { singleton: true },
+        vue: {
+          singleton: true,
+          requiredVersion: '^3.4.14',
+        },
+        pinia: {
+          singleton: true,
+          requiredVersion: '^2.1.7',
+        },
+        '@vmscloud/moz-ui-components': {
+          singleton: true,
+          requiredVersion: '^1.0.10',
+        },
+        // ECharts 관련 - Host와 동일한 인스턴스 사용
+        'echarts': {
+          singleton: true,
+          requiredVersion: '^5.0.0',
+        },
+        'echarts/core': {
+          singleton: true,
+          requiredVersion: '^5.0.0',
+        },
+        'vue-echarts': {
+          singleton: true,
+          requiredVersion: '^7.0.0',
+        },
       } as any,
     }),
   ],
@@ -37,6 +59,17 @@ export default defineConfig({
         api: "modern-compiler",
       },
     },
+  },
+  optimizeDeps: {
+    include: [
+      'echarts',
+      'echarts/core',
+      'echarts/charts',
+      'echarts/components',
+      'echarts/renderers',
+      'echarts-stat',
+      'vue-echarts',
+    ],
   },
   build: {
     target: "esnext",
@@ -60,7 +93,7 @@ export default defineConfig({
     // API 프록시 설정
     proxy: {
       "/api": {
-        target: "http://localhost:8099",
+        target: "http://localhost:8000",
         changeOrigin: true,
         secure: false,
       },
