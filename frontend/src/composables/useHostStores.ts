@@ -4,7 +4,7 @@
  * RemoteLoader.vue에서 provide('hostData', hostData)로 주입된 데이터를 inject합니다.
  * 컴포넌트 방식에서는 같은 Vue 인스턴스를 공유하므로 provide/inject가 정상 작동합니다.
  */
-import { inject, ref, computed, type ComputedRef } from "vue";
+import { inject, computed, type ComputedRef } from "vue";
 import type { HostStores } from "@/types/host.d";
 
 // RemoteLoader.vue에서 provide하는 키
@@ -51,61 +51,33 @@ interface HostData {
  */
 export function useHostStores(): HostStores {
   // RemoteLoader.vue에서 provide한 hostData inject
-  const hostData = inject<ComputedRef<HostData> | null>(HOST_DATA_KEY, null);
-
-  // Host에서 주입된 경우 (APS에서 로드됨)
-  if (hostData) {
-    // hostData는 computed이므로 .value로 접근
-    // HostStores 형태에 맞게 ref/computed로 감싸서 반환
-    return {
+  const hostData = inject<ComputedRef<HostData>>(HOST_DATA_KEY);
+  const computedHostData =  {
       planCycle: {
-        planVer: computed(() => hostData.value?.planCycle?.planVer ?? ""),
-        fromDate: computed(() => hostData.value?.planCycle?.fromDate ?? null),
-        toDate: computed(() => hostData.value?.planCycle?.toDate ?? null),
+        planVer: computed(() => hostData?.value?.planCycle?.planVer ?? ""),
+        fromDate: computed(() => hostData?.value?.planCycle?.fromDate ?? null),
+        toDate: computed(() => hostData?.value?.planCycle?.toDate ?? null),
       },
       projectInfo: {
         currentProjectID: computed(
-          () => hostData.value?.projectInfo?.currentProjectID ?? ""
+            () => hostData?.value?.projectInfo?.currentProjectID ?? ""
         ),
         currentProject: computed(
-          () => hostData.value?.projectInfo?.currentProject ?? null
+            () => hostData?.value?.projectInfo?.currentProject ?? null
         ),
-        userInfo: computed(() => hostData.value?.projectInfo?.userInfo ?? null),
-        isAdmin: computed(() => hostData.value?.projectInfo?.isAdmin ?? false),
+        userInfo: computed(() => hostData?.value?.projectInfo?.userInfo ?? null),
+        isAdmin: computed(() => hostData?.value?.projectInfo?.isAdmin ?? false),
       },
       menu: {
-        items: computed(() => hostData.value?.menu?.items ?? []),
+        items: computed(() => hostData?.value?.menu?.items ?? []),
         currentMenuId: computed(
-          () => hostData.value?.menu?.currentMenuId ?? ""
+            () => hostData?.value?.menu?.currentMenuId ?? ""
         ),
-        currentMenu: computed(() => hostData.value?.menu?.currentMenu ?? null),
+        currentMenu: computed(() => hostData?.value?.menu?.currentMenu ?? null),
       },
     } as HostStores;
-  }
 
-  // Host에서 로드되지 않은 경우 - 빈 값 반환
-  console.warn(
-    "[Custom Extension App] Host data not found. This component should be loaded from APS Host."
-  );
-
-  return {
-    planCycle: {
-      planVer: ref(""),
-      fromDate: ref(null),
-      toDate: ref(null),
-    },
-    projectInfo: {
-      currentProjectID: computed(() => ""),
-      currentProject: computed(() => null),
-      userInfo: computed(() => null),
-      isAdmin: computed(() => false),
-    },
-    menu: {
-      items: ref([]),
-      currentMenuId: ref(""),
-      currentMenu: ref(null),
-    },
-  };
+  return computedHostData
 }
 
 /**

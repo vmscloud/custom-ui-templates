@@ -67,9 +67,9 @@
           <h3 class="component-name">Radio</h3>
           <p class="component-desc">라디오 버튼</p>
           <div class="component-example">
-            <Radio v-model="radioValue" value="option1" label="옵션 1" />
-            <Radio v-model="radioValue" value="option2" label="옵션 2" />
-            <Radio v-model="radioValue" value="option3" label="옵션 3" />
+<!--            <Radio v-model="radioValue" value="option1" label="옵션 1" />-->
+<!--            <Radio v-model="radioValue" value="option2" label="옵션 2" />-->
+<!--            <Radio v-model="radioValue" value="option3" label="옵션 3" />-->
             <p class="result-text">선택: {{ radioValue }}</p>
           </div>
         </div>
@@ -378,12 +378,10 @@ import {
   Toggle,
   Input,
   CheckBox,
-  Radio,
   NumberInput,
   PasswordInput,
   Slider,
   TextArea,
-  SearchBox,
   Select,
   MultiSelect,
   TreeSelect,
