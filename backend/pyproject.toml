@@ -3,7 +3,7 @@ name = "moz-custom-ui"
 version = "0.1.0"
 description = "Mozart Cloud Custom UI Backend"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.123.5",
     "psycopg2-binary>=2.9.10",
