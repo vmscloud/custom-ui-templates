@@ -4,7 +4,7 @@ API 라우터 통합
 모든 엔드포인트 라우터를 하나로 통합합니다.
 """
 
-from app.api.v1.endpoints import demand_distribution, item_master, plan_cycle
+from app.api.v1.endpoints import demand_distribution, health, item_master, plan_cycle
 from fastapi import APIRouter
 
 # 통합 라우터 생성
@@ -19,4 +19,7 @@ api_router.include_router(
 )
 api_router.include_router(
     demand_distribution.router, prefix="/api/demand", tags=["demand-distribution-api"]
+)
+api_router.include_router(
+    health.router, prefix="/api/custom/backend", tags=["health"]
 )
