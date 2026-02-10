@@ -26,7 +26,7 @@ class DemandDistributionQuery(BaseModel):
     columns: list[str] = Field(default=[], description="표시할 컬럼 목록")
 
 
-@router.get("/{project_id}/demand-versions")
+@router.get("/demand-versions")
 async def get_demand_versions(
     project_id: str = Path(..., description="프로젝트 ID"),
 ):
@@ -52,7 +52,7 @@ async def get_demand_versions(
         )
 
 
-@router.post("/{project_id}/demand-distribution")
+@router.post("/demand-distribution")
 async def get_demand_distribution(
     project_id: str = Path(..., description="프로젝트 ID"),
     param: DemandDistributionQuery = None,
@@ -108,7 +108,7 @@ async def get_demand_distribution(
         )
 
 
-@router.get("/{project_id}/demand-distribution-columns")
+@router.get("/demand-distribution-columns")
 async def get_demand_distribution_columns(
     project_id: str = Path(..., description="프로젝트 ID"),
 ):
@@ -134,7 +134,7 @@ async def get_demand_distribution_columns(
         )
 
 
-@router.get("/{project_id}/uom-preference")
+@router.get("/uom-preference")
 async def get_uom_preference(
     project_id: str = Path(..., description="프로젝트 ID"),
     user_id: str = Query(..., description="사용자 ID"),
