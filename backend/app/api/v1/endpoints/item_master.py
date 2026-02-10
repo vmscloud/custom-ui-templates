@@ -5,7 +5,7 @@ Mozart Cloud Custom UI API 엔드포인트
 """
 
 from app.services import ItemMasterService
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Path, Query
 from fastapi.responses import JSONResponse
 
 router = APIRouter()
@@ -13,9 +13,7 @@ router = APIRouter()
 
 @router.get("")
 async def get_item_master(
-    project_id: str = Query(
-        default="31C13202-5860-4123-8ACD-81C2373F1E73", description="프로젝트 ID"
-    ),
+    project_id: str = Path(..., description="프로젝트 ID"),
     plan_ver: str = Query(default="20251017-M-01", description="Plan Version"),
 ):
     """
