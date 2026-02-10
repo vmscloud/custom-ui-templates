@@ -25,7 +25,7 @@ class ComQuery(BaseModel):
     exact: Optional[bool] = Field(default=False, description="정확한 매칭 여부")
 
 
-@router.post("/{project_id}/planCycleSource")
+@router.post("/planCycleSource")
 async def get_plan_cycle_with_ver(
     project_id: str = Path(..., description="프로젝트 ID"),
     param: ComQuery = None,
