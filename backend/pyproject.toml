@@ -5,6 +5,7 @@ description = "Mozart Cloud Custom UI Backend"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "aleatorik-pycommon==1.54.0",
     "fastapi>=0.123.5",
     "psycopg2-binary>=2.9.10",
     "pydantic-settings>=2.12.0",
