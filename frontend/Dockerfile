@@ -1,17 +1,23 @@
-# Build stage (native CPU에서 실행)
+# Build stage
 FROM --platform=$BUILDPLATFORM node:22-alpine AS builder
 WORKDIR /app
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+
+# 🔥 GitHub Packages 인증 추가
+RUN --mount=type=secret,id=npm_token \
+    echo "@vmscloud:registry=https://npm.pkg.github.com/" > .npmrc && \
+    echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)" >> .npmrc && \
+    pnpm install --frozen-lockfile && \
+    rm -f .npmrc
 
 COPY . .
 RUN node scripts/license.js
 RUN pnpm build
 
-# Production stage (타겟 아키텍처)
+# Production stage
 FROM nginx:alpine
 
 COPY --from=builder /app/dist /usr/share/nginx/html
