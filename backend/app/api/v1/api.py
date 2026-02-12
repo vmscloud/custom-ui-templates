@@ -11,15 +11,19 @@ from fastapi import APIRouter
 api_router = APIRouter()
 
 # API 라우터 등록 (도메인별 prefix 적용)
+api_router.include_router(health.router, prefix="/api/custom/backend", tags=["health"])
 api_router.include_router(
-    item_master.router, prefix="/api/custom/backend/{project_id}/item-master", tags=["item-master-api"]
+    item_master.router,
+    prefix="/api/custom/backend/{project_id}/item-master",
+    tags=["item-master-api"],
 )
 api_router.include_router(
-    plan_cycle.router, prefix="/api/custom/backend/{project_id}", tags=["plan-cycle-api"]
+    plan_cycle.router,
+    prefix="/api/custom/backend/{project_id}",
+    tags=["plan-cycle-api"],
 )
 api_router.include_router(
-    demand_distribution.router, prefix="/api/custom/backend/{project_id}/demand", tags=["demand-distribution-api"]
-)
-api_router.include_router(
-    health.router, prefix="/api/custom/backend", tags=["health"]
+    demand_distribution.router,
+    prefix="/api/custom/backend/{project_id}/demand",
+    tags=["demand-distribution-api"],
 )
