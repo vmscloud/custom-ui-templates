@@ -1,19 +1,21 @@
 <template>
-  <DeveloperTool>
-    <main class="moz-contents">
-      <router-view />
-    </main>
-  </DeveloperTool>
+  <MozConfigProvider :locale="koKR">
+    <DeveloperTool>
+      <main class="moz-contents">
+        <router-view />
+      </main>
+    </DeveloperTool>
+  </MozConfigProvider>
 </template>
 
 <script setup lang="ts">
 import DeveloperTool from "@/components/DeveloperTool/DeveloperTool.vue";
+import { MozConfigProvider, koKR } from "@vmscloud/moz-ui-components";
+import { setProjectIdResolver } from "@/api/client";
+import { useHostStores } from "@/composables/useHostStores";
 
-// // Host에서 로드되었는지 확인 (개발 모드 구분)
-// const isDev = computed(() => {
-//   // Module Federation으로 로드된 경우 __remotes__가 정의되어 있지 않음
-//   return typeof window !== "undefined" && !window.__POWERED_BY_APS_HOST__;
-// });
+const { projectInfo } = useHostStores();
+setProjectIdResolver(() => projectInfo.currentProjectID.value);
 </script>
 
 <style scoped>
