@@ -37,7 +37,7 @@ import {
   type ViewDef,
   type FilterDef,
   type ChartField,
-} from "@vmscloud/moz-ui-components";
+} from "@vmscloud/moz-ui-chart";
 
 // 매출 차트 컴포저블
 const { data, loading, error, loadData } = useSalesChart();

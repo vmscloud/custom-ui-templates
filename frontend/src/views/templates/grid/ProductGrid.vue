@@ -54,12 +54,9 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useProductGrid } from "./productGrid";
-import {
-  ExtendFlexGrid,
-  type ExtendGrid,
-} from "@vmscloud/moz-ui-components";
-import { WjFlexGridColumn } from "@grapecity/wijmo.vue2.grid";
-import type { FlexGrid } from "@grapecity/wijmo.grid";
+import { ExtendFlexGrid, type ExtendGrid } from "@vmscloud/moz-wijmo-grid";
+import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
+import type { FlexGrid } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
 
 // 상품 그리드 컴포저블
 const { data, loading, error, count, loadData } = useProductGrid();

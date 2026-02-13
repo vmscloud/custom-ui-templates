@@ -29,4 +29,3 @@ export default (app: App) => {
   app.use(I18NextVue, { i18next });
   return app;
 };
-

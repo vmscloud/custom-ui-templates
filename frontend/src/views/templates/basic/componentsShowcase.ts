@@ -179,12 +179,12 @@ export function useComponentsShowcase() {
     {
       message: "필수 입력 항목입니다",
       type: "blur",
-      validator: (value: string) => !!value,
+      validator: (value: string | string[]) => !!value,
     },
     {
       message: "최소 3자 이상 입력해주세요",
       type: "blur",
-      validator: (value: string) => value.length >= 3,
+      validator: (value: string | string[]) => typeof value === "string" && value.length >= 3,
     },
   ];
 
