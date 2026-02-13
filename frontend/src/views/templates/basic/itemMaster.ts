@@ -1,7 +1,7 @@
 /**
  * Item Master API 호출 및 데이터 관리
  */
-import axios from "axios";
+import { api, getProjectId } from "@/api/client";
 import { ref, type Ref } from "vue";
 
 /**
@@ -59,15 +59,17 @@ export interface ItemMasterParams {
  * Item Master API 호출
  */
 export async function fetchItemMaster(
-  params: ItemMasterParams
+  params: ItemMasterParams,
 ): Promise<ItemMasterResponse> {
-  const response = await axios.get<ItemMasterResponse>("/api/item-master", {
-    params: {
-      project_id: params.projectId,
-      plan_ver: params.planVer,
+  return api.get<ItemMasterResponse>(
+    "/api/custom/backend/{project_id}/item-master",
+    {
+      params: {
+        project_id: params.projectId ?? getProjectId(),
+        plan_ver: params.planVer,
+      },
     },
-  });
-  return response.data;
+  );
 }
 
 /**

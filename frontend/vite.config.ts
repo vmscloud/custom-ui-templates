@@ -22,28 +22,26 @@ export default defineConfig({
       shared: {
         vue: {
           singleton: true,
-          requiredVersion: '^3.4.14',
+          requiredVersion: "^3.4.14",
         },
         pinia: {
           singleton: true,
-          requiredVersion: '^2.1.7',
+          requiredVersion: "^2.1.7",
         },
-        '@vmscloud/moz-ui-components': {
+        "@vmscloud/moz-ui-components": {
           singleton: true,
-          requiredVersion: '^1.0.10',
+          requiredVersion: "^1.0.10",
         },
         // ECharts 관련 - Host와 동일한 인스턴스 사용
-        'echarts': {
+        "@vmscloud/moz-ui-chart/echarts": {
           singleton: true,
-          requiredVersion: '^5.0.0',
         },
-        'echarts/core': {
+        "@vmscloud/moz-ui-chart/echarts/core": {
           singleton: true,
-          requiredVersion: '^5.0.0',
         },
-        'vue-echarts': {
+        "vue-echarts": {
           singleton: true,
-          requiredVersion: '^7.0.0',
+          requiredVersion: "^7.0.0",
         },
       } as any,
     }),
@@ -62,13 +60,13 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: [
-      'echarts',
-      'echarts/core',
-      'echarts/charts',
-      'echarts/components',
-      'echarts/renderers',
-      'echarts-stat',
-      'vue-echarts',
+      "@vmscloud/moz-ui-chart/echarts",
+      "@vmscloud/moz-ui-chart/echarts/core",
+      "@vmscloud/moz-ui-chart/echarts/charts",
+      "@vmscloud/moz-ui-chart/echarts/components",
+      "@vmscloud/moz-ui-chart/echarts/renderers",
+      "@vmscloud/moz-ui-chart/echarts-stat",
+      "vue-echarts",
     ],
   },
   build: {
@@ -93,7 +91,7 @@ export default defineConfig({
     // API 프록시 설정
     proxy: {
       "/api": {
-        target: "http://localhost:8000",
+        target: "http://localhost:8099",
         changeOrigin: true,
         secure: false,
       },

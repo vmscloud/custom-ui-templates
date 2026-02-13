@@ -7,7 +7,9 @@
     >
       <div class="group-name">
         <div class="group-label">
-          <span class="group-title">Demand Distribution by {{ displayName }}</span>
+          <span class="group-title"
+            >Demand Distribution by {{ displayName }}</span
+          >
           <span v-if="unit" class="group-unit">({{ unit }})</span>
         </div>
       </div>
@@ -80,19 +82,18 @@
 
 <script setup lang="ts">
 import { ref, computed, toRefs } from "vue";
+import { ExtendFlexGrid, type ExtendGrid } from "@vmscloud/moz-wijmo-grid";
+import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
+import type { FlexGrid } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
 import {
-  ExtendFlexGrid,
   EChart,
   DataType,
   Aggregate,
-  type ExtendGrid,
   type MozEChart,
   type ViewDef,
   type FilterDef,
   type ChartField,
-} from "@vmscloud/moz-ui-components";
-import { WjFlexGridColumn } from "@grapecity/wijmo.vue2.grid";
-import type { FlexGrid } from "@grapecity/wijmo.grid";
+} from "@vmscloud/moz-ui-chart";
 import type { DemandDistributionData } from "./demandDistribution";
 
 // Props
@@ -124,7 +125,7 @@ const gridData = computed(() => {
   return data.value.filter(
     (d) =>
       d.due_date !== "🚀-text-demand-total" &&
-      !String(d[column.value] ?? "").includes("🚀")
+      !String(d[column.value] ?? "").includes("🚀"),
   );
 });
 
@@ -143,13 +144,32 @@ const viewDef = ref<ViewDef>({
   fields: [
     { binding: "due_date", header: "Due Date", dataType: DataType.String },
     { binding: "category", header: "Category", dataType: DataType.String },
-    { binding: "qty", header: "Demand Qty", dataType: DataType.Number, aggregate: Aggregate.Sum },
-    { binding: "item_cnt", header: "Item Count", dataType: DataType.Number, aggregate: Aggregate.Sum },
+    {
+      binding: "qty",
+      header: "Demand Qty",
+      dataType: DataType.Number,
+      aggregate: Aggregate.Sum,
+    },
+    {
+      binding: "item_cnt",
+      header: "Item Count",
+      dataType: DataType.Number,
+      aggregate: Aggregate.Sum,
+    },
   ] as ChartField[],
-  rowFields: [{ binding: "category", header: "Category", dataType: DataType.String }],
-  columnFields: [{ binding: "due_date", header: "Due Date", dataType: DataType.String }],
+  rowFields: [
+    { binding: "category", header: "Category", dataType: DataType.String },
+  ],
+  columnFields: [
+    { binding: "due_date", header: "Due Date", dataType: DataType.String },
+  ],
   valueFields: [
-    { binding: "qty", header: "Demand Qty", dataType: DataType.Number, aggregate: Aggregate.Sum },
+    {
+      binding: "qty",
+      header: "Demand Qty",
+      dataType: DataType.Number,
+      aggregate: Aggregate.Sum,
+    },
   ],
 });
 
@@ -168,7 +188,7 @@ function onChartInitialized(mozEChart: MozEChart) {
 // Grid initialization
 function onGridInitialized(flexGrid: FlexGrid, _extendGrid: ExtendGrid) {
   // Format total cells
-  flexGrid.formatItem.addHandler((_s, e) => {
+  flexGrid.formatItem.addHandler((_s: any, e: any) => {
     if (e.panel === flexGrid.cells) {
       const item = flexGrid.rows[e.row]?.dataItem;
       if (item) {
@@ -178,7 +198,10 @@ function onGridInitialized(flexGrid: FlexGrid, _extendGrid: ExtendGrid) {
           e.cell.classList.add("wj-aggregate");
         }
         if (item.due_date === "🚀-text-demand-total") {
-          e.cell.textContent = e.cell.textContent === "🚀-text-demand-total" ? "Total" : e.cell.textContent;
+          e.cell.textContent =
+            e.cell.textContent === "🚀-text-demand-total"
+              ? "Total"
+              : e.cell.textContent;
           e.cell.classList.add("wj-aggregate");
         }
       }

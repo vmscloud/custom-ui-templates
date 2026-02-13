@@ -5,9 +5,9 @@
 
 // ECharts 초기화 (가장 먼저 실행되어야 함)
 // 단독 개발 환경에서 CanvasRenderer가 등록되지 않는 문제 해결
-import { use } from "echarts/core";
-import { CanvasRenderer } from "echarts/renderers";
-import { BarChart, LineChart, PieChart, ScatterChart } from "echarts/charts";
+import { use } from "@vmscloud/moz-ui-chart/echarts/core";
+import { CanvasRenderer } from "@vmscloud/moz-ui-chart/echarts/renderers";
+import { BarChart, LineChart, PieChart, ScatterChart } from "@vmscloud/moz-ui-chart/echarts/charts";
 import {
   GridComponent,
   TooltipComponent,
@@ -15,7 +15,7 @@ import {
   DatasetComponent,
   DataZoomComponent,
   TitleComponent,
-} from "echarts/components";
+} from "@vmscloud/moz-ui-chart/echarts/components";
 
 use([
   CanvasRenderer,
@@ -51,8 +51,6 @@ const app = createApp(App);
 app.use(pinia);
 app.use(VueQueryPlugin);
 app.use(router);
-
-// i18next 플러그인 (moz-component에서 useTranslation 사용)
 i18nPlugin(app);
 
 app.mount("#app");

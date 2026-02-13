@@ -1,7 +1,7 @@
 /**
  * Demand Distribution API 호출 및 데이터 관리
  */
-import axios from "axios";
+import { api, getProjectId } from "@/api/client";
 import { ref, computed, type Ref, type ComputedRef } from "vue";
 
 // ===== Types =====
@@ -120,58 +120,54 @@ export interface DemandDistributionParams {
  * Demand Version 목록 조회
  */
 export async function fetchDemandVersions(
-  projectId: string
+  projectId?: string,
 ): Promise<DemandVersionResponse> {
-  const response = await axios.get<DemandVersionResponse>(
-    `/api/demand/${projectId}/demand-versions`
+  return api.get<DemandVersionResponse>(
+    `/api/demand/${projectId ?? getProjectId()}/demand-versions`,
   );
-  return response.data;
 }
 
 /**
  * Demand Distribution 데이터 조회
  */
 export async function fetchDemandDistribution(
-  projectId: string,
-  params: DemandDistributionParams
+  params: DemandDistributionParams,
+  projectId?: string,
 ): Promise<DemandDistributionResponse> {
-  const response = await axios.post<DemandDistributionResponse>(
-    `/api/demand/${projectId}/demand-distribution`,
-    params
+  return api.post<DemandDistributionResponse>(
+    `/api/demand/${projectId ?? getProjectId()}/demand-distribution`,
+    params,
   );
-  return response.data;
 }
 
 /**
  * 컬럼 메타데이터 조회
  */
 export async function fetchColumnMetadata(
-  projectId: string
+  projectId?: string,
 ): Promise<ColumnMetadataResponse> {
-  const response = await axios.get<ColumnMetadataResponse>(
-    `/api/demand/${projectId}/demand-distribution-columns`
+  return api.get<ColumnMetadataResponse>(
+    `/api/demand/${projectId ?? getProjectId()}/demand-distribution-columns`,
   );
-  return response.data;
 }
 
 /**
  * UOM Preference 조회
  */
 export async function fetchUomPreference(
-  projectId: string,
   userId: string,
-  menuId?: string
+  menuId?: string,
+  projectId?: string,
 ): Promise<UomPreferenceResponse> {
-  const response = await axios.get<UomPreferenceResponse>(
-    `/api/demand/${projectId}/uom-preference`,
+  return api.get<UomPreferenceResponse>(
+    `/api/demand/${projectId ?? getProjectId()}/uom-preference`,
     {
       params: {
         user_id: userId,
         menu_id: menuId,
       },
-    }
+    },
   );
-  return response.data;
 }
 
 // ===== Composable =====
@@ -198,11 +194,11 @@ export function useDemandDistribution() {
 
   // Computed - dynamic columns for grid/chart
   const dynamicHeaders: ComputedRef<DemandDistributionHeader[]> = computed(() =>
-    headers.value.filter((h) => h.category !== "fixed")
+    headers.value.filter((h) => h.category !== "fixed"),
   );
 
   const fixedHeaders: ComputedRef<DemandDistributionHeader[]> = computed(() =>
-    headers.value.filter((h) => h.category === "fixed")
+    headers.value.filter((h) => h.category === "fixed"),
   );
 
   // Methods
@@ -210,9 +206,9 @@ export function useDemandDistribution() {
   /**
    * Demand Version 목록 조회
    */
-  async function loadDemandVersions(projectId: string) {
+  async function loadDemandVersions() {
     try {
-      const response = await fetchDemandVersions(projectId);
+      const response = await fetchDemandVersions();
       if (response.success) {
         demandVersions.value = response.data;
       }
@@ -224,9 +220,9 @@ export function useDemandDistribution() {
   /**
    * 컬럼 메타데이터 조회
    */
-  async function loadColumnMetadata(projectId: string) {
+  async function loadColumnMetadata() {
     try {
-      const response = await fetchColumnMetadata(projectId);
+      const response = await fetchColumnMetadata();
       if (response.success) {
         columnMetadata.value = response.data;
       }
@@ -239,12 +235,11 @@ export function useDemandDistribution() {
    * UOM Preference 조회
    */
   async function loadUomPreference(
-    projectId: string,
     userId: string,
-    menuId?: string
+    menuId?: string,
   ) {
     try {
-      const response = await fetchUomPreference(projectId, userId, menuId);
+      const response = await fetchUomPreference(userId, menuId);
       if (response.success) {
         uomType.value = response.uomType;
       }
@@ -256,7 +251,7 @@ export function useDemandDistribution() {
   /**
    * Demand Distribution 데이터 조회
    */
-  async function loadData(projectId: string) {
+  async function loadData() {
     if (!selectedDemandVer.value) {
       error.value = "Demand Version을 선택해주세요.";
       return;
@@ -266,7 +261,7 @@ export function useDemandDistribution() {
     error.value = null;
 
     try {
-      const response = await fetchDemandDistribution(projectId, {
+      const response = await fetchDemandDistribution({
         demandVer: selectedDemandVer.value,
         aggregateType: aggregateType.value,
         summary: summary.value,
@@ -336,7 +331,7 @@ export function useDemandDistribution() {
  */
 export function displayDateToFormat(
   date: string | Date,
-  aggregateType: "day" | "week" | "month"
+  aggregateType: "day" | "week" | "month",
 ): string {
   const d = typeof date === "string" ? new Date(date) : date;
 
@@ -351,7 +346,7 @@ export function displayDateToFormat(
       const weekNum = Math.ceil(
         ((d.getTime() - new Date(d.getFullYear(), 0, 1).getTime()) / 86400000 +
           1) /
-          7
+          7,
       );
       return `${d.getFullYear()}W${String(weekNum).padStart(2, "0")}`;
     }
