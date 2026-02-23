@@ -6,11 +6,16 @@
       "Bash(curl:*)",
       "Bash(docker inspect:*)",
       "Bash(docker compose:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(tr:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": ["playwright", "shadcn", "serena"],
+  "enabledMcpjsonServers": [
+    "playwright",
+    "shadcn",
+    "serena"
+  ],
   "enabledPlugins": {},
   "outputStyle": "default"
 }
