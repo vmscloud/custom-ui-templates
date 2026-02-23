@@ -41,6 +41,8 @@ import i18nPlugin from "./plugins/i18n";
 
 // 2. moz-ui-components 스타일 (Wijmo Grid 커스터마이징 포함, 마지막에 덮어쓰기)
 import "@vmscloud/moz-ui-components/style.css";
+import "@vmscloud/moz-wijmo-grid/style.css";
+import "@vmscloud/moz-ui-chart/style.css";
 
 // Pinia 설정
 const pinia = createPinia();
