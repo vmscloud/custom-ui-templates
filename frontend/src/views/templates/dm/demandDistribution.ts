@@ -2,7 +2,7 @@
  * Demand Distribution API 호출 및 데이터 관리
  */
 import { api, getProjectId } from "@/api/client";
-import { ref, computed, type Ref, type ComputedRef } from "vue";
+import { ref, type Ref } from "vue";
 
 // ===== Types =====
 
@@ -29,7 +29,7 @@ export interface DemandVersion {
 export interface DemandDistributionHeader {
   columnName: string;
   displayText: string;
-  category: string;
+  category: string | null;
 }
 
 /**
@@ -192,15 +192,6 @@ export function useDemandDistribution() {
   const uomType = ref<string>("DEFAULT");
   const selectedColumns = ref<string[]>([]);
 
-  // Computed - dynamic columns for grid/chart
-  const dynamicHeaders: ComputedRef<DemandDistributionHeader[]> = computed(() =>
-    headers.value.filter((h) => h.category !== "fixed"),
-  );
-
-  const fixedHeaders: ComputedRef<DemandDistributionHeader[]> = computed(() =>
-    headers.value.filter((h) => h.category === "fixed"),
-  );
-
   // Methods
 
   /**
@@ -310,10 +301,6 @@ export function useDemandDistribution() {
     summary,
     uomType,
     selectedColumns,
-
-    // Computed
-    dynamicHeaders,
-    fixedHeaders,
 
     // Methods
     loadDemandVersions,

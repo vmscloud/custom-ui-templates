@@ -89,6 +89,7 @@ import {RouteRecordRaw, useRouter} from "vue-router";
 import DeveloperToolSetting from "@/components/DeveloperTool/DeveloperToolSetting.vue";
 import {Button, TreeSelect} from "@vmscloud/moz-ui-components";
 import {HOST_DATA_KEY} from "@/composables/useHostStores.ts";
+import { setProjectIdResolver } from "@/api/client";
 import { useDeveloperTool } from "./DeveloperTool.ts";
 import IconDecide from "@/components/DeveloperTool/assets/IconDecide.vue";
 import IconCircleDot from "@/components/DeveloperTool/assets/IconCircleDot.vue";
@@ -122,6 +123,7 @@ onMounted(() => {
 })
 
 provide(HOST_DATA_KEY, settingsValue)
+setProjectIdResolver(() => settingsValue.value?.projectInfo?.currentProjectID ?? "")
 </script>
 
 <style lang="scss">

@@ -10,12 +10,12 @@ from app.repositories.demand_distribution import DemandDistributionRepository
 class DemandDistributionService:
     """Demand Distribution 비즈니스 로직"""
 
-    # 기본 헤더 (고정 컬럼)
+    # 기본 헤더 (고정 컬럼) - 원본 API와 동일한 형식
     FIXED_HEADERS = [
-        {"columnName": "cust_id", "displayText": "text-cust_id", "category": "fixed"},
-        {"columnName": "item_group_id", "displayText": "text-item_group_id", "category": "fixed"},
-        {"columnName": "prod_type", "displayText": "text-prod_type", "category": "fixed"},
-        {"columnName": "item_size_type", "displayText": "text-item_size_type", "category": "fixed"},
+        {"columnName": "cust_id", "displayText": "Customer", "category": None},
+        {"columnName": "item_group_id", "displayText": "Item Group", "category": None},
+        {"columnName": "prod_type", "displayText": "Prod Type", "category": None},
+        {"columnName": "item_size_type", "displayText": "Item Size Type", "category": None},
     ]
 
     def __init__(self):
@@ -115,13 +115,7 @@ class DemandDistributionService:
         Returns:
             컬럼 메타데이터
         """
-        # 고정 컬럼
-        columns = [
-            {"columnName": "cust_id", "displayText": "Customer", "category": "fixed"},
-            {"columnName": "item_group_id", "displayText": "Item Group", "category": "fixed"},
-            {"columnName": "prod_type", "displayText": "Prod Type", "category": "fixed"},
-            {"columnName": "item_size_type", "displayText": "Item Size Type", "category": "fixed"},
-        ]
+        columns = [dict(h) for h in self.FIXED_HEADERS]
 
         # 동적 컬럼 (속성)
         prop_columns = self.repository.get_demand_distribution_columns(project_id)
@@ -129,7 +123,7 @@ class DemandDistributionService:
             columns.append({
                 "columnName": f"prop_{col['prop_id'].lower()}",
                 "displayText": col["display_text"],
-                "category": "dynamic",
+                "category": None,
             })
 
         return {
@@ -180,7 +174,7 @@ class DemandDistributionService:
 
     def _build_headers(self, project_id: str, uom_type: str) -> list[dict]:
         """
-        응답 헤더 생성
+        응답 헤더 생성 (원본 API와 동일한 형식)
 
         Args:
             project_id: 프로젝트 ID
@@ -189,16 +183,7 @@ class DemandDistributionService:
         Returns:
             헤더 목록
         """
-        headers = []
-
-        # 고정 헤더 추가
-        for h in self.FIXED_HEADERS:
-            headers.append({
-                **h,
-                "category": uom_type,
-            })
-
-        return headers
+        return [dict(h) for h in self.FIXED_HEADERS]
 
     def _add_total_data(
         self,
