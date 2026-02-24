@@ -62,7 +62,7 @@ export async function fetchItemMaster(
   params: ItemMasterParams,
 ): Promise<ItemMasterResponse> {
   return api.get<ItemMasterResponse>(
-    "/api/custom/backend/{project_id}/item-master",
+    "/api/custom/backend/custom/backend/{project_id}/item-master",
     {
       params: {
         project_id: params.projectId ?? getProjectId(),

@@ -123,7 +123,7 @@ export async function fetchDemandVersions(
   projectId?: string,
 ): Promise<DemandVersionResponse> {
   return api.get<DemandVersionResponse>(
-    `/api/demand/${projectId ?? getProjectId()}/demand-versions`,
+    `/api/custom/backend/${projectId ?? getProjectId()}/demand/demand-versions`,
   );
 }
 
@@ -135,7 +135,7 @@ export async function fetchDemandDistribution(
   projectId?: string,
 ): Promise<DemandDistributionResponse> {
   return api.post<DemandDistributionResponse>(
-    `/api/demand/${projectId ?? getProjectId()}/demand-distribution`,
+    `/api/custom/backend/${projectId ?? getProjectId()}/demand/demand-distribution`,
     params,
   );
 }
@@ -147,7 +147,7 @@ export async function fetchColumnMetadata(
   projectId?: string,
 ): Promise<ColumnMetadataResponse> {
   return api.get<ColumnMetadataResponse>(
-    `/api/demand/${projectId ?? getProjectId()}/demand-distribution-columns`,
+    `/api/custom/backend/${projectId ?? getProjectId()}/demand/demand-distribution-columns`,
   );
 }
 
@@ -160,7 +160,7 @@ export async function fetchUomPreference(
   projectId?: string,
 ): Promise<UomPreferenceResponse> {
   return api.get<UomPreferenceResponse>(
-    `/api/demand/${projectId ?? getProjectId()}/uom-preference`,
+    `/api/custom/backend/${projectId ?? getProjectId()}/demand/uom-preference`,
     {
       params: {
         user_id: userId,
