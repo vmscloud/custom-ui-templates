@@ -7,7 +7,10 @@
       "Bash(docker inspect:*)",
       "Bash(docker compose:*)",
       "Bash(node -e:*)",
-      "Bash(tr:*)"
+      "Bash(tr:*)",
+      "Bash(pip install:*)",
+      "Bash('/c/Users/jook1356/AppData/Local/Python/pythoncore-3.14-64/python.exe' -m pip install -e 'C:\\\\repository\\\\custom-ui-templates\\\\backend')",
+      "Bash('/c/Users/jook1356/AppData/Local/Python/pythoncore-3.14-64/python.exe' -m pip install httpx)"
     ]
   },
   "enableAllProjectMcpServers": true,

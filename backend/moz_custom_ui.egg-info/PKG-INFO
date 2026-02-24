@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: moz-custom-ui
+Version: 0.1.0
+Summary: Mozart Cloud Custom UI Backend
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: aleatorik-pycommon==1.54.0
+Requires-Dist: fastapi>=0.123.5
+Requires-Dist: psycopg2-binary>=2.9.10
+Requires-Dist: pydantic-settings>=2.12.0
+Requires-Dist: python-dotenv>=1.2.1
+Requires-Dist: uvicorn>=0.38.0
+Requires-Dist: orjson>=3.10.0
