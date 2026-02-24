@@ -45,7 +45,7 @@ export const useDeveloperTool = () => {
   // 최신 PlanCycle 정보 GET
   const getPlanCycleSource = useMutation({
     mutationFn: async () => {
-      const response = await fetch(`/api/${settingsValue.value.projectInfo.currentProjectID}/planCycleSource`, {
+      const response = await fetch(`/api/custom/backend/${settingsValue.value.projectInfo.currentProjectID}/planCycleSource`, {
         method: "POST",
       });
       return response.json();  // 여기서 파싱
