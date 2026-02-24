@@ -101,6 +101,7 @@ const {
   data,
   headers,
   demandVersions,
+  columnMetadata,
   loading,
   selectedDemandVer,
   aggregateType,
@@ -155,12 +156,17 @@ async function handleSearch() {
   await loadData();
 
   if (data.value.length > 0 && headers.value.length > 0) {
-    // Update prop columns from response headers
-    propColumns.value = headers.value.map((h) => ({
-      columnName: h.columnName,
-      displayText: h.displayText,
-      category: h.category,
-    }));
+    // headers의 displayText를 columnsSource의 friendly name으로 매핑
+    propColumns.value = headers.value.map((h) => {
+      const source = columnsSource.value.find(
+        (c) => c.columnName === h.columnName,
+      );
+      return {
+        columnName: h.columnName,
+        displayText: source?.displayText ?? h.displayText,
+        category: h.category,
+      };
+    });
   }
 }
 
@@ -176,26 +182,25 @@ function getFilteredData(columnName: string): DemandDistributionData[] {
   return data.value.filter((d) => d[columnName] != null);
 }
 
-// Initialize columns source
+// Initialize columns source from API
 async function initColumnsSource() {
-  // Load column metadata from API
   await loadColumnMetadata();
 
-  // Set default columns
-  columnsSource.value = [
-    { columnName: "cust_id", displayText: "Customer", category: "fixed" },
-    {
-      columnName: "item_group_id",
-      displayText: "Item Group",
-      category: "fixed",
-    },
-    { columnName: "prod_type", displayText: "Prod Type", category: "fixed" },
-    {
-      columnName: "item_size_type",
-      displayText: "Item Size Type",
-      category: "fixed",
-    },
-  ];
+  // API 응답이 있으면 사용, 없으면 기본값
+  if (columnMetadata.value.length > 0) {
+    columnsSource.value = columnMetadata.value.map((c) => ({
+      columnName: c.columnName,
+      displayText: c.displayText,
+      category: c.category,
+    }));
+  } else {
+    columnsSource.value = [
+      { columnName: "cust_id", displayText: "Customer", category: null },
+      { columnName: "item_group_id", displayText: "Item Group", category: null },
+      { columnName: "prod_type", displayText: "Prod Type", category: null },
+      { columnName: "item_size_type", displayText: "Item Size Type", category: null },
+    ];
+  }
 
   // Set default selected column
   if (selectedColumns.value.length === 0 && columnsSource.value.length > 0) {
@@ -228,7 +233,7 @@ onMounted(async () => {
 }
 
 .content-section {
-  padding: 0 6px 20px 20px;
+  padding: 0 11px 20px 20px;
   flex: 1;
   overflow-y: scroll;
   position: relative;

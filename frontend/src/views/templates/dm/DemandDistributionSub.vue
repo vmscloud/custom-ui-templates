@@ -21,44 +21,31 @@
 
     <!-- Group Body -->
     <div v-show="isOpen" class="group-body">
-      <!-- Left Pane: Grid -->
+      <!-- Left Pane: Pivot Grid -->
       <div class="pane grid-pane">
-        <ExtendFlexGrid
-          :name="`demandDistribution_${column}_${idx}`"
-          :items-source="gridData"
+        <ExtendPivotGrid
+          ref="extendPivotGridRef"
+          :name="`demandDistribution_${displayName}_${idx + 1}`"
           height="100%"
+          :items-source="data"
+          :engine-option="{
+            fields: fields,
+            rowFields: [displayName],
+            columnFields: ['Due Date'],
+            valueFields: ['Demand Qty'],
+            showRowTotals: dataState.showRowTotals,
+            showColumnTotals: dataState.showColumnTotals,
+            showZeros: dataState.showZeros,
+            totalsBeforeData: dataState.totalsBeforeData,
+          }"
+          :initialized="onInitialized"
+          :formatItem="formatItem"
+          :use-pivot-chart="false"
           :use-tool-box="false"
-          :use-extend-footer="true"
-          :is-read-only="true"
           :loading="isLoading"
-          :initialized="onGridInitialized"
-        >
-          <WjFlexGridColumn
-            binding="due_date"
-            header="Due Date"
-            :width="100"
-            align="center"
-          />
-          <WjFlexGridColumn
-            :binding="column"
-            :header="displayName"
-            :width="120"
-          />
-          <WjFlexGridColumn
-            binding="qty"
-            header="Demand Qty"
-            :width="100"
-            format="n0"
-            align="right"
-          />
-          <WjFlexGridColumn
-            binding="item_cnt"
-            header="Item Count"
-            :width="90"
-            format="n0"
-            align="right"
-          />
-        </ExtendFlexGrid>
+          :use-extend-footer="true"
+          :on-filter-restored="onFilterRestored"
+        />
       </div>
 
       <!-- Right Pane: Chart -->
@@ -66,13 +53,14 @@
         <div class="chart-wrapper">
           <EChart
             :id="`demandDistribution_chart_${column}_${idx}`"
-            :items-source="chartData"
-            v-model:view-def="viewDef"
-            v-model:filter-def="filterDef"
-            v-model:chart-def="chartDef"
-            :on-initialized="onChartInitialized"
+            :items-source="filteredData"
+            v-model:view-def="masterViewDef"
+            v-model:filter-def="masterFilterDef"
+            v-model:chart-def="masterChartDef"
+            :chart-def-template="chartDefTemplate"
             :use-tool-box="true"
             :use-chart-setting="false"
+            :is-fetching="isLoading"
           />
         </div>
       </div>
@@ -81,20 +69,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, toRefs } from "vue";
-import { ExtendFlexGrid, type ExtendGrid } from "@vmscloud/moz-wijmo-grid";
-import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
-import type { FlexGrid } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
+import { ref, computed, reactive, toRefs, watch } from "vue";
+import { ExtendPivotGrid, type ExtendGrid } from "@vmscloud/moz-wijmo-grid";
+import { Aggregate, DataType } from "@vmscloud/moz-wijmo-grid/wijmo";
+import { CellType, type FormatItemEventArgs } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
+import { type PivotGrid, ShowTotals } from "@vmscloud/moz-wijmo-grid/wijmo.olap";
 import {
   EChart,
-  DataType,
-  Aggregate,
-  type MozEChart,
   type ViewDef,
-  type FilterDef,
   type ChartField,
 } from "@vmscloud/moz-ui-chart";
 import type { DemandDistributionData } from "./demandDistribution";
+
+// Total marker constants (unicode ordering for pivot grid sorting)
+const TOTAL_FOR_GRID = "🚀-text-total";
+// Chart total marker (zero-width space prefix prevents i18n auto-conversion)
+const TOTAL_FOR_CHART = "\u200BTotal";
+
+// PivotGrid filterModule type
+type PivotFilterModule = {
+  setGrid: (grid: PivotGrid, immediate?: boolean) => void;
+  applyFilter: (filters: any[]) => void;
+  setFilter: (filters: any[], immediate?: boolean) => void;
+  getFilter: () => any[];
+};
 
 // Props
 interface Props {
@@ -115,99 +113,248 @@ const { isLoading, displayName, idx, data, column, unit } = toRefs(props);
 // Open state
 const isOpen = ref(true);
 
-// Toggle open/close
 function toggleOpen() {
   isOpen.value = !isOpen.value;
 }
 
-// Grid data - filter out total rows
-const gridData = computed(() => {
-  return data.value.filter(
-    (d) =>
-      d.due_date !== "🚀-text-demand-total" &&
-      !String(d[column.value] ?? "").includes("🚀"),
-  );
-});
+// Filtered data for chart (exclude total rows)
+const filteredData = computed(() =>
+  data.value.filter((d) => d.due_date !== "🚀-text-demand-total"),
+);
 
-// Chart data - same as grid data for now
-const chartData = computed(() => {
-  return gridData.value.map((d) => ({
-    due_date: d.due_date,
-    category: String(d[column.value] ?? "Unknown"),
-    qty: d.qty ?? 0,
-    item_cnt: d.item_cnt ?? 0,
-  }));
-});
+// ===== Pivot Grid Configuration =====
 
-// Chart ViewDef
-const viewDef = ref<ViewDef>({
-  fields: [
-    { binding: "due_date", header: "Due Date", dataType: DataType.String },
-    { binding: "category", header: "Category", dataType: DataType.String },
+interface FieldType {
+  binding: string;
+  header: string;
+  dataType: DataType;
+  aggregate?: Aggregate;
+  align: "left" | "center" | "right";
+  format?: string;
+  width?: number;
+}
+
+const fields = computed<FieldType[]>(() => {
+  const defaultFields: FieldType[] = [
     {
-      binding: "qty",
-      header: "Demand Qty",
-      dataType: DataType.Number,
-      aggregate: Aggregate.Sum,
+      binding: "due_date",
+      header: "Due Date",
+      dataType: DataType.String,
+      align: "right",
+      width: 76,
     },
     {
       binding: "item_cnt",
       header: "Item Count",
       dataType: DataType.Number,
+      align: "right",
       aggregate: Aggregate.Sum,
     },
-  ] as ChartField[],
-  rowFields: [
-    { binding: "category", header: "Category", dataType: DataType.String },
-  ],
-  columnFields: [
-    { binding: "due_date", header: "Due Date", dataType: DataType.String },
-  ],
-  valueFields: [
     {
       binding: "qty",
       header: "Demand Qty",
       dataType: DataType.Number,
+      align: "right",
+      width: 76,
       aggregate: Aggregate.Sum,
     },
-  ],
+  ];
+
+  defaultFields.push({
+    binding: column.value,
+    header: displayName.value,
+    align: "left",
+    dataType: DataType.String,
+  });
+
+  return defaultFields;
 });
 
-// Chart FilterDef
-const filterDef = ref<FilterDef[]>([]);
+const dataState = reactive<{
+  showRowTotals: ShowTotals;
+  showColumnTotals: ShowTotals;
+  showZeros: boolean;
+  totalsBeforeData: boolean;
+}>({
+  showRowTotals: ShowTotals.None,
+  showColumnTotals: ShowTotals.None,
+  showZeros: true,
+  totalsBeforeData: false,
+});
 
-// Chart ChartDef
-const chartDef = ref({});
+// Pivot grid refs
+const extendGrid = ref<ExtendGrid>();
+const extendPivot = ref<PivotGrid>();
+const pivotFilterModule = ref<PivotFilterModule | null>(null);
+const extendPivotGridRef = ref<InstanceType<typeof ExtendPivotGrid> | null>(
+  null,
+);
 
-// Chart initialization
-function onChartInitialized(mozEChart: MozEChart) {
-  mozEChart.category = "series";
-  // mozEChart.type = props.showStack ? "bar" : "bar";
-}
+const onInitialized = (pivotGrid: PivotGrid, _extendGrid: ExtendGrid) => {
+  extendPivot.value = pivotGrid;
+  extendGrid.value = _extendGrid;
 
-// Grid initialization
-function onGridInitialized(flexGrid: FlexGrid, _extendGrid: ExtendGrid) {
-  // Format total cells
-  flexGrid.formatItem.addHandler((_s: any, e: any) => {
-    if (e.panel === flexGrid.cells) {
-      const item = flexGrid.rows[e.row]?.dataItem;
-      if (item) {
-        const colValue = item[column.value];
-        if (colValue === "🚀-text-total") {
-          e.cell.textContent = "Total";
-          e.cell.classList.add("wj-aggregate");
-        }
-        if (item.due_date === "🚀-text-demand-total") {
-          e.cell.textContent =
-            e.cell.textContent === "🚀-text-demand-total"
-              ? "Total"
-              : e.cell.textContent;
-          e.cell.classList.add("wj-aggregate");
-        }
-      }
+  if (extendPivotGridRef.value?.filterModule) {
+    pivotFilterModule.value = extendPivotGridRef.value.filterModule;
+    pivotFilterModule.value.setGrid(pivotGrid);
+  }
+};
+
+const formatItem = (s: PivotGrid, e: FormatItemEventArgs) => {
+  let col = 0;
+  const row = s.rows.length - 1;
+  if (e.panel.cellType === CellType.RowHeader) {
+    if (e.cell.innerText === TOTAL_FOR_GRID) {
+      e.cell.innerText = "Total";
+      col = e.col;
     }
+  } else if (col <= e.col && row === e.row) {
+    e.cell.classList.add("wj-aggregate");
+  }
+
+  const lastCol = s.columns.length - 1;
+  if (e.panel.cellType === CellType.ColumnHeader) {
+    if (e.cell.innerText === "🚀-text-demand-total") {
+      e.cell.innerText = "Total";
+    }
+  } else if (lastCol === e.col) {
+    e.cell.classList.add("wj-aggregate");
+  }
+};
+
+/**
+ * Layout restore: convert grid filters to chart filters
+ */
+const onFilterRestored = (filters: any[]) => {
+  masterFilterDef.value = filters.map((filter: any, index: number) => ({
+    sequence: filter.sequence ?? index,
+    header: filter.header || "",
+    binding: filter.binding || "",
+    logical: filter.logical || "AND",
+    comparison: filter.comparison || "%",
+    comparisonObj: {
+      symbol: filter.comparison || "%",
+      label: filter.comparison || "%",
+    },
+    type: filter.type ?? DataType.String,
+    variable: filter.variable,
+  }));
+};
+
+// ===== Chart Configuration =====
+
+const masterChartDef = ref<Record<string, any>>({
+  series: [{ name: "Demand Qty", mozType: "bar" }],
+});
+
+/**
+ * Chart definition template: Total series → line chart + dual Y-axis
+ * Replaces 🚀-text-total marker with "Total" display name
+ */
+const chartDefTemplate = computed(() => {
+  if (!masterChartDef.value?.series || !masterChartDef.value.legend) return {};
+
+  // Transform legend: rename total marker → "Total", move to end
+  const legendData = masterChartDef.value.legend[0]?.getData?.();
+  const newLegendData = legendData
+    ?.map((l: string) => (l === TOTAL_FOR_GRID ? TOTAL_FOR_CHART : l))
+    .sort((a: string, b: string) => {
+      if (a === TOTAL_FOR_CHART && b !== TOTAL_FOR_CHART) return 1;
+      if (a !== TOTAL_FOR_CHART && b === TOTAL_FOR_CHART) return -1;
+      return 0;
+    });
+
+  // Transform series: Total → line chart on secondary Y-axis
+  const newSeries = (masterChartDef.value.series as any[]).map((s) => {
+    if (s.name === TOTAL_FOR_GRID) {
+      return {
+        ...s,
+        name: TOTAL_FOR_CHART,
+        yAxisIndex: 1,
+        type: "line",
+        mozType: "line",
+        showInLegend: false,
+        data: s.getData?.() ?? s.data,
+      };
+    }
+    return {
+      ...s,
+      yAxisIndex: 0,
+      showInLegend: false,
+    };
   });
-}
+
+  // Dual Y-axis: left for bar values, right for total line
+  const yAxisData = [
+    { type: "value", position: "left", name: "Value", min: 0 },
+    { type: "value", position: "right", name: "Total" },
+  ];
+
+  return {
+    series: newSeries,
+    yAxis: yAxisData,
+    legend: newLegendData
+      ? [{ id: "default", data: newLegendData }]
+      : undefined,
+  };
+});
+
+const masterViewDef = computed<ViewDef>(() => {
+  const columnFieldsDef = [
+    { binding: "due_date", header: "Due Date", dataType: DataType.String },
+  ] as ChartField[];
+
+  const rowFieldsDef = [
+    {
+      binding: column.value,
+      header: displayName.value,
+      dataType: DataType.String,
+    },
+  ] as ChartField[];
+
+  const valueFieldsDef = [
+    { binding: "qty", header: "Demand Qty", dataType: DataType.Number },
+  ] as ChartField[];
+
+  const masterFields = [...columnFieldsDef, ...rowFieldsDef, ...valueFieldsDef];
+
+  return {
+    fields: masterFields,
+    columnFields: columnFieldsDef,
+    rowFields: rowFieldsDef,
+    valueFields: valueFieldsDef,
+  };
+});
+
+const masterFilterDef = ref<any[]>([]);
+
+/**
+ * Sync chart filters back to pivot grid
+ */
+watch(
+  masterFilterDef,
+  (newFilters) => {
+    if (!pivotFilterModule.value || !extendPivot.value) return;
+
+    const pivotFilters = newFilters.map((filter: any, filterIdx: number) => ({
+      sequence: filter.sequence ?? filterIdx,
+      header: filter.header || "",
+      binding: filter.binding || "",
+      logical: filter.logical || "AND",
+      comparison: filter.comparison || (filter.comparisonObj?.symbol ?? "%"),
+      type: filter.type ?? DataType.String,
+      variable: filter.variable,
+    }));
+
+    const validFilters = pivotFilters.filter(
+      (f: any) =>
+        f.variable != null || f.comparison === "∅" || f.comparison === "●",
+    );
+
+    pivotFilterModule.value.setFilter(validFilters, true);
+  },
+  { deep: true },
+);
 </script>
 
 <style scoped lang="scss">
@@ -284,9 +431,9 @@ function onGridInitialized(flexGrid: FlexGrid, _extendGrid: ExtendGrid) {
     display: flex;
     gap: 10px;
     padding: 10px;
-    height: 450px;
+    height: 500px;
     min-height: 400px;
-    max-height: 550px;
+    max-height: 678px;
 
     .pane {
       flex: 1;
@@ -307,17 +454,6 @@ function onGridInitialized(flexGrid: FlexGrid, _extendGrid: ExtendGrid) {
     .chart-wrapper {
       width: 100%;
       height: 100%;
-    }
-
-    .chart-placeholder {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      color: var(--color-text-secondary, #9ca3af);
-      font-size: 14px;
-      background: var(--color-bg-secondary, #f9fafb);
     }
   }
 }

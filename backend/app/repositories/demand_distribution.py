@@ -107,6 +107,8 @@ class DemandDistributionRepository:
         """
         집계 타입에 따른 날짜 표현식 반환
 
+        due_date 컬럼은 varchar(YYYY-MM-DD) 타입이므로 ::date로 캐스팅 후 처리
+
         Args:
             aggregate_type: WEEK/MONTH/YEAR
 
@@ -115,13 +117,13 @@ class DemandDistributionRepository:
         """
         agg_upper = aggregate_type.upper()
         if agg_upper == "YEAR":
-            return "TO_CHAR(d.due_datetime, 'YYYY-01-01')"
+            return "TO_CHAR(d.due_date::date, 'YYYY')"
         elif agg_upper == "MONTH":
-            return "TO_CHAR(d.due_datetime, 'YYYY-MM-01')"
+            return "TO_CHAR(d.due_date::date, 'YYYY-MM')"
         elif agg_upper == "WEEK":
-            return "TO_CHAR(DATE_TRUNC('week', d.due_datetime), 'YYYY-MM-DD')"
+            return "TO_CHAR(d.due_date::date, 'IYYY-IW')"
         else:  # DAY or default
-            return "TO_CHAR(d.due_datetime, 'YYYY-MM-DD')"
+            return "d.due_date"
 
     @staticmethod
     def get_demand_distribution_columns(project_id: str) -> list[dict]:

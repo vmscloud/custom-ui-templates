@@ -11,11 +11,6 @@
 <script setup lang="ts">
 import DeveloperTool from "@/components/DeveloperTool/DeveloperTool.vue";
 import { MozConfigProvider, koKR } from "@vmscloud/moz-ui-components";
-import { setProjectIdResolver } from "@/api/client";
-import { useHostStores } from "@/composables/useHostStores";
-
-const { projectInfo } = useHostStores();
-setProjectIdResolver(() => projectInfo.currentProjectID.value);
 </script>
 
 <style scoped>
