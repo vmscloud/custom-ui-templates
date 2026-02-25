@@ -202,7 +202,7 @@ const onInitialized = (pivotGrid: PivotGrid, _extendGrid: ExtendGrid) => {
 
   if (extendPivotGridRef.value?.filterModule) {
     pivotFilterModule.value = extendPivotGridRef.value.filterModule;
-    pivotFilterModule.value.setGrid(pivotGrid);
+    pivotFilterModule.value!.setGrid(pivotGrid);
   }
 };
 
