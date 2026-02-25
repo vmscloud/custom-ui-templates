@@ -19,7 +19,7 @@
           key-prop="demand_ver"
           display-prop="display_text"
           placeholder="Select Demand Version"
-          label="Demand Version"
+          label="수요 정보 버전"
           :width="260"
         />
         <Select
@@ -27,14 +27,14 @@
           :items-source="aggregateOptions"
           key-prop="value"
           display-prop="label"
-          label="Aggregate Type"
+          label="집계 기준"
         />
         <Radio
           v-model="summary"
           :items-source="summaryOptions"
           display-expr="label"
           value-expr="value"
-          label="테스트 가나다"
+          label="요약"
           variant="boxed"
           :width="160"
         />
@@ -43,7 +43,7 @@
           :items-source="uomOptions"
           key-prop="value"
           display-prop="label"
-          label="Qty UOM"
+          label="수량 단위"
         />
         <MultiSelect
           v-model="selectedColumns"
@@ -51,7 +51,7 @@
           key-prop="columnName"
           display-prop="displayText"
           :placeholder="columnsSource.length === 0 ? 'No columns' : ''"
-          label="Columns"
+          label="컬럼 선택"
           header-format="{count:n0} COLUMNS"
           @close="onColumnsClose"
         />
