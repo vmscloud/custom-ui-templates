@@ -34,10 +34,9 @@
           :items-source="summaryOptions"
           display-expr="label"
           value-expr="value"
-          label="Summary Type"
+          label="테스트 가나다"
           variant="boxed"
           :width="160"
-          :style="{ marginTop: '-4px' }"
         />
         <Select
           v-model="uomType"
@@ -152,6 +151,15 @@ const visibleState = computed(() => {
 // Handle search
 async function handleSearch() {
   if (!selectedDemandVer.value) return;
+
+  // Pre-mount sub-components before loading so data flows reactively (fixes first search)
+  if (propColumns.value.length === 0 && columnsSource.value.length > 0) {
+    propColumns.value = columnsSource.value.map((c) => ({
+      columnName: c.columnName,
+      displayText: c.displayText,
+      category: c.category ?? null,
+    }));
+  }
 
   await loadData();
 
