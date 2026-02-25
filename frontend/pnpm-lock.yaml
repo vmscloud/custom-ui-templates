@@ -15,14 +15,14 @@ importers:
         specifier: ^3.13.18
         version: 3.13.18(vue@3.5.28(typescript@5.9.3))
       '@vmscloud/moz-ui-chart':
-        specifier: ^1.0.7
-        version: 1.0.7(@vmscloud/moz-ui-components@1.2.3(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3)))(@vue/runtime-core@3.5.28)(vue-router@4.6.4(vue@3.5.28(typescript@5.9.3)))(vue@3.5.28(typescript@5.9.3))
+        specifier: ^1.0.11
+        version: 1.0.11(@vmscloud/moz-ui-components@1.2.7(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3)))(@vue/runtime-core@3.5.28)(vue-router@4.6.4(vue@3.5.28(typescript@5.9.3)))(vue@3.5.28(typescript@5.9.3))
       '@vmscloud/moz-ui-components':
-        specifier: ^1.2.3
-        version: 1.2.3(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3))
+        specifier: ^1.2.7
+        version: 1.2.7(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3))
       '@vmscloud/moz-wijmo-grid':
-        specifier: ^1.0.13
-        version: 1.0.13(@vmscloud/moz-ui-components@1.2.3(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(i18next-vue@3.0.0(i18next@23.16.8)(vue@3.5.28(typescript@5.9.3)))(i18next@23.16.8)(pinia@2.3.1(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3)))(vue-router@4.6.4(vue@3.5.28(typescript@5.9.3)))(vue@3.5.28(typescript@5.9.3))
+        specifier: ^1.0.17
+        version: 1.0.17(@vmscloud/moz-ui-components@1.2.7(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(i18next-vue@3.0.0(i18next@23.16.8)(vue@3.5.28(typescript@5.9.3)))(i18next@23.16.8)(pinia@2.3.1(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3)))(vue-router@4.6.4(vue@3.5.28(typescript@5.9.3)))(vue@3.5.28(typescript@5.9.3))
       axios:
         specifier: ^1.13.5
         version: 1.13.5
@@ -1175,25 +1175,25 @@ packages:
       vite: ^5.0.0 || ^6.0.0
       vue: ^3.2.25
 
-  '@vmscloud/moz-ui-chart@1.0.7':
-    resolution: {integrity: sha512-09Plsi2oJ2QTMg9IyVjmas8YCOnVFa85HRqkbwePHpysvyc7NKU40fOlteK4OcVMG6DMzj+47jugB1BiJR8xew==, tarball: https://npm.pkg.github.com/download/@vmscloud/moz-ui-chart/1.0.7/ba9670437077b048eb16fad6dcb4659176476326}
+  '@vmscloud/moz-ui-chart@1.0.11':
+    resolution: {integrity: sha512-KbW0KH5pbzSD3s9Jq2NbkxX/WXm44yPFtenXP14V8FKnHJHGC2RyrlseI6QQA+WgpvG1Mhru//INgXrXoVYgjw==, tarball: https://npm.pkg.github.com/download/@vmscloud/moz-ui-chart/1.0.11/7d61393f0305d20f93967200d7e153a7a1687ea8}
     peerDependencies:
-      '@vmscloud/moz-ui-components': ^1.2.3
+      '@vmscloud/moz-ui-components': ^1.2.5
       vue: '>=3.4.0'
       vue-router: '>=4.2.0'
 
-  '@vmscloud/moz-ui-components@1.2.3':
-    resolution: {integrity: sha512-n6qvQb+83boufQ6bVO3Rk11uKLeC6rNSpvRVlndHbKdLBa6bHjyc35nCrnxDPkQInZyhWKReepKJ7LrExGVvow==, tarball: https://npm.pkg.github.com/download/@vmscloud/moz-ui-components/1.2.3/a40413c39b292a2333a4be7ea67ab2468ddfe301}
+  '@vmscloud/moz-ui-components@1.2.7':
+    resolution: {integrity: sha512-A/LvSRDCZYYIXfeZd2kiZeTO5FV420UjirmqJ6VibTlClUano3nIEi9om65vM0DcBm4exX4B726IoPLvixmJ1A==, tarball: https://npm.pkg.github.com/download/@vmscloud/moz-ui-components/1.2.7/431db3305faffc233a45e5f01a824425b223d95b}
     peerDependencies:
       '@tanstack/vue-virtual': '>=3.0.0'
       dayjs: '>=1.11.0'
       es-toolkit: '>=1.0.0'
       vue: '>=3.4.0'
 
-  '@vmscloud/moz-wijmo-grid@1.0.13':
-    resolution: {integrity: sha512-36yyEy6AOcKVDjWsHmjg4nKspXgeAp7qbeudf/AwVR0/2PiD2BRGf/f4iBI2+HaBb//Vp/eKYop1N+biNiSsXg==, tarball: https://npm.pkg.github.com/download/@vmscloud/moz-wijmo-grid/1.0.13/7c88e6456c58900f0c37611afa66f1d2278495de}
+  '@vmscloud/moz-wijmo-grid@1.0.17':
+    resolution: {integrity: sha512-nYaF4mb1egHVxoGueTuAsTHLbJaNje/y4mmZz1F/AJzAbrB0VXgKZQmsYA27wJ/lPfz2YLKN5J5WE+EO8FO26w==, tarball: https://npm.pkg.github.com/download/@vmscloud/moz-wijmo-grid/1.0.17/f6764d5df57a2a560addbe528c7c225befc2f731}
     peerDependencies:
-      '@vmscloud/moz-ui-components': ^1.2.3
+      '@vmscloud/moz-ui-components': ^1.2.5
       dayjs: '>=1.11.0'
       i18next: '>=23.0.0'
       i18next-vue: '>=3.0.0'
@@ -3696,9 +3696,9 @@ snapshots:
       vite: 6.4.1(@types/node@25.2.3)(sass@1.97.3)
       vue: 3.5.28(typescript@5.9.3)
 
-  '@vmscloud/moz-ui-chart@1.0.7(@vmscloud/moz-ui-components@1.2.3(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3)))(@vue/runtime-core@3.5.28)(vue-router@4.6.4(vue@3.5.28(typescript@5.9.3)))(vue@3.5.28(typescript@5.9.3))':
+  '@vmscloud/moz-ui-chart@1.0.11(@vmscloud/moz-ui-components@1.2.7(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3)))(@vue/runtime-core@3.5.28)(vue-router@4.6.4(vue@3.5.28(typescript@5.9.3)))(vue@3.5.28(typescript@5.9.3))':
     dependencies:
-      '@vmscloud/moz-ui-components': 1.2.3(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3))
+      '@vmscloud/moz-ui-components': 1.2.7(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3))
       arquero: 5.4.1
       echarts: 5.6.0
       echarts-stat: 1.2.0
@@ -3711,7 +3711,7 @@ snapshots:
       - '@vue/runtime-core'
       - encoding
 
-  '@vmscloud/moz-ui-components@1.2.3(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3))':
+  '@vmscloud/moz-ui-components@1.2.7(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3))':
     dependencies:
       '@tanstack/vue-virtual': 3.13.18(vue@3.5.28(typescript@5.9.3))
       clsx: 2.1.1
@@ -3719,10 +3719,10 @@ snapshots:
       es-toolkit: 1.44.0
       vue: 3.5.28(typescript@5.9.3)
 
-  '@vmscloud/moz-wijmo-grid@1.0.13(@vmscloud/moz-ui-components@1.2.3(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(i18next-vue@3.0.0(i18next@23.16.8)(vue@3.5.28(typescript@5.9.3)))(i18next@23.16.8)(pinia@2.3.1(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3)))(vue-router@4.6.4(vue@3.5.28(typescript@5.9.3)))(vue@3.5.28(typescript@5.9.3))':
+  '@vmscloud/moz-wijmo-grid@1.0.17(@vmscloud/moz-ui-components@1.2.7(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(i18next-vue@3.0.0(i18next@23.16.8)(vue@3.5.28(typescript@5.9.3)))(i18next@23.16.8)(pinia@2.3.1(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3)))(vue-router@4.6.4(vue@3.5.28(typescript@5.9.3)))(vue@3.5.28(typescript@5.9.3))':
     dependencies:
       '@grapecity/wijmo.all': 5.20232.939
-      '@vmscloud/moz-ui-components': 1.2.3(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3))
+      '@vmscloud/moz-ui-components': 1.2.7(@tanstack/vue-virtual@3.13.18(vue@3.5.28(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.5.28(typescript@5.9.3))
       axios: 1.13.5
       bytebuffer: 5.0.1
       crypto-js: 4.2.0
