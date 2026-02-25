@@ -25,19 +25,21 @@
       <div class="pane grid-pane">
         <ExtendPivotGrid
           ref="extendPivotGridRef"
+          :emptyState="{ isLoading: isLoading }"
           :name="`demandDistribution_${displayName}_${idx + 1}`"
           height="100%"
-          :items-source="data"
+          :itemsSource="data"
           :engine-option="{
             fields: fields,
             rowFields: [displayName],
-            columnFields: ['Due Date'],
-            valueFields: ['Demand Qty'],
+            columnFields: columnFieldNames,
+            valueFields: valueFieldNames,
             showRowTotals: dataState.showRowTotals,
             showColumnTotals: dataState.showColumnTotals,
             showZeros: dataState.showZeros,
             totalsBeforeData: dataState.totalsBeforeData,
           }"
+          :useContextMenu="false"
           :initialized="onInitialized"
           :formatItem="formatItem"
           :use-pivot-chart="false"
@@ -169,6 +171,10 @@ const fields = computed<FieldType[]>(() => {
 
   return defaultFields;
 });
+
+// Engine option field name arrays (must match field headers exactly)
+const columnFieldNames = ["Due Date"];
+const valueFieldNames = ["Demand Qty"];
 
 const dataState = reactive<{
   showRowTotals: ShowTotals;

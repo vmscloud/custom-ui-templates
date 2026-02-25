@@ -13,7 +13,7 @@
     "@tanstack/vue-query": "^5.92.9",
     "@tanstack/vue-virtual": "^3.13.18",
     "@vmscloud/moz-ui-chart": "^1.0.11",
-    "@vmscloud/moz-ui-components": "^1.2.5",
+    "@vmscloud/moz-ui-components": "^1.2.7",
     "@vmscloud/moz-wijmo-grid": "^1.0.17",
     "axios": "^1.13.5",
     "i18next": "^23.16.8",
