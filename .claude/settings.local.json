@@ -16,7 +16,23 @@
       "Bash('/c/Users/jook1356/AppData/Local/Python/pythoncore-3.14-64/python.exe' -c:*)",
       "Bash(git push origin main)",
       "Bash(npx vue-tsc --noEmit)",
-      "Bash(git pull origin main)"
+      "Bash(git pull origin main)",
+      "Bash(npx vite build)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:module-federation.io)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:dev.to)",
+      "WebFetch(domain:adarshh7.medium.com)",
+      "WebFetch(domain:deepwiki.com)",
+      "Bash(pnpm remove @originjs/vite-plugin-federation)",
+      "Bash(pnpm add -D @module-federation/vite)",
+      "Bash(pnpm build)",
+      "Bash(pnpm build:docker)"
+    ],
+    "additionalDirectories": [
+      "C:\\repository\\Aleatorik-UI-Frontend\\packages\\aps",
+      "C:\\repository\\Aleatorik-UI-Frontend\\docker\\dev"
     ]
   },
   "enableAllProjectMcpServers": true,
