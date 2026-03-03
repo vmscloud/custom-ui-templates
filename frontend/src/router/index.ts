@@ -44,6 +44,11 @@ export const routes: RouteRecordRaw[] = [
     name: "DemandDistribution",
     component: () => import("@/views/templates/dm/DemandDistribution.vue"),
   },
+  {
+    path: "/rtf-report",
+    name: "RtfReport",
+    component: () => import("@/views/templates/sp/RtfReport.vue"),
+  },
 ];
 
 const router = createRouter({

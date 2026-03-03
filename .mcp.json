@@ -1,0 +1,33 @@
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--browserUrl=http://127.0.0.1:9222"
+      ],
+      "env": {}
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "serena": {
+      "command": "C:/Users/jook1356/.local/bin/uvx.exe",
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--project",
+        "C:/repository/custom-ui-templates/frontend",
+        "--project",
+        "C:/repository/custom-ui-templates/backend",
+        "--context",
+        "ide-assistant"
+      ]
+    }
+  }
+}

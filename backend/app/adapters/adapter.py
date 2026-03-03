@@ -73,7 +73,7 @@ class QueryExecutorAdapter:
         self,
         base_url: str,
         db_alias: str = "com",
-        owner_id: str = "mzc_aps",
+        owner_id: str = "aps",
         timeout: float = 60.0,
     ):
         self.base_url = base_url.rstrip("/")
@@ -547,6 +547,7 @@ class QueryExecutorAdapter:
         include_total_count: bool = False,
         request: Request | None = None,
         headers: dict[str, str] | None = None,
+        owner_id: str | None = None,
     ) -> dict[str, Any]:
         """
         저장된 쿼리 실행 (/query/execute-by-key)
@@ -562,6 +563,7 @@ class QueryExecutorAdapter:
             include_total_count: 총 데이터 개수 포함 여부 (page=1일 때만 동작, 기본: False)
             request: FastAPI Request 객체 (선택) - 헤더 자동 추출용
             headers: 커스텀 HTTP 헤더 (선택) - 직접 지정 시 사용
+            owner_id: Query Owner ID (선택) - 지정하지 않으면 인스턴스 기본값 사용
 
         Returns:
             dict with keys:
@@ -592,13 +594,20 @@ class QueryExecutorAdapter:
                 query_id="get_users",
                 headers={"TraceID": "custom-trace-123"},
             )
+
+            # owner_id 오버라이드
+            result = await client.execute_query(
+                project_id="demo",
+                query_id="get_users",
+                owner_id="aps",
+            )
         """
         endpoint = f"{self.base_url}/api/module/query-executor/{project_id}/query/execute-by-key"
 
         payload = {
             "query_id": query_id,
             "alias": self.db_alias,  # Query DB alias
-            "owner_id": self.owner_id,  # Query Owner ID
+            "owner_id": owner_id or self.owner_id,  # Query Owner ID (오버라이드 가능)
             "parameters": parameters or {},
             "page": page,
         }
