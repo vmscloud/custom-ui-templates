@@ -65,3 +65,27 @@ export function getView(name: ViewName) {
 export function getAvailableViews(): ViewName[] {
   return Object.keys(viewRegistry) as ViewName[];
 }
+
+/** 뷰 메타데이터 (메뉴 등록 시 사용) */
+export interface ViewMeta {
+  /** 뷰 이름 (viewRegistry 키와 동일) */
+  name: string;
+  /** Admin에서 보여줄 기본 메뉴명 */
+  defaultMenuName: string;
+}
+
+/** 뷰 메타데이터 레지스트리 */
+export const viewMeta: Record<ViewName, ViewMeta> = {
+  ShowCase: { name: "ShowCase", defaultMenuName: "컴포넌트 쇼케이스" },
+  ItemMaster: { name: "ItemMaster", defaultMenuName: "ItemMaster" },
+  HostInfo: { name: "HostInfo", defaultMenuName: "호스트 정보" },
+  SalesChart: { name: "SalesChart", defaultMenuName: "매출 차트" },
+  ProductGrid: { name: "ProductGrid", defaultMenuName: "제품 그리드" },
+  DemandDistribution: { name: "DemandDistribution", defaultMenuName: "수요 배분" },
+  RtfReport: { name: "RtfReport", defaultMenuName: "RTF 리포트" },
+};
+
+/** 전체 뷰 메타데이터 목록 반환 */
+export function getViewMeta(): ViewMeta[] {
+  return Object.values(viewMeta);
+}
