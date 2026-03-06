@@ -26,7 +26,7 @@ class ComQuery(BaseModel):
 
 
 @router.post("/planCycleSource")
-async def get_plan_cycle_with_ver(
+def get_plan_cycle_with_ver(
     project_id: str = Path(..., description="프로젝트 ID"),
     param: ComQuery = None,
 ):

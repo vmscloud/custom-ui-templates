@@ -24,6 +24,12 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
+      "@moz-shared/icons": path.resolve(__dirname, "src/shims/moz-shared/icons"),
+      "@moz-shared/utils": path.resolve(__dirname, "src/shims/moz-shared/utils"),
+      "@moz-shared/types": path.resolve(__dirname, "src/shims/moz-shared/types"),
+      "@vmscloud/moz-wijmo-grid/utils": path.resolve(__dirname, "src/shims/moz-wijmo-grid/utils"),
+      "@vmscloud/moz-wijmo-grid/store": path.resolve(__dirname, "src/shims/moz-wijmo-grid/store"),
+      "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid.multirow": "@grapecity/wijmo.vue2.grid.multirow",
     },
   },
   css: {
@@ -56,6 +62,7 @@ export default defineConfig({
     },
   },
   server: {
+    host: "0.0.0.0",
     port: 5300,
     strictPort: true,
     cors: true,
@@ -63,6 +70,11 @@ export default defineConfig({
       "Access-Control-Allow-Origin": "*",
     },
     proxy: {
+      "/api/aps/": {
+        target: "https://dev.mozart-cloud.com",
+        changeOrigin: true,
+        secure: false,
+      },
       "/api": {
         target: "http://localhost:8000",
         changeOrigin: true,

@@ -47,7 +47,7 @@ export const viewRegistry = {
   SalesChart: withHostInit(() => import("./views/templates/chart/SalesChart.vue")),
   ProductGrid: withHostInit(() => import("./views/templates/grid/ProductGrid.vue")),
   DemandDistribution: withHostInit(() => import("./views/templates/dm/DemandDistribution.vue")),
-  RtfReport: withHostInit(() => import("./views/templates/sp/RtfReport.vue")),
+  NewRtfReport: withHostInit(() => import("./views/templates/sp/new-rtf-report/NewRtfReport.vue")),
 };
 
 export type ViewName = keyof typeof viewRegistry;

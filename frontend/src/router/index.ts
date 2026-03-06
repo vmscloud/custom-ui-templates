@@ -45,9 +45,9 @@ export const routes: RouteRecordRaw[] = [
     component: () => import("@/views/templates/dm/DemandDistribution.vue"),
   },
   {
-    path: "/rtf-report",
-    name: "RtfReport",
-    component: () => import("@/views/templates/sp/RtfReport.vue"),
+    path: "/new-rtf-report",
+    name: "NewRtfReport",
+    component: () => import("@/views/templates/sp/new-rtf-report/NewRtfReport.vue"),
   },
 ];
 
