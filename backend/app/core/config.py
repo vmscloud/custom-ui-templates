@@ -20,6 +20,13 @@ class Settings(BaseSettings):
     # DATABASE_URL: str = "postgresql://mzcdev:cloud-vms1!@mzcrds-dev.cboeqa8ie939.ap-northeast-2.rds.amazonaws.com/aleatorik"
     DATABASE_URL: str = "postgresql://mzcadm:mzcadm@onprem-dev.mozart-cloud.com:5432/mzc_aps"
 
+    # Trino 데이터베이스 설정
+    TRINO_HOST: str = "internal-mzcalb-aps-api-dev-1563398398.ap-northeast-2.elb.amazonaws.com"
+    TRINO_PORT: int = 18080
+    TRINO_USER: str = "mzcadm"
+    TRINO_CATALOG: str = "iceberg"
+    TRINO_SCHEMA: str = "mzc_aps"
+
     # 쿼리 실행 타임아웃
     QUERY_TIMEOUT_SECONDS: int = 120
     # Query Executor 설정
@@ -35,6 +42,10 @@ class Settings(BaseSettings):
 
     # APS C# 백엔드 (프록시용)
     APS_BACKEND_BASE_URL: str = "http://localhost:8080"
+
+    # APS 백엔드 프록시 설정 (dev 환경)
+    # APS_BACKEND_BASE_URL: str = "http://internal-mzcalb-aps-api-dev-1563398398.ap-northeast-2.elb.amazonaws.com:5000"
+    # APS_BACKEND_BASE_URL: str = "https://dev.mozart-cloud.com"
 
     class Config:
         env_file = ".env"

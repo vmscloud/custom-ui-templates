@@ -69,6 +69,11 @@ export const routes: RouteRecordRaw[] = [
     name: "ReExecutePlan",
     component: () => import("@/views/templates/pe/re-execute-plan/ReExecutePlan.vue"),
   },
+  {
+    path: "/new-rtf-report",
+    name: "NewRtfReport",
+    component: () => import("@/views/templates/sp/new-rtf-report/NewRtfReport.vue"),
+  },
 ];
 
 const router = createRouter({

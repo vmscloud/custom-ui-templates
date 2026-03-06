@@ -1,290 +1,113 @@
 """
 RTF Report API 라우터
 
-RTF(Ready-To-Fill) Report 데이터 조회 API 엔드포인트
-QueryExecutorAdapter를 통해 Query Manager에 등록된 쿼리를 실행합니다.
+프론트엔드의 apiCall이 보내는 RTF 관련 요청을 처리합니다.
+프론트엔드는 { apiUrl, ...params } 형태로 POST 요청을 보냅니다.
 """
 
-import logging
+from typing import Any
 
-from app.core.config import settings
-from app.schemas.rtf_report import (
-    RtfBomMapRequest,
-    RtfBufferPlanTargetRequest,
-    RtfDemandRecordRequest,
-    RtfDemandRequest,
-    RtfDemandSummaryRequest,
-    RtfDetailRequest,
-    RtfItemPropsRequest,
-    RtfSummaryRequest,
-)
-from app.services.rtf_report import RtfReportService, get_rtf_report_service
-from fastapi import APIRouter, Depends, Path, Query
+from app.services.rtf_report import RtfReportService
+from fastapi import APIRouter, Path
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
 
 router = APIRouter()
-logger = logging.getLogger(__name__)
 
 
-def _error_response(status_code: int, label: str, exc: Exception) -> JSONResponse:
-    """에러 응답 생성 — DEBUG 모드에서만 상세 에러 노출"""
-    logger.exception(f"[{label}] {exc}")
-    detail = str(exc) if settings.DEBUG else None
-    return JSONResponse(
-        status_code=status_code,
-        content={
-            "success": False,
-            "error": f"{label} 중 오류가 발생했습니다.",
-            **({"detail": detail} if detail else {}),
-        },
-    )
+class RtfProxyRequest(BaseModel):
+    """RTF 프록시 요청 모델"""
+
+    apiUrl: str = Field(..., description="원본 APS API URL (예: RarRtfReport/Main2)")
+
+    # 공통 파라미터
+    planVer: str | None = Field(default=None, description="Plan Version")
+    demandID: str | None = Field(default=None, description="Demand ID")
+    demandIDs: list[str] | None = Field(default=None, description="Demand ID 목록")
+
+    # Main/Detail 파라미터
+    aggregateType: str | None = Field(default=None, description="WEEK/MONTH")
+    summary: str | None = Field(default=None, description="요약 유형")
+    uomType: str | None = Field(default=None, description="DEFAULT/CONVERSION")
+    prodStatus: str | None = Field(default=None, description="생산 상태 필터")
+    customers: list[str] | None = Field(default=None, description="고객 필터")
+    itemGroupIDs: list[str] | None = Field(default=None, description="품목그룹 필터")
+    regions: list[str] | None = Field(default=None, description="지역 필터")
+    demandTypes: list[str] | None = Field(default=None, description="수요유형 필터")
+    productionArea: str | None = Field(default=None, description="생산영역 필터")
+    prodTypes: list[str] | None = Field(default=None, description="생산유형 필터")
+
+    # Detail 추가 파라미터
+    dueMonth: str | None = Field(default=None, description="월 필터")
+    dueWeek: str | None = Field(default=None, description="주 필터")
+
+    # 기타
+    fromDate: str | None = Field(default=None, description="시작일")
+    toDate: str | None = Field(default=None, description="종료일")
+    planCycleID: str | None = Field(default=None, description="Plan Cycle ID")
+
+    # Widget 설정
+    userID: str | None = Field(default=None, description="사용자 ID")
+
+    class Config:
+        extra = "allow"  # 알 수 없는 필드 허용
 
 
-# ============================================================================
-# 핵심 데이터 API (POST)
-# ============================================================================
-
-
-@router.post("/summary")
-async def get_summary(
-    params: RtfSummaryRequest,
+@router.post("/rtf-report/proxy")
+def rtf_report_proxy(
     project_id: str = Path(..., description="프로젝트 ID"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """RTF 요약 그리드 데이터 조회"""
+    body: RtfProxyRequest = None,
+) -> dict[str, Any]:
+    """
+    RTF Report 프록시 엔드포인트 (레거시 — body.apiUrl로 라우팅)
+    """
+    if body is None:
+        return JSONResponse(
+            status_code=400,
+            content={"success": False, "error": "Request body is required"},
+        )
+
     try:
-        return await service.get_summary(project_id, params)
-    except ValueError as e:
-        return _error_response(400, "요약 조회", e)
+        service = RtfReportService()
+        params = body.model_dump(exclude_none=True)
+        result = service.dispatch(project_id, body.apiUrl, params)
+        return result
+
     except Exception as e:
-        return _error_response(500, "요약 조회", e)
+        import traceback
+
+        traceback.print_exc()
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": f"Internal server error: {str(e)}"},
+        )
 
 
-@router.post("/detail")
-async def get_detail(
-    params: RtfDetailRequest,
+@router.post("/rtf-report/{api_name:path}")
+def rtf_report_named(
     project_id: str = Path(..., description="프로젝트 ID"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """RTF 상세 그리드 데이터 조회"""
+    api_name: str = Path(..., description="API 이름 (예: RarRtfReport/Main2)"),
+    body: dict[str, Any] = None,
+) -> dict[str, Any]:
+    """
+    RTF Report 네임드 엔드포인트 — URL 경로에 API 이름 포함
+
+    네트워크 탭에서 각 API 이름이 보이도록 URL 경로 기반 라우팅.
+    예: POST /rtf-report/RarRtfReport/Main2
+    """
+    if body is None:
+        body = {}
+
     try:
-        return await service.get_detail(project_id, params)
-    except ValueError as e:
-        return _error_response(400, "상세 조회", e)
+        service = RtfReportService()
+        result = service.dispatch(project_id, api_name, body)
+        return result
+
     except Exception as e:
-        return _error_response(500, "상세 조회", e)
+        import traceback
 
-
-@router.post("/short")
-async def get_short(
-    params: RtfDemandRequest,
-    project_id: str = Path(..., description="프로젝트 ID"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """부족(Short) 사유 조회"""
-    try:
-        return await service.get_short(project_id, params)
-    except ValueError as e:
-        return _error_response(400, "Short 사유 조회", e)
-    except Exception as e:
-        return _error_response(500, "Short 사유 조회", e)
-
-
-@router.post("/prod-detail")
-async def get_prod_detail(
-    params: RtfDemandRequest,
-    project_id: str = Path(..., description="프로젝트 ID"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """생산계획 피벗 데이터 조회"""
-    try:
-        return await service.get_prod_detail(project_id, params)
-    except ValueError as e:
-        return _error_response(400, "생산 상세 조회", e)
-    except Exception as e:
-        return _error_response(500, "생산 상세 조회", e)
-
-
-@router.post("/buffer-plan-target")
-async def get_buffer_plan_target(
-    params: RtfBufferPlanTargetRequest,
-    project_id: str = Path(..., description="프로젝트 ID"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """버퍼 계획 Target vs 실적 조회"""
-    try:
-        return await service.get_buffer_plan_target(project_id, params)
-    except ValueError as e:
-        return _error_response(400, "버퍼 계획 조회", e)
-    except Exception as e:
-        return _error_response(500, "버퍼 계획 조회", e)
-
-
-@router.post("/demand-summary")
-async def get_demand_summary(
-    params: RtfDemandSummaryRequest,
-    project_id: str = Path(..., description="프로젝트 ID"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """수요 요약 메트릭 조회"""
-    try:
-        return await service.get_demand_summary(project_id, params)
-    except ValueError as e:
-        return _error_response(400, "수요 요약 조회", e)
-    except Exception as e:
-        return _error_response(500, "수요 요약 조회", e)
-
-
-@router.post("/demand-info")
-async def get_demand_info(
-    params: RtfDemandRequest,
-    project_id: str = Path(..., description="프로젝트 ID"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """수요 상세 정보 조회 (모달)"""
-    try:
-        return await service.get_demand_info(project_id, params)
-    except ValueError as e:
-        return _error_response(400, "수요 정보 조회", e)
-    except Exception as e:
-        return _error_response(500, "수요 정보 조회", e)
-
-
-@router.post("/peg-info")
-async def get_peg_info(
-    params: RtfDemandRequest,
-    project_id: str = Path(..., description="프로젝트 ID"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """Peg 정보 상세 조회 (모달)"""
-    try:
-        return await service.get_peg_info(project_id, params)
-    except ValueError as e:
-        return _error_response(400, "Peg 정보 조회", e)
-    except Exception as e:
-        return _error_response(500, "Peg 정보 조회", e)
-
-
-@router.post("/bom-map")
-async def get_bom_map(
-    params: RtfBomMapRequest,
-    project_id: str = Path(..., description="프로젝트 ID"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """BOM 구조 조회 (모달)"""
-    try:
-        return await service.get_bom_map(project_id, params)
-    except ValueError as e:
-        return _error_response(400, "BOM 구조 조회", e)
-    except Exception as e:
-        return _error_response(500, "BOM 구조 조회", e)
-
-
-@router.post("/item-props")
-async def get_item_props(
-    params: RtfItemPropsRequest,
-    project_id: str = Path(..., description="프로젝트 ID"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """품목 속성 조회 (모달)"""
-    try:
-        return await service.get_item_props(project_id, params)
-    except ValueError as e:
-        return _error_response(400, "품목 속성 조회", e)
-    except Exception as e:
-        return _error_response(500, "품목 속성 조회", e)
-
-
-@router.post("/demand-record")
-async def get_demand_record(
-    params: RtfDemandRecordRequest,
-    project_id: str = Path(..., description="프로젝트 ID"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """수요 레코드 상세 조회 (모달)"""
-    try:
-        return await service.get_demand_record(project_id, params)
-    except ValueError as e:
-        return _error_response(400, "수요 레코드 조회", e)
-    except Exception as e:
-        return _error_response(500, "수요 레코드 조회", e)
-
-
-# ============================================================================
-# 필터 API (GET)
-# ============================================================================
-
-
-@router.get("/filters/customers")
-async def get_filter_customers(
-    project_id: str = Path(..., description="프로젝트 ID"),
-    plan_ver: str = Query(..., description="Plan Version"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """고객 필터 목록 조회"""
-    try:
-        return await service.get_filter_customers(project_id, plan_ver)
-    except ValueError as e:
-        return _error_response(400, "고객 목록 조회", e)
-    except Exception as e:
-        return _error_response(500, "고객 목록 조회", e)
-
-
-@router.get("/filters/item-groups")
-async def get_filter_item_groups(
-    project_id: str = Path(..., description="프로젝트 ID"),
-    plan_ver: str = Query(..., description="Plan Version"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """품목 그룹 필터 목록 조회"""
-    try:
-        return await service.get_filter_item_groups(project_id, plan_ver)
-    except ValueError as e:
-        return _error_response(400, "품목 그룹 목록 조회", e)
-    except Exception as e:
-        return _error_response(500, "품목 그룹 목록 조회", e)
-
-
-@router.get("/filters/regions")
-async def get_filter_regions(
-    project_id: str = Path(..., description="프로젝트 ID"),
-    plan_ver: str = Query(..., description="Plan Version"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """지역 필터 목록 조회"""
-    try:
-        return await service.get_filter_regions(project_id, plan_ver)
-    except ValueError as e:
-        return _error_response(400, "지역 목록 조회", e)
-    except Exception as e:
-        return _error_response(500, "지역 목록 조회", e)
-
-
-@router.get("/filters/demand-types")
-async def get_filter_demand_types(
-    project_id: str = Path(..., description="프로젝트 ID"),
-    plan_ver: str = Query(..., description="Plan Version"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """수요 유형 필터 목록 조회"""
-    try:
-        return await service.get_filter_demand_types(project_id, plan_ver)
-    except ValueError as e:
-        return _error_response(400, "수요 유형 목록 조회", e)
-    except Exception as e:
-        return _error_response(500, "수요 유형 목록 조회", e)
-
-
-@router.get("/filters/prop-columns")
-async def get_filter_prop_columns(
-    project_id: str = Path(..., description="프로젝트 ID"),
-    plan_ver: str = Query(..., description="Plan Version"),
-    service: RtfReportService = Depends(get_rtf_report_service),
-):
-    """동적 속성 컬럼 정의 조회"""
-    try:
-        return await service.get_filter_prop_columns(project_id, plan_ver)
-    except ValueError as e:
-        return _error_response(400, "속성 컬럼 조회", e)
-    except Exception as e:
-        return _error_response(500, "속성 컬럼 조회", e)
+        traceback.print_exc()
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": f"Internal server error: {str(e)}"},
+        )

@@ -225,7 +225,7 @@ setProjectIdResolver(() => settingsValue.value?.projectInfo?.currentProjectID ??
     align-items: center;
 
     .dev-header-setting {
-      position: relative;
+      position: ab;
       height: 40px;
       padding: 0 0.875rem;
 

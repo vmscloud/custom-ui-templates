@@ -1,21 +1,27 @@
 """
 데이터베이스 연결 관리
-psycopg2를 사용한 직접 쿼리 방식
+Trino를 사용한 쿼리 방식
 """
 
+import asyncio
 from contextlib import contextmanager
 from typing import Any, Generator
 
 from app.core.config import settings
-from psycopg2 import pool
-from psycopg2.extras import RealDictCursor
+from trino.dbapi import connect
 
-# Connection pool 생성
-connection_pool = pool.ThreadedConnectionPool(
-    minconn=1,
-    maxconn=10,
-    dsn=settings.DATABASE_URL,
-)
+
+def _get_connection():
+    """Trino 연결을 생성합니다."""
+    return connect(
+        host=settings.TRINO_HOST,
+        port=settings.TRINO_PORT,
+        user=settings.TRINO_USER,
+        catalog=settings.TRINO_CATALOG,
+        schema=settings.TRINO_SCHEMA,
+        http_scheme="http",
+        request_timeout=settings.QUERY_TIMEOUT_SECONDS,
+    )
 
 
 @contextmanager
@@ -25,24 +31,21 @@ def get_connection() -> Generator[Any, None, None]:
 
     Usage:
         with get_connection() as conn:
-            with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                cur.execute("SELECT * FROM table")
-                results = cur.fetchall()
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM table")
+            results = cur.fetchall()
     """
-    conn = connection_pool.getconn()
+    conn = _get_connection()
     try:
         yield conn
-        conn.commit()
-    except Exception:
-        conn.rollback()
-        raise
     finally:
-        connection_pool.putconn(conn)
+        conn.close()
 
 
 def execute_query(query: str, params: tuple = None) -> list[dict]:
     """
     SELECT 쿼리를 실행하고 결과를 딕셔너리 리스트로 반환합니다.
+    (동기 — def 엔드포인트에서 호출하거나, async 엔드포인트에서는 execute_query_async 사용)
 
     Args:
         query: SQL 쿼리 문자열
@@ -52,10 +55,14 @@ def execute_query(query: str, params: tuple = None) -> list[dict]:
         결과 딕셔너리 리스트
     """
     with get_connection() as conn:
-        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur = conn.cursor()
+        if params:
             cur.execute(query, params)
-            results = cur.fetchall()
-            return [dict(row) for row in results]
+        else:
+            cur.execute(query)
+        columns = [desc[0] for desc in cur.description]
+        rows = cur.fetchall()
+        return [dict(zip(columns, row)) for row in rows]
 
 
 def execute_write(query: str, params: tuple = None) -> int:
@@ -73,3 +80,11 @@ def execute_write(query: str, params: tuple = None) -> int:
         with conn.cursor() as cur:
             cur.execute(query, params)
             return cur.rowcount
+
+
+async def execute_query_async(query: str, params: tuple = None) -> list[dict]:
+    """
+    SELECT 쿼리를 비동기로 실행합니다.
+    동기 Trino 호출을 스레드풀에서 실행하여 event loop 블로킹을 방지합니다.
+    """
+    return await asyncio.to_thread(execute_query, query, params)

@@ -18,7 +18,7 @@ import { MozConfigProvider, koKR } from "@vmscloud/moz-ui-components";
 .moz-contents {
   flex: 1;
   display: grid;
-  /* grid-template-rows: auto 1fr; */
+  grid-template-rows: auto 1fr;
   height: 100%;
   overflow: hidden;
 }

@@ -1,8 +1,8 @@
 <template>
   <ContextMenu ref="settingsRef" :itemSource="[{template:'contents[padding]', hover:false}]" :fixPosition="{
-    useTeleport: true,
+
     top: '100%',
-    left: '95px'
+left: 'calc(100% - 14px)'
   }">
     <template #contents[padding]>
       <div class="dev-tool-setting">
@@ -14,6 +14,7 @@
           <Input v-model="settingsValueClone.projectInfo.userInfo.id" :label="'유저 ID'" :required="true" />
           <Input v-model="settingsValueClone.projectInfo.userInfo.email" :label="'유저 이메일'" :required="true" />
           <Input v-model="settingsValueClone.projectInfo.userInfo.name" :label="'유저 이름'" />
+          <Select :class="'dev-tool-setting-select'" v-model="settingsValueClone.projectInfo.userInfo.language" width="100%" :label="'현재 언어'" displayProp="label" keyProp="value" :itemsSource="[{value: 'ko', label: '한국어'}, {value: 'en', label: '영어'}, {value: 'zh', label: '중국어'}, {value: 'jp', label: '일본어'}]" />
         </div>
         <div class="dev-tool-setting-box">
           <Toggle :label="'관리자 여부'" v-model="settingsValueClone.projectInfo.isAdmin"></Toggle>
@@ -32,7 +33,7 @@
 <script setup lang="ts">
 import {computed, inject, ref, watch} from "vue";
 import {HOST_DATA_KEY} from "@/composables/useHostStores.ts";
-import {Button, ContextMenu, Input, Toggle} from "@vmscloud/moz-ui-components";
+import {Button, ContextMenu, Input, Toggle, Select} from "@vmscloud/moz-ui-components";
 import { DeveloperToolType } from "./DeveloperTool.ts";
 
 const settingsRef = defineModel<any>({required: true})
@@ -81,5 +82,10 @@ watch(() => ([settingsValue.value, settingsRef.value?.state]), () => {
     justify-content: flex-end;
     gap: 8px;
   }
+}
+</style>
+<style lang="scss">
+.dev-tool-setting-select {
+  
 }
 </style>

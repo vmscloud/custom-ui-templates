@@ -15,20 +15,29 @@ export const useDeveloperTool = () => {
       "userInfo": {
         "id": "",
         "name": "",
-        "email": ""
+        "email": "",
+        "language": "ko"
       },
       "isAdmin": true,
     },
     "planCycle": {
       "planVer": "",
       "fromDate": "",
-      "toDate": ""
+      "toDate": "",
+      "planCycleID": "",
+      "planStartDate": "",
+      "planPeriod": 0,
+      "planStatus": "",
+      "demandVer": "",
+      "currentPlanCycleSource": null as any,
+      "planCycleSource": [] as any[]
     },
     "menu": {
       "items": [],
-          "currentMenuId": "",
-          "currentMenu": null
-    }
+      "currentMenuId": "",
+      "currentMenu": null
+    },
+    "dateFormat": "YYYY-MM-DD"
   })
 
   const planCycleSource: Ref<any[]> = ref([]);
@@ -48,7 +57,7 @@ export const useDeveloperTool = () => {
       const response = await fetch(`/api/custom/backend/${settingsValue.value.projectInfo.currentProjectID}/planCycleSource`, {
         method: "POST",
       });
-      return response.json();  // 여기서 파싱
+      return response.json();
     },
     onSuccess: (response) => {
       if (response.data.length) {
@@ -72,7 +81,7 @@ export const useDeveloperTool = () => {
   watch([settingsValue], () => {
     window.localStorage.setItem(HOST_DATA_KEY + '_dev', JSON.stringify(settingsValue.value));
   }, {deep: true})
-  
+
   onMounted(() => {
     const loadString = window.localStorage.getItem(HOST_DATA_KEY + '_dev')
     if (loadString) {
@@ -89,6 +98,13 @@ export const useDeveloperTool = () => {
     if (!currentPlan) return
     settingsValue.value.planCycle.fromDate = currentPlan.plan_start_date
     settingsValue.value.planCycle.toDate = currentPlan.plan_end_date
+    settingsValue.value.planCycle.planCycleID = currentPlan.plan_cycle_id ?? ""
+    settingsValue.value.planCycle.planStartDate = currentPlan.plan_start_date ?? ""
+    settingsValue.value.planCycle.planPeriod = currentPlan.plan_period ?? 0
+    settingsValue.value.planCycle.planStatus = currentPlan.plan_status ?? ""
+    settingsValue.value.planCycle.demandVer = currentPlan.demand_ver ?? ""
+    settingsValue.value.planCycle.currentPlanCycleSource = currentPlan
+    settingsValue.value.planCycle.planCycleSource = planCycleSource.value
   }, {immediate: true})
 
   return {
