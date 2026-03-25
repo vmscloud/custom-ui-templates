@@ -49,6 +49,11 @@ export const routes: RouteRecordRaw[] = [
     name: "RtfReport",
     component: () => import("@/views/templates/sp/rtf-report/RtfReport.vue"),
   },
+  {
+    path: "/plan-dashboard",
+    name: "PlanDashboard",
+    component: () => import("@/views/templates/sp/plan-dashboard/PlanDashboard.vue"),
+  },
 ];
 
 const router = createRouter({
