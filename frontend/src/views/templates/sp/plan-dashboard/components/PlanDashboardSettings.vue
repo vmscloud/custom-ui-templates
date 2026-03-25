@@ -283,7 +283,7 @@
                   <div
                     v-if="selectedOperGroups.length > 0"
                     class="oper-group-option-list-item"
-                    v-for="(group, idx) in selectedOperGroups"
+                    v-for="(group, _idx) in selectedOperGroups"
                     :key="group"
                   >
                     <div

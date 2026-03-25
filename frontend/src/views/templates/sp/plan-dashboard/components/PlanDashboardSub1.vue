@@ -50,7 +50,6 @@ import {
 } from "@vmscloud/moz-ui-chart/echarts/components";
 import {
   normalizeRatios,
-  round2,
   type usePlanDashboard,
 } from "../planDashboard";
 import IconTime from "../assets/IconTime.vue";

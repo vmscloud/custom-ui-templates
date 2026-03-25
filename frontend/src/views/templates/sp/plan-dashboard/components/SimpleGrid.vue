@@ -100,42 +100,6 @@ interface SelectedCell {
   rowData: any;
 }
 
-// 선택된 셀들의 합계를 계산하는 함수
-const calculateSelectedCellsSum = (): string => {
-  let total = 0;
-  let count = 0;
-
-  if (draggedCells.value.size > 0) {
-    draggedCells.value.forEach((cellKey: string) => {
-      const [rowIndex, columnKey] = cellKey.split('-');
-      const rowIdx = parseInt(rowIndex);
-      const rowData = props.itemsSource[rowIdx];
-
-      if (rowData && rowData[columnKey] !== undefined) {
-        const value = rowData[columnKey];
-        if (typeof value === 'number' && !isNaN(value)) {
-          total += value;
-          count++;
-        } else if (typeof value === 'string' && !isNaN(Number(value)) && value.trim() !== '') {
-          total += Number(value);
-          count++;
-        }
-      }
-    });
-  } else if (selectedCell.value) {
-    const value = selectedCell.value.value;
-    if (typeof value === 'number' && !isNaN(value)) {
-      total += value;
-      count++;
-    } else if (typeof value === 'string' && !isNaN(Number(value)) && value.trim() !== '') {
-      total += Number(value);
-      count++;
-    }
-  }
-
-  return count > 0 ? total.toLocaleString() : '0';
-};
-
 const props = defineProps<Props>();
 const selectedCell = ref<SelectedCell | null>(null);
 
@@ -524,7 +488,7 @@ const isSingleColumnSelection = (): boolean => {
   return draggedColsSet.size === 1;
 };
 
-const onContextMenu = (event: MouseEvent, rowIndex: number, columnKey: string, value: any, rowData: any) => {
+const onContextMenu = (event: MouseEvent, _rowIndex: number, _columnKey: string, _value: any, _rowData: any) => {
   event.preventDefault();
   // Context menu simplified - no ContextMenu component dependency
 };
