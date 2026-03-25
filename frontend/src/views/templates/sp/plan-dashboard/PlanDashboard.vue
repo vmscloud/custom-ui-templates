@@ -1,10 +1,30 @@
 <template>
   <div class="plan-dashboard-page">
-    <Controller :navigations="[t('menu-ProductionPlanning'), t('menu-PlanDashboard2')]">
+    <Controller
+      :navigations="[t('menu-ProductionPlanning'), t('menu-PlanDashboard2')]"
+    >
       <template #action>
         <div v-if="frozenVer" class="frozen-plan-badge">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#8998b5" stroke-width="1.2" fill="none"/><path d="M7 4v3M7 9v.5" stroke="#8998b5" stroke-width="1.2" stroke-linecap="round"/></svg>
-          <span class="frozen-plan-text">{{ t('text-frozen_plan') }}: <span class="frozen-plan-ver">{{ frozenVer }}</span></span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <circle
+              cx="7"
+              cy="7"
+              r="6"
+              stroke="#8998b5"
+              stroke-width="1.2"
+              fill="none"
+            />
+            <path
+              d="M7 4v3M7 9v.5"
+              stroke="#8998b5"
+              stroke-width="1.2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <span class="frozen-plan-text"
+            >{{ t("text-frozen_plan") }}:
+            <span class="frozen-plan-ver">{{ frozenVer }}</span></span
+          >
         </div>
         <div class="dashboard-separator" />
         <Radio
@@ -18,7 +38,18 @@
         <button
           class="dashboard-controller-btn"
           style="background-color: #fa9e2321"
-          @click="openLinkNewTab({ path: '/pe/ErrorReport', query: { planVer: planVer || '', 'severityType[+]': 'Warning,Notice' } }, true)"
+          @click="
+            openLinkNewTab(
+              {
+                path: '/pe/ErrorReport',
+                query: {
+                  planVer: planVer || '',
+                  'severityType[+]': 'Warning,Notice',
+                },
+              },
+              true,
+            )
+          "
         >
           <IconToastWarning :width="14" :height="14" :color="'#fa9e23'" />
           <div class="num" style="color: #fa9e23">{{ warningCount }}</div>
@@ -26,7 +57,15 @@
         <button
           class="dashboard-controller-btn"
           style="background-color: #4568e029"
-          @click="openLinkNewTab({ path: '/pe/ErrorReport', query: { planVer: planVer || '', 'severityType[+]': 'Info' } }, true)"
+          @click="
+            openLinkNewTab(
+              {
+                path: '/pe/ErrorReport',
+                query: { planVer: planVer || '', 'severityType[+]': 'Info' },
+              },
+              true,
+            )
+          "
         >
           <IconInfoFilled :width="14" :height="14" :color="'#4568E0'" />
           <div class="num" style="color: #4568e0">{{ infoCount }}</div>
@@ -104,7 +143,11 @@ import {
   Button,
   EmptyState,
 } from "@vmscloud/moz-ui-components";
-import { useHostPlanCycle, useHostUser, useHostNavigation } from "@/composables/useHostStores";
+import {
+  useHostPlanCycle,
+  useHostUser,
+  useHostNavigation,
+} from "@/composables/useHostStores";
 
 const { t } = useTranslation();
 import { usePlanDashboard } from "./planDashboard";
@@ -115,7 +158,6 @@ import PlanDashboardSub4 from "./components/PlanDashboardSub4.vue";
 import PlanDashboardSub5 from "./components/PlanDashboardSub5.vue";
 import PlanDashboardSub6 from "./components/PlanDashboardSub6.vue";
 import PlanDashboardSettings from "./components/PlanDashboardSettings.vue";
-import IconToastInfo from "./assets/IconToastInfo.vue";
 import IconInfoFilled from "./assets/IconInfoFilled.vue";
 import IconToastWarning from "./assets/IconToastWarning.vue";
 import IconSetting from "./assets/IconSetting.vue";

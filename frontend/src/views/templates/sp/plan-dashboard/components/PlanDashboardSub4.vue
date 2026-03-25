@@ -2,25 +2,49 @@
   <div class="container">
     <div class="container-header-wrapper">
       <div class="header-top">
-        <span class="panel-title">
-          {{ t('text-plan_dashboard_isu-frozen_act_comparison_report') }}
-          <button class="link-btn" @click="openLinkNewTab({ path: '/pa/ActualPlanResult' }, true)">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 1h8v8M13 1L6 8" stroke="#8998b5" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-        </span>
-        <span class="unit-label">{{ frozenData.qtyUom ? t('text-fgs_stock_report_qty_uom', { unit: frozenData.qtyUom }) : '' }}</span>
+        <div class="panel-title">
+          {{ t("text-plan_dashboard_isu-frozen_act_comparison_report") }}
+
+          <Button
+            style="margin-top: 2px"
+            class="small"
+            type="icon"
+            @click="
+              openLinkNewTab({
+                path: `/pa/ActualPlanResult`,
+              }, true)
+            "
+          >
+            <IconOpen :height="14" :width="14" />
+          </Button>
+        </div>
+        <span class="unit-label">{{
+          frozenData.qtyUom
+            ? t("text-fgs_stock_report_qty_uom", { unit: frozenData.qtyUom })
+            : ""
+        }}</span>
       </div>
       <div class="kpi-section">
         <div class="kpi-row">
           <div class="kpi-dual">
             <div class="kpi-item">
-              <span class="kpi-value">{{ formatNumber(frozenData.demandQty) }}</span>
-              <span class="kpi-sub">({{ t('text-plan_dashboard_isu-total_plan_qty_by_month') }})</span>
+              <span class="kpi-value">{{
+                formatNumber(frozenData.demandQty)
+              }}</span>
+              <span class="kpi-sub"
+                >({{
+                  t("text-plan_dashboard_isu-total_plan_qty_by_month")
+                }})</span
+              >
             </div>
             <div class="kpi-separator"></div>
             <div class="kpi-item">
-              <span class="kpi-value">{{ formatNumber(actualData.demandQty) }}</span>
-              <span class="kpi-sub">({{ t('text-cumulative_performance_volume') }})</span>
+              <span class="kpi-value">{{
+                formatNumber(actualData.demandQty)
+              }}</span>
+              <span class="kpi-sub"
+                >({{ t("text-cumulative_performance_volume") }})</span
+              >
             </div>
           </div>
           <Radio
@@ -40,7 +64,7 @@
           :simpleFormatItem="simpleFormatItem"
         />
       </div>
-      <div v-else class="no-data">{{ t('msg-data_empty') }}</div>
+      <div v-else class="no-data">{{ t("msg-data_empty") }}</div>
     </div>
   </div>
 </template>
@@ -48,22 +72,26 @@
 <script setup lang="ts">
 import { computed, inject, ref } from "vue";
 import { useTranslation } from "i18next-vue";
-import { Radio } from "@vmscloud/moz-ui-components";
+import { Button, Radio } from "@vmscloud/moz-ui-components";
 import type { usePlanDashboard } from "../planDashboard";
 import type { RTFSummary } from "../planDashboard";
 import SimpleGrid from "./SimpleGrid.vue";
+import IconOpen from "../assets/IconOpen.vue";
 
 const { t } = useTranslation();
 
 type PlanDashboardContext = ReturnType<typeof usePlanDashboard>;
 const planDashboard = inject<PlanDashboardContext>("planDashboard")!;
 const { dashboardData } = planDashboard;
-const openLinkNewTab = inject<(route: any, force?: boolean) => void>('openLinkNewTab', () => {});
+const openLinkNewTab = inject<(route: any, force?: boolean) => void>(
+  "openLinkNewTab",
+  () => {},
+);
 
 const planOption = ref("ITEMGROUP");
 const planOptionSource = computed(() => [
-  { value: "ITEMGROUP", label: t('text-isu_item_group') },
-  { value: "DEMANDTYPE", label: t('text-isu_prod_type') },
+  { value: "ITEMGROUP", label: t("text-isu_item_group") },
+  { value: "DEMANDTYPE", label: t("text-isu_prod_type") },
 ]);
 
 const EMPTY_SUMMARY: RTFSummary = {
@@ -89,12 +117,12 @@ const hasData = computed(() => {
   return summary?.frozen != null || summary?.actual != null;
 });
 
-const frozenData = computed<RTFSummary>(() =>
-  dashboardData.value?.rtfSummary?.frozen ?? EMPTY_SUMMARY,
+const frozenData = computed<RTFSummary>(
+  () => dashboardData.value?.rtfSummary?.frozen ?? EMPTY_SUMMARY,
 );
 
-const actualData = computed<RTFSummary>(() =>
-  dashboardData.value?.rtfSummary?.actual ?? EMPTY_SUMMARY,
+const actualData = computed<RTFSummary>(
+  () => dashboardData.value?.rtfSummary?.actual ?? EMPTY_SUMMARY,
 );
 
 function formatNumber(val: number): string {
@@ -103,13 +131,31 @@ function formatNumber(val: number): string {
 }
 
 const simpleColumns = computed(() => [
-  { binding: "category", id: 0, header: t('text-type'), type: "string", width: 70 },
-  { binding: "demandQty", id: 1, header: t('text-total_qty'), type: "number", width: 90 },
+  {
+    binding: "category",
+    id: 0,
+    header: t("text-type"),
+    type: "string",
+    width: 70,
+  },
+  {
+    binding: "demandQty",
+    id: 1,
+    header: t("text-total_qty"),
+    type: "number",
+    width: 90,
+  },
   { binding: "earlyQty", id: 2, header: "Early", type: "number", width: 80 },
   { binding: "ontimeQty", id: 3, header: "On-time", type: "number", width: 90 },
   { binding: "lateQty", id: 4, header: "Late", type: "number", width: 80 },
   { binding: "shortQty", id: 5, header: "Short", type: "number", width: 80 },
-  { binding: "rtfRatio", id: 6, header: t('text-plan_dashboard-rtf_ratio'), type: "string", width: 70 },
+  {
+    binding: "rtfRatio",
+    id: 6,
+    header: t("text-plan_dashboard-rtf_ratio"),
+    type: "string",
+    width: 70,
+  },
 ]);
 
 const gridData = computed(() => {
@@ -154,7 +200,9 @@ const simpleFormatItem = (
     element.style.fontSize = "13px";
     element.style.color = "#565f6e";
     // Override cell-value alignment
-    const cellValue = element.querySelector(".cell-value") as HTMLElement | null;
+    const cellValue = element.querySelector(
+      ".cell-value",
+    ) as HTMLElement | null;
     if (cellValue) {
       cellValue.style.justifyContent = "center";
     }
@@ -198,6 +246,9 @@ const simpleFormatItem = (
 }
 
 .panel-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 1rem;
   font-weight: 500;
   color: #565f6e;
@@ -210,7 +261,9 @@ const simpleFormatItem = (
   padding: 0;
   margin-left: 4px;
   vertical-align: middle;
-  &:hover svg path { stroke: #4568e0; }
+  &:hover svg path {
+    stroke: #4568e0;
+  }
 }
 
 .unit-label {
@@ -253,7 +306,7 @@ const simpleFormatItem = (
   &::after {
     display: block;
     position: absolute;
-    content: '';
+    content: "";
     left: 0;
     bottom: 1px;
     width: 100%;

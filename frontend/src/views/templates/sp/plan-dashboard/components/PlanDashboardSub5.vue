@@ -2,22 +2,33 @@
   <div class="container">
     <div class="container-header-wrapper">
       <div class="header-top">
-        <span class="panel-title">
-          {{ t('text-plan_dashboard_isu-oper_group_utilization_report') }}
-          <button class="link-btn" @click="openLinkNewTab({ path: '/sp/LoadFactorByOperGroup', query: { planVer: planVer || '' } }, true)">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 1h8v8M13 1L6 8" stroke="#8998b5" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-        </span>
+        <div class="panel-title">
+          {{ t("text-plan_dashboard_isu-oper_group_utilization_report") }}
+
+          <Button
+            style="margin-top: 2px"
+            class="small"
+            type="icon"
+            @click="
+              openLinkNewTab({
+                path: `/sp/LoadFactorByOperGroup`,
+                query: { planVer: planVer || '' },
+              }, true)
+            "
+          >
+            <IconOpen :height="14" :width="14" />
+          </Button>
+        </div>
         <span class="unit-label">(%)</span>
       </div>
       <div class="kpi-section">
         <span class="kpi-value">{{ avgUtilization }}%</span>
-        <span class="kpi-sub">({{ t('text-average_load_factor') }})</span>
+        <span class="kpi-sub">({{ t("text-average_load_factor") }})</span>
       </div>
     </div>
     <div class="container-body-wrapper">
       <v-chart v-if="hasData" class="chart" :option="chartOption" autoresize />
-      <div v-else class="no-data">{{ t('msg-data_empty') }}</div>
+      <div v-else class="no-data">{{ t("msg-data_empty") }}</div>
     </div>
   </div>
 </template>
@@ -39,6 +50,8 @@ import {
 } from "@vmscloud/moz-ui-chart/echarts/components";
 import type { usePlanDashboard } from "../planDashboard";
 import { useHostPlanCycle } from "@/composables/useHostStores";
+import { Button } from "@vmscloud/moz-ui-components";
+import IconOpen from "../assets/IconOpen.vue";
 
 const { t } = useTranslation();
 
@@ -57,7 +70,10 @@ use([
 type PlanDashboardContext = ReturnType<typeof usePlanDashboard>;
 const planDashboard = inject<PlanDashboardContext>("planDashboard")!;
 const { dashboardData } = planDashboard;
-const openLinkNewTab = inject<(route: any, force?: boolean) => void>('openLinkNewTab', () => {});
+const openLinkNewTab = inject<(route: any, force?: boolean) => void>(
+  "openLinkNewTab",
+  () => {},
+);
 const { planVer } = useHostPlanCycle();
 
 const hasData = computed(() => {
@@ -114,7 +130,7 @@ const chartOption = computed(() => {
 
   const series: any[] = [
     {
-      name: t('text-average_load_factor'),
+      name: t("text-average_load_factor"),
       type: "bar" as const,
       barMaxWidth: 80,
       barCategoryGap: "40%",
@@ -157,7 +173,7 @@ const chartOption = computed(() => {
       confine: false,
       formatter: (params: any) => {
         const p = Array.isArray(params) ? params[0] : params;
-        return `${p.name}<br/>${t('text-average_load_factor')}: ${p.value.toFixed(1)}%`;
+        return `${p.name}<br/>${t("text-average_load_factor")}: ${p.value.toFixed(1)}%`;
       },
     },
     grid: {
@@ -234,6 +250,9 @@ const chartOption = computed(() => {
 }
 
 .panel-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 1rem;
   font-weight: 500;
   color: #565f6e;
@@ -246,7 +265,9 @@ const chartOption = computed(() => {
   padding: 0;
   margin-left: 4px;
   vertical-align: middle;
-  &:hover svg path { stroke: #4568e0; }
+  &:hover svg path {
+    stroke: #4568e0;
+  }
 }
 
 .unit-label {
