@@ -124,3 +124,27 @@ export function isRunningInHost(): boolean {
     typeof window !== "undefined" && window.__POWERED_BY_APS_HOST__ === true
   );
 }
+
+/**
+ * Host 네비게이션 기능
+ * Host(APS)에서 provide('hostNavigation', { openLinkNewTab }) 로 주입된 함수 사용
+ */
+interface HostNavigation {
+  openLinkNewTab: (route: { path: string; query?: Record<string, string> }, forceOpen?: boolean) => void;
+}
+
+export function useHostNavigation(): HostNavigation {
+  const navigation = inject<HostNavigation | null>("hostNavigation", null);
+
+  const fallbackOpenLinkNewTab = (route: { path: string; query?: Record<string, string> }) => {
+    // standalone 모드: 단순 window.open
+    const queryStr = route.query
+      ? "?" + Object.entries(route.query).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join("&")
+      : "";
+    window.open(route.path + queryStr, "_blank");
+  };
+
+  return {
+    openLinkNewTab: navigation?.openLinkNewTab ?? fallbackOpenLinkNewTab,
+  };
+}
