@@ -56,3 +56,20 @@ def execute_query(query: str, params: tuple = None) -> list[dict]:
             cur.execute(query, params)
             results = cur.fetchall()
             return [dict(row) for row in results]
+
+
+def execute_write(query: str, params: tuple = None) -> int:
+    """
+    DML(INSERT/UPDATE/DELETE) 쿼리를 실행하고 영향받은 행 수를 반환합니다.
+
+    Args:
+        query: SQL 쿼리 문자열
+        params: 쿼리 파라미터 튜플
+
+    Returns:
+        영향받은 행 수 (rowcount)
+    """
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(query, params)
+            return cur.rowcount
