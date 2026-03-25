@@ -9,6 +9,7 @@ from app.api.v1.endpoints import (
     health,
     item_master,
     plan_cycle,
+    plan_dashboard,
     rtf_report,
 )
 from fastapi import APIRouter
@@ -37,4 +38,9 @@ api_router.include_router(
     rtf_report.router,
     prefix="/api/custom/backend/{project_id}/rtf-report",
     tags=["rtf-report-api"],
+)
+api_router.include_router(
+    plan_dashboard.router,
+    prefix="/api/custom/backend/{project_id}/plan-dashboard",
+    tags=["plan-dashboard-api"],
 )

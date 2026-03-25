@@ -17,17 +17,21 @@ class Settings(BaseSettings):
     DEBUG: bool = False
 
     # 데이터베이스 설정
-    DATABASE_URL: str = "postgresql://mzcdev:cloud-vms1!@mzcrds-dev.cboeqa8ie939.ap-northeast-2.rds.amazonaws.com/aleatorik"
-    # DATABASE_URL: str = "postgresql://mzcadm:mzcadm@onprem-dev.mozart-cloud.com:5432/mzc_aps"
+    # DATABASE_URL: str = "postgresql://mzcdev:cloud-vms1!@mzcrds-dev.cboeqa8ie939.ap-northeast-2.rds.amazonaws.com/aleatorik"
+    DATABASE_URL: str = "postgresql://mzcadm:mzcadm@onprem-dev.mozart-cloud.com:5432/mzc_aps"
 
     # 쿼리 실행 타임아웃
     QUERY_TIMEOUT_SECONDS: int = 120
     # Query Executor 설정
     # QUERY_EXECUTOR_BASE_URL: str = "http://internal-mzcalb-aps-api-dev-1563398398.ap-northeast-2.elb.amazonaws.com:18000"
-    QUERY_EXECUTOR_BASE_URL: str = "http://mzc_common_queryexecutor:18000"
-    # QUERY_EXECUTOR_BASE_URL: str = "http://192.168.1.250:18000"
+    # QUERY_EXECUTOR_BASE_URL: str = "http://mzc_common_queryexecutor:18000"
+    QUERY_EXECUTOR_BASE_URL: str = "http://192.168.1.250:18000"
     QUERY_EXECUTOR_DB_ALIAS: str = "com"  # Query Database alias (고정값)
     QUERY_EXECUTOR_LIMIT: int = 50000  # 쿼리 결과 최대 행 수
+
+    # Trino 설정
+    TRINO_CATALOG: str = "iceberg"
+    TRINO_SCHEMA_APS: str = "mzc_aps"
 
     class Config:
         env_file = ".env"
