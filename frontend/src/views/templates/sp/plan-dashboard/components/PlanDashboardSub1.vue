@@ -2,7 +2,7 @@
   <div class="container">
     <div class="container-header-wrapper">
       <div class="header-top">
-        <span class="panel-title">{{ t('text-isu_current_month_otd_fcst_rate', { month: '' }).trim() }}</span>
+        <div class="panel-title">{{ t('text-isu_current_month_otd_fcst_rate', { month: '' }).trim() }}</div>
         <span class="unit-label">{{ qtyUom ? t('text-fgs_stock_report_qty_uom', { unit: qtyUom }) : '' }}</span>
       </div>
       <div class="kpi-section">
@@ -228,6 +228,9 @@ const chartOption = computed(() => {
 }
 
 .panel-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 1rem;
   font-weight: 500;
   color: #565f6e;

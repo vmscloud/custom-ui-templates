@@ -2,17 +2,32 @@
   <div class="container">
     <div class="container-header-wrapper">
       <div class="header-top">
-        <span class="panel-title">
-          {{ t('text-plan_dashboard_isu-replan_rtf_report') }}
-          <button class="link-btn" @click="openLinkNewTab({ path: '/sp/OnTimeRescheduledPlanResult', query: { planVer: planVer || '' } }, true)">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 1h8v8M13 1L6 8" stroke="#8998b5" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-        </span>
-        <span class="unit-label">{{ qtyUom ? t('text-fgs_stock_report_qty_uom', { unit: qtyUom }) : '' }}</span>
+        <div class="panel-title">
+          {{ t("text-plan_dashboard_isu-replan_rtf_report") }}
+
+          <Button
+            style="margin-top: 2px"
+            class="small"
+            type="icon"
+            @click="
+              openLinkNewTab({
+                path: `/sp/OnTimeRescheduledPlanResult`,
+                query: { planVer: planVer || '' },
+              }, true)
+            "
+          >
+            <icon-open :height="14" :width="14" />
+          </Button>
+        </div>
+        <span class="unit-label">{{
+          qtyUom ? t("text-fgs_stock_report_qty_uom", { unit: qtyUom }) : ""
+        }}</span>
       </div>
       <div class="kpi-section">
         <span class="kpi-value">{{ planRtfRatio }}%</span>
-        <span class="kpi-description">({{ t('text-isu_replan_otd_rate') }})</span>
+        <span class="kpi-description"
+          >({{ t("text-isu_replan_otd_rate") }})</span
+        >
       </div>
     </div>
     <div class="container-body-wrapper">
@@ -31,7 +46,7 @@
         </div>
         <v-chart class="chart" :option="chartOption" autoresize />
       </template>
-      <div v-else class="no-data">{{ t('msg-data_empty') }}</div>
+      <div v-else class="no-data">{{ t("msg-data_empty") }}</div>
     </div>
   </div>
 </template>
@@ -49,9 +64,15 @@ import {
   TooltipComponent,
   LegendComponent,
 } from "@vmscloud/moz-ui-chart/echarts/components";
-import { normalizeRatios, round2, type usePlanDashboard } from "../planDashboard";
+import {
+  normalizeRatios,
+  round2,
+  type usePlanDashboard,
+} from "../planDashboard";
 import IconTime from "../assets/IconTime.vue";
 import { useHostPlanCycle } from "@/composables/useHostStores";
+import { Button } from "@vmscloud/moz-ui-components";
+import IconOpen from "../assets/IconOpen.vue";
 
 const { t } = useTranslation();
 
@@ -67,7 +88,10 @@ use([
 type PlanDashboardContext = ReturnType<typeof usePlanDashboard>;
 const planDashboard = inject<PlanDashboardContext>("planDashboard")!;
 const { dashboardData } = planDashboard;
-const openLinkNewTab = inject<(route: any, force?: boolean) => void>('openLinkNewTab', () => {});
+const openLinkNewTab = inject<(route: any, force?: boolean) => void>(
+  "openLinkNewTab",
+  () => {},
+);
 const { planVer } = useHostPlanCycle();
 
 const COLORS = {
@@ -94,10 +118,10 @@ const planRtfRatio = computed(() => {
 });
 
 const legendItems = computed(() => [
-  { label: t('text-plan_dashboard-on_time'), color: COLORS.ontime },
-  { label: t('text-plan_dashboard-early'), color: COLORS.early },
-  { label: t('text-plan_dashboard-late'), color: COLORS.late },
-  { label: t('text-plan_dashboard-short'), color: COLORS.short },
+  { label: t("text-plan_dashboard-on_time"), color: COLORS.ontime },
+  { label: t("text-plan_dashboard-early"), color: COLORS.early },
+  { label: t("text-plan_dashboard-late"), color: COLORS.late },
+  { label: t("text-plan_dashboard-short"), color: COLORS.short },
 ]);
 
 const chartOption = computed(() => {
@@ -106,22 +130,49 @@ const chartOption = computed(() => {
 
   // 소수점 2자리 반올림 + 총합 100% 보정 (4 segments, no upcoming)
   const [fOntime, fEarly, fLate, fShort] = normalizeRatios([
-    f?.ontimeRatio ?? 0, f?.earlyRatio ?? 0, f?.lateRatio ?? 0, f?.shortRatio ?? 0,
+    f?.ontimeRatio ?? 0,
+    f?.earlyRatio ?? 0,
+    f?.lateRatio ?? 0,
+    f?.shortRatio ?? 0,
   ]);
   const [pOntime, pEarly, pLate, pShort] = normalizeRatios([
-    p?.ontimeRatio ?? 0, p?.earlyRatio ?? 0, p?.lateRatio ?? 0, p?.shortRatio ?? 0,
+    p?.ontimeRatio ?? 0,
+    p?.earlyRatio ?? 0,
+    p?.lateRatio ?? 0,
+    p?.shortRatio ?? 0,
   ]);
 
   const makeLabelFormatter = () => {
-    return (params: any) => (params.value > 5 ? round2(params.value) + "%" : "");
+    return (params: any) =>
+      params.value > 5 ? round2(params.value) + "%" : "";
   };
 
   // 각 bar별로 마지막 non-zero 세그먼트에 오른쪽 borderRadius 적용
   const segmentsDef = [
-    { name: t('text-plan_dashboard-on_time'), color: COLORS.ontime, frozen: fOntime, plan: pOntime },
-    { name: t('text-plan_dashboard-early'), color: COLORS.early, frozen: fEarly, plan: pEarly },
-    { name: t('text-plan_dashboard-late'), color: COLORS.late, frozen: fLate, plan: pLate },
-    { name: t('text-plan_dashboard-short'), color: COLORS.short, frozen: fShort, plan: pShort },
+    {
+      name: t("text-plan_dashboard-on_time"),
+      color: COLORS.ontime,
+      frozen: fOntime,
+      plan: pOntime,
+    },
+    {
+      name: t("text-plan_dashboard-early"),
+      color: COLORS.early,
+      frozen: fEarly,
+      plan: pEarly,
+    },
+    {
+      name: t("text-plan_dashboard-late"),
+      color: COLORS.late,
+      frozen: fLate,
+      plan: pLate,
+    },
+    {
+      name: t("text-plan_dashboard-short"),
+      color: COLORS.short,
+      frozen: fShort,
+      plan: pShort,
+    },
   ];
 
   let lastFrozenIdx = -1;
@@ -138,10 +189,28 @@ const chartOption = computed(() => {
     stack: "total",
     barWidth: 36,
     data: [
-      { value: seg.frozen, itemStyle: { color: seg.color, borderRadius: idx === lastFrozenIdx ? [0, 8, 8, 0] : [0, 0, 0, 0] } },
-      { value: seg.plan, itemStyle: { color: seg.color, borderRadius: idx === lastPlanIdx ? [0, 8, 8, 0] : [0, 0, 0, 0] } },
+      {
+        value: seg.frozen,
+        itemStyle: {
+          color: seg.color,
+          borderRadius: idx === lastFrozenIdx ? [0, 8, 8, 0] : [0, 0, 0, 0],
+        },
+      },
+      {
+        value: seg.plan,
+        itemStyle: {
+          color: seg.color,
+          borderRadius: idx === lastPlanIdx ? [0, 8, 8, 0] : [0, 0, 0, 0],
+        },
+      },
     ],
-    label: { show: true, position: "inside" as const, color: "#fff", fontSize: 12, formatter: makeLabelFormatter() },
+    label: {
+      show: true,
+      position: "inside" as const,
+      color: "#fff",
+      fontSize: 12,
+      formatter: makeLabelFormatter(),
+    },
   }));
 
   return {
@@ -163,7 +232,10 @@ const chartOption = computed(() => {
     },
     yAxis: {
       type: "category" as const,
-      data: [t('text-isu_current_month_otd_expected_rate'), t('text-isu_replan_otd_rate')],
+      data: [
+        t("text-isu_current_month_otd_expected_rate"),
+        t("text-isu_replan_otd_rate"),
+      ],
       axisLabel: { color: "#96A5BE", fontSize: 12 },
       axisTick: { show: false },
     },
@@ -208,6 +280,9 @@ const chartOption = computed(() => {
 }
 
 .panel-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 1rem;
   font-weight: 500;
   color: #565f6e;
@@ -220,7 +295,9 @@ const chartOption = computed(() => {
   padding: 0;
   margin-left: 4px;
   vertical-align: middle;
-  &:hover svg path { stroke: #4568e0; }
+  &:hover svg path {
+    stroke: #4568e0;
+  }
 }
 
 .unit-label {

@@ -73,19 +73,6 @@
               variant="boxed"
             />
             <MultiSelect
-              v-if="summaryType === 'cust'"
-              :placeholder="!customerSource.length ? '데이터 없음' : ''"
-              label="고객"
-              v-model="selectedCustomers"
-              :items-source="customerSource"
-              key-prop="cust_id"
-              display-prop="cust_label"
-              header-format="{count:n0} CUSTOMERS"
-              :use-filter="true"
-              :use-select-all="true"
-              @close="onCustomersClose"
-            />
-            <MultiSelect
               v-if="summaryType === 'itemGroup'"
               :placeholder="!itemGroupSource.length ? '데이터 없음' : ''"
               label="제품 그룹"
@@ -365,7 +352,6 @@ const hkDetailSource = [
 
 const summaryOptions = [
   { value: "itemGroup", label: "제품 그룹" },
-  { value: "cust", label: "고객" },
   { value: "prodType", label: "생산 유형" },
 ];
 
