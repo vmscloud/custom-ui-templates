@@ -6,10 +6,12 @@ API 라우터 통합
 
 from app.api.v1.endpoints import (
     demand_distribution,
+    freeze_plan,
     health,
     item_master,
     plan_cycle,
     plan_dashboard,
+    replan_rtf,
     rtf_report,
 )
 from fastapi import APIRouter
@@ -43,4 +45,14 @@ api_router.include_router(
     plan_dashboard.router,
     prefix="/api/custom/backend/{project_id}/plan-dashboard",
     tags=["plan-dashboard-api"],
+)
+api_router.include_router(
+    replan_rtf.router,
+    prefix="/api/custom/backend/{project_id}/replan-rtf",
+    tags=["replan-rtf-api"],
+)
+api_router.include_router(
+    freeze_plan.router,
+    prefix="/api/custom/backend/{project_id}/freeze",
+    tags=["freeze-plan-api"],
 )

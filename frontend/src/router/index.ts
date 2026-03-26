@@ -54,6 +54,11 @@ export const routes: RouteRecordRaw[] = [
     name: "PlanDashboard",
     component: () => import("@/views/templates/sp/plan-dashboard/PlanDashboard.vue"),
   },
+  {
+    path: "/ontime-rescheduled-plan-result",
+    name: "OnTimeRescheduledPlanResult",
+    component: () => import("@/views/templates/sp/ontime-rescheduled-plan-result/OnTimeRescheduledPlanResult.vue"),
+  },
 ];
 
 const router = createRouter({

@@ -5,13 +5,14 @@
 import i18next from 'i18next';
 import I18NextVue from 'i18next-vue';
 import type { App } from 'vue';
+import ko from '@/locales/ko';
 
 // 기본 초기화 (APS와 동일한 방식)
 i18next.init({
   fallbackLng: 'ko',
   lng: 'ko',
   resources: {
-    ko: { translation: {} },
+    ko: { translation: ko },
     en: { translation: {} },
   },
   interpolation: {
