@@ -315,13 +315,15 @@ ORDER BY rg.RES_GROUP_ID
 # Plan cycle dates (for OTD date calculations)
 PLAN_CONFIG_DATES_SQL = """
 SELECT
-    plan_start_datetime,
-    plan_period,
-    cycle_start_date,
-    cycle_end_date,
-    frozen_plan_ver
-FROM cfg_plan_config
-WHERE partition_key = '{partition_key}'
-  AND plan_ver = '{plan_ver}'
+    c.plan_start_datetime,
+    c.plan_period,
+    ci.start_datetime AS cycle_start_date,
+    ci.end_datetime AS cycle_end_date,
+    ci.frozen_plan_ver
+FROM cfg_plan_config c
+INNER JOIN cfg_plan_cycle_info ci
+    ON c.project_id = ci.project_id AND c.plan_cycle_id = ci.plan_cycle_id
+WHERE c.project_id = '{project_id}'
+  AND c.plan_ver = '{plan_ver}'
 LIMIT 1
 """

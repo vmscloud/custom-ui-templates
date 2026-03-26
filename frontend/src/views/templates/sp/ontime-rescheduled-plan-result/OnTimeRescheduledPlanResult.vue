@@ -31,14 +31,14 @@
       <template #action>
         <Button
           v-if="!frozenStatus?.frozen_plan_ver"
-          text="확정"
+          :text="t('text-frozen')"
           @click="onFreezePopup"
           :disabled="freezeButtonDisabled"
           :loading="freezeLoading"
         />
         <Button
           v-else
-          text="확정 취소"
+          :text="t('text-frozen_cancel')"
           class="confirm-cancel"
           @click="onConfirmCancelPopup"
           :disabled="frozenStatus?.frozen_plan_ver !== planVer"
@@ -50,14 +50,14 @@
         <div class="controller-container">
           <div class="controller-search-container">
             <Radio
-              label="지역"
+              :label="t('text-isu_region')"
               valueExpr="value"
               display-expr="label"
               :items-source="regionSource"
               v-model="region"
             />
             <Radio
-              label="상세"
+              :label="t('text-isu_detail')"
               valueExpr="value"
               display-expr="label"
               :items-source="hkDetailSource"
@@ -66,20 +66,19 @@
             />
             <Radio
               v-model="summaryType"
-              label="요약 유형"
+              :label="t('text-summary_type')"
               :items-source="summaryOptions"
               display-expr="label"
               value-expr="value"
-              variant="boxed"
             />
             <MultiSelect
               v-if="summaryType === 'itemGroup'"
-              :placeholder="!itemGroupSource.length ? '데이터 없음' : ''"
-              label="제품 그룹"
+              :placeholder="!itemGroupSource.length ? t('MOZ-DATA_EMPTY') : ''"
+              :label="t('text-item_group')"
               v-model="selectedItemGroups"
               :items-source="itemGroupSource"
-              key-prop="item_group"
-              display-prop="item_group"
+              key-prop="item_group_id"
+              display-prop="item_group_id"
               header-format="{count:n0} GROUPS"
               :use-filter="true"
               :use-select-all="true"
@@ -87,8 +86,8 @@
             />
             <MultiSelect
               v-if="summaryType === 'prodType'"
-              :placeholder="!prodTypeSource.length ? '데이터 없음' : ''"
-              label="생산 유형"
+              :placeholder="!prodTypeSource.length ? t('MOZ-DATA_EMPTY') : ''"
+              :label="t('text-prod_type')"
               v-model="selectedProdTypes"
               :items-source="prodTypeSource"
               key-prop="value"
@@ -99,14 +98,14 @@
               @close="onProdTypesClose"
             />
             <Select
-              label="집계 유형"
+              :label="t('text-aggregate_type')"
               v-model="aggType"
               :items-source="aggTypeOptions"
               key-prop="value"
               display-prop="label"
             />
             <Select
-              label="수량 단위"
+              :label="t('text-qty_uom')"
               v-model="uomType"
               :items-source="uomOptions"
               key-prop="value"
@@ -114,11 +113,10 @@
             />
             <Radio
               v-model="prodStatus"
-              label="생산 상태"
+              :label="t('text-prod_status')"
               :items-source="prodStatusOptions"
               display-expr="label"
               value-expr="value"
-              variant="boxed"
             />
           </div>
         </div>
@@ -178,7 +176,6 @@
         >
           <OnTimeRescheduledPlanResultDetail
             :data="prodDetailData"
-            :demand-summary-data="demandSummaryData"
             :demand-info-data="demandInfoData"
             :peg-info-data="pegInfoData"
             :bom-map-data="bomMapData"
@@ -186,7 +183,6 @@
             :demand-id="selectedDemandID"
             :is-zoomed="isZoomedDetail"
             :loading="prodDetailLoading"
-            @toggle-zoom="isZoomedDetail = !isZoomedDetail"
             @load-demand-info="(id: string) => loadDemandInfo(planVer, id)"
             @load-peg-info="(id: string) => loadPegInfo(planVer, id)"
             @load-bom-map="(id: string) => loadBomMap(planVer, id)"
@@ -233,7 +229,7 @@
           </div>
         </div>
         <TextArea
-          label="설명"
+          :label="t('text-description')"
           v-model="freezePlanDesc"
           type="textarea"
           :height="100"
@@ -244,7 +240,7 @@
 
     <!-- Cancel Freeze Popup -->
     <Popup
-      title="경고"
+      :title="t('text-warning')"
       :width="445"
       preset="confirm"
       :onConfirm="onCancelFrozen"
@@ -260,6 +256,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from "vue";
+import { useTranslation } from "i18next-vue";
 import {
   Controller,
   Select,
@@ -282,6 +279,8 @@ import OnTimeRescheduledPlanResultSub2 from "./OnTimeRescheduledPlanResultSub2.v
 import OnTimeRescheduledPlanResultDetail from "./OnTimeRescheduledPlanResultDetail.vue";
 import type { ReplanRtfSummary } from "./onTimeRescheduledPlanResult";
 
+const { t } = useTranslation();
+
 // === Host Data ===
 const { planVer } = useHostPlanCycle();
 const { userInfo } = useHostUser();
@@ -296,20 +295,17 @@ const {
   prodStatus,
   region,
   hkDetail,
-  selectedCustomers,
   selectedItemGroups,
   selectedProdTypes,
   committedSummaryType,
   committedAggType,
   committedUomType,
-  customerSource,
   itemGroupSource,
   prodTypeSource,
   summaryData,
   detailData,
   prodDetailData,
   shortData,
-  demandSummaryData,
   demandInfoData,
   pegInfoData,
   bomMapData,
@@ -338,22 +334,22 @@ const {
 
 // === Static Options ===
 
-const regionSource = [
-  { value: "default", label: "전체" },
-  { value: "대구", label: "대구" },
+const regionSource = computed(() => [
+  { value: "default", label: t('text-isu_entire') },
+  { value: "대구", label: t('text-isu_region_daegu') },
   { value: "HK", label: "HK" },
-];
+]);
 
-const hkDetailSource = [
-  { value: "HK", label: "전체" },
-  { value: "HK 완제", label: "HK 완제" },
-  { value: "HK 반제", label: "HK 반제" },
-];
+const hkDetailSource = computed(() => [
+  { value: "HK", label: t('text-isu_entire') },
+  { value: "HK_FINAL", label: t('text-isu_hk_final_prod') },
+  { value: "HK_SEMI", label: t('text-isu_hk_semi_prod') },
+]);
 
-const summaryOptions = [
-  { value: "itemGroup", label: "제품 그룹" },
-  { value: "prodType", label: "생산 유형" },
-];
+const summaryOptions = computed(() => [
+  { value: "itemGroup", label: t('text-item_group') },
+  { value: "prodType", label: t('text-prod_type') },
+]);
 
 const aggTypeOptions = [
   { value: "WEEK", label: "WEEK" },
@@ -365,13 +361,13 @@ const uomOptions = [
   { value: "CONVERSION", label: "CONVERSION" },
 ];
 
-const prodStatusOptions = [
-  { value: "default", label: "전체" },
-  { value: "on_time", label: "On-Time" },
-  { value: "late", label: "Late" },
-  { value: "short", label: "Short" },
-  { value: "early", label: "Early" },
-];
+const prodStatusOptions = computed(() => [
+  { value: "short", label: t('text-short-prod') },
+  { value: "late", label: t('text-late_production') },
+  { value: "on_time", label: t('text-on_time_production') },
+  { value: "early", label: t('text-isu_early_prod') },
+  { value: "default", label: t('text-total') },
+]);
 
 // === Freeze Local State ===
 const freezePopup = ref(false);
@@ -408,11 +404,6 @@ function handleDemandSelect(demandID: string) {
 }
 
 // MultiSelect close handlers
-function onCustomersClose() {
-  if (selectedCustomers.value.length === 0) {
-    selectedCustomers.value = customerSource.value.map((c: any) => c.cust_id);
-  }
-}
 function onItemGroupsClose() {
   if (selectedItemGroups.value.length === 0) {
     selectedItemGroups.value = itemGroupSource.value.map((g: any) => g.item_group);
@@ -539,7 +530,12 @@ watch(planVer, async (newVer) => {
 
 .controller-search-container {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
+
+  :deep(.radio-label-text) {
+    white-space: nowrap;
+  }
 }
 
 // Frozen plan pill

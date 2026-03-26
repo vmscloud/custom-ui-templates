@@ -49,6 +49,7 @@ export const viewRegistry = {
   DemandDistribution: withHostInit(() => import("./views/templates/dm/DemandDistribution.vue")),
   RtfReport: withHostInit(() => import("./views/templates/sp/rtf-report/RtfReport.vue")),
   PlanDashboard: withHostInit(() => import("./views/templates/sp/plan-dashboard/PlanDashboard.vue")),
+  OnTimeRescheduledPlanResult: withHostInit(() => import("./views/templates/sp/ontime-rescheduled-plan-result/OnTimeRescheduledPlanResult.vue")),
 };
 
 export type ViewName = keyof typeof viewRegistry;
@@ -85,6 +86,7 @@ export const viewMeta: Record<ViewName, ViewMeta> = {
   DemandDistribution: { name: "DemandDistribution", defaultMenuName: "수요 배분" },
   RtfReport: { name: "RtfReport", defaultMenuName: "RTF 리포트" },
   PlanDashboard: { name: "PlanDashboard", defaultMenuName: "계획 대시보드" },
+  OnTimeRescheduledPlanResult: { name: "OnTimeRescheduledPlanResult", defaultMenuName: "재수립계획 RTF 현황" },
 };
 
 /** 전체 뷰 메타데이터 목록 반환 */
