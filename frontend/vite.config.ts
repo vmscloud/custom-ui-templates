@@ -1,10 +1,16 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { federation } from "@module-federation/vite";
 import path from "path";
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
+
+  const DEV_PORT = Number(env.VITE_DEV_PORT || 5300);
+  const API_TARGET = env.VITE_API_TARGET || "http://localhost:8000";
+
+  return {
   base: "/ext/",
   plugins: [
     vue(),
@@ -56,7 +62,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5300,
+    port: DEV_PORT,
     strictPort: true,
     cors: true,
     headers: {
@@ -64,18 +70,19 @@ export default defineConfig({
     },
     proxy: {
       "/api": {
-        target: "http://localhost:8000",
+        target: API_TARGET,
         changeOrigin: true,
         secure: false,
       },
     },
   },
   preview: {
-    port: 5300,
+    port: DEV_PORT,
     strictPort: true,
     cors: true,
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
   },
+};
 });
