@@ -6,12 +6,12 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 COPY package.json pnpm-lock.yaml ./
 
-# 🔥 GitHub Packages 인증 추가
+# 🔥 GitHub Packages 인증
 RUN --mount=type=secret,id=npm_token \
     echo "@vmscloud:registry=https://npm.pkg.github.com/" > .npmrc && \
     echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)" >> .npmrc && \
-    pnpm install --frozen-lockfile && \
-    rm -f .npmrc
+    pnpm install --no-frozen-lockfile && \
+    sed -i '/_authToken/d' .npmrc
 
 COPY . .
 RUN node scripts/license.js
