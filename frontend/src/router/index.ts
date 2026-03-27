@@ -59,6 +59,11 @@ export const routes: RouteRecordRaw[] = [
     name: "OnTimeRescheduledPlanResult",
     component: () => import("@/views/templates/sp/ontime-rescheduled-plan-result/OnTimeRescheduledPlanResult.vue"),
   },
+  {
+    path: "/load-factor-by-oper-group",
+    name: "LoadFactorByOperGroup",
+    component: () => import("@/views/templates/sp/load-factor-by-oper-group/LoadFactorByOperGroup.vue"),
+  },
 ];
 
 const router = createRouter({

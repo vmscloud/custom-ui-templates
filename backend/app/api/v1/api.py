@@ -9,6 +9,7 @@ from app.api.v1.endpoints import (
     freeze_plan,
     health,
     item_master,
+    load_factor,
     plan_cycle,
     plan_dashboard,
     replan_rtf,
@@ -55,4 +56,9 @@ api_router.include_router(
     freeze_plan.router,
     prefix="/api/custom/backend/{project_id}/freeze",
     tags=["freeze-plan-api"],
+)
+api_router.include_router(
+    load_factor.router,
+    prefix="/api/custom/backend/{project_id}/load-factor",
+    tags=["load-factor-api"],
 )
