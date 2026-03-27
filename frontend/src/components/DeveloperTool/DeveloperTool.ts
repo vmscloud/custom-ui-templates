@@ -84,8 +84,8 @@ export const useDeveloperTool = () => {
     settingsValue.value.projectInfo.currentProject.projectID = newVal;
   }, {immediate: true})
 
-  watch(() => settingsValue.value.planCycle.planVer, (newVal) => {
-    const currentPlan = planCycleSource.value.find((p) => p.plan_ver === newVal);
+  watch([() => settingsValue.value.planCycle.planVer, planCycleSource], ([newVal]) => {
+    const currentPlan = planCycleSource.value.find((p: any) => p.plan_ver === newVal);
     if (!currentPlan) return
     settingsValue.value.planCycle.fromDate = currentPlan.plan_start_date
     settingsValue.value.planCycle.toDate = currentPlan.plan_end_date
