@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs';
-import { sync } from 'rimraf';
 import options from './config/license.config.js';
 
 // function _checkLicense(e,t,s){let i=exports.culture.Licensing||_licStr,n=null;s?_checkExpiration(e,s)?_checkVersion(e,s)?_checkDomain(e,s)?_checkProductCode(e,s)?_checkEval(e,s)&&(n=i.evl):n=i.prd:n=i.dmn:n=i.ver:n=i.exp:n=t?i.lic:i.mss;n&&_addWme(e,n+="<br/><br/>"+i.ctc,s)}
@@ -11,7 +10,7 @@ function main() {
   options.cacheDirs.forEach((cacheDir) => {
     const cachePath = path.join(cwd, cacheDir);
     if (!fs.existsSync(cachePath)) return;
-    sync(path.join(cachePath));
+    fs.rmSync(cachePath, { recursive: true, force: true });
     console.info(`remove cache folder => ${cachePath}`);
   });
   // change code
