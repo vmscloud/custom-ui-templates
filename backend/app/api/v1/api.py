@@ -12,6 +12,7 @@ from app.api.v1.endpoints import (
     load_factor,
     plan_cycle,
     plan_dashboard,
+    re_execute_plan,
     replan_rtf,
     rtf_report,
 )
@@ -61,4 +62,9 @@ api_router.include_router(
     load_factor.router,
     prefix="/api/custom/backend/{project_id}/load-factor",
     tags=["load-factor-api"],
+)
+api_router.include_router(
+    re_execute_plan.router,
+    prefix="/api/custom/backend/{project_id}/re-execute-plan",
+    tags=["re-execute-plan-api"],
 )

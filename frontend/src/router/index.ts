@@ -64,6 +64,11 @@ export const routes: RouteRecordRaw[] = [
     name: "LoadFactorByOperGroup",
     component: () => import("@/views/templates/sp/load-factor-by-oper-group/LoadFactorByOperGroup.vue"),
   },
+  {
+    path: "/re-execute-plan",
+    name: "ReExecutePlan",
+    component: () => import("@/views/templates/pe/re-execute-plan/ReExecutePlan.vue"),
+  },
 ];
 
 const router = createRouter({

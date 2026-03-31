@@ -1,0 +1,1289 @@
+/**
+ * Re-Execute Plan API & Composable
+ *
+ * 계획 재실행 페이지의 데이터 계층.
+ * APS ReExecutePlan.ts를 custom-ui-templates 패턴으로 포팅.
+ */
+import { api, getProjectId } from "@/api/client";
+import { CollectionView } from "@vmscloud/moz-wijmo-grid/wijmo";
+import { useTranslation } from "i18next-vue";
+import {
+  computed,
+  onMounted,
+  type Ref,
+  ref,
+  shallowRef,
+  toRaw,
+  watch,
+} from "vue";
+
+// ===== API Base URL =====
+
+const BASE_URL = () => `/api/custom/backend/${getProjectId()}/re-execute-plan`;
+
+// ===== Types =====
+
+export interface InboundItemType {
+  projectID: string;
+  inboundScenarioID: string | null;
+  inboundScenarioName: string;
+  newInboundScenarioID: string | null;
+  newInboundScenarioName: string | null;
+  description: string | null;
+  createDatetime: string | null;
+  createUserID: string | null;
+  updateDatetime: string | null;
+  updateUserID: string | null;
+}
+
+export interface ExecutionFlowMasterType {
+  execution_flow_id: string;
+  inbound_scenario_id?: string;
+  engine_scenario_id?: string;
+  [key: string]: any;
+}
+
+export interface ScenarioMasterType {
+  projectID: string;
+  scenarioID: string;
+  scenarioName: string;
+  newScenarioID: any;
+  scenarioType: string;
+  description: any;
+  createDatetime: any;
+  createUser: any;
+  updateDatetime: any;
+  updateUser: any;
+}
+
+// ===== API Functions =====
+
+export const fetchMain = (params: any) =>
+  api.post<{ data: any[]; actStartDate: string; actEndDate: string }>(
+    `${BASE_URL()}/main`,
+    params,
+  );
+
+export const fetchRegions = (planVer: string) =>
+  api.get<{ data: any[] }>(`${BASE_URL()}/regions?planVer=${planVer}`);
+
+export const fetchOperGroups = (planVer: string) =>
+  api.get<{ data: any[] }>(`${BASE_URL()}/oper-groups?planVer=${planVer}`);
+
+export const fetchOperSource = (planVer: string) =>
+  api.get<{ data: any[] }>(`${BASE_URL()}/opers?planVer=${planVer}`);
+
+export const fetchBuffers = (planVer: string) =>
+  api.get<{ data: any[] }>(`${BASE_URL()}/buffers?planVer=${planVer}`);
+
+// ===== C# 백엔드 직접 호출 (Host 환경) =====
+// Host(APS)에서 실행 시 C# API가 같은 origin의 /api/aps/backend/{projectId}/... 에 위치
+const APS_URL = () => `/api/aps/backend/${getProjectId()}`;
+
+export const fetchDemandSource = (params: any) =>
+  api.post<any>(`${APS_URL()}/OdlReport`, params);
+
+export const fetchPlanCycleInfo = (params?: any) =>
+  api.post<any>(`${APS_URL()}/PlmSysOperPlan/PlanCycleInfo`, params ?? {});
+
+export const fetchExecutionFlows = (params?: any) =>
+  api.post<any>(`${APS_URL()}/PlmExecutionFlowMaster`, params ?? {});
+
+export const fetchScenarioList = (params?: any) =>
+  api.post<any>(`${APS_URL()}/PlmScenarioMaster`, params ?? {});
+
+export const fetchScenarioConfig = (scenarioID: string) =>
+  api.post<any>(`${APS_URL()}/PlmScenarioMaster/Config/OptionConfigGlobal`, {
+    scenarioID,
+  });
+
+export const fetchScenarioModules = (params: { scenarioID: string }) =>
+  api.post<any>(`${APS_URL()}/PlmScenarioMaster/Config/AllModules`, params);
+
+export const fetchDemandVer = (params: any) =>
+  api.post<any>(`${APS_URL()}/ComDemandVer`, params);
+
+export const fetchNewDemandVer = (params: { demand_ver: string }) =>
+  api.get<any>(`${APS_URL()}/MdmDemandVer/GetLastRev`, { params });
+
+export const fetchDemandVerValidCheck = (params: { demand_ver: string }) =>
+  api.get<any>(`${APS_URL()}/MdmDemandVer`, { params });
+
+export const fetchInbound = (params?: any) =>
+  api.post<any>(`${APS_URL()}/PlmPlanExecute/Inbound`, params ?? {});
+
+export const fetchPlanVerInfo = (params?: any) =>
+  api.get<any>(`${APS_URL()}/PlmPlanExecute`, { params: params ?? {} });
+
+export const postReExecutePlan = (params: any) =>
+  api.post<any>(`${APS_URL()}/RarReExecutePlan/ReExecutePlan`, params);
+
+export const fetchCustInRtf = (planVer: string) =>
+  api.get<{ data: any[] }>(`${BASE_URL()}/customers?planVer=${planVer}`);
+
+export const fetchItemGroupInRtf = (planVer: string) =>
+  api.get<{ data: any[] }>(`${BASE_URL()}/item-groups?planVer=${planVer}`);
+
+export const fetchDemandTypes = (planVer: string) =>
+  api.get<{ data: any[] }>(`${BASE_URL()}/demand-types?planVer=${planVer}`);
+
+// ===== Composable =====
+
+export const useReExecutePlanQuery = (
+  planVer: Ref<string>,
+  planCycleID: Ref<string>,
+  _fromDate: any,
+  _toDate: any,
+) => {
+  const { t } = useTranslation();
+
+  const operGroupSource = ref<any>([]);
+  const operGroups = ref<any>([]);
+
+  const operSource = ref<any>([]);
+  const opers = ref<any>([]);
+
+  const bufferSource = ref<any>([]);
+  const buffers = ref<any>([]);
+
+  const planVerSource = ref<any>([]);
+  const targetPlanVerData = ref<any>();
+
+  const isAdvancedOption = ref<boolean>(false);
+  const executionFlowSource = ref<ExecutionFlowMasterType[]>([]);
+
+  /**
+   * 조회조건
+   */
+  const summaryType = ref<string>("itemGroup");
+  const summarySource = ref<any[]>([
+    { label: t("text-upper-item_group"), value: "itemGroup" },
+    { label: t("text-upper-customer"), value: "cust" },
+    { label: t("text-upper-region"), value: "region" },
+    { label: t("text-upper-demand_type"), value: "demandType" },
+  ]);
+
+  // Customer filter
+  const custParam = ref<any[]>([]);
+  const custSource = ref<any[]>([]);
+  const custIsSuccess = ref(false);
+
+  // ItemGroup filter
+  const itemGroup = ref<any[]>([]);
+  const itemGroupSource = ref<any[]>([]);
+  const itemGroupIsSuccess = ref(false);
+
+  // Region filter
+  const region = ref<any[]>([]);
+  const regionSource = ref<any[]>([]);
+  const regionIsSuccess = ref(false);
+
+  // DemandType filter
+  const demandType = ref<any[]>([]);
+  const demandTypeSource = ref<any[]>([]);
+  const demandTypeIsSuccess = ref(false);
+
+  // UOM
+  const uomType = ref<string>("DEFAULT");
+  const qtyUOMSource = ref<any[]>([
+    { value: "DEFAULT", displayValue: "DEFAULT" },
+    { value: "CONVERSION", displayValue: "CONVERSION" },
+  ]);
+
+  const widgetSummarySource = ref<any[]>([
+    { label: t("text-upper-item_group"), value: "itemGroup" },
+    { label: t("text-upper-customer"), value: "cust" },
+    { label: t("text-upper-region"), value: "region" },
+    { label: t("text-upper-demand_type"), value: "demandType" },
+  ]);
+
+  const viewPointSource = ref<any[]>([
+    { label: t("text-upper-customer"), value: "cust" },
+    { label: t("text-upper-item_group"), value: "itemGroup" },
+    { label: t("text-upper-region"), value: "region" },
+    { label: t("text-upper-demand_type"), value: "demandType" },
+  ]);
+
+  const breakdownValue = ref<string>("OPER");
+  const breakdownSearchSource = ref<any[]>([
+    { label: t("text-oper"), value: "OPER" },
+    { label: t("text-oper-group"), value: "OPERGROUP" },
+    { label: t("text-buffer"), value: "BUFFER" },
+  ]);
+
+  const breakdownSource = ref<any[]>([
+    { label: t("text-oper"), value: "OPER" },
+    { label: t("text-oper-group"), value: "OPERGROUP" },
+    { label: t("text-buffer"), value: "BUFFER" },
+  ]);
+
+  /**
+   * 계획 재실행 메뉴
+   */
+  const demandSource = ref<any[]>();
+  const selectedDemandList = shallowRef<any[]>([]);
+
+  const pivotDataSource = shallowRef<any[]>([]);
+  const fullDataSource = shallowRef<any[]>([]);
+
+  // propColumns (simplified)
+  const propColumns = ref<any[]>([]);
+
+  // 공유 CollectionView
+  const sharedCollectionView = shallowRef<CollectionView | null>(null);
+  const isCollectionViewInitialized = ref<boolean>(false);
+
+  // 그리드 참조 공유
+  const mainGrid = ref<any>(null);
+  const popupGrid = ref<any>(null);
+
+  // ExtendGrid 인스턴스 참조 공유
+  const mainExtendGrid = ref<any>(null);
+  const popupExtendGrid = ref<any>(null);
+
+  // computed 강제 업데이트용 트리거
+  const updateTrigger = ref(0);
+
+  // 원본 column filter 함수 보관
+  const originalColumnFilter = ref<((item: any) => boolean) | null>(null);
+
+  // CollectionView 초기화
+  const initializeSharedCollectionView = () => {
+    if (!demandSource.value?.length) {
+      return;
+    }
+
+    demandSource.value.forEach((item, index) => {
+      const ridKey = "_RID";
+      if (item && !item[ridKey]) {
+        item[ridKey] = `original_${item.demand_id || index}`;
+      }
+    });
+
+    if (sharedCollectionView.value) {
+      sharedCollectionView.value.sourceCollection = demandSource.value;
+      sharedCollectionView.value.refresh();
+    } else {
+      sharedCollectionView.value = new CollectionView(demandSource.value);
+    }
+
+    isCollectionViewInitialized.value = true;
+  };
+
+  const sharedDataSource = computed(
+    () => sharedCollectionView.value || demandSource.value,
+  );
+
+  // 팝업 전용 CollectionView
+  const popupCollectionView = shallowRef<CollectionView | null>(null);
+
+  const initializePopupCollectionView = () => {
+    if (demandSource.value && demandSource.value.length > 0) {
+      popupCollectionView.value = new CollectionView(demandSource.value);
+      return;
+    }
+    console.warn("demandSource가 없어서 popupCollectionView 초기화 불가");
+  };
+
+  const showEditedData = ref<boolean>(false);
+
+  const applyPopupFilter = () => {
+    if (!popupCollectionView.value) {
+      console.warn("popupCollectionView가 없어서 필터 적용 불가");
+      return;
+    }
+
+    if (!showEditedData.value) {
+      popupCollectionView.value.filter = null;
+      popupCollectionView.value.refresh();
+    } else {
+      if (
+        mainExtendGrid.value &&
+        mainExtendGrid.value.updated &&
+        mainExtendGrid.value.updated.size > 0
+      ) {
+        const updatedRIDs = new Set(mainExtendGrid.value.updated.keys());
+        const ridKey = "_RID";
+        popupCollectionView.value.filter = (item: any) =>
+          item[ridKey] && updatedRIDs.has(item[ridKey]);
+        popupCollectionView.value.refresh();
+      } else {
+        popupCollectionView.value.filter = () => false;
+        popupCollectionView.value.refresh();
+      }
+    }
+  };
+
+  const popupDataSource = computed(() => demandSource.value);
+
+  const applyPopupGridFilter = (gridRef: any) => {
+    if (!gridRef || !gridRef.collectionView) return;
+
+    const cv = gridRef.collectionView;
+
+    if (!showEditedData.value) {
+      const filterStr = cv.filter?.toString() || "";
+      const isOurFilter =
+        filterStr.includes("isUpdated") || filterStr.includes("_RID");
+
+      if (!isOurFilter && cv.filter && typeof cv.filter === "function") {
+        originalColumnFilter.value = cv.filter;
+      } else if (!isOurFilter && !cv.filter) {
+        originalColumnFilter.value = null;
+      } else if (isOurFilter) {
+        if (originalColumnFilter.value) {
+          cv.filter = originalColumnFilter.value;
+        } else {
+          cv.filter = null;
+        }
+      }
+    } else {
+      if (
+        mainExtendGrid.value &&
+        mainExtendGrid.value.updated &&
+        mainExtendGrid.value.updated.size > 0
+      ) {
+        const updatedRIDs = new Set(mainExtendGrid.value.updated.keys());
+        const ridKey = "_RID";
+
+        cv.filter = (item: any) => {
+          const isUpdated = item[ridKey] && updatedRIDs.has(item[ridKey]);
+          if (originalColumnFilter.value) {
+            return isUpdated && originalColumnFilter.value(item);
+          }
+          return isUpdated;
+        };
+      } else {
+        cv.filter = () => false;
+      }
+    }
+
+    cv.refresh();
+  };
+
+  /**
+   * API 호출
+   */
+
+  const mainQueryIsPending = ref(false);
+
+  const onLoad = async () => {
+    await onMainLoad();
+    await loadPlanVerInfo();
+  };
+
+  const isPageFetching = computed(() => mainQueryIsPending.value);
+
+  /**
+   * 계획 재실행 POPUP
+   */
+
+  const isOpen = ref<boolean>(false);
+
+  const toggle = () => {
+    isOpen.value = !isOpen.value;
+  };
+
+  const open = () => {
+    isOpen.value = true;
+  };
+
+  const close = () => {
+    isOpen.value = false;
+  };
+
+  const verInfoIsOpen = ref<boolean>(false);
+
+  const openVerInfo = () => {
+    verInfoIsOpen.value = true;
+  };
+
+  const closeVerInfo = () => {
+    verInfoIsOpen.value = false;
+  };
+
+  const currentStep = ref<1 | 2>(1);
+
+  // 수정된 데이터만 필터링하는 computed
+  const editedDemandSource = computed(() => {
+    updateTrigger.value;
+
+    if (!showEditedData.value) {
+      return sharedDataSource.value;
+    }
+
+    if (
+      mainExtendGrid.value &&
+      mainExtendGrid.value.updated &&
+      sharedDataSource.value
+    ) {
+      const updatedRIDs = new Set(mainExtendGrid.value.updated.keys());
+      const sourceArray =
+        (sharedDataSource.value as any)?.items || sharedDataSource.value;
+      const ridKey = "_RID";
+      const filteredData = sourceArray?.filter(
+        (item: any) => item[ridKey] && updatedRIDs.has(item[ridKey]),
+      );
+      return filteredData;
+    }
+
+    return [];
+  });
+
+  const alwaysEditedData = computed(() => {
+    updateTrigger.value;
+
+    if (
+      mainExtendGrid.value &&
+      mainExtendGrid.value.updated &&
+      demandSource.value
+    ) {
+      const updatedRIDs = new Set(mainExtendGrid.value.updated.keys());
+      const sourceArray = demandSource.value;
+      const ridKey = "_RID";
+      const filteredData = sourceArray?.filter((item: any) => {
+        const hasRID = !!item?.[ridKey];
+        const isUpdated = updatedRIDs.has(item?.[ridKey]);
+        return hasRID && isUpdated;
+      });
+      return filteredData;
+    }
+
+    return [];
+  });
+
+  /**
+   * util 함수
+   */
+
+  const getDaysUntilEndOfMonth = (today: Date) => {
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const endOfMonth = new Date(year, month + 1, 0);
+    const daysRemaining =
+      Math.ceil(
+        (endOfMonth.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+      ) + 1;
+    return String(daysRemaining);
+  };
+
+  const initNoExecution = (): InboundItemType => ({
+    projectID: "",
+    inboundScenarioID: null,
+    inboundScenarioName: t("text-use_aps_data"),
+    newInboundScenarioID: null,
+    newInboundScenarioName: null,
+    description: null,
+    createDatetime: null,
+    createUserID: null,
+    updateDatetime: null,
+    updateUserID: null,
+  });
+
+  const inboundSource = ref<InboundItemType[]>([initNoExecution()]);
+
+  const now = new Date();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const nowTimeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+  const reExecuteState = ref<{
+    executionFlowID: string | null;
+    planCycleID: string;
+    startDate: Date;
+    planStartTime: string;
+    period: string | number;
+    demandVer: string;
+    demandDesc: string;
+    viewDemandDetail: boolean;
+    scenarioID: string | null;
+    viewScenarioDetail: boolean;
+    planDesc: string;
+    inboundScenarioID: string | null;
+    outboundScenarioID: string | null;
+    useInboundYN: boolean;
+    useReservation: boolean;
+    editSummary: {
+      dueDateCnt: number;
+      demandPriorityCnt: number;
+      delayCnt: number;
+      shorteningCnt: number;
+      maxDueDateCnt: number;
+    };
+  }>({
+    executionFlowID: null,
+    planCycleID: "",
+    startDate: now,
+    planStartTime: nowTimeStr,
+    period: getDaysUntilEndOfMonth(now),
+    demandVer: "",
+    demandDesc: "",
+    viewDemandDetail: false,
+    scenarioID: null,
+    viewScenarioDetail: false,
+    planDesc: "",
+    inboundScenarioID: null,
+    outboundScenarioID: null,
+    useInboundYN: true,
+    useReservation: false,
+    editSummary: {
+      dueDateCnt: 0,
+      demandPriorityCnt: 0,
+      delayCnt: 0,
+      shorteningCnt: 0,
+      maxDueDateCnt: 0,
+    },
+  });
+
+  watch(
+    () => reExecuteState.value.startDate,
+    (newVal) => {
+      reExecuteState.value.period = getDaysUntilEndOfMonth(
+        newVal instanceof Date ? newVal : new Date(newVal as any),
+      );
+    },
+  );
+
+  /**
+   * 계획 재실행을 위한 최신 PlanCycle 정보 조회
+   */
+
+  const currentPlanCycleSource = ref<any>({});
+
+  const loadPlanCycleInfo = async () => {
+    try {
+      const result = await fetchPlanCycleInfo();
+      if (result && result.data) {
+        currentPlanCycleSource.value = result.data;
+        reExecuteState.value.planCycleID = result.data?.plan_cycle_id ?? "";
+      } else {
+        currentPlanCycleSource.value = {};
+        reExecuteState.value.planCycleID = "";
+      }
+    } catch {
+      console.error("PlanCycleInfo 조회 오류");
+      currentPlanCycleSource.value = {};
+      reExecuteState.value.planCycleID = "";
+    }
+  };
+
+  const loadExecutionFlows = async () => {
+    try {
+      const result = await fetchExecutionFlows();
+      if (result && result.data?.length) {
+        executionFlowSource.value = toRaw(result.data).filter(
+          (item: ExecutionFlowMasterType) =>
+            item.inbound_scenario_id || item.engine_scenario_id,
+        );
+        reExecuteState.value.executionFlowID =
+          result.data[0].execution_flow_id || null;
+      } else {
+        executionFlowSource.value = [];
+      }
+    } catch {
+      console.error("ExecutionFlow 조회 오류");
+      executionFlowSource.value = [];
+    }
+  };
+
+  const scenarioList = ref<ScenarioMasterType[]>([]);
+
+  const loadScenarioList = async () => {
+    try {
+      const result = await fetchScenarioList();
+      if (result && result.data) {
+        scenarioList.value = result.data;
+        scenarioList.value.unshift({
+          projectID: "",
+          scenarioID: null as unknown as string,
+          scenarioName: t("text-no_execution"),
+          newScenarioID: null as unknown as any,
+          scenarioType: "Default",
+          description: null as unknown as any,
+          createDatetime: null as unknown as any,
+          createUser: null as unknown as any,
+          updateDatetime: null as unknown as any,
+          updateUser: null as unknown as any,
+        });
+        reExecuteState.value.scenarioID = result.data[0]?.scenarioID || null;
+      } else {
+        scenarioList.value = [];
+        reExecuteState.value.scenarioID = null;
+      }
+    } catch {
+      console.error("ScenarioList 조회 오류");
+    }
+  };
+
+  const scenarioConfigSource = shallowRef<any[]>([]);
+
+  const loadScenarioConfig = async () => {
+    try {
+      const result = await fetchScenarioConfig(
+        reExecuteState.value.scenarioID ?? "",
+      );
+      if (result && result.data) {
+        scenarioConfigSource.value = result.data;
+      } else {
+        scenarioConfigSource.value = [];
+      }
+    } catch {
+      console.error("ScenarioConfig 조회 오류");
+    }
+  };
+
+  watch(
+    () => reExecuteState.value.scenarioID,
+    async (newVal) => {
+      if (newVal) {
+        await loadScenarioConfig();
+      } else {
+        scenarioConfigSource.value = [];
+      }
+    },
+  );
+
+  /**
+   * 수요 정보 버전 조회
+   */
+
+  const demandVerSource = shallowRef<any[]>([]);
+  const demandSetText = computed(() => {
+    if (demandVerSource.value.length) {
+      const initDemand =
+        demandVerSource.value[demandVerSource.value.length - 1];
+      return `${initDemand.demand_ver}-R${demandVerSource.value.length.toString().padStart(3, "0")}`;
+    }
+    return "";
+  });
+
+  const getDemandSourceIsPending = ref(false);
+
+  const loadDemandSource = async (param: any) => {
+    if (!param) return;
+    getDemandSourceIsPending.value = true;
+    try {
+      const result = await fetchDemandSource(param);
+      if (result && result.data) {
+        const headers = result.data.headers ?? [];
+        const schemaName = param?.schema_name || "Demand";
+        const dataArray = result.data[schemaName] || [];
+
+        if (headers.length) {
+          propColumns.value = headers.map((h: any) => ({
+            binding: h.binding || h.key,
+            header: h.header || h.label,
+            dataType: h.dataType,
+            width: h.width || "*",
+            align: h.align || "left",
+          }));
+        }
+
+        if (dataArray.length) {
+          demandSource.value = dataArray;
+        } else {
+          demandSource.value = [];
+          propColumns.value = [];
+        }
+      } else {
+        demandSource.value = [];
+        propColumns.value = [];
+      }
+    } catch {
+      console.error("DemandSource 조회 오류");
+      demandSource.value = [];
+      propColumns.value = [];
+    } finally {
+      getDemandSourceIsPending.value = false;
+    }
+  };
+
+  // Oper Group / Oper / Buffer loading flags
+  const getOperGroupSourceIsSuccess = ref(false);
+  const getOperSourceIsSuccess = ref(false);
+  const getBufferSourceIsSuccess = ref(false);
+
+  const loadOperGroupSource = async (param: any) => {
+    if (!param) return;
+    try {
+      const pv =
+        typeof param === "string" ? param : param?.planVer || planVer.value;
+      const result = (await fetchOperGroups(pv)) as any;
+      if (result?.success && result?.data?.length) {
+        operGroupSource.value = result.data;
+        operGroups.value = operGroupSource.value.map(
+          (item: any) => item.oper_group_id,
+        );
+        getOperGroupSourceIsSuccess.value = true;
+      } else {
+        operGroupSource.value = [];
+        operGroups.value = [];
+        getOperGroupSourceIsSuccess.value = true;
+      }
+    } catch {
+      console.error("OperGroupSource 조회 오류");
+      operGroupSource.value = [];
+      operGroups.value = [];
+    }
+  };
+
+  const loadOperSource = async (param: any) => {
+    if (!param) return;
+    try {
+      const pv =
+        typeof param === "string"
+          ? param
+          : param?.plan_ver || param?.planVer || planVer.value;
+      const result = (await fetchOperSource(pv)) as any;
+      if (result.data && result.data.length) {
+        operSource.value = result.data;
+        opers.value = operSource.value.map((item: any) => item.oper_id);
+        getOperSourceIsSuccess.value = true;
+      } else {
+        operSource.value = [];
+        opers.value = [];
+        getOperSourceIsSuccess.value = true;
+      }
+    } catch {
+      console.error("OperSource 조회 오류");
+      operSource.value = [];
+      opers.value = [];
+    }
+  };
+
+  const loadBufferSource = async (param: any) => {
+    if (!param) return;
+    try {
+      const pv =
+        typeof param === "string"
+          ? param
+          : param?.plan_ver || param?.planVer || planVer.value;
+      const result = (await fetchBuffers(pv)) as any;
+      if (result.data && result.data.length) {
+        bufferSource.value = result.data;
+        buffers.value = bufferSource.value.map((item: any) => item.buffer_id);
+        getBufferSourceIsSuccess.value = true;
+      } else {
+        bufferSource.value = [];
+        buffers.value = [];
+        getBufferSourceIsSuccess.value = true;
+      }
+    } catch {
+      console.error("BufferSource 조회 오류");
+      bufferSource.value = [];
+      buffers.value = [];
+    }
+  };
+
+  const loadDemandVer = async (param: any) => {
+    if (!param.planCycleID) return;
+    try {
+      const result = await fetchDemandVer(param);
+      if (result && result.data && result.data.length) {
+        demandVerSource.value = result.data;
+      } else {
+        demandVerSource.value = [];
+      }
+    } catch {
+      console.error("DemandVer 조회 오류");
+      demandVerSource.value = [];
+    }
+  };
+
+  const loadInbound = async () => {
+    try {
+      const result = await fetchInbound();
+      if (result && result?.data) {
+        if (result?.data?.details) {
+          inboundSource.value = [initNoExecution(), ...result.data.details];
+        }
+      } else {
+        inboundSource.value = [initNoExecution()];
+      }
+    } catch {
+      console.error("Inbound 조회 오류");
+      inboundSource.value = [initNoExecution()];
+    }
+  };
+
+  // widget 설정
+  const initWidgetSetting = ref<any>();
+  const viewPointWidget = ref<any[]>([
+    "itemGroup",
+    "cust",
+    "region",
+    "demandType",
+  ]);
+  const breakdownWidget = ref<any>(breakdownSource.value[0]);
+
+  const reExecutePlanMutation = async (param: any) => {
+    try {
+      const result = await postReExecutePlan(param);
+      if (result && result.data) {
+        console.log("계획이 재실행 되었습니다");
+      }
+    } catch {
+      console.error("계획 재실행 중 오류가 발생했습니다");
+    }
+  };
+
+  const scenarioModuleDataSource = shallowRef<any[]>([]);
+  const phaseColumns = ref<
+    {
+      binding: string | number;
+      header: string;
+      width: string | number;
+    }[]
+  >([]);
+
+  const loadScenarioModules = async (param: { scenarioID: string }) => {
+    try {
+      const result = await fetchScenarioModules(param);
+      if (result && result.data && result.data.length > 0) {
+        scenarioModuleDataSource.value = result.data;
+      } else {
+        scenarioModuleDataSource.value = [];
+      }
+    } catch {
+      console.error("ScenarioModule 조회 오류");
+      scenarioModuleDataSource.value = [];
+    }
+  };
+
+  const isDuplicated = ref<boolean>(false);
+
+  const checkDemandVerValid = async (param: { demand_ver: string }) => {
+    try {
+      const result = await fetchDemandVerValidCheck(param);
+      if (result.data && result.data.length > 0) {
+        isDuplicated.value = true;
+      } else {
+        isDuplicated.value = false;
+      }
+    } catch {
+      console.error("DemandVer 유효성 검사 오류");
+      isDuplicated.value = false;
+    }
+  };
+
+  const autoDemandVer = ref<string>("");
+
+  const loadNewDemandVer = async (param: { demand_ver: string }) => {
+    try {
+      const result = await fetchNewDemandVer(param);
+      if (result.data) {
+        autoDemandVer.value = result.data.demand_ver;
+      } else {
+        autoDemandVer.value = "";
+      }
+    } catch {
+      console.error("NewDemandVer 조회 오류");
+      autoDemandVer.value = "";
+    }
+  };
+
+  // loadParams
+  const loadParams = computed(() => ({
+    planVer: planVer.value,
+    planCycleID: planCycleID.value,
+    aggregateType: summaryType.value,
+    summary: summaryType.value as
+      | "cust"
+      | "itemGroup"
+      | "region"
+      | "demandType",
+    ...(summaryType.value === "cust" && {
+      customers: Array.from(new Set([...custParam.value])),
+    }),
+    ...(summaryType.value === "itemGroup" && {
+      itemGroupIDs: itemGroup.value,
+    }),
+    ...(summaryType.value === "region" && { regions: region.value }),
+    ...(summaryType.value === "demandType" && {
+      demandTypes: demandType.value,
+    }),
+    uomType: uomType.value,
+    ...{ operGroupIDs: operGroups.value },
+  }));
+
+  const addPrefix = (value: string) => {
+    if (value === "FROZEN") return "1_FROZEN";
+    if (value === "PLAN") return "2_PLAN";
+    if (value === "DIFF") return "3_DIFF";
+    return value;
+  };
+
+  const actStartDate = ref<string>("");
+  const actEndDate = ref<string>("");
+
+  const onMainLoad = async () => {
+    mainQueryIsPending.value = true;
+    try {
+      const result = (await fetchMain(loadParams.value)) as any;
+      const pivotRows = result?.pivotData ?? result?.data ?? [];
+      const demandRows = result?.demandData ?? [];
+
+      if (pivotRows.length) {
+        const processedData = pivotRows.map((value: any) => ({
+          ...value,
+          plan_type: addPrefix(value.plan_type),
+        }));
+
+        pivotDataSource.value = processedData.filter(
+          (item: any) => item.date !== "TOTAL",
+        );
+
+        fullDataSource.value = processedData;
+
+        actStartDate.value = result?.actStartDate ?? "";
+        actEndDate.value = result?.actEndDate ?? "";
+
+        // demandData도 세팅
+        if (demandRows.length) {
+          demandSource.value = demandRows;
+        }
+      } else {
+        pivotDataSource.value = [];
+        fullDataSource.value = [];
+        actStartDate.value = "";
+        actEndDate.value = "";
+      }
+    } catch {
+      console.error("Main 데이터 조회 오류");
+      pivotDataSource.value = [];
+      actStartDate.value = "";
+      actEndDate.value = "";
+    } finally {
+      mainQueryIsPending.value = false;
+    }
+  };
+
+  // Load filter data
+  const loadCustData = async () => {
+    try {
+      const result = await fetchCustInRtf(planVer.value);
+      if (result?.data?.length) {
+        custSource.value = result.data;
+        custParam.value = custSource.value.map((item: any) => item.cust_id);
+        custIsSuccess.value = true;
+      } else {
+        custSource.value = [];
+        custIsSuccess.value = true;
+      }
+    } catch {
+      console.error("Customer 조회 오류");
+      custIsSuccess.value = false;
+    }
+  };
+
+  const loadItemGroupData = async () => {
+    try {
+      const result = await fetchItemGroupInRtf(planVer.value);
+      if (result?.data?.length) {
+        itemGroupSource.value = result.data;
+        itemGroup.value = itemGroupSource.value.map(
+          (item: any) => item.item_group_id ?? item.item_group,
+        );
+        itemGroupIsSuccess.value = true;
+      } else {
+        itemGroupSource.value = [];
+        itemGroupIsSuccess.value = true;
+      }
+    } catch {
+      console.error("ItemGroup 조회 오류");
+      itemGroupIsSuccess.value = false;
+    }
+  };
+
+  const loadRegionData = async () => {
+    try {
+      const result = await fetchRegions(planVer.value);
+      if (result?.data?.length) {
+        regionSource.value = result.data.map((item: any) => {
+          if (!item) {
+            return {
+              id: item,
+              text: t("고객 미지정"),
+              value: item,
+            };
+          }
+          return { id: item, text: item, value: item };
+        });
+        region.value = regionSource.value.map((item: any) => item.value);
+        regionIsSuccess.value = true;
+      } else {
+        regionSource.value = [];
+        regionIsSuccess.value = true;
+      }
+    } catch {
+      console.error("Region 조회 오류");
+      regionIsSuccess.value = false;
+    }
+  };
+
+  const loadDemandTypeData = async () => {
+    try {
+      const result = await fetchDemandTypes(planVer.value);
+      if (result?.data?.length) {
+        demandTypeSource.value = result.data.map((item: any) => ({
+          value: item,
+        }));
+        demandType.value = demandTypeSource.value.map(
+          (item: any) => item.value,
+        );
+        demandTypeIsSuccess.value = true;
+      } else {
+        demandTypeSource.value = [];
+        demandTypeIsSuccess.value = true;
+      }
+    } catch {
+      console.error("DemandType 조회 오류");
+      demandTypeIsSuccess.value = false;
+    }
+  };
+
+  // 특정 PlanCycle의 planVer GET — 원본: apiCall({ url: 'PlmPlanExecute', method: 'GET' })
+  const loadPlanVerInfo = async () => {
+    try {
+      const result = await fetchPlanVerInfo();
+      if (result && result.data?.length) {
+        planVerSource.value = result.data;
+        targetPlanVerData.value = result.data.filter(
+          (item: any) => item.planVer === planVer.value,
+        );
+
+        if (targetPlanVerData.value.length) {
+          const scenario = scenarioList.value.find(
+            (item: any) =>
+              item.scenarioID === targetPlanVerData.value[0].scenarioID,
+          );
+          reExecuteState.value.scenarioID = scenario?.scenarioID ?? null;
+
+          const inbound =
+            inboundSource.value.find(
+              (item: any) =>
+                item.inboundScenarioID ===
+                targetPlanVerData.value[0].inboundScenarioID,
+            ) || initNoExecution();
+          reExecuteState.value.inboundScenarioID = inbound.inboundScenarioID;
+        }
+      } else {
+        planVerSource.value = [];
+        targetPlanVerData.value = {};
+      }
+    } catch {
+      console.error("PlanVerInfo 조회 오류");
+    }
+  };
+
+  onMounted(async () => {
+    await loadExecutionFlows();
+    await loadPlanCycleInfo();
+    await loadOperGroupSource({
+      plan_ver: planVer.value,
+      schema_name: "OperGroupMaster",
+    });
+    await loadOperSource({
+      plan_ver: planVer.value,
+      schema_name: "OperMaster",
+    });
+    await loadBufferSource({
+      plan_ver: planVer.value,
+      schema_name: "BufferMaster",
+    });
+    await loadDemandVer({
+      planCycleID: reExecuteState.value.planCycleID,
+    });
+    await loadScenarioList();
+    await loadInbound();
+    await loadDemandSource({
+      plan_ver: planVer.value,
+      schema_name: "Demand",
+    });
+    await loadScenarioModules({
+      scenarioID: reExecuteState.value.scenarioID ?? "",
+    });
+    await loadPlanVerInfo();
+
+    await Promise.all([
+      loadCustData(),
+      loadItemGroupData(),
+      loadRegionData(),
+      loadDemandTypeData(),
+    ]);
+  });
+
+  watch(planVer, async (newValue) => {
+    if (newValue) {
+      await loadOperGroupSource({
+        plan_ver: planVer.value,
+        schema_name: "OperGroupMaster",
+      });
+      await loadOperSource({
+        plan_ver: planVer.value,
+        schema_name: "OperMaster",
+      });
+      await loadBufferSource({
+        plan_ver: planVer.value,
+        schema_name: "BufferMaster",
+      });
+      await Promise.all([
+        loadCustData(),
+        loadItemGroupData(),
+        loadRegionData(),
+        loadDemandTypeData(),
+      ]);
+    }
+  });
+
+  watch(isOpen, async (newVal) => {
+    if (newVal) {
+      await loadNewDemandVer({
+        demand_ver:
+          demandVerSource.value[demandVerSource.value.length - 1]?.demand_ver,
+      });
+    }
+  });
+
+  watch(
+    () => reExecuteState.value.scenarioID,
+    async (newVal) => {
+      if (newVal) {
+        await loadScenarioConfig();
+        await loadScenarioModules({ scenarioID: newVal ?? "" });
+      }
+    },
+  );
+
+  return {
+    isAdvancedOption,
+    executionFlowSource,
+
+    // 조회조건
+    summarySource,
+    summaryType,
+    custSource,
+    custParam,
+    itemGroupSource,
+    itemGroup,
+    regionSource,
+    region,
+    demandTypeSource,
+    demandType,
+    qtyUOMSource,
+    uomType,
+
+    custIsSuccess,
+    itemGroupIsSuccess,
+    regionIsSuccess,
+    demandTypeIsSuccess,
+
+    // api 호출
+    mainQueryIsPending,
+    onLoad,
+    loadParams,
+    isPageFetching,
+
+    // 계획 재실행 메뉴
+    demandSource,
+    selectedDemandList,
+    pivotDataSource,
+    fullDataSource,
+    actStartDate,
+    actEndDate,
+
+    // 시나리오
+    scenarioList,
+    scenarioConfigSource,
+    loadScenarioConfig,
+
+    // 공유 CollectionView 관련
+    sharedCollectionView,
+    initializeSharedCollectionView,
+    sharedDataSource,
+    popupCollectionView,
+    initializePopupCollectionView,
+    applyPopupFilter,
+    applyPopupGridFilter,
+    popupDataSource,
+
+    // 그리드 참조 공유
+    mainGrid,
+    popupGrid,
+
+    // ExtendGrid 인스턴스 공유
+    mainExtendGrid,
+    popupExtendGrid,
+    updateTrigger,
+
+    // 계획 재실행 Pop 기능
+    isOpen,
+    toggle,
+    open,
+    close,
+
+    // Step1
+    currentStep,
+    showEditedData,
+    editedDemandSource,
+    alwaysEditedData,
+    reExecuteState,
+    loadExecutionFlows,
+
+    // 최신 planCycle 정보
+    currentPlanCycleSource,
+
+    // demandVer 정보
+    demandVerSource,
+    demandSetText,
+
+    // inbound
+    inboundSource,
+
+    // widget 설정
+    initWidgetSetting,
+    viewPointSource,
+    breakdownSource,
+    widgetSummarySource,
+    viewPointWidget,
+    breakdownWidget,
+
+    loadDemandSource,
+    getDemandSourceIsPending,
+
+    reExecutePlanMutation,
+    scenarioModuleDataSource,
+    phaseColumns,
+
+    checkDemandVerValid,
+    isDuplicated,
+
+    loadNewDemandVer,
+    autoDemandVer,
+
+    breakdownSearchSource,
+    breakdownValue,
+
+    operGroupSource,
+    operGroups,
+    operSource,
+    opers,
+    bufferSource,
+    buffers,
+
+    getOperGroupSourceIsSuccess,
+    getOperSourceIsSuccess,
+    getBufferSourceIsSuccess,
+    loadOperGroupSource,
+    loadOperSource,
+    loadBufferSource,
+
+    verInfoIsOpen,
+    openVerInfo,
+    closeVerInfo,
+
+    // propColumns
+    propColumns,
+  };
+};
+
+export type IReExecutePlanQuery = ReturnType<typeof useReExecutePlanQuery>;
