@@ -33,6 +33,9 @@ class Settings(BaseSettings):
     TRINO_CATALOG: str = "iceberg"
     TRINO_SCHEMA_APS: str = "mzc_aps"
 
+    # APS C# 백엔드 (프록시용)
+    APS_BACKEND_BASE_URL: str = "http://localhost:8080"
+
     class Config:
         env_file = ".env"
         case_sensitive = True

@@ -12,7 +12,10 @@ from app.services.re_execute_plan import ReExecutePlanService, get_re_execute_pl
 from fastapi import APIRouter, Depends, Path, Query
 from fastapi.responses import JSONResponse
 
+from app.api.v1.endpoints.aps_proxy import router as aps_proxy_router
+
 router = APIRouter()
+router.include_router(aps_proxy_router)
 logger = logging.getLogger(__name__)
 
 

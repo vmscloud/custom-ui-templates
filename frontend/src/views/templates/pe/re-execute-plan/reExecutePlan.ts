@@ -77,46 +77,42 @@ export const fetchBuffers = (planVer: string) =>
   api.get<{ data: any[] }>(`${BASE_URL()}/buffers?planVer=${planVer}`);
 
 // ===== C# 백엔드 직접 호출 (Host 환경) =====
-// Host(APS)에서 실행 시 C# API가 같은 origin의 /api/aps/backend/{projectId}/... 에 위치
-const APS_URL = () => `/api/aps/backend/${getProjectId()}`;
-
+// ===== C# APS 프록시 API (Python BE 경유) =====
 export const fetchDemandSource = (params: any) =>
-  api.post<any>(`${APS_URL()}/OdlReport`, params);
+  api.post<any>(`${BASE_URL()}/proxy/demand-source`, params);
 
 export const fetchPlanCycleInfo = (params?: any) =>
-  api.post<any>(`${APS_URL()}/PlmSysOperPlan/PlanCycleInfo`, params ?? {});
+  api.post<any>(`${BASE_URL()}/proxy/plan-cycle-info`, params ?? {});
 
 export const fetchExecutionFlows = (params?: any) =>
-  api.post<any>(`${APS_URL()}/PlmExecutionFlowMaster`, params ?? {});
+  api.post<any>(`${BASE_URL()}/proxy/execution-flows`, params ?? {});
 
 export const fetchScenarioList = (params?: any) =>
-  api.post<any>(`${APS_URL()}/PlmScenarioMaster`, params ?? {});
+  api.post<any>(`${BASE_URL()}/proxy/scenarios`, params ?? {});
 
 export const fetchScenarioConfig = (scenarioID: string) =>
-  api.post<any>(`${APS_URL()}/PlmScenarioMaster/Config/OptionConfigGlobal`, {
-    scenarioID,
-  });
+  api.post<any>(`${BASE_URL()}/proxy/scenario-config`, { scenarioID });
 
 export const fetchScenarioModules = (params: { scenarioID: string }) =>
-  api.post<any>(`${APS_URL()}/PlmScenarioMaster/Config/AllModules`, params);
+  api.post<any>(`${BASE_URL()}/proxy/scenario-modules`, params);
 
 export const fetchDemandVer = (params: any) =>
-  api.post<any>(`${APS_URL()}/ComDemandVer`, params);
+  api.post<any>(`${BASE_URL()}/proxy/demand-ver`, params);
 
 export const fetchNewDemandVer = (params: { demand_ver: string }) =>
-  api.get<any>(`${APS_URL()}/MdmDemandVer/GetLastRev`, { params });
+  api.post<any>(`${BASE_URL()}/proxy/demand-ver-latest`, params);
 
 export const fetchDemandVerValidCheck = (params: { demand_ver: string }) =>
-  api.get<any>(`${APS_URL()}/MdmDemandVer`, { params });
+  api.post<any>(`${BASE_URL()}/proxy/demand-ver-check`, params);
 
 export const fetchInbound = (params?: any) =>
-  api.post<any>(`${APS_URL()}/PlmPlanExecute/Inbound`, params ?? {});
+  api.post<any>(`${BASE_URL()}/proxy/inbound`, params ?? {});
 
 export const fetchPlanVerInfo = (params?: any) =>
-  api.get<any>(`${APS_URL()}/PlmPlanExecute`, { params: params ?? {} });
+  api.post<any>(`${BASE_URL()}/proxy/plan-ver-info`, params ?? {});
 
 export const postReExecutePlan = (params: any) =>
-  api.post<any>(`${APS_URL()}/RarReExecutePlan/ReExecutePlan`, params);
+  api.post<any>(`${BASE_URL()}/proxy/execute`, params);
 
 export const fetchCustInRtf = (planVer: string) =>
   api.get<{ data: any[] }>(`${BASE_URL()}/customers?planVer=${planVer}`);
