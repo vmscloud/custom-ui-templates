@@ -69,11 +69,6 @@ export default defineConfig(({ mode }) => {
       "Access-Control-Allow-Origin": "*",
     },
     proxy: {
-      "/api/aps/backend": {
-        target: env.VITE_APS_API_TARGET || "http://localhost:8080",
-        changeOrigin: true,
-        secure: false,
-      },
       "/api": {
         target: API_TARGET,
         changeOrigin: true,
