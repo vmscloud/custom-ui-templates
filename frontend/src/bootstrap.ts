@@ -34,7 +34,7 @@ use([
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
-import { VueQueryPlugin } from "@tanstack/vue-query";
+import { QueryCache, QueryClient, VueQueryPlugin } from "@tanstack/vue-query";
 import App from "./App.vue";
 import router from "./router";
 import i18nPlugin from "./plugins/i18n";
@@ -44,15 +44,42 @@ import "@vmscloud/moz-ui-components/style.css";
 import "@vmscloud/moz-wijmo-grid/style.css";
 import "@vmscloud/moz-ui-chart/style.css";
 
+// 커스텀 디렉티브 스타일
+import "./directives/tooltip/_index.scss";
+
+// 커스텀 디렉티브
+import { tooltipDirective, loadingDirective } from "./directives";
+
 // Pinia 설정
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (_error, query) => {
+      queryClient.removeQueries(query);
+    },
+  }),
+  defaultOptions: {
+    queries: {
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
+      enabled: false,
+      retry: 2,
+    },
+  },
+});
+
 const app = createApp(App);
 
 app.use(pinia);
-app.use(VueQueryPlugin);
+app.use(VueQueryPlugin, { queryClient });
 app.use(router);
 i18nPlugin(app);
+
+// 커스텀 디렉티브 등록
+app.directive("tooltip", tooltipDirective);
+app.directive("loading", loadingDirective);
 
 app.mount("#app");

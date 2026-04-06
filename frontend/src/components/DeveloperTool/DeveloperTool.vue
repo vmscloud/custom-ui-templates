@@ -10,7 +10,7 @@
 import DeveloperToolCore from "@/components/DeveloperTool/DeveloperToolCore.vue";
 import {computed} from "vue";
 import { setProjectIdResolver } from "@/api/client";
-import { useHostStores } from "@/composables/useHostStores";
+import { useHostData } from "@/composables/useHostStores";
 import './styles/index.scss'
 
 const isDev = computed(() => {
@@ -20,7 +20,7 @@ const isDev = computed(() => {
 
 // Host(APS) 환경: DeveloperToolCore를 거치지 않으므로 여기서 resolver 설정
 if (!isDev.value) {
-  const { projectInfo } = useHostStores();
-  setProjectIdResolver(() => projectInfo.currentProjectID.value);
+  const hostData = useHostData();
+  setProjectIdResolver(() => hostData.value?.projectInfo?.currentProjectID ?? "");
 }
 </script>

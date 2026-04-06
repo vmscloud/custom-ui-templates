@@ -14,11 +14,13 @@
           <h3>사용자 정보</h3>
           <dl>
             <dt>이름</dt>
-            <dd>{{ userInfo?.name || "-" }}</dd>
+            <dd>{{ projectInfo?.userInfo?.name || "-" }}</dd>
             <dt>이메일</dt>
-            <dd>{{ userInfo?.email || "-" }}</dd>
+            <dd>{{ projectInfo?.userInfo?.email || "-" }}</dd>
+            <dt>현재 언어</dt>
+            <dd>{{ projectInfo?.userInfo?.language || "-" }}</dd>
             <dt>관리자 여부</dt>
-            <dd>{{ isAdmin ? "예" : "아니오" }}</dd>
+            <dd>{{ projectInfo?.isAdmin ? "예" : "아니오" }}</dd>
           </dl>
         </div>
 
@@ -26,9 +28,9 @@
           <h3>프로젝트 정보</h3>
           <dl>
             <dt>프로젝트 ID</dt>
-            <dd>{{ currentProjectID || "-" }}</dd>
+            <dd>{{ projectInfo?.currentProjectID || "-" }}</dd>
             <dt>프로젝트 이름</dt>
-            <dd>{{ currentProject?.projectNM || "-" }}</dd>
+            <dd>{{ projectInfo?.currentProject?.projectNM || "-" }}</dd>
           </dl>
         </div>
 
@@ -36,11 +38,11 @@
           <h3>Plan Cycle 정보</h3>
           <dl>
             <dt>Plan Version</dt>
-            <dd>{{ planVer || "-" }}</dd>
+            <dd>{{ planCycle?.planVer || "-" }}</dd>
             <dt>From Date</dt>
-            <dd>{{ fromDate }}</dd>
+            <dd>{{ planCycle?.fromDate }}</dd>
             <dt>To Date</dt>
-            <dd>{{ toDate }}</dd>
+            <dd>{{ planCycle?.toDate }}</dd>
           </dl>
         </div>
       </div>
@@ -51,15 +53,7 @@
 <script setup lang="ts">
 import { useHostStores } from "@/composables/useHostStores";
 
-// Host 스토어에서 정보 가져오기
-const hostStores = useHostStores();
-
-// PlanCycle 정보
-const { planVer, fromDate, toDate } = hostStores.planCycle;
-
-// 프로젝트 정보
-const { currentProjectID, currentProject, userInfo, isAdmin } =
-  hostStores.projectInfo;
+const { planCycle, projectInfo } = useHostStores();
 </script>
 
 <style scoped lang="scss">

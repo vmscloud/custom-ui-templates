@@ -5,13 +5,12 @@ API 라우터 통합
 """
 
 from app.api.v1.endpoints import (
-    demand_distribution,
     freeze_plan,
     health,
-    item_master,
     load_factor,
     plan_cycle,
     plan_dashboard,
+    proxy,
     re_execute_plan,
     replan_rtf,
     rtf_report,
@@ -24,23 +23,13 @@ api_router = APIRouter()
 # API 라우터 등록 (도메인별 prefix 적용)
 api_router.include_router(health.router, prefix="/api/custom/backend", tags=["health"])
 api_router.include_router(
-    item_master.router,
-    prefix="/api/custom/backend/{project_id}/item-master",
-    tags=["item-master-api"],
-)
-api_router.include_router(
     plan_cycle.router,
     prefix="/api/custom/backend/{project_id}",
     tags=["plan-cycle-api"],
 )
 api_router.include_router(
-    demand_distribution.router,
-    prefix="/api/custom/backend/{project_id}/demand",
-    tags=["demand-distribution-api"],
-)
-api_router.include_router(
     rtf_report.router,
-    prefix="/api/custom/backend/{project_id}/rtf-report",
+    prefix="/api/custom/backend/{project_id}",
     tags=["rtf-report-api"],
 )
 api_router.include_router(
@@ -67,4 +56,9 @@ api_router.include_router(
     re_execute_plan.router,
     prefix="/api/custom/backend/{project_id}/re-execute-plan",
     tags=["re-execute-plan-api"],
+)
+api_router.include_router(
+    proxy.router,
+    prefix="/api/custom/backend/{project_id}",
+    tags=["aps-proxy"],
 )
