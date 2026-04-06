@@ -1,8 +1,8 @@
 <template>
-  <div ref="chartContainerRef" style="width: 100%; height: 100%">
+  <div style="width: 100%; height: 100%" ref="chartContainerRef">
     <v-chart
       v-if="!loading && mainDataSource.length"
-      class="chart"
+      class="chart-container"
       :option="chartOption"
       autoresize
       ref="chartRef"
@@ -19,20 +19,20 @@
   </div>
 </template>
 <script setup lang="ts">
-import VChart from 'vue-echarts';
-import { use } from '@vmscloud/moz-ui-chart/echarts/core';
-import { CanvasRenderer } from '@vmscloud/moz-ui-chart/echarts/renderers';
-import { BarChart, LineChart } from '@vmscloud/moz-ui-chart/echarts/charts';
+import VChart from "vue-echarts";
+import { use } from "@vmscloud/moz-ui-chart/echarts/core";
+import { CanvasRenderer } from "@vmscloud/moz-ui-chart/echarts/renderers";
+import { BarChart, LineChart } from "@vmscloud/moz-ui-chart/echarts/charts";
 import {
   GridComponent,
   TitleComponent,
   TooltipComponent,
   LegendComponent,
   DataZoomComponent,
-} from '@vmscloud/moz-ui-chart/echarts/components';
-import { EmptyState } from '@vmscloud/moz-ui-components';
-import { useTranslation } from 'i18next-vue';
-import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
+} from "@vmscloud/moz-ui-chart/echarts/components";
+import { EmptyState } from "@vmscloud/moz-ui-components";
+import { useTranslation } from "i18next-vue";
+import { computed, nextTick, onMounted, onUnmounted, ref } from "vue";
 
 use([
   CanvasRenderer,
@@ -54,8 +54,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:clickedSeriesData', val: string): void;
-  (e: 'update:detailChartSelectSource', val: { oper_group_id: string }[]): void;
+  (e: "update:clickedSeriesData", val: string): void;
+  (e: "update:detailChartSelectSource", val: { oper_group_id: string }[]): void;
 }>();
 
 const { t } = useTranslation(); // 다국어
@@ -132,21 +132,22 @@ const chartOption = computed(() => {
   // ✅ 동적으로 계산된 visible bar count 사용
   const uniqueAxisCount = data.length;
   const initialVisibleCount = dynamicVisibleCount.value;
-  const initialZoomEnd = uniqueAxisCount > 0 ? (initialVisibleCount / uniqueAxisCount) * 100 : 100;
+  const initialZoomEnd =
+    uniqueAxisCount > 0 ? (initialVisibleCount / uniqueAxisCount) * 100 : 100;
 
   return {
     title: {
-      text: t('text-isu_entire_oper_group_avg_load_factor'), // ✅ 제목 텍스트
-      left: 'left', // 왼쪽 정렬
+      text: t("text-isu_entire_oper_group_avg_load_factor"), // ✅ 제목 텍스트
+      left: "left", // 왼쪽 정렬
       top: 0, // 상단 여백
       textStyle: {
         fontSize: 13,
-        fontWeight: '500',
-        color: '#565F6E',
+        fontWeight: "500",
+        color: "#565F6E",
       },
     },
     tooltip: {
-      trigger: 'axis',
+      trigger: "axis",
       confine: true,
       appendToBody: true,
       z: 99999,
@@ -157,31 +158,37 @@ const chartOption = computed(() => {
       },
       formatter: (params: any) => {
         // ✅ "Base Line" 시리즈 제거
-        const filteredParams = params.filter((item: any) => item.seriesName !== 'Base Line');
+        const filteredParams = params.filter(
+          (item: any) => item.seriesName !== "Base Line",
+        );
 
-        if (filteredParams.length === 0) return '';
+        if (filteredParams.length === 0) return "";
 
         const axisValue = filteredParams[0].axisValue;
         let result = `${axisValue}<br/>`;
 
         filteredParams.forEach((item: any) => {
-          const strRate = typeof item.value === 'number' ? item.value.toFixed(2) : item.value;
+          const strRate =
+            typeof item.value === "number" ? item.value.toFixed(2) : item.value;
 
           // ✅ mainDataSource에서 해당 막대의 원본 데이터 찾기
           const findData = props.mainDataSource.find(
-            (d: any) => d.oper_group_id === axisValue && d.legend === item.seriesName,
+            (d: any) =>
+              d.oper_group_id === axisValue && d.legend === item.seriesName,
           );
 
           if (findData) {
             const capa =
-              typeof findData.capa === 'number' ? Number(findData.capa.toFixed(2)).toLocaleString() : findData.capa;
+              typeof findData.capa === "number"
+                ? Number(findData.capa.toFixed(2)).toLocaleString()
+                : findData.capa;
             const planQty =
-              typeof findData.plan_qty === 'number'
+              typeof findData.plan_qty === "number"
                 ? Number(findData.plan_qty.toFixed(2)).toLocaleString()
                 : findData.plan_qty;
 
             result += `${item.marker} CAPA: ${capa}<br/>`;
-            result += `&nbsp;&nbsp;&nbsp;&nbsp;${t('text-plan_qty')}: ${planQty}<br/>`;
+            result += `&nbsp;&nbsp;&nbsp;&nbsp;${t("text-plan_qty")}: ${planQty}<br/>`;
             result += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.seriesName}: ${strRate}%<br/>`;
           } else {
             result += `${item.marker} ${item.seriesName}: ${strRate}%<br/>`;
@@ -196,7 +203,7 @@ const chartOption = computed(() => {
     },
     xAxis: [
       {
-        type: 'category',
+        type: "category",
         data: data,
         splitLine: {
           show: false, // ✅ x축 격자선(세로선) 제거
@@ -204,66 +211,67 @@ const chartOption = computed(() => {
         axisLabel: {
           interval: 0, // ✅ 모든 라벨 표시
           rotate: 0,
-          overflow: 'truncate',
-          color: '#96A5BE', // ✅ x축 글자색
+          overflow: "truncate",
+          color: "#96A5BE", // ✅ x축 글자색
           formatter: (value: string) => {
             // ✅ "001. 자재출고" → "   001.\n자재출고" 형태로 변환
-            if (value && value.includes('.')) {
-              const parts = value.split('.');
+            if (value && value.includes(".")) {
+              const parts = value.split(".");
               const number = parts[0].trim();
-              const text = parts.slice(1).join('.').trim();
+              const text = parts.slice(1).join(".").trim();
               // 번호를 가운데 정렬하기 위해 공백 추가
               return `   ${number}.\n${text}`;
             }
             return value;
           },
-          align: 'center', // ✅ 가운데 정렬
-          verticalAlign: 'top',
+          align: "center", // ✅ 가운데 정렬
+          verticalAlign: "top",
           lineHeight: 16, // ✅ 줄 간격
         },
       },
     ],
     yAxis: [
       {
-        type: 'value',
-        name: t('text-isu_load_factor_include_percent'),
-        position: 'left',
+        type: "value",
+        name: t("text-isu_load_factor_include_percent"),
+        nameTextStyle: { color: "#bbc6d9" },
+        position: "left",
         min: 0,
         axisLabel: {
           // ✅ Y축 라벨 커스터마이징
           formatter: (value: number) => value.toString(),
           // ✅ 값이 100일 때만 파란색 스타일 적용 (나머지는 기본 스타일 유지)
-          color: (value: string) => (value === '100' ? '#4568E0' : '#96A5BE'),
+          color: (value: string) => (value === "100" ? "#4568E0" : "#96A5BE"),
         },
       },
     ],
     series: [
       {
-        name: t('부하율'),
-        type: 'bar',
+        name: t("부하율"),
+        type: "bar",
         data: barData,
         barWidth: 80,
         label: {
           // ✅ bar 상단에 라벨 표시
           show: true,
-          position: 'top',
+          position: "top",
           formatter: (params: any) => {
             const value = params.value;
-            if (value < 0) return '';
+            if (value < 0) return "";
 
             // ✅ 100 이상이면 파란색, 미만이면 회색
-            const styleName = value >= 100 ? 'over100' : 'under100';
+            const styleName = value >= 100 ? "over100" : "under100";
             return `{${styleName}|${value.toFixed(1)}%}`;
           },
           fontSize: 11,
           rich: {
             over100: {
-              color: '#4568E0',
+              color: "#4568E0",
               fontSize: 11,
-              fontWeight: 'bold',
+              fontWeight: "bold",
             },
             under100: {
-              color: '#858e9e',
+              color: "#858e9e",
               fontSize: 11,
             },
           },
@@ -272,47 +280,47 @@ const chartOption = computed(() => {
           // ✅ hover 시에도 label 그대로 표시
           label: {
             show: true,
-            position: 'top',
+            position: "top",
             formatter: (params: any) => {
               const value = params.value;
-              if (value < 0) return '';
+              if (value < 0) return "";
 
-              const styleName = value >= 100 ? 'over100' : 'under100';
+              const styleName = value >= 100 ? "over100" : "under100";
               return `{${styleName}|${value.toFixed(1)}%}`;
             },
             fontSize: 11,
             rich: {
               over100: {
-                color: '#4568E0',
+                color: "#4568E0",
                 fontSize: 11,
-                fontWeight: 'bold',
+                fontWeight: "bold",
               },
               under100: {
-                color: '#858e9e',
+                color: "#858e9e",
                 fontSize: 11,
               },
             },
           },
         },
         itemStyle: {
-          color: '#618FF97A',
+          color: "#618FF97A",
           borderRadius: [6, 6, 0, 0], // ✅ 모든 bar 상단 둥글게
         },
       },
       // ✅ base_line 선 차트 추가
       {
-        name: 'Base Line',
-        type: 'line',
+        name: "Base Line",
+        type: "line",
         xAxisIndex: 0,
         yAxisIndex: 0,
         data: data.map(() => 100),
         smooth: false,
         showSymbol: false,
-        symbol: 'none',
+        symbol: "none",
         lineStyle: {
           width: 1,
-          color: '#4568E0',
-          type: 'solid',
+          color: "#4568E0",
+          type: "solid",
         },
         z: 100,
         animation: false,
@@ -324,10 +332,10 @@ const chartOption = computed(() => {
       left: 60,
       right: 40,
     },
-    barCategoryGap: '40px', // ✅ bar와 bar 사이의 고정 간격
+    barCategoryGap: "40px", // ✅ bar와 bar 사이의 고정 간격
     dataZoom: [
       {
-        type: 'slider',
+        type: "slider",
         show: true,
         xAxisIndex: [0],
         start: 0,
@@ -338,7 +346,7 @@ const chartOption = computed(() => {
         brushSelect: false, // ✅ 브러시 선택(드래그 영역 확장) 완전 비활성화
       },
       {
-        type: 'inside',
+        type: "inside",
         xAxisIndex: [0],
         start: 0,
         end: Math.min(initialZoomEnd, 100), // ✅ 초기에는 일정 개수만 표시
@@ -357,30 +365,36 @@ const onZrClick = (params: any) => {
 
   const pointInPixel = [params.offsetX, params.offsetY];
 
-  if (chart.containPixel('grid', pointInPixel)) {
-    const pointInGrid = chart.convertFromPixel({ seriesIndex: 0 }, pointInPixel);
+  if (chart.containPixel("grid", pointInPixel)) {
+    const pointInGrid = chart.convertFromPixel(
+      { seriesIndex: 0 },
+      pointInPixel,
+    );
     const option = chart.getOption() as any;
 
     const xAxisIndex = Math.round(pointInGrid[0]);
     const xAxisData = option.xAxis[0].data;
     const clickedXAxisValue = xAxisData[xAxisIndex];
 
-    const originalData = props.mainDataSource.find((item: any) => item.oper_group_id === clickedXAxisValue);
+    const originalData = props.mainDataSource.find(
+      (item: any) => item.oper_group_id === clickedXAxisValue,
+    );
 
     if (originalData && originalData.oper_group_id) {
       const currentSource = [...props.detailChartSelectSource];
       const index = currentSource.findIndex(
-        (item: { oper_group_id: string }) => item.oper_group_id === originalData.oper_group_id,
+        (item: { oper_group_id: string }) =>
+          item.oper_group_id === originalData.oper_group_id,
       );
       if (index === -1) {
         currentSource.push({
           oper_group_id: originalData.oper_group_id,
         });
-        emit('update:detailChartSelectSource', currentSource);
+        emit("update:detailChartSelectSource", currentSource);
       }
 
       nextTick(() => {
-        emit('update:clickedSeriesData', originalData.oper_group_id);
+        emit("update:clickedSeriesData", originalData.oper_group_id);
       });
     }
   }
@@ -388,31 +402,47 @@ const onZrClick = (params: any) => {
 
 // ✅ stackbar 클릭 이벤트
 const onSeriesClick = (params: any) => {
-  if (params.componentType === 'series') {
+  if (params.componentType === "series") {
     const clickedAxisValue = params.name;
 
-    const originalData = props.mainDataSource.find((item: any) => item.oper_group_id === clickedAxisValue);
+    const originalData = props.mainDataSource.find(
+      (item: any) => item.oper_group_id === clickedAxisValue,
+    );
 
     if (originalData && originalData.oper_group_id) {
       const currentSource = [...props.detailChartSelectSource];
       const index = currentSource.findIndex(
-        (item: { oper_group_id: string }) => item.oper_group_id === originalData.oper_group_id,
+        (item: { oper_group_id: string }) =>
+          item.oper_group_id === originalData.oper_group_id,
       );
       if (index === -1) {
         currentSource.push({
           oper_group_id: originalData.oper_group_id,
         });
-        emit('update:detailChartSelectSource', currentSource);
+        emit("update:detailChartSelectSource", currentSource);
       }
 
       nextTick(() => {
-        emit('update:clickedSeriesData', originalData.oper_group_id);
+        emit("update:clickedSeriesData", originalData.oper_group_id);
       });
     }
   }
 };
 </script>
 <style lang="scss" scoped>
+.chart-container {
+  height: 100%;
+  width: 100%;
+  border: 1px solid #bbc6d9;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  gap: 10px;
+  padding: 10px;
+  overflow: hidden;
+  position: relative;
+}
 .chart {
   width: 100%;
   height: 100%;

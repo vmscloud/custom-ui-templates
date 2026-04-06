@@ -531,6 +531,13 @@ watch(planVer, (newVal, oldVal) => {
   }
 }
 
+// Pane 외곽선 (원본과 동일)
+:deep(.splitpanes__pane) {
+  border: 1px solid #e4e6eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
 // 확대 상태일 때 splitter 숨김
 :deep(.hide-splitter) {
   .splitpanes__splitter {
