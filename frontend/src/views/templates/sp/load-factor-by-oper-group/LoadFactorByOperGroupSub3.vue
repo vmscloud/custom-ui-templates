@@ -21,36 +21,82 @@
         }"
       >
         <template #tool-items>
-          <div
-            @click="handleZoomClick"
-            class="zoom-button"
-          >
-            {{ isZoomedSub3 ? '▼' : '▲' }}
+          <div @click="handleZoomClick" class="zoom-button">
+            <IconExpandArrow v-if="!isZoomedSub3" />
+            <IconCollapseArrow v-else />
           </div>
         </template>
 
-        <WjFlexGridColumn :width="120" binding="oper_group_id" :header="t('text-isu_oper_group_id')" />
-        <WjFlexGridColumn :width="100" binding="str_date" :header="t('text-isu_str_date')" />
-        <WjFlexGridColumn :width="100" binding="capa" :header="t('text-isu_capa')" />
-        <WjFlexGridColumn :width="100" binding="str_qty" :header="t('text-isu_str_qty')" />
         <WjFlexGridColumn
-          :width="100"
+          :width="160"
+          binding="oper_group_id"
+          :header="t('text-isu_oper_group_id')"
+        />
+        <WjFlexGridColumn
+          :width="120"
+          binding="str_date"
+          :header="t('text-isu_str_date')"
+        />
+        <WjFlexGridColumn
+          :width="120"
+          binding="capa"
+          :header="t('text-isu_capa')"
+        />
+        <WjFlexGridColumn
+          :width="120"
+          binding="str_qty"
+          :header="t('text-isu_str_qty')"
+        />
+        <WjFlexGridColumn
+          :width="120"
           binding="outer_str_area"
           :header="t('text-isu_outer_str_area')"
         />
         <WjFlexGridColumn
-          :width="100"
+          :width="120"
           binding="inner_str_area"
           :header="t('text-isu_inner_str_area')"
         />
-        <WjFlexGridColumn :width="100" binding="str_rate" :header="t('text-isu_str_rate')" />
-        <WjFlexGridColumn :width="100" binding="floor_number" :header="t('text-isu_floor_number')" />
-        <WjFlexGridColumn :width="120" binding="item_id" :header="t('text-isu_item_id')" />
-        <WjFlexGridColumn :width="120" binding="item_group_id" :header="t('text-isu_item_group_id')" />
-        <WjFlexGridColumn :width="120" binding="demand_id" :header="t('text-isu_demand_id')" />
-        <WjFlexGridColumn :width="100" binding="due_date" :header="t('text-isu_due_date')" />
-        <WjFlexGridColumn :width="100" binding="aps_due_date" :header="t('text-isu_aps_due_date')" />
-        <WjFlexGridColumn :width="100" binding="oper_id" :header="t('text-isu_oper_id')" />
+        <WjFlexGridColumn
+          :width="120"
+          binding="str_rate"
+          :header="t('text-isu_str_rate')"
+        />
+        <WjFlexGridColumn
+          :width="120"
+          binding="floor_number"
+          :header="t('text-isu_floor_number')"
+        />
+        <WjFlexGridColumn
+          :width="140"
+          binding="item_id"
+          :header="t('text-isu_item_id')"
+        />
+        <WjFlexGridColumn
+          :width="140"
+          binding="item_group_id"
+          :header="t('text-isu_item_group_id')"
+        />
+        <WjFlexGridColumn
+          :width="140"
+          binding="demand_id"
+          :header="t('text-isu_demand_id')"
+        />
+        <WjFlexGridColumn
+          :width="120"
+          binding="due_date"
+          :header="t('text-isu_due_date')"
+        />
+        <WjFlexGridColumn
+          :width="120"
+          binding="aps_due_date"
+          :header="t('text-isu_aps_due_date')"
+        />
+        <WjFlexGridColumn
+          :width="120"
+          binding="oper_id"
+          :header="t('text-isu_oper_id')"
+        />
       </ExtendFlexGrid>
     </div>
     <div
@@ -66,12 +112,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import { EmptyState } from '@vmscloud/moz-ui-components';
-import { ExtendFlexGrid, type ExtendGrid } from '@vmscloud/moz-wijmo-grid';
-import { WjFlexGridColumn } from '@vmscloud/moz-wijmo-grid/wijmo.vue2.grid';
-import { type FlexGrid } from '@vmscloud/moz-wijmo-grid/wijmo.grid';
-import { useTranslation } from 'i18next-vue';
-import { computed, ref } from 'vue';
+import { EmptyState } from "@vmscloud/moz-ui-components";
+import { ExtendFlexGrid, type ExtendGrid } from "@vmscloud/moz-wijmo-grid";
+import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
+import { type FlexGrid } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
+import { useTranslation } from "i18next-vue";
+import { computed, ref } from "vue";
+import IconExpandArrow from "./assets/IconExpandArrow.vue";
+import IconCollapseArrow from "./assets/IconCollapseArrow.vue";
 
 /**
  * DEFINE DEFAULT VARIABLE
@@ -90,15 +138,17 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:isZoomedSub3', val: boolean): void;
+  (e: "update:isZoomedSub3", val: boolean): void;
 }>();
 
 // 그리드 표시 여부 (v-show 조건을 computed로 분리)
-const showGrid = computed(() => !!props.clickedSeriesData && !!props.detailDataSource.length);
+const showGrid = computed(
+  () => !!props.clickedSeriesData && !!props.detailDataSource.length,
+);
 
 // ✅ 확대 버튼 클릭 핸들러
 const handleZoomClick = () => {
-  emit('update:isZoomedSub3', !props.isZoomedSub3);
+  emit("update:isZoomedSub3", !props.isZoomedSub3);
 };
 
 // GRID INITIALIZE

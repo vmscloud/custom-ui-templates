@@ -1,5 +1,5 @@
 <template>
-  <div class="chart-container" ref="chartContainerRef">
+  <div style="width: 100%; height: 100%" ref="chartContainerRef">
     <div
       v-if="
         detailChartDataSource.length &&
@@ -7,14 +7,9 @@
         clickedSeriesData &&
         detailChartSelectSource.length
       "
-      class="chart-wrapper"
+      class="chart-container"
     >
-      <v-chart
-        class="chart"
-        :option="chartOption"
-        autoresize
-        ref="chartRef"
-      />
+      <v-chart class="chart" :option="chartOption" autoresize ref="chartRef" />
       <!-- ✅ 차트 우측 상단에 Select 오버레이 -->
       <div class="chart-date-input">
         <Select
@@ -36,20 +31,20 @@
   </div>
 </template>
 <script setup lang="ts">
-import VChart from 'vue-echarts';
-import { use } from '@vmscloud/moz-ui-chart/echarts/core';
-import { CanvasRenderer } from '@vmscloud/moz-ui-chart/echarts/renderers';
-import { BarChart, LineChart } from '@vmscloud/moz-ui-chart/echarts/charts';
+import VChart from "vue-echarts";
+import { use } from "@vmscloud/moz-ui-chart/echarts/core";
+import { CanvasRenderer } from "@vmscloud/moz-ui-chart/echarts/renderers";
+import { BarChart, LineChart } from "@vmscloud/moz-ui-chart/echarts/charts";
 import {
   GridComponent,
   TitleComponent,
   TooltipComponent,
   LegendComponent,
   DataZoomComponent,
-} from '@vmscloud/moz-ui-chart/echarts/components';
-import { EmptyState, Select } from '@vmscloud/moz-ui-components';
-import { useTranslation } from 'i18next-vue';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+} from "@vmscloud/moz-ui-chart/echarts/components";
+import { EmptyState, Select } from "@vmscloud/moz-ui-components";
+import { useTranslation } from "i18next-vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 
 use([
   CanvasRenderer,
@@ -73,7 +68,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:clickedSeriesData', val: string): void;
+  (e: "update:clickedSeriesData", val: string): void;
 }>();
 
 const { t } = useTranslation(); // 다국어
@@ -82,13 +77,16 @@ const { t } = useTranslation(); // 다국어
 const localClickedSeriesData = ref(props.clickedSeriesData);
 const chartRef = ref<any>(null);
 
-watch(() => props.clickedSeriesData, (val) => {
-  localClickedSeriesData.value = val;
-});
+watch(
+  () => props.clickedSeriesData,
+  (val) => {
+    localClickedSeriesData.value = val;
+  },
+);
 
 const onSelectChange = () => {
   if (localClickedSeriesData.value) {
-    emit('update:clickedSeriesData', localClickedSeriesData.value);
+    emit("update:clickedSeriesData", localClickedSeriesData.value);
   }
 };
 
@@ -136,7 +134,13 @@ onUnmounted(() => {
 });
 
 // ✅ 색상 팔레트 정의
-const colorPalette = ['#3A71F099', '#4AB6C4A3', '#A5D75BA3', '#FEB34EA3', '#DC5A5AA3'];
+const colorPalette = [
+  "#3A71F099",
+  "#4AB6C4A3",
+  "#A5D75BA3",
+  "#FEB34EA3",
+  "#DC5A5AA3",
+];
 
 // ✅ 시리즈명에서 숫자 추출 함수 (범례 정렬과 동일)
 const getSeriesNumber = (str: string) => {
@@ -161,7 +165,13 @@ const chartOption = computed(() => {
   const itemGroups = [
     ...new Set(props.detailChartDataSource.map((d: any) => d.item_group_id)),
   ]
-    .filter((id) => id !== 'TOTAL' && id !== t('text-chart-unclassified') && id !== t('text-not_set') && id !== '')
+    .filter(
+      (id) =>
+        id !== "TOTAL" &&
+        id !== t("text-chart-unclassified") &&
+        id !== t("text-not_set") &&
+        id !== "",
+    )
     .sort((a, b) => getSeriesNumber(a) - getSeriesNumber(b));
 
   // 시리즈 데이터 구성
@@ -196,44 +206,79 @@ const chartOption = computed(() => {
 
     return {
       name: itemGroup,
-      type: 'bar' as const,
-      stack: 'total',
+      type: "bar" as const,
+      stack: "total",
       barWidth: 38,
       data,
     };
   });
 
+  // ✅ 스택 합계 라벨 표시용 투명 시리즈 (원본 mozType:'stackBar' 기능 대체)
+  const totalLabelSeries = {
+    name: "_total_label",
+    type: "bar" as const,
+    stack: "total",
+    barWidth: 38,
+    itemStyle: { color: "transparent" },
+    emphasis: { itemStyle: { color: "transparent" } },
+    data: sortedDates.map((date) => {
+      // 해당 날짜의 모든 item_group plan_qty 합계
+      const total = props.detailChartDataSource
+        .filter((d: any) => d.date === date)
+        .reduce((sum: number, d: any) => sum + (d.plan_qty || 0), 0);
+      return 0; // 높이 0 (라벨만 표시)
+    }),
+    label: {
+      show: true,
+      position: "top" as const,
+      formatter: (params: any) => {
+        const dateIdx = params.dataIndex;
+        const date = sortedDates[dateIdx];
+        const total = props.detailChartDataSource
+          .filter((d: any) => d.date === date)
+          .reduce((sum: number, d: any) => sum + (d.plan_qty || 0), 0);
+        if (total <= 0) return "";
+        return total >= 1000
+          ? Number(total.toFixed(1)).toLocaleString()
+          : total.toFixed(1);
+      },
+      fontSize: 10,
+      color: "#858e9e",
+    },
+  };
+
   // ✅ base_line 선 차트 추가
   const allSeries: any[] = [
     ...barSeries,
+    totalLabelSeries,
     {
-      name: 'Base Line',
-      type: 'line',
+      name: "Base Line",
+      type: "line",
       xAxisIndex: 0,
       yAxisIndex: 1, // ✅ 우측 Y축(부하율) 사용
       data: sortedDates.map(() => 100), // ✅ 모든 날짜에 100% 표시
       smooth: false,
       showSymbol: false,
-      symbol: 'none',
+      symbol: "none",
       lineStyle: {
         width: 1,
-        color: '#4568E0',
-        type: 'solid',
+        color: "#4568E0",
+        type: "solid",
       },
       // ✅ hover 시에도 항상 보이도록 설정
       emphasis: {
         lineStyle: {
           width: 1,
-          color: '#4568E0',
-          type: 'solid',
+          color: "#4568E0",
+          type: "solid",
           opacity: 1,
         },
       },
       blur: {
         lineStyle: {
           width: 1,
-          color: '#4568E0',
-          type: 'solid',
+          color: "#4568E0",
+          type: "solid",
           opacity: 1,
         },
       },
@@ -243,7 +288,9 @@ const chartOption = computed(() => {
   ];
 
   // ✅ str_rate의 최댓값 기준으로 max 설정
-  const maxRate = Math.max(...props.detailChartDataSource.map((d: any) => d.str_rate || 0));
+  const maxRate = Math.max(
+    ...props.detailChartDataSource.map((d: any) => d.str_rate || 0),
+  );
   const yAxisMax = Math.ceil(maxRate / 10) * 10;
 
   // 고유한 날짜 개수 계산
@@ -253,7 +300,8 @@ const chartOption = computed(() => {
   const visibleBarCount = dynamicVisibleCount.value;
 
   // dataZoom 시작/끝 비율 계산
-  const zoomEnd = uniqueDateCount > 0 ? (visibleBarCount / uniqueDateCount) * 100 : 100;
+  const zoomEnd =
+    uniqueDateCount > 0 ? (visibleBarCount / uniqueDateCount) * 100 : 100;
 
   // ✅ 범례 정렬
   const legendData = itemGroups.map((elem, index) => ({
@@ -265,17 +313,17 @@ const chartOption = computed(() => {
 
   return {
     title: {
-      text: t('text-isu_qty_by_oper_group_str_rate'), // ✅ 제목 텍스트
-      left: 'left', // 왼쪽 정렬
+      text: t("text-isu_qty_by_oper_group_str_rate"), // ✅ 제목 텍스트
+      left: "left", // 왼쪽 정렬
       top: 0, // 상단 여백
       textStyle: {
         fontSize: 13,
-        fontWeight: '500',
-        color: '#565F6E',
+        fontWeight: "500",
+        color: "#565F6E",
       },
     },
     tooltip: {
-      trigger: 'axis',
+      trigger: "axis",
       confine: true,
       appendToBody: true,
       z: 99999,
@@ -289,43 +337,50 @@ const chartOption = computed(() => {
         const filteredParams = params.filter((item: any) => {
           const seriesName = item.seriesName;
           return (
-            seriesName !== t('text-chart-unclassified') &&
-            seriesName !== t('text-not_set') &&
-            seriesName !== 'Base Line' &&
-            seriesName !== ''
+            seriesName !== t("text-chart-unclassified") &&
+            seriesName !== t("text-not_set") &&
+            seriesName !== "Base Line" &&
+            seriesName !== "_total_label" &&
+            seriesName !== ""
           );
         });
 
-        if (filteredParams.length === 0) return '';
+        if (filteredParams.length === 0) return "";
 
         const axisValue = filteredParams[0].axisValue;
 
         // TOTAL 항목 찾아 필요한 값 축출
         const firstFindData = props.originDetailChartDataSource.find(
-          (d: any) => d.date === axisValue && d.item_group_id === 'TOTAL',
+          (d: any) => d.date === axisValue && d.item_group_id === "TOTAL",
         );
 
-        const { capa, plan_qty: planQty, oper_group_id: operGroupId } = firstFindData || {};
+        const {
+          capa,
+          plan_qty: planQty,
+          oper_group_id: operGroupId,
+        } = firstFindData || {};
 
-        let result = '';
+        let result = "";
 
         if (!!firstFindData) {
-          result = `${!!operGroupId ? operGroupId : '-'} (${axisValue})<br/>`;
-          result += `CAPA: ${!!capa ? capa.toLocaleString() : '0'}<br/>`;
-          result += `${t('text-isu_str_qty')}: ${!!planQty ? planQty.toLocaleString() : '0'}<br/>`;
+          result = `${!!operGroupId ? operGroupId : "-"} (${axisValue})<br/>`;
+          result += `CAPA: ${!!capa ? capa.toLocaleString() : "0"}<br/>`;
+          result += `${t("text-isu_str_qty")}: ${!!planQty ? planQty.toLocaleString() : "0"}<br/>`;
         } else {
-          result = `${'-'} (${axisValue})<br/>`;
-          result += `CAPA: ${'0'}<br/>`;
-          result += `${t('text-isu_str_qty')}: ${'0'}<br/>`;
+          result = `${"-"} (${axisValue})<br/>`;
+          result += `CAPA: ${"0"}<br/>`;
+          result += `${t("text-isu_str_qty")}: ${"0"}<br/>`;
         }
 
         // 데이터 기반 툴팁 내용 구성
         filteredParams.forEach((item: any) => {
           const planQtyValue =
-            typeof item.value === 'number' ? Number(item.value.toFixed(2)).toLocaleString() : item.value;
+            typeof item.value === "number"
+              ? Number(item.value.toFixed(2)).toLocaleString()
+              : item.value;
 
-          if (item.seriesName !== 'TOTAL') {
-            result += `${item.marker} ${item.seriesName}: ${planQtyValue ?? '-'}<br/>`;
+          if (item.seriesName !== "TOTAL") {
+            result += `${item.marker} ${item.seriesName}: ${planQtyValue ?? "-"}<br/>`;
           }
         });
 
@@ -335,7 +390,7 @@ const chartOption = computed(() => {
     series: allSeries,
     xAxis: [
       {
-        type: 'category',
+        type: "category",
         data: sortedDates,
         splitLine: {
           show: false, // ✅ x축 격자선(세로선) 제거
@@ -343,11 +398,11 @@ const chartOption = computed(() => {
         axisLabel: {
           interval: 0,
           rotate: 0, // ✅ 회전 제거 (평평하게)
-          color: '#96A5BE',
+          color: "#96A5BE",
           formatter: (value: string) => {
             // ✅ "2025-11-02" → "11-02"로 변환 (월-일만 표시)
-            if (value && value.includes('-')) {
-              const parts = value.split('-');
+            if (value && value.includes("-")) {
+              const parts = value.split("-");
               if (parts.length === 3) {
                 return `${parts[1]}-${parts[2]}`; // 월-일
               }
@@ -361,27 +416,30 @@ const chartOption = computed(() => {
       show: true,
       top: 16, // ✅ 범례를 아래로 이동 (제목 + DateInput 아래)
       data: legendData,
+      selected: { _total_label: false }, // ✅ 합계 라벨 시리즈 범례에서 제외
     },
     yAxis: [
       {
-        type: 'value',
-        name: t('text-qty'),
-        position: 'left',
+        type: "value",
+        name: t("text-qty"),
+        nameTextStyle: { color: "#bbc6d9" },
+        position: "left",
         min: 0,
         axisLabel: {
           formatter: (value: number) => value.toString(),
-          color: '#96A5BE',
+          color: "#96A5BE",
         },
       },
       {
-        type: 'value',
-        name: t('text-isu_load_factor_include_percent'), // ✅ 우측 Y축 (참고용)
-        position: 'right',
+        type: "value",
+        name: t("text-isu_load_factor_include_percent"), // ✅ 우측 Y축 (참고용)
+        nameTextStyle: { color: "#bbc6d9" },
+        position: "right",
         min: 0,
         max: yAxisMax,
         axisLabel: {
           formatter: (value: number) => `${value}`,
-          color: (value: string) => (value === '100' ? '#4568E0' : '#96A5BE'),
+          color: (value: string) => (value === "100" ? "#4568E0" : "#96A5BE"),
         },
       },
     ],
@@ -391,10 +449,10 @@ const chartOption = computed(() => {
       left: 60,
       right: 40,
     },
-    barCategoryGap: '40px', // ✅ bar와 bar 사이의 고정 간격 (40px)
+    barCategoryGap: "40px", // ✅ bar와 bar 사이의 고정 간격 (40px)
     dataZoom: [
       {
-        type: 'slider',
+        type: "slider",
         show: true,
         xAxisIndex: [0],
         start: 0,
@@ -405,7 +463,7 @@ const chartOption = computed(() => {
         brushSelect: false, // ✅ 브러시 선택(드래그 영역 확장) 완전 비활성화
       },
       {
-        type: 'inside',
+        type: "inside",
         xAxisIndex: [0],
         start: 0,
         end: Math.min(zoomEnd, 100),
@@ -419,15 +477,17 @@ const chartOption = computed(() => {
 </script>
 <style lang="scss" scoped>
 .chart-container {
-  position: relative;
-  width: 100%;
   height: 100%;
-}
-
-.chart-wrapper {
-  position: relative;
   width: 100%;
-  height: 100%;
+  border: 1px solid #bbc6d9;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  gap: 10px;
+  padding: 10px;
+  overflow: hidden;
+  position: relative;
 }
 
 .chart {

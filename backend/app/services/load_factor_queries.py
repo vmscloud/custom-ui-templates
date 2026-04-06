@@ -4,6 +4,7 @@
 Trino (Iceberg) execute_direct_query로 실행.
 파라미터는 Python str.format() 스타일 {param}.
 NOTE: plan_start_datetime(std_ts)는 PostgreSQL에서 사전 조회 후 전달.
+NOTE: capa_prop_key는 odv_report_prop_config에서 동적 조회 (예: PROP01).
 """
 
 # 공정 그룹 목록 조회
@@ -17,22 +18,39 @@ WHERE partition_key = '{partition_key}'
 ORDER BY oper_group_seq, oper_group_id
 """
 
+# RPT 프로퍼티 매핑 조회 (OperGroupCapa 등의 실제 prop_json 키 확인용)
+PROP_CONFIG_SQL = """
+SELECT prop_json
+FROM odv_report_prop_config
+WHERE partition_key = '{partition_key}'
+  AND plan_ver = '{plan_ver}'
+  AND table_name = 'RPT_OPER_GROUP_TARGET'
+LIMIT 1
+"""
+
 # 공정 그룹별 총 부하율 (메인 차트용)
 MAIN_SQL = """
 WITH base AS (
     SELECT
         t.oper_group_id,
-        CASE WHEN CAST(t.target_date AS DATE) < DATE '{std_ts}'
+        t.oper_group_seq,
+        CASE WHEN CAST(t.target_datetime AS DATE) < DATE '{std_ts}'
              THEN DATE '{std_ts}'
-             ELSE CAST(t.target_date AS DATE)
+             ELSE CAST(t.target_datetime AS DATE)
         END AS fixed_date,
-        t.out_target_qty AS target_qty,
-        CAST(json_extract_scalar(t.prop_json, '$.OperGroupCapa') AS DOUBLE) AS capa_val
+        CASE
+            WHEN json_extract_scalar(t.prop_json, '$.{uom_prop_key}') IS NULL
+              OR json_extract_scalar(t.prop_json, '$.{uom_prop_key}') = 'DEFAULT'
+            THEN t.out_target_qty
+            ELSE t.out_target_conv_qty
+        END AS target_qty,
+        CAST(json_extract_scalar(t.prop_json, '$.{capa_prop_key}') AS DOUBLE) AS capa_val
     FROM rpt_oper_group_target t
     WHERE t.partition_key = '{partition_key}'
       AND t.plan_ver = '{plan_ver}'
       AND t.oper_group_id != '#Undefined'
       AND (t.demand_type IS NULL OR t.demand_type != '#Dummy')
+      AND t.oper_id IS NOT NULL
       {oper_group_filter}
 )
 SELECT
@@ -46,7 +64,7 @@ SELECT
 FROM base
 WHERE fixed_date >= DATE '{from_date}' AND fixed_date <= DATE '{to_date}'
 GROUP BY oper_group_id
-ORDER BY oper_group_id
+ORDER BY MAX(oper_group_seq), oper_group_id
 """
 
 # 공정 그룹별 일간 item_group 분해 (그룹 차트용)
@@ -55,17 +73,23 @@ WITH base AS (
     SELECT
         t.oper_group_id,
         t.item_group_id,
-        CASE WHEN CAST(t.target_date AS DATE) < DATE '{std_ts}'
+        CASE WHEN CAST(t.target_datetime AS DATE) < DATE '{std_ts}'
              THEN DATE '{std_ts}'
-             ELSE CAST(t.target_date AS DATE)
+             ELSE CAST(t.target_datetime AS DATE)
         END AS fixed_date,
-        t.out_target_qty AS target_qty,
-        CAST(json_extract_scalar(t.prop_json, '$.OperGroupCapa') AS DOUBLE) AS capa_val
+        CASE
+            WHEN json_extract_scalar(t.prop_json, '$.{uom_prop_key}') IS NULL
+              OR json_extract_scalar(t.prop_json, '$.{uom_prop_key}') = 'DEFAULT'
+            THEN t.out_target_qty
+            ELSE t.out_target_conv_qty
+        END AS target_qty,
+        CAST(json_extract_scalar(t.prop_json, '$.{capa_prop_key}') AS DOUBLE) AS capa_val
     FROM rpt_oper_group_target t
     WHERE t.partition_key = '{partition_key}'
       AND t.plan_ver = '{plan_ver}'
       AND t.oper_group_id != '#Undefined'
       AND (t.demand_type IS NULL OR t.demand_type != '#Dummy')
+      AND t.oper_id IS NOT NULL
       {oper_group_filter}
 )
 SELECT
@@ -107,13 +131,18 @@ DETAIL_SQL = """
 WITH base AS (
     SELECT
         t.oper_group_id,
-        CASE WHEN CAST(t.target_date AS DATE) < DATE '{std_ts}'
+        CASE WHEN CAST(t.target_datetime AS DATE) < DATE '{std_ts}'
              THEN DATE '{std_ts}'
-             ELSE CAST(t.target_date AS DATE)
+             ELSE CAST(t.target_datetime AS DATE)
         END AS fixed_date,
-        t.out_target_qty AS target_qty,
+        CASE
+            WHEN json_extract_scalar(t.prop_json, '$.{uom_prop_key}') IS NULL
+              OR json_extract_scalar(t.prop_json, '$.{uom_prop_key}') = 'DEFAULT'
+            THEN t.out_target_qty
+            ELSE t.out_target_conv_qty
+        END AS target_qty,
         t.out_target_conv_qty AS conv_qty,
-        CAST(json_extract_scalar(t.prop_json, '$.OperGroupCapa') AS DOUBLE) AS capa_val,
+        CAST(json_extract_scalar(t.prop_json, '$.{capa_prop_key}') AS DOUBLE) AS capa_val,
         t.item_id,
         t.item_group_id,
         t.demand_id,
@@ -125,6 +154,7 @@ WITH base AS (
       AND t.plan_ver = '{plan_ver}'
       AND t.oper_group_id != '#Undefined'
       AND (t.demand_type IS NULL OR t.demand_type != '#Dummy')
+      AND t.oper_id IS NOT NULL
       {oper_group_filter}
 )
 SELECT

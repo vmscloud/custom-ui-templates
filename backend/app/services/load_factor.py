@@ -6,6 +6,8 @@ rpt_oper_group_target 테이블에서 공정 그룹별 부하율 데이터를 �
 
 from __future__ import annotations
 
+import json
+import logging
 from datetime import date, datetime, timedelta
 from typing import Any
 
@@ -15,6 +17,8 @@ from app.core.config import settings
 from app.core.database import execute_query
 from app.services import load_factor_queries as Q
 from fastapi import Depends
+
+logger = logging.getLogger(__name__)
 
 
 class LoadFactorService:
@@ -34,7 +38,10 @@ class LoadFactorService:
         )
 
     def _safe_rows(self, result: dict[str, Any]) -> list[dict]:
-        return result.get("row", []) if result.get("success") else []
+        if not result.get("success"):
+            logger.warning(f"[LoadFactor] Trino query failed: {result.get('message', 'unknown error')}")
+            return []
+        return result.get("row", [])
 
     def _partition_key(self, project_id: str, plan_ver: str) -> str:
         return f"{project_id}@{plan_ver[:6]}"
@@ -60,6 +67,48 @@ class LoadFactorService:
         escaped = ", ".join(f"'{g}'" for g in oper_group_ids)
         return f"AND t.oper_group_id IN ({escaped})"
 
+    async def _get_prop_keys(
+        self, project_id: str, partition_key: str, plan_ver: str
+    ) -> dict[str, str]:
+        """odv_report_prop_config에서 prop_json 키 매핑 조회.
+
+        Returns:
+            dict with keys: capa_prop_key, uom_prop_key
+            예: {"capa_prop_key": "PROP01", "uom_prop_key": "PROP02"}
+        """
+        defaults = {"capa_prop_key": "PROP01", "uom_prop_key": "PROP02"}
+        try:
+            sql = Q.PROP_CONFIG_SQL.format(
+                partition_key=partition_key,
+                plan_ver=plan_ver,
+            )
+            result = await self._trino(project_id, sql)
+            rows = self._safe_rows(result)
+            if not rows:
+                logger.warning("[LoadFactor] prop config not found, using defaults")
+                return defaults
+
+            prop_json_str = rows[0].get("prop_json", "{}")
+            prop_config = json.loads(prop_json_str) if isinstance(prop_json_str, str) else prop_json_str
+
+            # prop_config 구조: {"PROP01": {"PropID": {"Value": "OperGroupCapa"}, ...}, ...}
+            mapping = {}
+            for key, val in prop_config.items():
+                prop_id = val.get("PropID", {})
+                display_name = prop_id.get("Value", "")
+                if display_name == "OperGroupCapa":
+                    mapping["capa_prop_key"] = key
+                elif display_name == "OperGroupQtyUOM":
+                    mapping["uom_prop_key"] = key
+
+            return {
+                "capa_prop_key": mapping.get("capa_prop_key", defaults["capa_prop_key"]),
+                "uom_prop_key": mapping.get("uom_prop_key", defaults["uom_prop_key"]),
+            }
+        except Exception as e:
+            logger.warning(f"[LoadFactor] prop config lookup failed: {e}, using defaults")
+            return defaults
+
     async def get_oper_groups(
         self, project_id: str, plan_ver: str
     ) -> list[dict[str, Any]]:
@@ -77,6 +126,7 @@ class LoadFactorService:
         partition_key = self._partition_key(project_id, params.planVer)
         std_ts = self._get_plan_start_date(project_id, params.planVer)
         oper_group_filter = self._build_oper_group_filter(params.operGroupIDs)
+        prop_keys = await self._get_prop_keys(project_id, partition_key, params.planVer)
         sql = Q.MAIN_SQL.format(
             partition_key=partition_key,
             plan_ver=params.planVer,
@@ -84,6 +134,7 @@ class LoadFactorService:
             from_date=params.fromDate,
             to_date=params.toDate,
             oper_group_filter=oper_group_filter,
+            **prop_keys,
         )
         result = await self._trino(project_id, sql)
         data = self._safe_rows(result)
@@ -99,6 +150,7 @@ class LoadFactorService:
         partition_key = self._partition_key(project_id, params.planVer)
         std_ts = self._get_plan_start_date(project_id, params.planVer)
         oper_group_filter = self._build_oper_group_filter(params.operGroupIDs)
+        prop_keys = await self._get_prop_keys(project_id, partition_key, params.planVer)
         sql = Q.GROUP_SQL.format(
             partition_key=partition_key,
             plan_ver=params.planVer,
@@ -106,6 +158,7 @@ class LoadFactorService:
             from_date=params.fromDate,
             to_date=params.toDate,
             oper_group_filter=oper_group_filter,
+            **prop_keys,
         )
         result = await self._trino(project_id, sql)
         data = self._safe_rows(result)
@@ -164,6 +217,7 @@ class LoadFactorService:
         partition_key = self._partition_key(project_id, params.planVer)
         std_ts = self._get_plan_start_date(project_id, params.planVer)
         oper_group_filter = self._build_oper_group_filter(params.operGroupIDs)
+        prop_keys = await self._get_prop_keys(project_id, partition_key, params.planVer)
         sql = Q.DETAIL_SQL.format(
             partition_key=partition_key,
             plan_ver=params.planVer,
@@ -171,6 +225,7 @@ class LoadFactorService:
             from_date=params.fromDate,
             to_date=params.toDate,
             oper_group_filter=oper_group_filter,
+            **prop_keys,
         )
         result = await self._trino(project_id, sql)
         data = self._safe_rows(result)
