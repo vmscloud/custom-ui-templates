@@ -5,10 +5,8 @@ API 라우터 통합
 """
 
 from app.api.v1.endpoints import (
-    demand_distribution,
     freeze_plan,
     health,
-    item_master,
     load_factor,
     plan_cycle,
     plan_dashboard,
