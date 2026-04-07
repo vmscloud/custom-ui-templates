@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  backend:
+    image: localhost:6007/custom-ui-backend:custom
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.labels.custom == true
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    networks:
+      mzc_network:
+        aliases:
+          - mzc_custom_ui_backend
+    environment:
+      - TZ=Asia/Seoul
+      - APP_NAME=Mozart Cloud Custom UI
+      - APP_VERSION=0.1.0
+      - DEBUG=false
+      - DATABASE_URL=postgresql://mzcadm:mzcadm@db:5432/mzc_aps
+      - QUERY_EXECUTOR_BASE_URL=http://queryexecutor:18000
+      - QUERY_EXECUTOR_DB_ALIAS=com
+      - QUERY_EXECUTOR_LIMIT=50000
+      - QUERY_TIMEOUT_SECONDS=120
+      - TRINO_CATALOG=iceberg
+      - TRINO_SCHEMA_APS=mzc_aps
+      - FLUENTBIT_URL=http://logger:9880
+      - SYSTEM_NAME=custom
+      - COMPONENT_NAME=backend
+
+networks:
+  mzc_network:
+    external: true

@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  frontend:
+    image: localhost:6007/custom-ui-frontend:custom
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.labels.custom == true
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    networks:
+      mzc_network:
+        aliases:
+          - mzc_custom_ui_frontend
+    environment:
+      - TZ=Asia/Seoul
+      - VITE_DEV_PORT=5300
+      - VITE_API_TARGET=http://localhost:8000
+
+networks:
+  mzc_network:
+    external: true
