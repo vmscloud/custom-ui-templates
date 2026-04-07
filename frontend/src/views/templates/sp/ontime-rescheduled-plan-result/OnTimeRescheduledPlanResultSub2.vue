@@ -73,10 +73,12 @@
               v-if="bomMapData.length"
               :bomNetworkInfos="bomMapData"
               :demandInfos="demandInfoData"
-              :shortLogs="shortData"
+              :shortLogs="(shortData as any)"
               :initKey="demandInfoData?.item_id"
               :planCycleData="{
                 planVer,
+                planCycleID: '',
+                projectID: '',
                 fromDate: '',
                 toDate: '',
                 demandID: currentPopupDemandID,
