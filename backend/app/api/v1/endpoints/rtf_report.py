@@ -5,14 +5,19 @@ RTF Report API 라우터
 프론트엔드는 { apiUrl, ...params } 형태로 POST 요청을 보냅니다.
 """
 
+import logging
 from typing import Any
 
+from app.adapters.adapter import QueryExecutorAdapter
+from app.api.dependencies import get_query_executor_adapter
+from app.core.config import settings
 from app.services.rtf_report import RtfReportService
-from fastapi import APIRouter, Path
+from fastapi import APIRouter, Depends, Path, Query
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 class RtfProxyRequest(BaseModel):
@@ -51,6 +56,68 @@ class RtfProxyRequest(BaseModel):
 
     class Config:
         extra = "allow"  # 알 수 없는 필드 허용
+
+
+async def _trino_query(adapter: QueryExecutorAdapter, project_id: str, sql: str) -> list[dict]:
+    result = await adapter.execute_direct_query(
+        project_id=project_id, query=sql,
+        catalog=settings.TRINO_CATALOG_ICEBERG, schema=settings.TRINO_SCHEMA_APS,
+    )
+    return result.get("row", []) if result.get("success") else []
+
+
+@router.get("/rtf-report/filters/customers")
+async def get_filter_customers(
+    project_id: str = Path(...),
+    plan_ver: str = Query(..., alias="plan_ver"),
+    adapter: QueryExecutorAdapter = Depends(get_query_executor_adapter),
+) -> dict[str, Any]:
+    """고객 필터 목록 조회 (Iceberg 직접)"""
+    try:
+        pk = f"{project_id}@{plan_ver[:6]}"
+        sql = f"""
+        SELECT DISTINCT
+            a.cust_id,
+            b.cust_name,
+            CONCAT(a.cust_id, ' / ',
+                CASE WHEN COALESCE(b.cust_name, '') = ''
+                     THEN a.cust_id ELSE b.cust_name END
+            ) AS cust_label
+        FROM rpt_shipment_plan a
+        LEFT JOIN odv_cust_master b
+            ON a.partition_key = b.partition_key AND a.cust_id = b.cust_id AND a.plan_ver = b.plan_ver
+        WHERE a.partition_key = '{pk}' AND a.plan_ver = '{plan_ver}'
+          AND (a.demand_type != 'SafetyStock' OR a.demand_type IS NULL)
+        ORDER BY a.cust_id
+        """
+        data = await _trino_query(adapter, project_id, sql)
+        return {"success": True, "count": len(data), "data": data}
+    except Exception as e:
+        logger.exception(f"[고객 필터 조회] {e}")
+        return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
+
+@router.get("/rtf-report/filters/item-groups")
+async def get_filter_item_groups(
+    project_id: str = Path(...),
+    plan_ver: str = Query(..., alias="plan_ver"),
+    adapter: QueryExecutorAdapter = Depends(get_query_executor_adapter),
+) -> dict[str, Any]:
+    """품목 그룹 필터 목록 조회 (Iceberg 직접)"""
+    try:
+        pk = f"{project_id}@{plan_ver[:6]}"
+        sql = f"""
+        SELECT DISTINCT item_group_id AS item_group
+        FROM rpt_shipment_plan
+        WHERE partition_key = '{pk}' AND plan_ver = '{plan_ver}'
+          AND (demand_type != 'SafetyStock' OR demand_type IS NULL)
+        ORDER BY item_group_id
+        """
+        data = await _trino_query(adapter, project_id, sql)
+        return {"success": True, "count": len(data), "data": data}
+    except Exception as e:
+        logger.exception(f"[품목그룹 필터 조회] {e}")
+        return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
 
 
 @router.post("/rtf-report/proxy")

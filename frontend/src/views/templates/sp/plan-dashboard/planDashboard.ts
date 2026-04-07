@@ -104,6 +104,31 @@ export interface PeggingReportReasonRow {
   [key: string]: any;
 }
 
+/** OTD Summary 응답 */
+export interface OTDSummary {
+  qtyUom: string;
+  uomType: string;
+  periodType: string;
+  frozenVer: string;
+  frozenQty: number;
+  planQty: number;
+  actQty: number;
+  list: OTDSummaryRow[];
+}
+
+/** OTD Summary 행 */
+export interface OTDSummaryRow {
+  category: string;
+  type: string; // "FROZEN" | "PLAN" | "ACT"
+  total_qty: number;
+  origin_total_qty: number;
+  current_due_bucket_prod_qty: number;
+  previous_due_bucket_prod_qty: number;
+  next_due_bucket_prod_qty: number;
+  after_next_due_bucket_prod_qty: number;
+  [key: string]: any;
+}
+
 /** /dashboard 응답 data 페이로드 */
 export interface DashboardData {
   frozenVer: string;
@@ -118,6 +143,7 @@ export interface DashboardData {
     summary: ProdReportSummaryRow[];
     detail: ProdReportDetailRow[];
   };
+  otdSummary: OTDSummary;
   stdSummaryReport: StdSummaryReportRow[];
   errorLogSummary: ErrorLogSummaryRow[];
   shortLogSummary: ShortLogSummaryRow[];
@@ -215,7 +241,7 @@ export const fetchFrozenVer = (planVer: string) =>
 
 export function usePlanDashboard() {
   // === 필터 상태 ===
-  const region = ref<string>("RTF");
+  const region = ref<string>("RTF_대구");
   const detailRegion = ref<string>("전체");
   const aggregateType = ref<string>("MONTH");
 

@@ -216,6 +216,76 @@ GROUP BY severity
 ORDER BY cnt DESC
 """
 
+# OTD: rpt_buffer_plan에서 item_group별 집계 (frozen/plan 비교)
+# C# GetOTDSummaryRowsWithFrozenAndPlan / GetOTDSummaryRowsWithFrozenAndAct 대응
+OTD_BUFFER_PLAN_SUMMARY_SQL = """
+SELECT
+    COALESCE(b.item_group_id, 'Unknown') AS category,
+    ROUND(CAST(SUM(b.conv_qty) AS DOUBLE), 1) AS total_qty,
+    SUM(b.conv_qty) AS origin_total_qty,
+    MAX(b.conv_qty_uom) AS qty_uom,
+    ROUND(CAST(SUM(CASE
+        WHEN b.due_date >= '{cycle_start}' AND b.due_date < '{cycle_end}' THEN b.conv_qty ELSE 0
+    END) AS DOUBLE), 1) AS current_due_bucket_prod_qty,
+    ROUND(CAST(SUM(CASE
+        WHEN b.due_date < '{cycle_start}' THEN b.conv_qty ELSE 0
+    END) AS DOUBLE), 1) AS previous_due_bucket_prod_qty,
+    ROUND(CAST(SUM(CASE
+        WHEN b.due_date >= '{cycle_end}' AND b.due_date < '{next_cycle_end}' THEN b.conv_qty ELSE 0
+    END) AS DOUBLE), 1) AS next_due_bucket_prod_qty,
+    ROUND(CAST(SUM(CASE
+        WHEN b.due_date >= '{next_cycle_end}' THEN b.conv_qty ELSE 0
+    END) AS DOUBLE), 1) AS after_next_due_bucket_prod_qty
+FROM rpt_buffer_plan b
+INNER JOIN (
+    SELECT DISTINCT STD_BUFFER_ID AS buffer_id
+    FROM ODV_REPORT_STD_BUFFER_CONFIG
+    WHERE partition_key = '{partition_key}'
+      AND plan_ver = '{plan_ver}'
+      AND FINAL_ITEM_STD_BUFFER_YN = 'Y'
+) fb ON b.buffer_id = fb.buffer_id
+WHERE b.partition_key = '{partition_key}'
+  AND b.plan_ver = '{plan_ver}'
+  {production_area_filter}
+GROUP BY b.item_group_id
+ORDER BY b.item_group_id
+"""
+
+# OTD: ope_exec_actual에서 item_group별 실적 집계
+OTD_ACTUAL_SUMMARY_SQL = """
+SELECT
+    COALESCE(a.item_group_id, 'Unknown') AS category,
+    ROUND(CAST(SUM(a.conv_qty) AS DOUBLE), 1) AS total_qty,
+    SUM(a.conv_qty) AS origin_total_qty,
+    MAX(a.conv_qty_uom) AS qty_uom,
+    ROUND(CAST(SUM(CASE
+        WHEN a.plan_date >= '{cycle_start}' AND a.plan_date < '{cycle_end}' THEN a.conv_qty ELSE 0
+    END) AS DOUBLE), 1) AS current_due_bucket_prod_qty,
+    ROUND(CAST(SUM(CASE
+        WHEN a.plan_date < '{cycle_start}' THEN a.conv_qty ELSE 0
+    END) AS DOUBLE), 1) AS previous_due_bucket_prod_qty,
+    ROUND(CAST(SUM(CASE
+        WHEN a.plan_date >= '{cycle_end}' AND a.plan_date < '{next_cycle_end}' THEN a.conv_qty ELSE 0
+    END) AS DOUBLE), 1) AS next_due_bucket_prod_qty,
+    ROUND(CAST(SUM(CASE
+        WHEN a.plan_date >= '{next_cycle_end}' THEN a.conv_qty ELSE 0
+    END) AS DOUBLE), 1) AS after_next_due_bucket_prod_qty
+FROM ope_exec_actual a
+INNER JOIN (
+    SELECT DISTINCT STD_BUFFER_ID AS buffer_id
+    FROM ODV_REPORT_STD_BUFFER_CONFIG
+    WHERE partition_key = '{partition_key}'
+      AND plan_ver = '{plan_ver}'
+      AND FINAL_ITEM_STD_BUFFER_YN = 'Y'
+) fb ON a.buffer_id = fb.buffer_id
+WHERE a.partition_key = '{partition_key}'
+  AND a.plan_ver = '{plan_ver}'
+  AND a.in_out_type = 'In'
+  {production_area_filter}
+GROUP BY a.item_group_id
+ORDER BY a.item_group_id
+"""
+
 PROD_QTY_SQL = """
 SELECT
     ROUND(CAST(AVG(PLAN_VALUE) AS DOUBLE), 0) AS total_avg_prod_qty

@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$IMAGE = "192.168.1.250:6007/mzc-custom-ui-frontend:latest"
+$IMAGE = "203.231.40.242:6007/mzc-custom-ui-frontend:latest"
 $TOKEN_FILE = Join-Path $PSScriptRoot ".npm_token"
 
 # 1. .npmrc에서 토큰 추출

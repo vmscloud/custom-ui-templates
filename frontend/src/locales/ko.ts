@@ -112,6 +112,8 @@ export default {
   "msg-toast-frozen_cancel": "확정 취소되었습니다.",
 
   // === 메뉴/네비게이션 ===
+  "menu-ProductionPlanning": "생산 계획",
+  "menu-PlanDashboard2": "계획 대시보드 (이수페타시스)",
   "text-menu-production_planning": "생산 계획",
   "text-download": "다운로드",
   "text-cancel": "취소",
@@ -137,7 +139,9 @@ export default {
   "text-isu_inner_str_area": "부하 면적(내층)",
   "text-isu_floor_number": "층번",
   "text-isu_item_id": "제품 코드",
+  "text-isu_item_group": "제품구분",
   "text-isu_item_group_id": "제품 구분",
+  "text-isu_prod_type": "생산유형",
   "text-isu_demand_id": "주문 번호",
   "text-isu_due_date": "고객 납기",
   "text-isu_aps_due_date": "관리 납기(APS)",
@@ -233,6 +237,56 @@ export default {
   "text-upper-customer": "고객",
   "text-upper-region": "지역",
   "text-upper-demand_type": "수요 유형",
+
+  // === Plan Dashboard 패널 타이틀 ===
+  "text-isu_current_month_otd_fcst_rate": "당월 예상 납기 준수율({{ month }}월 기준)",
+  "text-plan_dashboard_isu-act_rtf_report": "생산 실적의 납기 준수율",
+  "text-plan_dashboard_isu-replan_rtf_report": "재수립 계획의 납기 준수율",
+  "text-plan_dashboard_isu-frozen_act_comparison_report": "월초 계획 vs. 실적",
+  "text-plan_dashboard_isu-oper_group_utilization_report": "공정 그룹별 부하율(향후 30일)",
+  "text-plan_dashboard_isu-frozen_replan_comparison_report": "확정 계획 vs.  재수립 계획",
+  "text-plan_dashboard_isu-total_plan_qty_by_month": "월 계획 총량",
+  "text-plan_dashboard_isu-total_plan_qty_by_week": "주 계획 총량",
+  "text-plan_dashboard_isu-upcoming_ratio": "미도래",
+
+  // === Plan Dashboard RTF/차트 레이블 ===
+  "text-plan_dashboard-rtf_ratio": "RTF 비율",
+  "text-plan_dashboard-rtf_qty": "RTF 수량",
+  "text-plan_dashboard-early": "Early",
+  "text-plan_dashboard-on_time": "정시 생산",
+  "text-plan_dashboard-late": "지연 생산",
+  "text-plan_dashboard-short": "생산 차질",
+  "text-plan_dashboard-excluded": "Excluded",
+  "text-plan_dashboard-demand_qty": "수요 수량",
+  "text-plan_dashboard-on_time_delivery": "정시 배송",
+  "text-plan_dashboard-late_delivery": "지연 배송",
+  "text-plan_dashboard-short_delivery": "차질 배송",
+
+  // === Plan Dashboard 재공/설비/기타 ===
+  "text-plan_dashboard-pegging_report": "재공 사용 현황",
+  "text-plan_dashboard-pegging_qty": "재공 사용 수량",
+  "text-plan_dashboard-pegging_ratio": "재공 사용 비율",
+  "text-plan_dashboard-unpeg_qty": "불용 재공 수량",
+  "text-plan_dashboard-wip_qty": "재공 수량",
+  "text-plan_dashboard-unpeg": "불용 재공",
+  "text-plan_dashboard-peg": "사용 재공",
+  "text-plan_dashboard-res_util_report": "설비 가동 현황",
+  "text-plan_dashboard-short_summary": "생산 차질 정보",
+  "text-plan_dashboard-error_summary": "오류 정보",
+  "text-plan_dashboard-re_execute_plan": "계획 재실행",
+
+  // === Plan Dashboard 공통 ===
+  "text-frozen_plan": "확정 계획",
+  "text-fgs_stock_report_qty_uom": "(단위: {{ unit }})",
+  "msg-data_empty": "데이터가 없습니다.",
+  "text-isu_current_month_otd_expected_rate": "당월 예상 납기 준수율",
+  "text-isu_act_otd_rate": "실적 준수율",
+  "text-isu_replan_otd_rate": "재수립 계획 준수율",
+  "text-cumulative_performance_volume": "누적 실적량",
+  "text-type": "유형",
+  "text-total_qty": "전체 수량",
+  "text-frozen_planned_total": "확정 계획 총량",
+  "text-current_planned_total": "현재 계획 총량",
 
   // === 한글 리터럴 키 (APS 원본 동일) ===
   "버전 정보": "버전 정보",

@@ -74,7 +74,6 @@ import { computed, inject, ref } from "vue";
 import { useTranslation } from "i18next-vue";
 import { Button, Radio } from "@vmscloud/moz-ui-components";
 import type { usePlanDashboard } from "../planDashboard";
-import type { RTFSummary } from "../planDashboard";
 import SimpleGrid from "./SimpleGrid.vue";
 import IconOpen from "../assets/IconOpen.vue";
 
@@ -94,36 +93,20 @@ const planOptionSource = computed(() => [
   { value: "DEMANDTYPE", label: t("text-isu_prod_type") },
 ]);
 
-const EMPTY_SUMMARY: RTFSummary = {
-  demandQty: 0,
-  earlyQty: 0,
-  earlyRatio: 0,
-  ontimeQty: 0,
-  ontimeRatio: 0,
-  lateQty: 0,
-  lateRatio: 0,
-  shortQty: 0,
-  shortRatio: 0,
-  rtfQty: 0,
-  rtfRatio: 0,
-  upcomingQty: 0,
-  upcomingRatio: 0,
-  qtyUom: "",
-  uomType: "",
-};
+const otdData = computed(() => dashboardData.value?.otdSummary);
+
+const frozenData = computed(() => ({
+  qtyUom: otdData.value?.qtyUom ?? "",
+  demandQty: otdData.value?.frozenQty ?? 0,
+}));
+
+const actualData = computed(() => ({
+  demandQty: otdData.value?.actQty ?? 0,
+}));
 
 const hasData = computed(() => {
-  const summary = dashboardData.value?.rtfSummary;
-  return summary?.frozen != null || summary?.actual != null;
+  return (otdData.value?.list?.length ?? 0) > 0 || (otdData.value?.frozenQty ?? 0) > 0;
 });
-
-const frozenData = computed<RTFSummary>(
-  () => dashboardData.value?.rtfSummary?.frozen ?? EMPTY_SUMMARY,
-);
-
-const actualData = computed<RTFSummary>(
-  () => dashboardData.value?.rtfSummary?.actual ?? EMPTY_SUMMARY,
-);
 
 function formatNumber(val: number): string {
   if (val == null) return "0";
@@ -136,19 +119,19 @@ const simpleColumns = computed(() => [
     id: 0,
     header: t("text-type"),
     type: "string",
-    width: 70,
+    width: 100,
   },
   {
-    binding: "demandQty",
+    binding: "total_qty",
     id: 1,
     header: t("text-total_qty"),
     type: "number",
     width: 90,
   },
-  { binding: "earlyQty", id: 2, header: "Early", type: "number", width: 80 },
-  { binding: "ontimeQty", id: 3, header: "On-time", type: "number", width: 90 },
-  { binding: "lateQty", id: 4, header: "Late", type: "number", width: 80 },
-  { binding: "shortQty", id: 5, header: "Short", type: "number", width: 80 },
+  { binding: "current_due_bucket_prod_qty", id: 2, header: "Early", type: "number", width: 80 },
+  { binding: "previous_due_bucket_prod_qty", id: 3, header: "On-time", type: "number", width: 90 },
+  { binding: "next_due_bucket_prod_qty", id: 4, header: "Late", type: "number", width: 80 },
+  { binding: "after_next_due_bucket_prod_qty", id: 5, header: "Short", type: "number", width: 80 },
   {
     binding: "rtfRatio",
     id: 6,
@@ -159,30 +142,45 @@ const simpleColumns = computed(() => [
 ]);
 
 const gridData = computed(() => {
-  const f = frozenData.value;
-  const a = actualData.value;
-  return [
-    {
+  const list = otdData.value?.list ?? [];
+  const frozenRows = list.filter((r: any) => r.type === "FROZEN");
+  const actRows = list.filter((r: any) => r.type === "ACT");
+
+  const rtfFrozen = dashboardData.value?.rtfSummary?.frozen;
+  const rtfActual = dashboardData.value?.rtfSummary?.actual;
+
+  const rows: any[] = [];
+  for (const row of frozenRows) {
+    rows.push({ ...row, category: row.category, rtfRatio: "" });
+  }
+  if (frozenRows.length === 0 && rtfFrozen) {
+    rows.push({
       category: "Frozen",
       type: "FROZEN",
-      demandQty: f.demandQty,
-      earlyQty: f.earlyQty,
-      ontimeQty: f.ontimeQty,
-      lateQty: f.lateQty,
-      shortQty: f.shortQty,
-      rtfRatio: f.rtfRatio.toFixed(1) + "%",
-    },
-    {
+      total_qty: rtfFrozen.demandQty,
+      current_due_bucket_prod_qty: rtfFrozen.earlyQty,
+      previous_due_bucket_prod_qty: rtfFrozen.ontimeQty,
+      next_due_bucket_prod_qty: rtfFrozen.lateQty,
+      after_next_due_bucket_prod_qty: rtfFrozen.shortQty,
+      rtfRatio: rtfFrozen.rtfRatio.toFixed(1) + "%",
+    });
+  }
+  for (const row of actRows) {
+    rows.push({ ...row, category: row.category, rtfRatio: "" });
+  }
+  if (actRows.length === 0 && rtfActual) {
+    rows.push({
       category: "Actual",
       type: "ACT",
-      demandQty: a.demandQty,
-      earlyQty: a.earlyQty,
-      ontimeQty: a.ontimeQty,
-      lateQty: a.lateQty,
-      shortQty: a.shortQty,
-      rtfRatio: a.rtfRatio.toFixed(1) + "%",
-    },
-  ];
+      total_qty: rtfActual.demandQty,
+      current_due_bucket_prod_qty: rtfActual.earlyQty,
+      previous_due_bucket_prod_qty: rtfActual.ontimeQty,
+      next_due_bucket_prod_qty: rtfActual.lateQty,
+      after_next_due_bucket_prod_qty: rtfActual.shortQty,
+      rtfRatio: rtfActual.rtfRatio.toFixed(1) + "%",
+    });
+  }
+  return rows;
 });
 
 const simpleFormatItem = (

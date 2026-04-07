@@ -16,13 +16,13 @@ WHERE partition_key = '{partition_key}'
 ORDER BY region
 """
 
-# 공정 그룹 목록 조회 - rpt_oper_group_plan에서 추출
+# 공정 그룹 목록 조회 - 원본: odv_oper_group_master
 OPER_GROUPS_SQL = """
-SELECT DISTINCT oper_group_id, oper_group_name
-FROM rpt_oper_group_plan
+SELECT oper_group_id, oper_group_name, oper_group_seq
+FROM odv_oper_group_master
 WHERE partition_key = '{partition_key}'
   AND plan_ver = '{plan_ver}'
-ORDER BY oper_group_id
+ORDER BY oper_group_seq, oper_group_id
 """
 
 # 버퍼 목록 조회 - rpt_buffer_plan에서 추출

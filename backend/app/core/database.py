@@ -11,14 +11,14 @@ from app.core.config import settings
 from trino.dbapi import connect
 
 
-def _get_connection():
-    """Trino 연결을 생성합니다."""
+def _get_connection(catalog: str = None, schema: str = None):
+    """Trino 연결을 생성합니다. 기본값: PostgreSQL 카탈로그 (설정 테이블용)"""
     return connect(
         host=settings.TRINO_HOST,
         port=settings.TRINO_PORT,
         user=settings.TRINO_USER,
-        catalog=settings.TRINO_CATALOG,
-        schema=settings.TRINO_SCHEMA,
+        catalog=catalog or settings.TRINO_PG_CATALOG,
+        schema=schema or settings.TRINO_PG_SCHEMA,
         http_scheme="http",
         request_timeout=settings.QUERY_TIMEOUT_SECONDS,
     )

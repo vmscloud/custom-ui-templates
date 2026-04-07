@@ -301,6 +301,7 @@ export function useOnTimeRescheduledPlanResult() {
   const detailData: Ref<ReplanRtfDetail[]> = ref([]);
   const prodDetailData: Ref<ProdDetailResponse | null> = ref(null);
   const shortData: Ref<ShortData[]> = ref([]);
+  const shortLoading = ref(false);
   const demandSummaryData: Ref<DemandSummaryData[]> = ref([]);
   const demandInfoData: Ref<any[]> = ref([]);
   const pegInfoData: Ref<any[]> = ref([]);
@@ -353,16 +354,16 @@ export function useOnTimeRescheduledPlanResult() {
       const [custRes, itemGroupRes, prodTypeRes] = results;
 
       if (custRes.success) {
-        customerSource.value = custRes.data;
-        selectedCustomers.value = custRes.data.map((c: any) => c.cust_id);
+        customerSource.value = custRes.data.filter((c: any) => c.cust_id != null);
+        selectedCustomers.value = customerSource.value.map((c: any) => c.cust_id);
       }
       if (itemGroupRes.success) {
-        itemGroupSource.value = itemGroupRes.data;
-        selectedItemGroups.value = itemGroupRes.data.map((g: any) => g.item_group_id);
+        itemGroupSource.value = itemGroupRes.data.filter((g: any) => g.item_group != null);
+        selectedItemGroups.value = itemGroupSource.value.map((g: any) => g.item_group);
       }
       if (prodTypeRes.success) {
-        prodTypeSource.value = prodTypeRes.data;
-        selectedProdTypes.value = prodTypeRes.data.map((p: any) => p.value);
+        prodTypeSource.value = prodTypeRes.data.filter((p: any) => p.value != null);
+        selectedProdTypes.value = prodTypeSource.value.map((p: any) => p.value);
       }
     } catch (e) {
       console.error("필터 데이터 로드 오류:", e);
@@ -467,11 +468,14 @@ export function useOnTimeRescheduledPlanResult() {
   }
 
   async function loadShort(planVer: string, demandID: string) {
+    shortLoading.value = true;
     try {
       const res = await fetchShort({ planVer, demandID, uomType: committedUomType.value });
       if (res.success) shortData.value = res.data;
     } catch (e) {
       console.error("Short 사유 조회 오류:", e);
+    } finally {
+      shortLoading.value = false;
     }
   }
 
@@ -641,6 +645,7 @@ export function useOnTimeRescheduledPlanResult() {
     detailData,
     prodDetailData,
     shortData,
+    shortLoading,
     demandSummaryData,
     demandInfoData,
     pegInfoData,

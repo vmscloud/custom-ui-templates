@@ -38,101 +38,100 @@
         align="right"
       />
       <WjFlexGridColumnGroup :header="t('text-isu_rtf_rate')" align="center">
-        <WjFlexGridColumnGroup
-          :width="80"
-          binding="ratio_early"
-          :header="t('text-isu_early')"
-          dataType="Number"
-          align="right"
-        />
-        <WjFlexGridColumnGroup
-          :width="80"
-          binding="ratio_ontime"
-          :header="t('text-isu_ontime')"
-          dataType="Number"
-          align="right"
-        />
-        <WjFlexGridColumnGroup
-          :width="80"
-          binding="ratio_late"
-          :header="t('text-isu_late')"
-          dataType="Number"
-          align="right"
-        />
-        <WjFlexGridColumnGroup
-          :width="80"
-          binding="ratio_short"
-          :header="t('text-isu_short')"
-          dataType="Number"
-          align="right"
-        />
+        <WjFlexGridColumnGroup :width="80" binding="ratio_early" :header="t('text-isu_early')" dataType="Number" align="right" />
+        <WjFlexGridColumnGroup :width="80" binding="ratio_ontime" :header="t('text-isu_ontime')" dataType="Number" align="right" />
+        <WjFlexGridColumnGroup :width="80" binding="ratio_late" :header="t('text-isu_late')" dataType="Number" align="right" />
+        <WjFlexGridColumnGroup :width="80" binding="ratio_short" :header="t('text-isu_short')" dataType="Number" align="right" />
       </WjFlexGridColumnGroup>
       <WjFlexGridColumnGroup :header="t('text-isu_prod_qty')" align="center">
-        <WjFlexGridColumnGroup
-          :width="80"
-          binding="earlyQty"
-          :header="t('text-isu_early')"
-          dataType="Number"
-          align="right"
-        />
-        <WjFlexGridColumnGroup
-          :width="80"
-          binding="onTimeQty"
-          :header="t('text-isu_ontime')"
-          dataType="Number"
-          align="right"
-        />
-        <WjFlexGridColumnGroup
-          :width="80"
-          binding="lateQty"
-          :header="t('text-isu_late')"
-          dataType="Number"
-          align="right"
-        />
-        <WjFlexGridColumnGroup
-          :width="80"
-          binding="shortQty"
-          :header="t('text-isu_short')"
-          dataType="Number"
-          align="right"
-        />
+        <WjFlexGridColumnGroup :width="80" binding="earlyQty" :header="t('text-isu_early')" dataType="Number" align="right" />
+        <WjFlexGridColumnGroup :width="80" binding="onTimeQty" :header="t('text-isu_ontime')" dataType="Number" align="right" />
+        <WjFlexGridColumnGroup :width="80" binding="lateQty" :header="t('text-isu_late')" dataType="Number" align="right" />
+        <WjFlexGridColumnGroup :width="80" binding="shortQty" :header="t('text-isu_short')" dataType="Number" align="right" />
       </WjFlexGridColumnGroup>
     </ExtendFlexGrid>
 
-    <!-- Short Detail Popup -->
+    <!-- Short Detail Popup (원본: BomMapInterface + Short Grid SplitPane) -->
     <Popup
-      :width="700"
-      :height="500"
+      :width="popupWidth"
+      :height="popupHeight"
       v-model:visible="shortPopupVisible"
       :title="t('text-short-reason-detail-view')"
       preset="close"
       :onCancel="() => (shortPopupVisible = false)"
+      :maxWidth="popupWidth"
+      :maxHeight="popupHeight"
+      :resizeable="true"
+      :style="{ minWidth: '650px', minHeight: '400px' }"
+      :useVShow="false"
     >
-      <ExtendFlexGrid
-        name="onTimeReplanShortDetail"
-        :itemsSource="shortData"
-        height="100%"
-        :isReadOnly="true"
-        allowSorting="None"
-        :use-tool-box="false"
-      >
-        <WjFlexGridColumnGroup binding="short_type" :header="t('text-short_type')" :width="100" align="center" />
-        <WjFlexGridColumnGroup binding="short_category" :header="t('text-short_category')" :width="100" />
-        <WjFlexGridColumnGroup binding="short_reason" :header="t('text-short_reason')" :width="150" />
-        <WjFlexGridColumnGroup binding="short_qty" :header="t('text-short_qty')" dataType="Number" :width="90" align="right" format="n0" />
-        <WjFlexGridColumnGroup binding="qty_uom" :header="t('text-qty_uom')" :width="80" :visible="false" />
-      </ExtendFlexGrid>
+      <div class="bom-map-popup-container">
+        <SplitPane horizontal style="max-width: 100%">
+          <!-- 상단 70%: BomMapInterface -->
+          <Pane size="70%" max-size="90%">
+            <BomMapInterface
+              v-if="bomMapData.length"
+              :bomNetworkInfos="bomMapData"
+              :demandInfos="demandInfoData"
+              :shortLogs="shortData"
+              :initKey="demandInfoData?.item_id"
+              :planCycleData="{
+                planVer,
+                fromDate: '',
+                toDate: '',
+                demandID: currentPopupDemandID,
+              }"
+              userID=""
+            />
+            <div v-else class="grid-empty">
+              <EmptyState :is-read-only="true" />
+            </div>
+          </Pane>
+          <!-- 하단 30%: Short Reason Grid -->
+          <Pane size="30%" max-size="90%">
+            <div class="grid-sort-reason">
+              <ExtendFlexGrid
+                name="onTimeReplanShortDetail"
+                :itemsSource="shortData"
+                height="100%"
+                :isReadOnly="true"
+                allowSorting="None"
+                :use-tool-box="false"
+                :loading="shortLoading"
+                :setContextMenuProps="{
+                  useFlexGridSetting: true,
+                  useFilter: true,
+                  useExportExcel: true,
+                }"
+              >
+                <WjFlexGridColumnGroup binding="short_type" :header="t('text-short_type')" :width="100" align="center" />
+                <WjFlexGridColumnGroup binding="short_category" :header="t('text-short_category')" :width="100" />
+                <WjFlexGridColumnGroup binding="short_reason" :header="t('text-short_reason')" :width="150" />
+                <WjFlexGridColumnGroup binding="short_qty" :header="t('text-short_qty')" dataType="Number" :width="90" align="right" format="n0" />
+                <WjFlexGridColumnGroup binding="qty_uom" :header="t('text-qty_uom')" :width="80" :visible="false" />
+                <WjFlexGridColumnGroup binding="short_detail_info" :header="t('text-short_detail_info')" :width="120" />
+                <WjFlexGridColumnGroup binding="isb_id" :header="t('text-isb_id')" :width="100" />
+                <WjFlexGridColumnGroup binding="bom_id" :header="t('text-bom_id')" :width="100" />
+                <WjFlexGridColumnGroup binding="routing_id" :header="t('text-routing_id')" :width="100" />
+                <WjFlexGridColumnGroup binding="oper_id" :header="t('text-oper_id')" :width="100" />
+                <WjFlexGridColumnGroup binding="res_id" :header="t('text-res_id')" :width="100" />
+              </ExtendFlexGrid>
+            </div>
+          </Pane>
+        </SplitPane>
+      </div>
     </Popup>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, onMounted, onBeforeUnmount, computed } from "vue";
 import { useTranslation } from "i18next-vue";
 import { ExtendFlexGrid, type ExtendGrid } from "@vmscloud/moz-wijmo-grid";
 import { WjFlexGridColumnGroup } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
 import { type FlexGrid, CellRange } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
-import { Popup } from "@vmscloud/moz-ui-components";
+import { EmptyState, Pane, Popup, SplitPane } from "@vmscloud/moz-ui-components";
+import BomMapInterface from "@/views/templates/sp/new-rtf-report/components/bom-map/BomMapInterface.vue";
 import type { ReplanRtfDetail, ShortData } from "./onTimeRescheduledPlanResult";
 
 const { t } = useTranslation();
@@ -145,19 +144,39 @@ interface Props {
   planVer: string;
   uomType: string;
   shortData: ShortData[];
+  shortLoading?: boolean;
+  bomMapData?: any[];
+  demandInfoData?: any;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  bomMapData: () => [],
+  demandInfoData: () => ({}),
+});
+
 const emit = defineEmits<{
   (e: "demand-selected", demandID: string): void;
   (e: "load-short", demandID: string): void;
 }>();
+
+// === Popup size (브라우저 80% x 90%) ===
+const windowWidth = ref(window.innerWidth);
+const windowHeight = ref(window.innerHeight);
+const popupWidth = computed(() => Math.floor(windowWidth.value * 0.8));
+const popupHeight = computed(() => Math.floor(windowHeight.value * 0.9));
+const updateWindowSize = () => {
+  windowWidth.value = window.innerWidth;
+  windowHeight.value = window.innerHeight;
+};
+onMounted(() => window.addEventListener("resize", updateWindowSize));
+onBeforeUnmount(() => window.removeEventListener("resize", updateWindowSize));
 
 // === Local State ===
 
 const grid = ref<FlexGrid | null>(null);
 const extendGrid = ref<ExtendGrid | null>(null);
 const shortPopupVisible = ref(false);
+const currentPopupDemandID = ref("");
 
 // === Grid Initialization ===
 
@@ -273,11 +292,12 @@ const onFormatItem = (s: FlexGrid, e: any) => {
       break;
 
     case "showDetailCol":
-      cell.textContent = t('text-view_detail');
+      cell.textContent = t("text-view_detail");
       cell.style.cursor = "pointer";
       cell.style.color = "#4568e0";
       cell.style.textDecoration = "underline";
       cell.addEventListener("click", () => {
+        currentPopupDemandID.value = item.demandID;
         emit("load-short", item.demandID);
         shortPopupVisible.value = true;
       });
@@ -308,6 +328,31 @@ const onFormatItem = (s: FlexGrid, e: any) => {
   height: 100%;
   display: flex;
   flex-direction: column;
+}
+
+.bom-map-popup-container {
+  height: 100%;
+  width: 100%;
+
+  .bom-map-outer-wrapper {
+    border: 1px solid #bbc6d9;
+    border-bottom: none;
+
+    &:before {
+      border: none !important;
+    }
+  }
+
+  .grid-sort-reason {
+    height: 100%;
+  }
+
+  .grid-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
 }
 
 .rtf-report-sub2 {

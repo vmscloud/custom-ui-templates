@@ -120,10 +120,11 @@ class ReplanRtfInfo:
         return len(self.demand_list)
 
     def to_dict(self) -> dict:
-        total = self._early_qty + self._ontime_qty + self._late_qty + self._short_qty
         rtf = self._early_qty + self._ontime_qty + self._late_qty
-        # shortQty = (short + upcoming) - (planOnTime + planLate) — 원본 로직
+        # shortQty = (short + upcoming) - (planOnTime + planLate) — C# 원본 동일
         short_qty = (self._short_qty + self._upcoming_qty) - (self._plan_ontime_qty + self._plan_late_qty)
+        # totalQty = early + ontime + late + 조정된 shortQty — C# 원본 line 73
+        total = self._early_qty + self._ontime_qty + self._late_qty + short_qty
 
         if total > 0:
             ratio_rtf = round(rtf / total * 1000) / 10
@@ -137,6 +138,7 @@ class ReplanRtfInfo:
         return {
             "due": self.due,
             "custID": self.cust_id,
+            "demandID": self.demand_list[0] if self.demand_list else "",
             "itemGroupID": self.item_group_id,
             "prodType": self.prod_type,
             "region": self.region,
@@ -273,7 +275,7 @@ class ReplanRtfProcessor:
         is_default_uom: bool = True,
     ):
         self.adapter = adapter
-        self.catalog = settings.TRINO_CATALOG
+        self.catalog = settings.TRINO_CATALOG_ICEBERG
         self.schema = settings.TRINO_SCHEMA_APS
         self.type_proc = type_proc
         self._is_lot_type = is_lot_type
@@ -284,6 +286,12 @@ class ReplanRtfProcessor:
         self._plan_end: date | None = None
         self._cycle_start: date | None = None
         self._cycle_end: date | None = None
+
+        # Prop keys (set by _load_prop_keys)
+        self._prop_keys: dict[str, str] = {
+            "prod_type_prop_key": "PROP03",
+            "production_area_prop_key": "PROP01",
+        }
 
     async def _trino(self, project_id: str, sql: str) -> dict[str, Any]:
         result = await self.adapter.execute_direct_query(
@@ -297,17 +305,52 @@ class ReplanRtfProcessor:
     def _partition_key(self, project_id: str, plan_ver: str) -> str:
         return f"{project_id}@{plan_ver[:6]}"
 
+    async def _load_prop_keys(self, project_id: str, partition_key: str, plan_ver: str) -> None:
+        """odv_report_prop_config에서 RPT_SHIPMENT_PLAN의 prop_json 키 매핑 조회"""
+        import json as _json
+        import logging
+        logger = logging.getLogger(__name__)
+        try:
+            sql = Q.PROP_CONFIG_SQL.format(partition_key=partition_key, plan_ver=plan_ver)
+            result = await self._trino(project_id, sql)
+            rows = result.get("row", []) if result.get("success") else []
+            if not rows:
+                logger.warning("[ReplanRtf] prop config not found, using defaults")
+                return
+            prop_json_str = rows[0].get("prop_json", "{}")
+            prop_config = _json.loads(prop_json_str) if isinstance(prop_json_str, str) else prop_json_str
+            for key, val in prop_config.items():
+                display_name = val.get("PropID", {}).get("Value", "")
+                if display_name == "PROD_TYPE":
+                    self._prop_keys["prod_type_prop_key"] = key
+                elif display_name == "PRODUCTION_AREA":
+                    self._prop_keys["production_area_prop_key"] = key
+        except Exception as e:
+            logger.warning(f"[ReplanRtf] prop config lookup failed: {e}, using defaults")
+
+    def _build_list_filter(self, column: str, values: list[str] | None) -> str:
+        """리스트 필터 → SQL IN 절"""
+        if not values:
+            return ""
+        escaped = ", ".join(f"'{v}'" for v in values)
+        return f"AND {column} IN ({escaped})"
+
+    def _build_like_filter(self, column: str, value: str | None) -> str:
+        """LIKE 필터 → SQL LIKE 절"""
+        if not value:
+            return ""
+        return f"AND {column} LIKE '{value}%'"
+
     def _load_plan_dates(self, project_id: str, plan_ver: str) -> None:
-        """cfg_plan_config + cfg_plan_cycle_info에서 계획/사이클 날짜 로드 (PostgreSQL)"""
+        """cfg_plan_config + cfg_plan_cycle_info에서 계획/사이클 날짜 로드 (Trino)"""
         from app.core.database import execute_query
         rows = execute_query(
-            """SELECT c.plan_start_datetime, c.plan_period,
+            f"""SELECT c.plan_start_datetime, c.plan_period,
                       ci.start_datetime AS cycle_start_date, ci.end_datetime AS cycle_end_date
                FROM cfg_plan_config c
                INNER JOIN cfg_plan_cycle_info ci
                    ON c.project_id = ci.project_id AND c.plan_cycle_id = ci.plan_cycle_id
-               WHERE c.project_id = %s AND c.plan_ver = %s LIMIT 1""",
-            (project_id, plan_ver),
+               WHERE c.project_id = '{project_id}' AND c.plan_ver = '{plan_ver}' LIMIT 1""",
         )
         if not rows:
             return
@@ -397,6 +440,8 @@ class ReplanRtfProcessor:
         if not self._plan_start or not self._cycle_start or not self._cycle_end:
             return []
 
+        await self._load_prop_keys(project_id, pk, params.planVer)
+
         # 1. 출하계획 조회
         ship_sql = Q.SHIPMENT_PLAN_SQL.format(
             partition_key=pk,
@@ -404,6 +449,11 @@ class ReplanRtfProcessor:
             prod_status_filter=self._build_prod_status_filter(params.prodStatus),
             due_filter="",
             demand_id_filter="",
+            production_area_filter=self._build_like_filter("production_area", getattr(params, "productionArea", None)),
+            item_group_filter=self._build_list_filter("item_group_id", getattr(params, "itemGroupIDs", None)),
+            customer_filter=self._build_list_filter("cust_id", getattr(params, "customers", None)),
+            prod_type_filter=self._build_list_filter("prod_type", getattr(params, "prodTypes", None)),
+            **self._prop_keys,
         )
         ship_result = await self._trino(project_id, ship_sql)
         ship_rows = ship_result.get("row", []) if ship_result.get("success") else []
@@ -526,6 +576,8 @@ class ReplanRtfProcessor:
         if not self._plan_start or not self._cycle_start or not self._cycle_end:
             return []
 
+        await self._load_prop_keys(project_id, pk, params.planVer)
+
         # Due filter
         due_filter = ""
         if params.dueMonth:
@@ -541,6 +593,11 @@ class ReplanRtfProcessor:
             prod_status_filter=self._build_prod_status_filter(params.prodStatus),
             due_filter=due_filter,
             demand_id_filter="",
+            production_area_filter=self._build_like_filter("production_area", getattr(params, "productionArea", None)),
+            item_group_filter=self._build_list_filter("item_group_id", getattr(params, "itemGroupIDs", None)),
+            customer_filter=self._build_list_filter("cust_id", getattr(params, "customers", None)),
+            prod_type_filter=self._build_list_filter("prod_type", getattr(params, "prodTypes", None)),
+            **self._prop_keys,
         )
         ship_result = await self._trino(project_id, ship_sql)
         ship_rows = ship_result.get("row", []) if ship_result.get("success") else []
@@ -676,7 +733,8 @@ class ReplanRtfProcessor:
 
     async def get_prod_types(self, project_id: str, plan_ver: str) -> list[dict]:
         pk = self._partition_key(project_id, plan_ver)
-        sql = Q.PROD_TYPES_SQL.format(partition_key=pk, plan_ver=plan_ver)
+        await self._load_prop_keys(project_id, pk, plan_ver)
+        sql = Q.PROD_TYPES_SQL.format(partition_key=pk, plan_ver=plan_ver, **self._prop_keys)
         result = await self._trino(project_id, sql)
         return result.get("row", []) if result.get("success") else []
 

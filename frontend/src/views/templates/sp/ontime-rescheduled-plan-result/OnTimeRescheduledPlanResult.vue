@@ -77,8 +77,8 @@
               :label="t('text-item_group')"
               v-model="selectedItemGroups"
               :items-source="itemGroupSource"
-              key-prop="item_group_id"
-              display-prop="item_group_id"
+              key-prop="item_group"
+              display-prop="item_group"
               header-format="{count:n0} GROUPS"
               :use-filter="true"
               :use-select-all="true"
@@ -161,8 +161,11 @@
                 :plan-ver="planVer"
                 :uom-type="committedUomType"
                 :short-data="shortData"
+                :short-loading="shortLoading"
+                :bom-map-data="bomMapData"
+                :demand-info-data="demandInfoData"
                 @demand-selected="handleDemandSelect"
-                @load-short="(id: string) => loadShort(planVer, id)"
+                @load-short="onLoadShort"
               />
             </Pane>
           </SplitPane>
@@ -306,6 +309,7 @@ const {
   detailData,
   prodDetailData,
   shortData,
+  shortLoading,
   demandInfoData,
   pegInfoData,
   bomMapData,
@@ -401,6 +405,12 @@ function handleDemandSelect(demandID: string) {
   selectedDemandID.value = demandID;
   loadProdDetail(planVer.value, demandID);
   loadDemandSummary(planVer.value, [demandID]);
+}
+
+function onLoadShort(demandID: string) {
+  if (!planVer.value || !demandID) return;
+  loadShort(planVer.value, demandID);
+  loadBomMap(planVer.value, demandID);
 }
 
 // MultiSelect close handlers

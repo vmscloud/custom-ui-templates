@@ -62,11 +62,11 @@ class RTFSummaryCreator:
         # Parse settings
         if settings:
             self._rtf_std = settings.get("rtfStd", "LOT")
-            self._uom_type = settings.get("uomType", "DEFAULT")
+            self._uom_type = settings.get("uomType", "CONVERSION")
             self._setting_list = settings.get("setting", self.DEFAULT_SETTINGS)
         else:
             self._rtf_std = "LOT"
-            self._uom_type = "DEFAULT"
+            self._uom_type = "CONVERSION"
             self._setting_list = self.DEFAULT_SETTINGS
 
         self._is_lot = self._rtf_std == "LOT"
@@ -189,7 +189,7 @@ class PlanDashboardService:
     def __init__(self, adapter: QueryExecutorAdapter):
         self.adapter = adapter
         self.repo = PlanDashboardRepository
-        self.catalog = settings.TRINO_CATALOG
+        self.catalog = settings.TRINO_CATALOG_ICEBERG
         self.schema = settings.TRINO_SCHEMA_APS
 
     async def _trino(self, project_id: str, sql: str) -> dict[str, Any]:
@@ -229,9 +229,12 @@ class PlanDashboardService:
         except (json.JSONDecodeError, TypeError):
             return None
 
-    def _build_category_filter(self, rtf_settings: dict | None) -> str:
-        """RTF 설정에서 category_name 필터 생성 (빈 문자열이면 필터 없음)"""
-        # SelectLike 방식이므로 기본적으로 필터 없음 — 서비스 레이어에서 필터링
+    def _build_category_filter(
+        self, rtf_settings: dict | None, category_name: str = ""
+    ) -> str:
+        """RTF 설정에서 category_name 필터 생성"""
+        if category_name:
+            return f"AND category_name = '{category_name}'"
         return ""
 
     async def _get_rtf_index_data(
@@ -255,10 +258,11 @@ class PlanDashboardService:
         plan_ver: str,
         frozen_ver: str,
         rtf_settings: dict | None,
+        category_name: str = "",
     ) -> dict:
         """Frozen 버전 기준 RTF Summary"""
         frozen_partition_key = f"{project_id}@{frozen_ver[:6]}"
-        category_filter = self._build_category_filter(rtf_settings)
+        category_filter = self._build_category_filter(rtf_settings, category_name)
         index_data = await self._get_rtf_index_data(
             project_id, frozen_partition_key, frozen_ver, category_filter
         )
@@ -273,10 +277,11 @@ class PlanDashboardService:
         plan_ver: str,
         frozen_ver: str,
         rtf_settings: dict | None,
+        category_name: str = "",
     ) -> dict:
         """현재 planVer 기준 RTF Summary (Plan)"""
         partition_key = f"{project_id}@{plan_ver[:6]}"
-        category_filter = self._build_category_filter(rtf_settings)
+        category_filter = self._build_category_filter(rtf_settings, category_name)
         index_data = await self._get_rtf_index_data(
             project_id, partition_key, plan_ver, category_filter
         )
@@ -291,17 +296,16 @@ class PlanDashboardService:
         plan_ver: str,
         frozen_ver: str,
         rtf_settings: dict | None,
+        category_name: str = "",
     ) -> dict:
         """
         실적(Actual) 기반 RTF Summary.
         ope_exec_actual / rpt_shipment_plan 이 없을 수 있으므로
         실패 시 plan 기준 summary로 fallback.
         """
-        # 실적 데이터는 별도 테이블 조회가 필요하지만,
-        # 테이블이 없을 수 있으므로 plan 기반 fallback
         try:
             partition_key = f"{project_id}@{plan_ver[:6]}"
-            category_filter = self._build_category_filter(rtf_settings)
+            category_filter = self._build_category_filter(rtf_settings, category_name)
             index_data = await self._get_rtf_index_data(
                 project_id, partition_key, plan_ver, category_filter
             )
@@ -314,7 +318,7 @@ class PlanDashboardService:
                 "Actual RTF summary failed, falling back to plan-based summary"
             )
             return await self._get_rtf_summary_on_frozen_and_plan(
-                project_id, plan_ver, frozen_ver, rtf_settings
+                project_id, plan_ver, frozen_ver, rtf_settings, category_name
             )
 
     # =======================================================================
@@ -352,6 +356,9 @@ class PlanDashboardService:
 
         # 3. Parse RTF settings
         rtf_settings = self._parse_rtf_settings(settings_map)
+
+        # 3-1. RTF category_name: region이 "RTF"(전체)가 아닌 경우 필터 적용
+        rtf_category_name = params.region if params.region != "RTF" else ""
 
         # 4. Build SQL for non-RTF panels
         # Oper Group Capa
@@ -414,19 +421,19 @@ class PlanDashboardService:
             partition_key=partition_key, plan_ver=params.planVer
         )
 
-        # 5. Execute all in parallel — RTF summaries + non-RTF panels
+        # 5. Execute all in parallel — RTF summaries + non-RTF panels + OTD
         results = await asyncio.gather(
             # RTF summaries (indices 0-2)
             self._get_rtf_summary_on_frozen(
-                project_id, params.planVer, frozen_ver, rtf_settings
+                project_id, params.planVer, frozen_ver, rtf_settings, rtf_category_name
             ),
             self._get_rtf_summary_on_frozen_and_act(
-                project_id, params.planVer, frozen_ver, rtf_settings
+                project_id, params.planVer, frozen_ver, rtf_settings, rtf_category_name
             ),
             self._get_rtf_summary_on_frozen_and_plan(
-                project_id, params.planVer, frozen_ver, rtf_settings
+                project_id, params.planVer, frozen_ver, rtf_settings, rtf_category_name
             ),
-            # Non-RTF panels (indices 3-10)
+            # Non-RTF panels (indices 3-11)
             self._trino(project_id, oper_group_sql),
             self._trino(project_id, res_group_sql),
             self._trino(project_id, prod_sql),
@@ -436,6 +443,10 @@ class PlanDashboardService:
             self._trino(project_id, short_sql),
             self._trino(project_id, peg_sql),
             self._trino(project_id, unpeg_sql),
+            # OTD summary (index 12)
+            self._get_otd_summary(
+                project_id, params.planVer, frozen_ver, params.productionArea
+            ),
             return_exceptions=True,
         )
 
@@ -443,6 +454,12 @@ class PlanDashboardService:
         rtf_frozen = results[0] if not isinstance(results[0], Exception) else RTFSummaryCreator._empty_summary()
         rtf_actual = results[1] if not isinstance(results[1], Exception) else RTFSummaryCreator._empty_summary()
         rtf_plan = results[2] if not isinstance(results[2], Exception) else RTFSummaryCreator._empty_summary()
+
+        # OTD summary
+        otd_data = results[12] if not isinstance(results[12], Exception) else {
+            "qtyUom": "", "uomType": "CONVERSION", "periodType": "Month",
+            "frozenVer": frozen_ver, "frozenQty": 0, "planQty": 0, "actQty": 0, "list": [],
+        }
 
         # 6. Error master from PostgreSQL (글로벌 마스터, project_id 불필요)
         try:
@@ -466,6 +483,7 @@ class PlanDashboardService:
                     "detail": self._safe_rows(results[5]),
                     "summary": self._safe_rows(results[6]),
                 },
+                "otdSummary": otd_data,
                 "stdSummaryReport": self._safe_rows(results[7]),
                 "errorLogSummary": self._merge_error_log(
                     error_master, self._safe_rows(results[8])
@@ -569,6 +587,113 @@ class PlanDashboardService:
                 "detail": detail_result.get("row", []),
                 "summary": qty_result.get("row", []),
             },
+        }
+
+    # =======================================================================
+    # OTD Summary (Sub4/Sub6 — rpt_buffer_plan 기반)
+    # =======================================================================
+
+    def _get_cycle_dates(self, project_id: str, plan_ver: str) -> dict:
+        """Plan cycle 날짜 정보 조회 — OTD bucket 분류에 필요"""
+        try:
+            dates = self.repo.get_plan_cycle_dates(project_id, plan_ver)
+            return dates
+        except Exception:
+            # 기본값: planVer에서 날짜 추출
+            date_str = plan_ver[:8]  # "20260401"
+            return {
+                "cycle_start": f"{date_str[:4]}-{date_str[4:6]}-01",
+                "cycle_end": f"{date_str[:4]}-{int(date_str[4:6])+1:02d}-01" if int(date_str[4:6]) < 12 else f"{int(date_str[:4])+1}-01-01",
+                "next_cycle_end": f"{date_str[:4]}-{int(date_str[4:6])+2:02d}-01" if int(date_str[4:6]) < 11 else f"{int(date_str[:4])+1}-{int(date_str[4:6])+2-12:02d}-01",
+            }
+
+    def _build_production_area_filter(self, production_area: str) -> str:
+        """생산 영역 필터 SQL 조건절 생성"""
+        if production_area:
+            return f"AND production_area = '{production_area}'"
+        return ""
+
+    async def _get_otd_summary(
+        self,
+        project_id: str,
+        plan_ver: str,
+        frozen_ver: str,
+        production_area: str = "",
+        data_type: str = "ITEMGROUP",
+    ) -> dict[str, Any]:
+        """
+        OTD Summary — frozen/plan/actual 모두 조회
+        C# GetOTDSummaryRowsWithFrozenAndAct + GetOTDSummaryRowsWithFrozenAndPlan 통합
+        """
+        partition_key = f"{project_id}@{plan_ver[:6]}"
+        frozen_partition_key = f"{project_id}@{frozen_ver[:6]}"
+        # production_area 필터는 rpt_buffer_plan 테이블 스키마에 맞게 조정 필요
+        # 일단 필터 없이 조회하여 데이터 존재 여부 확인
+        production_area_filter = ""
+        cycle_dates = self._get_cycle_dates(project_id, plan_ver)
+
+        common_params = {
+            "production_area_filter": production_area_filter,
+            "cycle_start": cycle_dates["cycle_start"],
+            "cycle_end": cycle_dates["cycle_end"],
+            "next_cycle_end": cycle_dates["next_cycle_end"],
+        }
+
+        # Frozen 데이터 (frozen_ver 기준)
+        frozen_sql = Q.OTD_BUFFER_PLAN_SUMMARY_SQL.format(
+            partition_key=frozen_partition_key,
+            plan_ver=frozen_ver,
+            **common_params,
+        )
+        # Plan 데이터 (현재 planVer 기준)
+        plan_sql = Q.OTD_BUFFER_PLAN_SUMMARY_SQL.format(
+            partition_key=partition_key,
+            plan_ver=plan_ver,
+            **common_params,
+        )
+        # Actual 데이터
+        actual_sql = Q.OTD_ACTUAL_SUMMARY_SQL.format(
+            partition_key=partition_key,
+            plan_ver=plan_ver,
+            **common_params,
+        )
+
+        frozen_result, plan_result, actual_result = await asyncio.gather(
+            self._trino_safe(project_id, frozen_sql),
+            self._trino_safe(project_id, plan_sql),
+            self._trino_safe(project_id, actual_sql),
+        )
+
+        # UOM 추출
+        qty_uom = ""
+        for row in frozen_result:
+            if row.get("qty_uom"):
+                qty_uom = row["qty_uom"]
+                break
+
+        # 합산
+        frozen_qty = round(sum(r.get("total_qty", 0) or 0 for r in frozen_result), 1)
+        plan_qty = round(sum(r.get("total_qty", 0) or 0 for r in plan_result), 1)
+        act_qty = round(sum(r.get("total_qty", 0) or 0 for r in actual_result), 1)
+
+        # list 조합: type 필드 추가
+        result_list = []
+        for row in frozen_result:
+            result_list.append({**row, "type": "FROZEN"})
+        for row in plan_result:
+            result_list.append({**row, "type": "PLAN"})
+        for row in actual_result:
+            result_list.append({**row, "type": "ACT"})
+
+        return {
+            "qtyUom": qty_uom,
+            "uomType": "CONVERSION",
+            "periodType": "Month",
+            "frozenVer": frozen_ver,
+            "frozenQty": frozen_qty,
+            "planQty": plan_qty,
+            "actQty": act_qty,
+            "list": result_list,
         }
 
     # =======================================================================

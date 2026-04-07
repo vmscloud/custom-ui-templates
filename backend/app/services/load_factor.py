@@ -26,7 +26,7 @@ class LoadFactorService:
 
     def __init__(self, adapter: QueryExecutorAdapter):
         self.adapter = adapter
-        self.catalog = settings.TRINO_CATALOG
+        self.catalog = settings.TRINO_CATALOG_ICEBERG
         self.schema = settings.TRINO_SCHEMA_APS
 
     async def _trino(self, project_id: str, sql: str) -> dict[str, Any]:
@@ -49,8 +49,7 @@ class LoadFactorService:
     def _get_plan_start_date(self, project_id: str, plan_ver: str) -> str:
         """PostgreSQL에서 plan_start_datetime 조회"""
         rows = execute_query(
-            "SELECT plan_start_datetime FROM cfg_plan_config WHERE project_id = %s AND plan_ver = %s LIMIT 1",
-            (project_id, plan_ver),
+            f"SELECT plan_start_datetime FROM cfg_plan_config WHERE project_id = '{project_id}' AND plan_ver = '{plan_ver}' LIMIT 1",
         )
         if not rows:
             return "2000-01-01"
