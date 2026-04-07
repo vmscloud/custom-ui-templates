@@ -8,7 +8,8 @@ COPY package.json pnpm-lock.yaml ./
 
 # 🔥 GitHub Packages 인증
 RUN --mount=type=secret,id=npm_token \
-    echo "@vmscloud:registry=https://npm.pkg.github.com/" > .npmrc && \
+    echo "shamefully-hoist=true" > .npmrc && \
+    echo "@vmscloud:registry=https://npm.pkg.github.com/" >> .npmrc && \
     echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)" >> .npmrc && \
     pnpm install --no-frozen-lockfile && \
     sed -i '/_authToken/d' .npmrc
