@@ -5,7 +5,7 @@ param(
     [string]$Tag = "custom",
     [string]$HostIP = "192.168.1.250",
     [int]$RegistryPort = 6007,
-    [string]$GithubToken = "<SET_PAT_TOKEN>",
+    [string]$GithubToken = $env:GITHUB_TOKEN,
     [switch]$NoCache
 )
 
