@@ -497,6 +497,11 @@ watch(planVer, (newVal, oldVal) => {
   flex-direction: column;
   box-sizing: border-box;
   overflow: hidden;
+
+  .moz-frame-for-outer-control {
+    flex: 1;
+    min-height: 0;
+  }
 }
 
 .load-factor-controller-checkbox {

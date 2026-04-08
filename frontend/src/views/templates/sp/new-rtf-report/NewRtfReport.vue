@@ -1,74 +1,101 @@
 <template>
-  <RtfReportWidgetPop v-model:visible="settingPopup" :initial-tab="'rtfReport'" />
+  <RtfReportWidgetPop
+    v-model:visible="settingPopup"
+    :initial-tab="'rtfReport'"
+  />
 
-  <Controller
-    :show-filter-button="true"
-    :actions="[
-      {
-        action: 'Search',
-        click: () => {
-          mainOnLoad();
+  <div>
+    <Controller
+      :show-filter-button="true"
+      :actions="[
+        {
+          action: 'Search',
+          click: () => {
+            mainOnLoad();
+          },
         },
-      },
-    ]"
-  >
-    <template #beforeFilter>
-      <div v-if="localState.isRePlan" class="plan-runing-info">
-        <button @click="planingInfoPopup.show()">{{ localState.rePlanVer }}</button>
-        <span>{{ t('rbpa-msg001') }}</span>
-      </div>
-      <div v-if="currentPlanCycleSource?.frozen_plan_ver" class="info-frozen-plan-wrapper">
-        <IconNotice :style="{ width: 14, height: 14, marginTop: 2 }" />
-        <div class="info-frozen-plan-text">
-          <i18next :translation="t('text-info_frozen_plan_ver')">
-            <template v-slot:planCycle>
-              <span class="info-frozen-plan-ver" @click="onClickFrozenCycle">{{
-                currentPlanCycleSource?.plan_cycle_id ? currentPlanCycleSource?.plan_cycle_id : ''
-              }}</span>
-            </template>
-            <template v-slot:planVer>
-              <span class="info-frozen-plan-ver" @click="onClickFrozenPlanVer">{{
-                currentPlanCycleSource?.frozen_plan_ver ? currentPlanCycleSource?.frozen_plan_ver : ''
-              }}</span>
-            </template>
-          </i18next>
+      ]"
+    >
+      <template #beforeFilter>
+        <div v-if="localState.isRePlan" class="plan-runing-info">
+          <button @click="planingInfoPopup.show()">
+            {{ localState.rePlanVer }}
+          </button>
+          <span>{{ t("rbpa-msg001") }}</span>
         </div>
-      </div>
-    </template>
-    <template #action>
-      <Button
-        v-if="!currentPlanCycleSource.frozen_plan_ver"
-        :text="t('text-frozen')"
-        @click="onFreezePopup"
-        :disabled="frozenButtonDisabled"
-        :loading="isFreezeFetching"
-      >
-        <template #icon
-          ><IconCircleCheck :style="{ width: 14, height: 14 }" :color="frozenButtonDisabled ? '#8998b5' : '#ffffff'"
-        /></template>
-      </Button>
-      <Button
-        v-else
-        :text="t('text-frozen_cancel')"
-        class="confirm-cancel"
-        @click="onConfirmCancelPopup"
-        :disabled="!currentPlanCycleSource.is_frozen_plan || currentPlanCycleSource.frozen_plan_ver !== planVer"
-        :loading="loadCancel"
-      >
-        <template #icon
-          ><IconCircleX
-            :color="
-              !currentPlanCycleSource.is_frozen_plan || currentPlanCycleSource.frozen_plan_ver !== planVer
-                ? '#8998b5'
-                : '#4568e0'
-            "
-        /></template>
-      </Button>
-      <!-- 
+        <div
+          v-if="currentPlanCycleSource?.frozen_plan_ver"
+          class="info-frozen-plan-wrapper"
+        >
+          <IconNotice :style="{ width: 14, height: 14, marginTop: 2 }" />
+          <div class="info-frozen-plan-text">
+            <i18next :translation="t('text-info_frozen_plan_ver')">
+              <template v-slot:planCycle>
+                <span
+                  class="info-frozen-plan-ver"
+                  @click="onClickFrozenCycle"
+                  >{{
+                    currentPlanCycleSource?.plan_cycle_id
+                      ? currentPlanCycleSource?.plan_cycle_id
+                      : ""
+                  }}</span
+                >
+              </template>
+              <template v-slot:planVer>
+                <span
+                  class="info-frozen-plan-ver"
+                  @click="onClickFrozenPlanVer"
+                  >{{
+                    currentPlanCycleSource?.frozen_plan_ver
+                      ? currentPlanCycleSource?.frozen_plan_ver
+                      : ""
+                  }}</span
+                >
+              </template>
+            </i18next>
+          </div>
+        </div>
+      </template>
+      <template #action>
+        <Button
+          v-if="!currentPlanCycleSource.frozen_plan_ver"
+          :text="t('text-frozen')"
+          @click="onFreezePopup"
+          :disabled="frozenButtonDisabled"
+          :loading="isFreezeFetching"
+        >
+          <template #icon
+            ><IconCircleCheck
+              :style="{ width: 14, height: 14 }"
+              :color="frozenButtonDisabled ? '#8998b5' : '#ffffff'"
+          /></template>
+        </Button>
+        <Button
+          v-else
+          :text="t('text-frozen_cancel')"
+          class="confirm-cancel"
+          @click="onConfirmCancelPopup"
+          :disabled="
+            !currentPlanCycleSource.is_frozen_plan ||
+            currentPlanCycleSource.frozen_plan_ver !== planVer
+          "
+          :loading="loadCancel"
+        >
+          <template #icon
+            ><IconCircleX
+              :color="
+                !currentPlanCycleSource.is_frozen_plan ||
+                currentPlanCycleSource.frozen_plan_ver !== planVer
+                  ? '#8998b5'
+                  : '#4568e0'
+              "
+          /></template>
+        </Button>
+        <!-- 
       메뉴 설정 버튼 숨김
       롤백하라고 하면 다시 주석 풀기 
       -->
-      <!-- <Button
+        <!-- <Button
         :text="t(`${t('text-set-menu-config')}`)"
         @click="
           () => {
@@ -80,117 +107,121 @@
           <IconSetting :color="'#ffffff'" />
         </template>
       </Button> -->
-    </template>
-    <template #filter>
-      <div class="controller-container">
-        <div class="controller-search-container">
-          <Radio
-            v-model="summaryType"
-            :label="t('text-summary_type')"
-            :items-source="summarySource"
-            display-expr="label"
-            value-expr="value"
-          />
-          <MultiSelect
-            v-if="summaryType === 'cust'"
-            :placeholder="`${!custSource.length ? t('MOZ-DATA_EMPTY') : ''}`"
-            :label="t('text-upper-customer')"
-            v-model="custParam"
-            :header-format="'{count:n0} CUSTOMERS'"
-            :use-filter="true"
-            :use-select-all="true"
-            :display-prop="'cust_label'"
-            :items-source="custSource"
-            :key-prop="'cust_id'"
-            @close="
-              () => {
-                if (!custParam.length) {
-                  custParam = custSource.map((item: any) => item.cust_id);
+      </template>
+      <template #filter>
+        <div class="controller-container">
+          <div class="controller-search-container">
+            <Radio
+              v-model="summaryType"
+              :label="t('text-summary_type')"
+              :items-source="summarySource"
+              display-expr="label"
+              value-expr="value"
+            />
+            <MultiSelect
+              v-if="summaryType === 'cust'"
+              :placeholder="`${!custSource.length ? t('MOZ-DATA_EMPTY') : ''}`"
+              :label="t('text-upper-customer')"
+              v-model="custParam"
+              :header-format="'{count:n0} CUSTOMERS'"
+              :use-filter="true"
+              :use-select-all="true"
+              :display-prop="'cust_label'"
+              :items-source="custSource"
+              :key-prop="'cust_id'"
+              @close="
+                () => {
+                  if (!custParam.length) {
+                    custParam = custSource.map((item: any) => item.cust_id);
+                  }
                 }
-              }
-            "
-          />
-          <MultiSelect
-            v-if="summaryType === 'itemGroup'"
-            :placeholder="`${!itemGroupSource.length ? t('MOZ-DATA_EMPTY') : ''}`"
-            :label="t('text-upper-item_group')"
-            v-model="itemGroup"
-            :items-source="itemGroupSource"
-            :header-format="'{count:n0} GROUPS'"
-            :use-select-all="true"
-            :use-filter="true"
-            display-prop="item_group"
-            key-prop="item_group"
-            @close="
-              () => {
-                if (!itemGroup.length) {
-                  itemGroup = itemGroupSource.map((item: any) => item.item_group);
+              "
+            />
+            <MultiSelect
+              v-if="summaryType === 'itemGroup'"
+              :placeholder="`${!itemGroupSource.length ? t('MOZ-DATA_EMPTY') : ''}`"
+              :label="t('text-upper-item_group')"
+              v-model="itemGroup"
+              :items-source="itemGroupSource"
+              :header-format="'{count:n0} GROUPS'"
+              :use-select-all="true"
+              :use-filter="true"
+              display-prop="item_group"
+              key-prop="item_group"
+              @close="
+                () => {
+                  if (!itemGroup.length) {
+                    itemGroup = itemGroupSource.map(
+                      (item: any) => item.item_group,
+                    );
+                  }
                 }
-              }
-            "
-          />
-          <MultiSelect
-            v-if="summaryType === 'region'"
-            :placeholder="`${!regionSource.length ? t('MOZ-DATA_EMPTY') : ''}`"
-            :label="t('text-upper-region')"
-            v-model="region"
-            :items-source="regionSource"
-            :header-format="'{count:n0} REGIONS'"
-            :use-select-all="true"
-            :use-filter="true"
-            display-prop="value"
-            key-prop="value"
-            @close="
-              () => {
-                if (!region.length) {
-                  region = regionSource.map((item: any) => item.value);
+              "
+            />
+            <MultiSelect
+              v-if="summaryType === 'region'"
+              :placeholder="`${!regionSource.length ? t('MOZ-DATA_EMPTY') : ''}`"
+              :label="t('text-upper-region')"
+              v-model="region"
+              :items-source="regionSource"
+              :header-format="'{count:n0} REGIONS'"
+              :use-select-all="true"
+              :use-filter="true"
+              display-prop="value"
+              key-prop="value"
+              @close="
+                () => {
+                  if (!region.length) {
+                    region = regionSource.map((item: any) => item.value);
+                  }
                 }
-              }
-            "
-          />
-          <MultiSelect
-            v-if="summaryType === 'demandType'"
-            :placeholder="`${!demandTypeSource.length ? t('MOZ-DATA_EMPTY') : ''}`"
-            :label="t('text-upper-demand_type')"
-            v-model="demandType"
-            :items-source="demandTypeSource"
-            :header-format="'{count:n0} DEMAND TYPES'"
-            :use-select-all="true"
-            :use-filter="true"
-            display-prop="value"
-            key-prop="value"
-            @close="
-              () => {
-                if (!demandType.length) {
-                  demandType = demandTypeSource.map((item: any) => item.value);
+              "
+            />
+            <MultiSelect
+              v-if="summaryType === 'demandType'"
+              :placeholder="`${!demandTypeSource.length ? t('MOZ-DATA_EMPTY') : ''}`"
+              :label="t('text-upper-demand_type')"
+              v-model="demandType"
+              :items-source="demandTypeSource"
+              :header-format="'{count:n0} DEMAND TYPES'"
+              :use-select-all="true"
+              :use-filter="true"
+              display-prop="value"
+              key-prop="value"
+              @close="
+                () => {
+                  if (!demandType.length) {
+                    demandType = demandTypeSource.map(
+                      (item: any) => item.value,
+                    );
+                  }
                 }
-              }
-            "
-          />
-          <Select
-            :label="t('text-aggregate_type')"
-            v-model="aggType"
-            :items-source="aggTypeSource"
-            keyProp="value"
-            displayProp="label"
-          />
-          <Select
-            :label="t('text-qty_uom')"
-            v-model="uomType"
-            :items-source="qtyUOMSource"
-            keyProp="value"
-            displayProp="displayValue"
-          />
-          <Radio
-            v-model="prodStatus"
-            :label="t('text-prod_status')"
-            :items-source="prodStatusSource"
-            display-expr="label"
-            value-expr="value"
-          />
-        </div>
-        <div class="widget-setting-button-wrapper">
-          <!-- <Button
+              "
+            />
+            <Select
+              :label="t('text-aggregate_type')"
+              v-model="aggType"
+              :items-source="aggTypeSource"
+              keyProp="value"
+              displayProp="label"
+            />
+            <Select
+              :label="t('text-qty_uom')"
+              v-model="uomType"
+              :items-source="qtyUOMSource"
+              keyProp="value"
+              displayProp="displayValue"
+            />
+            <Radio
+              v-model="prodStatus"
+              :label="t('text-prod_status')"
+              :items-source="prodStatusSource"
+              display-expr="label"
+              value-expr="value"
+            />
+          </div>
+          <div class="widget-setting-button-wrapper">
+            <!-- <Button
             :text="t(`${t('text-set-menu-config')}`)"
             @click="
               () => {
@@ -202,44 +233,67 @@
               <IconSetting :color="'#ffffff'" />
             </template>
           </Button> -->
+          </div>
         </div>
-      </div>
-    </template>
-  </Controller>
-  <div class="moz-frame-for-outer-control">
-    <!-- 확대 상태일 때 splitter 숨김 (v-show로 그리드 상태 유지) -->
-    <SplitPane horizontal style="max-width: 100%" :class="{ 'hide-splitter': isZoomedDetail }">
-      <Pane
-        :size="`${isZoomedDetail ? 0 : 60}%`"
-        :max-size="`${isZoomedDetail ? 0 : 70}%`"
-        :min-size="`${isZoomedDetail ? 0 : 30}%`"
-        v-show="!isZoomedDetail"
+      </template>
+    </Controller>
+    <div class="moz-frame-for-outer-control">
+      <!-- 확대 상태일 때 splitter 숨김 (v-show로 그리드 상태 유지) -->
+      <SplitPane
+        horizontal
+        style="max-width: 100%"
+        :class="{ 'hide-splitter': isZoomedDetail }"
       >
-        <!--  1280:720에서 그룹패널 보기 짤림을 대응 위해 50으로 적용 -->
-        <SplitPane>
-          <!--    560/1700 = 32.9411765      -->
-          <Pane :size="`${mainLoadParams.summary === 'due' ? 36.8 : 39.1}%`" min-size="33%">
-            <RarRtfReportSub1 ref="refSub1" :parentsSummaryWidth="`100%`" :parentsSummaryHeight="`100%`" />
-          </Pane>
-          <!--    200/1700 = 11.7647059      -->
-          <Pane :size="`${mainLoadParams?.summary === 'due' ? 63.2 : 60.9}%`" min-size="12%">
-            <RarRtfReportSub2 ref="refSub2" :parentsMainWidth="`100%`" :parentsMainHeight="`100%`" />
-          </Pane>
-        </SplitPane>
-      </Pane>
-      <Pane
-        :size="`${isZoomedDetail ? 100 : 39}%`"
-        :max-size="`${isZoomedDetail ? 100 : 70}%`"
-        :min-size="`${isZoomedDetail ? 100 : 20}%`"
-      >
-        <RtfReportProdDetail />
-        <!-- <RarRtfReportSub3 ref="refSub3" :parentsMainWidth="`100%`" :parentsMainHeight="`100%`" /> -->
-      </Pane>
-    </SplitPane>
+        <Pane
+          :size="`${isZoomedDetail ? 0 : 60}%`"
+          :max-size="`${isZoomedDetail ? 0 : 70}%`"
+          :min-size="`${isZoomedDetail ? 0 : 30}%`"
+          v-show="!isZoomedDetail"
+        >
+          <!--  1280:720에서 그룹패널 보기 짤림을 대응 위해 50으로 적용 -->
+          <SplitPane>
+            <!--    560/1700 = 32.9411765      -->
+            <Pane
+              :size="`${mainLoadParams.summary === 'due' ? 36.8 : 39.1}%`"
+              min-size="33%"
+            >
+              <RarRtfReportSub1
+                ref="refSub1"
+                :parentsSummaryWidth="`100%`"
+                :parentsSummaryHeight="`100%`"
+              />
+            </Pane>
+            <!--    200/1700 = 11.7647059      -->
+            <Pane
+              :size="`${mainLoadParams?.summary === 'due' ? 63.2 : 60.9}%`"
+              min-size="12%"
+            >
+              <RarRtfReportSub2
+                ref="refSub2"
+                :parentsMainWidth="`100%`"
+                :parentsMainHeight="`100%`"
+              />
+            </Pane>
+          </SplitPane>
+        </Pane>
+        <Pane
+          :size="`${isZoomedDetail ? 100 : 39}%`"
+          :max-size="`${isZoomedDetail ? 100 : 70}%`"
+          :min-size="`${isZoomedDetail ? 100 : 20}%`"
+        >
+          <RtfReportProdDetail />
+          <!-- <RarRtfReportSub3 ref="refSub3" :parentsMainWidth="`100%`" :parentsMainHeight="`100%`" /> -->
+        </Pane>
+      </SplitPane>
+    </div>
   </div>
 
   <Popup
-    :title="isClickedFrozenCycle ? t('text-plan_freeze_info_management') : t('text-plan_freeze')"
+    :title="
+      isClickedFrozenCycle
+        ? t('text-plan_freeze_info_management')
+        : t('text-plan_freeze')
+    "
     v-model:visible="freezePopup"
     :width="500"
     :preset="isClickedFrozenCycle ? 'save' : 'confirm'"
@@ -256,30 +310,48 @@
       <div class="plan-freeze-check-wrapper">
         <IconNotice :style="{ width: 20, height: 20 }" color="#4568e0" />
         <div class="plan-freeze-check-text">
-          {{ isClickedFrozenCycle ? t('text-repeat_modify_desc') : t('text-repeat_freeze') }}
+          {{
+            isClickedFrozenCycle
+              ? t("text-repeat_modify_desc")
+              : t("text-repeat_freeze")
+          }}
         </div>
       </div>
       <div class="plan-freeze-info-wrapper">
         <div>
-          <span class="plan-freeze-info-key">{{ `${t('text-plan_cycle')}: ` }}</span>
+          <span class="plan-freeze-info-key">{{
+            `${t("text-plan_cycle")}: `
+          }}</span>
           <span class="plan-freeze-info-value">{{
-            isClickedFrozenCycle ? currentPlanCycleSource?.plan_cycle_id : planCycleID
+            isClickedFrozenCycle
+              ? currentPlanCycleSource?.plan_cycle_id
+              : planCycleID
           }}</span>
         </div>
         <div>
-          <span class="plan-freeze-info-key">{{ `${t('text-frozen_plan_version')}: ` }}</span>
+          <span class="plan-freeze-info-key">{{
+            `${t("text-frozen_plan_version")}: `
+          }}</span>
           <span class="plan-freeze-info-value">{{
-            isClickedFrozenCycle ? currentPlanCycleSource?.frozen_plan_ver : planVer
+            isClickedFrozenCycle
+              ? currentPlanCycleSource?.frozen_plan_ver
+              : planVer
           }}</span>
         </div>
         <div>
-          <span class="plan-freeze-info-key">{{ `${t('text-frozen_plan_period')}: ` }}</span>
+          <span class="plan-freeze-info-key">{{
+            `${t("text-frozen_plan_period")}: `
+          }}</span>
           <span class="plan-freeze-info-value">{{
-            currentPlanCycleSource['frozen_period_desc'] ? currentPlanCycleSource['frozen_period_desc'] : ''
+            currentPlanCycleSource["frozen_period_desc"]
+              ? currentPlanCycleSource["frozen_period_desc"]
+              : ""
           }}</span>
         </div>
         <div>
-          <span class="plan-freeze-info-key">{{ `${t('text-frozen_officer')}: ` }}</span>
+          <span class="plan-freeze-info-key">{{
+            `${t("text-frozen_officer")}: `
+          }}</span>
           <span class="plan-freeze-info-value">{{ user?.name }}</span>
         </div>
       </div>
@@ -302,7 +374,9 @@
   >
     <div class="confirm-cancel-popup-content-wrapper">
       <IconToastWarning />
-      <div class="confirm-cancel-popup-text">{{ t('text-confirm_cancel_popup_info') }}</div>
+      <div class="confirm-cancel-popup-text">
+        {{ t("text-confirm_cancel_popup_info") }}
+      </div>
     </div>
   </Popup>
 </template>
@@ -315,21 +389,43 @@ import {
   useLoadStore,
   useProjectInfoStore,
   useTextareaValidation,
-} from './adapters/stores';
-import { Controller } from '@vmscloud/moz-ui-components';
-import { Button, MultiSelect, Pane, Popup, Radio, Select, SplitPane, TextArea } from '@vmscloud/moz-ui-components';
-import { IconCircleCheck, IconCircleX, IconNotice, IconToastWarning } from '@moz-shared/icons';
-import { showDialog, showMessage } from '@moz-shared/utils';
-import { useMutation } from '@tanstack/vue-query';
-import dayjs from 'dayjs';
-import { useTranslation } from 'i18next-vue';
-import { storeToRefs } from 'pinia';
-import { computed, nextTick, provide, reactive, ref, watch, watchEffect } from 'vue';
-import { useRtfReportQuery } from './NewRtfReport';
-import RtfReportProdDetail from './NewRtfReportProdDetail.vue';
-import RarRtfReportSub1 from './NewRtfReportSub1.vue';
-import RarRtfReportSub2 from './NewRtfReportSub2.vue';
-import RtfReportWidgetPop from './NewRtfReportWidgetPop.vue';
+} from "./adapters/stores";
+import { Controller } from "@vmscloud/moz-ui-components";
+import {
+  Button,
+  MultiSelect,
+  Pane,
+  Popup,
+  Radio,
+  Select,
+  SplitPane,
+  TextArea,
+} from "@vmscloud/moz-ui-components";
+import {
+  IconCircleCheck,
+  IconCircleX,
+  IconNotice,
+  IconToastWarning,
+} from "@moz-shared/icons";
+import { showDialog, showMessage } from "@moz-shared/utils";
+import { useMutation } from "@tanstack/vue-query";
+import dayjs from "dayjs";
+import { useTranslation } from "i18next-vue";
+import { storeToRefs } from "pinia";
+import {
+  computed,
+  nextTick,
+  provide,
+  reactive,
+  ref,
+  watch,
+  watchEffect,
+} from "vue";
+import { useRtfReportQuery } from "./NewRtfReport";
+import RtfReportProdDetail from "./NewRtfReportProdDetail.vue";
+import RarRtfReportSub1 from "./NewRtfReportSub1.vue";
+import RarRtfReportSub2 from "./NewRtfReportSub2.vue";
+import RtfReportWidgetPop from "./NewRtfReportWidgetPop.vue";
 
 /**
  * DEFINE DEFAULT VARIABLE
@@ -359,14 +455,16 @@ const broadcastModule = useBroadcastMessage();
 
 // Frozen Plan
 const isClickedFrozenCycle = ref<boolean>(false);
-const freezePlanDesc = ref<string>('');
+const freezePlanDesc = ref<string>("");
 const freezePopup = ref<boolean>(false);
 const isClickHyperlink = ref<boolean>(false);
 const confirmCancelPopup = ref(false);
 const frozenPlanPeriodSource = ref<any>(null);
 const selectedPlanVerInfo = ref<any>({});
 
-const isFreezeFetching = computed(() => frozenPlanUpdateDesc.isPending.value || frozenPlanExec.isPending.value);
+const isFreezeFetching = computed(
+  () => frozenPlanUpdateDesc.isPending.value || frozenPlanExec.isPending.value,
+);
 
 const projectInfoStore = useProjectInfoStore();
 const user = computed(() => projectInfoStore.userInfo);
@@ -399,7 +497,7 @@ const {
   prodStatusSource,
   isZoomedDetail,
 } = useRtfReport;
-provide('useRtfReport', useRtfReport);
+provide("useRtfReport", useRtfReport);
 
 const localState: {
   rowFlag: boolean;
@@ -425,10 +523,10 @@ const localState: {
   showDetail: false,
   isRePlan: false,
   frozenYN: false,
-  frozenRange: '',
-  rePlanVer: '',
+  frozenRange: "",
+  rePlanVer: "",
   planingInfo: null,
-  frozenPlanVer: '',
+  frozenPlanVer: "",
   isClickSearch: false,
 });
 
@@ -439,8 +537,8 @@ broadcastModule.$subscribe((mutation: any, state: any) => {
   if (user.value?.email !== state.sender) return;
 
   switch (state.message) {
-    case 'START':
-    case 'ING':
+    case "START":
+    case "ING":
       localState.rePlanVer = state.planVer;
       localState.isRePlan = true;
       localState.planingInfo = {
@@ -455,17 +553,20 @@ broadcastModule.$subscribe((mutation: any, state: any) => {
       };
       break;
 
-    case 'DONE':
+    case "DONE":
       localState.isRePlan = false;
 
       planingInfoPopup.value.hide();
       showDialog({
-        type: 'success', // 'error' | 'warning' | 'success' | 'info'
-        preset: 'check', // 'confirm' : (확인 / 취소) | 'check' : (확인)
-        message: `${state.planVer} ${t('rbpa-msg002')}`,
+        type: "success", // 'error' | 'warning' | 'success' | 'info'
+        preset: "check", // 'confirm' : (확인 / 취소) | 'check' : (확인)
+        message: `${state.planVer} ${t("rbpa-msg002")}`,
       });
 
-      planCycleStore.$patch({ planCycleID: state.planCycleID, planVer: state.planVer });
+      planCycleStore.$patch({
+        planCycleID: state.planCycleID,
+        planVer: state.planVer,
+      });
 
       break;
     default:
@@ -500,11 +601,13 @@ const onClickFrozenPlanVer = async () => {
   planCycleID.value = frozenPlanCycleId;
   planVer.value = frozenPlanVer;
   planStartDate.value = currentPlanCycleSource.value?.start_date;
-  toDate.value = dayjs(planStartDate.value).add(planPeriod.value, 'day');
+  toDate.value = dayjs(planStartDate.value).add(planPeriod.value, "day");
   localState.isClickSearch = true;
 
   const planStatusIndex = planCycleSource.value.findIndex(
-    (item: any) => item.plan_cycle_id === frozenPlanCycleId && item.plan_ver === frozenPlanVer,
+    (item: any) =>
+      item.plan_cycle_id === frozenPlanCycleId &&
+      item.plan_ver === frozenPlanVer,
   );
   if (planStatusIndex !== -1) {
     planStatus.value = planCycleSource.value[planStatusIndex].plan_status;
@@ -517,11 +620,11 @@ const frozenButtonDisabled = computed(
   () =>
     !currentPlanCycleSource.value.is_frozen_plan ||
     currentPlanCycleSource.value.plan_cycle_id !== planCycleID.value ||
-    selectedPlanVerInfo.value.plan_status !== 'DONE',
+    selectedPlanVerInfo.value.plan_status !== "DONE",
 );
 
 const onFreezePopup = () => {
-  freezePlanDesc.value = '';
+  freezePlanDesc.value = "";
   freezePopup.value = true;
 };
 
@@ -544,7 +647,11 @@ const onFreezePlan = async () => {
       description: freezePlanDesc.value,
     });
     if (planCycleID.value) {
-      updatePlanCycleStore(planCycleID.value, ['frozen_plan_ver'], [planVer.value]);
+      updatePlanCycleStore(
+        planCycleID.value,
+        ["frozen_plan_ver"],
+        [planVer.value],
+      );
     }
     onLoad();
   }
@@ -562,11 +669,14 @@ const onCancelFrozen = async () => {
     planVer: planVer.value,
     createUser: user.value?.email,
   });
-  updatePlanCycleStore(planCycleID.value, ['frozen_plan_ver'], [null]);
+  updatePlanCycleStore(planCycleID.value, ["frozen_plan_ver"], [null]);
 
   planCycleSource.value.forEach((item: any) => {
-    if (item.plan_cycle_id === planCycleID.value && item.plan_ver === planVer.value) {
-      item.plan_status = 'DONE';
+    if (
+      item.plan_cycle_id === planCycleID.value &&
+      item.plan_ver === planVer.value
+    ) {
+      item.plan_status = "DONE";
     }
   });
 
@@ -576,7 +686,9 @@ const onCancelFrozen = async () => {
 };
 
 const getSelectedPlanVer = () => {
-  const result = planCycleSource.value.filter((item: any) => item.plan_ver === planVer.value);
+  const result = planCycleSource.value.filter(
+    (item: any) => item.plan_ver === planVer.value,
+  );
 
   return result[0] || [];
 };
@@ -586,32 +698,34 @@ watchEffect(() => {
 });
 
 const frozenPlanUpdateDesc = useMutation({
-  mutationFn: (param: any) => autoTransaction({ url: 'PlmPlanExecute/Frozen', param, method: 'PUT' }),
+  mutationFn: (param: any) =>
+    autoTransaction({ url: "PlmPlanExecute/Frozen", param, method: "PUT" }),
   onSuccess: (result) => {
     if (!result || !result.data) {
-      showMessage(t('msg-toast-save_error'), false);
+      showMessage(t("msg-toast-save_error"), false);
     }
   },
   onError: () => {
-    showMessage(t('msg-toast-save_error'), false);
+    showMessage(t("msg-toast-save_error"), false);
   },
 });
 
 const frozenPlanExec = useMutation({
-  mutationFn: (param: any) => autoTransaction({ url: 'PlmPlanExecute/FrozenIns', param, method: 'POST' }),
+  mutationFn: (param: any) =>
+    autoTransaction({ url: "PlmPlanExecute/FrozenIns", param, method: "POST" }),
   onSuccess: (result) => {
     if (result && result.data) {
-      showMessage(t('msg-toast-plan_ver_frozen'), true);
+      showMessage(t("msg-toast-plan_ver_frozen"), true);
       getFrozenStatus.mutateAsync({
         planCycleID: planCycleID.value,
         planVer: planVer.value,
       });
     } else {
-      showMessage(t('msg-toast-save_error'), false);
+      showMessage(t("msg-toast-save_error"), false);
     }
   },
   onError: () => {
-    showMessage(t('msg-toast-save_error'), false);
+    showMessage(t("msg-toast-save_error"), false);
   },
 });
 
@@ -619,40 +733,43 @@ const frozenPlanExec = useMutation({
 const getFrozenStatus = useMutation({
   mutationFn: async (param: any) =>
     // 조회 목적으로 GET 유지해야 함
-    await apiCall({ url: 'PlmPlanExecute/Frozen', param, method: 'GET' }),
+    await apiCall({ url: "PlmPlanExecute/Frozen", param, method: "GET" }),
 
   onSuccess: (result) => {
     if (result && result.data) {
-      localState.frozenPlanVer = result.data[0]?.frozen_plan_ver ? result.data[0]?.frozen_plan_ver : '';
+      localState.frozenPlanVer = result.data[0]?.frozen_plan_ver
+        ? result.data[0]?.frozen_plan_ver
+        : "";
       localState.frozenYN = result.data[0]?.frozenYN;
       localState.frozenRange = result.data[0]?.frozenRange;
     } else {
       localState.frozenYN = false;
-      localState.frozenRange = '';
+      localState.frozenRange = "";
     }
   },
   onError: () => {
-    showMessage(t('msg-toast-get_error'), false);
+    showMessage(t("msg-toast-get_error"), false);
     localState.frozenYN = false;
-    localState.frozenRange = '';
+    localState.frozenRange = "";
   },
 });
 
 const frozenPlanRemove = useMutation({
-  mutationFn: (param: any) => autoTransaction({ url: 'PlmPlanExecute/FrozenDel', param, method: 'POST' }),
+  mutationFn: (param: any) =>
+    autoTransaction({ url: "PlmPlanExecute/FrozenDel", param, method: "POST" }),
   onSuccess: (result) => {
     if (result && result.data) {
       getFrozenStatus.mutateAsync({
         planCycleID: planCycleID.value,
         planVer: planVer.value,
       });
-      showMessage(t('msg-toast-frozen_cancel'), true);
+      showMessage(t("msg-toast-frozen_cancel"), true);
     } else {
-      showMessage(t('msg-toast-save_error'), false);
+      showMessage(t("msg-toast-save_error"), false);
     }
   },
   onError: () => {
-    showMessage(t('msg-toast-save_error'), false);
+    showMessage(t("msg-toast-save_error"), false);
   },
 });
 
@@ -661,7 +778,11 @@ const getFrozenPeriod = useMutation({
     if (!param.plan_ver) return null;
     //
 
-    return apiCall({ url: `PlmSysOperPlan/FrozenPeriod`, param, method: 'POST' });
+    return apiCall({
+      url: `PlmSysOperPlan/FrozenPeriod`,
+      param,
+      method: "POST",
+    });
   },
 
   onSuccess: (result) => {
@@ -670,7 +791,7 @@ const getFrozenPeriod = useMutation({
     }
   },
   onError: () => {
-    showMessage(t('msg-toast-get_error'), false);
+    showMessage(t("msg-toast-get_error"), false);
     frozenPlanPeriodSource.value = null;
   },
   onSettled: () => {
@@ -679,7 +800,14 @@ const getFrozenPeriod = useMutation({
 });
 
 const callWatch = watch(
-  [planVer, planStartDate, fromDate, toDate, isAggFetching, getWidgetValueIsPending],
+  [
+    planVer,
+    planStartDate,
+    fromDate,
+    toDate,
+    isAggFetching,
+    getWidgetValueIsPending,
+  ],
   () => {
     if (
       planVer.value &&
@@ -696,7 +824,7 @@ const callWatch = watch(
       });
     }
   },
-  { immediate: true, flush: 'post' },
+  { immediate: true, flush: "post" },
 );
 </script>
 <style lang="scss" scoped>

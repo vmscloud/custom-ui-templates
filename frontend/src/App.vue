@@ -17,8 +17,6 @@ import { MozConfigProvider, koKR } from "@vmscloud/moz-ui-components";
 /* APS Main.vue의 .moz-contents와 동일한 스타일 */
 .moz-contents {
   flex: 1;
-  display: grid;
-  grid-template-rows: auto 1fr;
   height: 100%;
   overflow: hidden;
 }
