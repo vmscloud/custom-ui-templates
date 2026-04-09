@@ -120,6 +120,144 @@ async def get_filter_item_groups(
         return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
 
 
+async def _load_rpt_prop_config(
+    adapter: QueryExecutorAdapter, project_id: str, plan_ver: str
+) -> dict[str, dict]:
+    """odv_report_prop_config.RPT_SHIPMENT_PLAN의 prop_json을 dict로 반환.
+
+    반환 구조: {"PROP01": {"PropID": {"Value": "PRODUCTION_AREA"}, ...}, ...}
+    """
+    import json as _json
+    pk = f"{project_id}@{plan_ver[:6]}"
+    sql = f"""
+    SELECT prop_json FROM odv_report_prop_config
+    WHERE partition_key = '{pk}' AND plan_ver = '{plan_ver}'
+      AND table_name = 'RPT_SHIPMENT_PLAN' LIMIT 1
+    """
+    rows = await _trino_query(adapter, project_id, sql)
+    if not rows:
+        return {}
+    raw = rows[0].get("prop_json", "{}")
+    return _json.loads(raw) if isinstance(raw, str) else (raw or {})
+
+
+def _find_prop_key(config: dict[str, dict], display_name: str) -> str | None:
+    """prop_config에서 display_name('DEMAND_REGION' 등)에 해당하는 key 찾기."""
+    for key, val in config.items():
+        if not isinstance(val, dict):
+            continue
+        if val.get("PropID", {}).get("Value", "") == display_name:
+            return key
+    return None
+
+
+@router.get("/rtf-report/filters/regions")
+async def get_filter_regions(
+    project_id: str = Path(...),
+    plan_ver: str = Query(..., alias="plan_ver"),
+    adapter: QueryExecutorAdapter = Depends(get_query_executor_adapter),
+) -> dict[str, Any]:
+    """지역 필터 목록 조회. APS UI '지역' 필터는 DEMAND_REGION 기준."""
+    try:
+        config = await _load_rpt_prop_config(adapter, project_id, plan_ver)
+        # DEMAND_REGION 우선, PRODUCTION_AREA 폴백
+        prop_key = _find_prop_key(config, "DEMAND_REGION") or _find_prop_key(config, "PRODUCTION_AREA")
+        if not prop_key:
+            return {"success": True, "count": 0, "data": []}
+
+        pk = f"{project_id}@{plan_ver[:6]}"
+        sql = f"""
+        SELECT DISTINCT json_extract_scalar(prop_json, '$.{prop_key}') AS value
+        FROM rpt_shipment_plan
+        WHERE partition_key = '{pk}' AND plan_ver = '{plan_ver}'
+          AND json_extract_scalar(prop_json, '$.{prop_key}') IS NOT NULL
+        ORDER BY 1
+        """
+        data = await _trino_query(adapter, project_id, sql)
+        return {"success": True, "count": len(data), "data": data}
+    except Exception as e:
+        logger.exception(f"[지역 필터 조회] {e}")
+        return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
+
+@router.get("/rtf-report/filters/demand-types")
+async def get_filter_demand_types(
+    project_id: str = Path(...),
+    plan_ver: str = Query(..., alias="plan_ver"),
+    adapter: QueryExecutorAdapter = Depends(get_query_executor_adapter),
+) -> dict[str, Any]:
+    """수요 유형 필터 목록 조회"""
+    try:
+        pk = f"{project_id}@{plan_ver[:6]}"
+        sql = f"""
+        SELECT DISTINCT demand_type AS value
+        FROM rpt_shipment_plan
+        WHERE partition_key = '{pk}' AND plan_ver = '{plan_ver}'
+          AND demand_type IS NOT NULL
+        ORDER BY 1
+        """
+        data = await _trino_query(adapter, project_id, sql)
+        return {"success": True, "count": len(data), "data": data}
+    except Exception as e:
+        logger.exception(f"[수요유형 필터 조회] {e}")
+        return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
+
+@router.get("/rtf-report/filters/prod-types")
+async def get_filter_prod_types(
+    project_id: str = Path(...),
+    plan_ver: str = Query(..., alias="plan_ver"),
+    adapter: QueryExecutorAdapter = Depends(get_query_executor_adapter),
+) -> dict[str, Any]:
+    """생산 유형 필터 목록 조회"""
+    try:
+        config = await _load_rpt_prop_config(adapter, project_id, plan_ver)
+        prop_key = _find_prop_key(config, "PROD_TYPE")
+        if not prop_key:
+            return {"success": True, "count": 0, "data": []}
+
+        pk = f"{project_id}@{plan_ver[:6]}"
+        sql = f"""
+        SELECT DISTINCT json_extract_scalar(prop_json, '$.{prop_key}') AS value
+        FROM rpt_shipment_plan
+        WHERE partition_key = '{pk}' AND plan_ver = '{plan_ver}'
+          AND json_extract_scalar(prop_json, '$.{prop_key}') IS NOT NULL
+        ORDER BY 1
+        """
+        data = await _trino_query(adapter, project_id, sql)
+        return {"success": True, "count": len(data), "data": data}
+    except Exception as e:
+        logger.exception(f"[생산유형 필터 조회] {e}")
+        return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
+
+@router.get("/rtf-report/filters/prop-columns")
+async def get_filter_prop_columns(
+    project_id: str = Path(...),
+    plan_ver: str = Query(..., alias="plan_ver"),
+    adapter: QueryExecutorAdapter = Depends(get_query_executor_adapter),
+) -> dict[str, Any]:
+    """동적 속성 컬럼 정의 조회 (상세 그리드 동적 컬럼용).
+
+    odv_report_prop_config의 RPT_SHIPMENT_PLAN 매핑에서
+    columnName(= PROP01 등), displayText(= PRODUCTION_AREA 등) 배열 반환.
+    """
+    try:
+        config = await _load_rpt_prop_config(adapter, project_id, plan_ver)
+        data = [
+            {
+                "columnName": key,
+                "displayText": val.get("PropID", {}).get("Value", key),
+            }
+            for key, val in config.items()
+            if isinstance(val, dict)
+        ]
+        return {"success": True, "count": len(data), "data": data}
+    except Exception as e:
+        logger.exception(f"[속성 컬럼 조회] {e}")
+        return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
+
 @router.post("/rtf-report/RarBomMapViewNew/GetBomMapIsbInfo")
 async def get_bom_map_isb_info(
     project_id: str = Path(...),
