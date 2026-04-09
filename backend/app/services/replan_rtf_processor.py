@@ -306,7 +306,12 @@ class ReplanRtfProcessor:
         return f"{project_id}@{plan_ver[:6]}"
 
     async def _load_prop_keys(self, project_id: str, partition_key: str, plan_ver: str) -> None:
-        """odv_report_prop_config에서 RPT_SHIPMENT_PLAN의 prop_json 키 매핑 조회"""
+        """odv_report_prop_config에서 RPT_SHIPMENT_PLAN의 prop_json 키 매핑 조회.
+
+        NOTE: APS의 UI "지역" 필터(productionArea 파라미터)는 실제로는 DEMAND_REGION
+        (demand 속성)을 기준으로 필터링함. ITEM 속성인 PRODUCTION_AREA가 아님.
+        우선 DEMAND_REGION을 찾고, 없으면 PRODUCTION_AREA로 폴백.
+        """
         import json as _json
         import logging
         logger = logging.getLogger(__name__)
@@ -319,12 +324,23 @@ class ReplanRtfProcessor:
                 return
             prop_json_str = rows[0].get("prop_json", "{}")
             prop_config = _json.loads(prop_json_str) if isinstance(prop_json_str, str) else prop_json_str
+
+            demand_region_key: str | None = None
+            production_area_key: str | None = None
             for key, val in prop_config.items():
-                display_name = val.get("PropID", {}).get("Value", "")
+                display_name = val.get("PropID", {}).get("Value", "") if isinstance(val, dict) else ""
                 if display_name == "PROD_TYPE":
                     self._prop_keys["prod_type_prop_key"] = key
+                elif display_name == "DEMAND_REGION":
+                    demand_region_key = key
                 elif display_name == "PRODUCTION_AREA":
-                    self._prop_keys["production_area_prop_key"] = key
+                    production_area_key = key
+
+            # APS 호환: DEMAND_REGION이 있으면 우선 사용, 없으면 PRODUCTION_AREA 폴백
+            if demand_region_key:
+                self._prop_keys["production_area_prop_key"] = demand_region_key
+            elif production_area_key:
+                self._prop_keys["production_area_prop_key"] = production_area_key
         except Exception as e:
             logger.warning(f"[ReplanRtf] prop config lookup failed: {e}, using defaults")
 
