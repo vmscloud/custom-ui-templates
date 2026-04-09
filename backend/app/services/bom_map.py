@@ -19,6 +19,31 @@ logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def _to_float(val: Any) -> float | None:
+    """값을 float으로 변환, 실패 시 None."""
+    if val is None:
+        return None
+    try:
+        return float(val)
+    except (TypeError, ValueError):
+        return None
+
+
+def _format_datetime(val: Any) -> str | None:
+    """Trino VARCHAR 날짜를 ISO datetime 형식으로 변환."""
+    if val is None:
+        return None
+    s = str(val).strip()
+    if not s:
+        return None
+    # "2026-01-16 23:59:59.000000" → "2026-01-16T23:59:59"
+    return s.replace(" ", "T").split(".")[0] if s else None
+
+
+# ---------------------------------------------------------------------------
 # SQL
 # ---------------------------------------------------------------------------
 
@@ -91,6 +116,56 @@ SELECT item_id, site_id, buffer_id,
 FROM rpt_demand_plan_isb
 WHERE partition_key = '{partition_key}' AND plan_ver = '{plan_ver}' AND demand_id = '{demand_id}'
   AND target_datetime IS NOT NULL
+"""
+
+# 특정 item/site/buffer에 해당하는 단일 ISB row 조회 (빠른 필터)
+_ISB_INFO_SQL = """
+SELECT item_id, site_id, buffer_id,
+       CAST(peg_qty AS DOUBLE) AS peg_qty,
+       CAST(plan_qty AS DOUBLE) AS plan_qty,
+       CAST(plan_unit_qty AS DOUBLE) AS plan_unit_qty,
+       CAST(plan_datetime AS VARCHAR) AS plan_datetime,
+       CAST(target_datetime AS VARCHAR) AS target_datetime,
+       CAST(extend_target_datetime AS VARCHAR) AS extd_target_datetime,
+       plan_gap_sec
+FROM rpt_demand_plan_isb
+WHERE partition_key = '{partition_key}' AND plan_ver = '{plan_ver}'
+  AND demand_id = '{demand_id}'
+  AND item_id = '{item_id}' AND site_id = '{site_id}' AND buffer_id = '{buffer_id}'
+LIMIT 1
+"""
+
+_ITEM_MASTER_SQL = """
+SELECT item_id, item_name, item_type, item_priority,
+       item_size_type AS item_size, item_spec
+FROM odv_item_master
+WHERE partition_key = '{partition_key}' AND plan_ver = '{plan_ver}' AND item_id = '{item_id}'
+LIMIT 1
+"""
+
+# rpt_buffer_target에서 target_qty 조회 (특정 demand/item/site/buffer)
+_BUFFER_TARGET_SQL = """
+SELECT
+    CAST(SUM(COALESCE(in_target_qty, 0)) AS DOUBLE) AS target_qty,
+    CAST(SUM(COALESCE(in_target_unit_qty, 0)) AS DOUBLE) AS target_unit_qty
+FROM rpt_buffer_target
+WHERE partition_key = '{partition_key}' AND plan_ver = '{plan_ver}'
+  AND demand_id = '{demand_id}'
+  AND item_id = '{item_id}' AND site_id = '{site_id}' AND std_buffer_id = '{buffer_id}'
+"""
+
+_SITE_MASTER_SQL = """
+SELECT site_id, site_name
+FROM odv_site_master
+WHERE partition_key = '{partition_key}' AND plan_ver = '{plan_ver}' AND site_id = '{site_id}'
+LIMIT 1
+"""
+
+_BUFFER_MASTER_SQL = """
+SELECT buffer_id, buffer_seq
+FROM odv_buffer_master
+WHERE partition_key = '{partition_key}' AND plan_ver = '{plan_ver}' AND buffer_id = '{buffer_id}'
+LIMIT 1
 """
 
 _SHORT_LOG_SQL = """
@@ -427,4 +502,136 @@ class BomMapService:
             "bomNetworkInfos": bom_network_infos,
             "demandInfos": demand_infos,
             "shortLogs": short_logs,
+        }
+
+    # ------------------------------------------------------------------
+    # GetBomMapIsbInfo — 버퍼 노드 클릭 시 ISB 상세 정보
+    # ------------------------------------------------------------------
+
+    async def get_bom_map_isb_info(
+        self, project_id: str, params: dict[str, Any]
+    ) -> dict[str, Any]:
+        """
+        RarBomMapViewNew/GetBomMapIsbInfo 응답 구조 반환:
+        {
+            "bomMapIsbInfo": {...},
+            "bomMapItemProp": [...],
+            "bomMapSiteProp": [],
+            "bomMapBufferProp": [],
+            "bomMapIsbProp": []
+        }
+        """
+        plan_ver: str = params.get("planVer", "")
+        demand_id: str = params.get("demandID", "")
+        item_id: str = params.get("itemID", "")
+        site_id: str = params.get("siteID", "")
+        buffer_id: str = params.get("bufferID", "")
+
+        if not all([plan_ver, demand_id, item_id, site_id, buffer_id]):
+            logger.warning("[BomMap] GetBomMapIsbInfo: missing required params")
+            return {
+                "bomMapIsbInfo": None,
+                "bomMapItemProp": [],
+                "bomMapSiteProp": [],
+                "bomMapBufferProp": [],
+                "bomMapIsbProp": [],
+            }
+
+        partition_key = self._partition_key(project_id, plan_ver)
+
+        import asyncio
+
+        # 병렬 조회 — 모두 단일 row 인덱스 조회이므로 빠름
+        fmt = dict(
+            partition_key=partition_key, plan_ver=plan_ver,
+            demand_id=demand_id, item_id=item_id, site_id=site_id, buffer_id=buffer_id,
+        )
+        isb_task = asyncio.create_task(
+            self._trino(project_id, _ISB_INFO_SQL.format(**fmt))
+        )
+        item_task = asyncio.create_task(
+            self._trino(project_id, _ITEM_MASTER_SQL.format(**fmt))
+        )
+        site_task = asyncio.create_task(
+            self._trino(project_id, _SITE_MASTER_SQL.format(**fmt))
+        )
+        buffer_task = asyncio.create_task(
+            self._trino(project_id, _BUFFER_MASTER_SQL.format(**fmt))
+        )
+        target_task = asyncio.create_task(
+            self._trino(project_id, _BUFFER_TARGET_SQL.format(**fmt))
+        )
+
+        isb_result, item_result, site_result, buffer_result, target_result = await asyncio.gather(
+            isb_task, item_task, site_task, buffer_task, target_task
+        )
+
+        isb_rows = self._rows(isb_result, "isb_info")
+        isb_row = isb_rows[0] if isb_rows else None
+
+        item_rows = self._rows(item_result, "item_master")
+        item_row = item_rows[0] if item_rows else {}
+        item_name = item_row.get("item_name") or item_id
+
+        site_rows = self._rows(site_result, "site_master")
+        site_row = site_rows[0] if site_rows else {}
+        site_name = site_row.get("site_name") or site_id
+
+        buffer_rows = self._rows(buffer_result, "buffer_master")
+        buffer_row = buffer_rows[0] if buffer_rows else {}
+        buffer_seq = buffer_row.get("buffer_seq")
+
+        target_rows = self._rows(target_result, "buffer_target")
+        target_row = target_rows[0] if target_rows else {}
+        target_qty = target_row.get("target_qty")
+        target_unit_qty = target_row.get("target_unit_qty")
+
+        # bomMapIsbInfo 구성 (rpt_demand_plan_isb에 없는 필드는 None)
+        bom_map_isb_info = {
+            "demand_id": demand_id,
+            "item_id": item_id,
+            "item_name": item_name,
+            "site_id": site_id,
+            "site_name": site_name,
+            "buffer_id": buffer_id,
+            "buffer_seq": buffer_seq,
+            "plan_qty": _to_float(isb_row.get("plan_qty")) if isb_row else None,
+            "plan_unit_qty": _to_float(isb_row.get("plan_unit_qty")) if isb_row else None,
+            "target_qty": _to_float(target_qty),
+            "target_unit_qty": _to_float(target_unit_qty),
+            "peg_qty": _to_float(isb_row.get("peg_qty")) if isb_row else None,
+            "unpeg_qty": None,
+            "wip_qty": None,
+            "input_target_qty": None,
+            "input_target_unit_qty": None,
+            "input_plan_qty": None,
+            "input_plan_unit_qty": None,
+            "input_option_yn": None,
+            "target_datetime": _format_datetime(isb_row.get("target_datetime")) if isb_row else None,
+            "extd_target_datetime": _format_datetime(isb_row.get("extd_target_datetime")) if isb_row else None,
+            "plan_datetime": _format_datetime(isb_row.get("plan_datetime")) if isb_row else None,
+            "plan_gap_sec": (isb_row.get("plan_gap_sec") or 0) if isb_row else 0,
+        }
+
+        # bomMapItemProp 구성 (item_master SQL 결과 재사용)
+        bom_map_item_prop = []
+        if item_row:
+            prop_map = [
+                ("Item Name", "item_name"),
+                ("Item Type", "item_type"),
+                ("Item Priority", "item_priority"),
+                ("Item Size", "item_size"),
+                ("Item Spec", "item_spec"),
+            ]
+            for label, key in prop_map:
+                val = item_row.get(key)
+                if val is not None and str(val) != "":
+                    bom_map_item_prop.append({"prop_id": label, "prop_value": str(val)})
+
+        return {
+            "bomMapIsbInfo": bom_map_isb_info,
+            "bomMapItemProp": bom_map_item_prop,
+            "bomMapSiteProp": [],
+            "bomMapBufferProp": [],
+            "bomMapIsbProp": [],
         }

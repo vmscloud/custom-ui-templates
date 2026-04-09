@@ -120,6 +120,23 @@ async def get_filter_item_groups(
         return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
 
 
+@router.post("/rtf-report/RarBomMapViewNew/GetBomMapIsbInfo")
+async def get_bom_map_isb_info(
+    project_id: str = Path(...),
+    body: dict[str, Any] = None,
+    adapter: QueryExecutorAdapter = Depends(get_query_executor_adapter),
+) -> dict[str, Any]:
+    """BomMap ISB 상세 정보 조회 (Trino 직접)"""
+    from app.services.bom_map import BomMapService
+    try:
+        service = BomMapService(adapter)
+        result = await service.get_bom_map_isb_info(project_id, body or {})
+        return {"success": True, "data": result}
+    except Exception as e:
+        logger.exception(f"[BomMap ISB Info 조회] {e}")
+        return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
+
 @router.post("/rtf-report/RarBomMapViewNew")
 async def get_bom_map_view(
     project_id: str = Path(...),

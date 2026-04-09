@@ -21,6 +21,11 @@ const PROXY_ROUTES = [
   "PlmSysOperPlan",    // Frozen Period (제외 범위)
 ];
 
+// ── 커스텀 백엔드 오버라이드 (PROXY_ROUTES보다 우선) ──
+const CUSTOM_OVERRIDE_ROUTES = [
+  "RarBomMapViewNew/GetBomMapIsbInfo",  // ISB 상세 정보 (Trino 직접 구현)
+];
+
 // ══════════════════════════════════════════════════════════
 // API Functions
 // ══════════════════════════════════════════════════════════
@@ -36,9 +41,12 @@ export async function apiCall(options: {
 }): Promise<any> {
   const { url, param } = options;
 
+  // 커스텀 백엔드 오버라이드 확인 (PROXY_ROUTES보다 우선)
+  const isCustomOverride = CUSTOM_OVERRIDE_ROUTES.some((r) => url === r || url.startsWith(r + "/"));
+
   // APS 프록시 대상 → nginx가 dev.mozart-cloud.com으로 직접 프록시 (브라우저 쿠키 전달)
   // 원본 C# 컨트롤러의 HTTP method를 그대로 전달해야 함
-  if (PROXY_ROUTES.some((r) => url.startsWith(r))) {
+  if (!isCustomOverride && PROXY_ROUTES.some((r) => url.startsWith(r))) {
     const fullUrl = `${APS_BASE()}/${url}`;
     const method = (options.method || "POST").toUpperCase();
 

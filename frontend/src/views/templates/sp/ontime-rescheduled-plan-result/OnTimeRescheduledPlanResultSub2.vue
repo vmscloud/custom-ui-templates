@@ -78,7 +78,7 @@
               :planCycleData="{
                 planVer,
                 planCycleID: '',
-                projectID: '',
+                projectID: getProjectId(),
                 fromDate: '',
                 toDate: '',
                 demandID: currentPopupDemandID,
@@ -107,16 +107,16 @@
                 }"
               >
                 <WjFlexGridColumnGroup binding="short_type" :header="t('text-short_type')" :width="100" align="center" />
-                <WjFlexGridColumnGroup binding="short_category" :header="t('text-short_category')" :width="100" />
-                <WjFlexGridColumnGroup binding="short_reason" :header="t('text-short_reason')" :width="150" />
-                <WjFlexGridColumnGroup binding="short_qty" :header="t('text-short_qty')" dataType="Number" :width="90" align="right" format="n0" />
+                <WjFlexGridColumnGroup binding="short_category" :header="t('text-short_category')" :width="150" />
+                <WjFlexGridColumnGroup binding="short_reason" :header="t('text-short_reason')" :width="200" />
+                <WjFlexGridColumnGroup binding="short_qty" :header="t('text-short_qty')" dataType="Number" :width="100" align="right" format="n0" />
                 <WjFlexGridColumnGroup binding="qty_uom" :header="t('text-qty_uom')" :width="80" :visible="false" />
-                <WjFlexGridColumnGroup binding="short_detail_info" :header="t('text-short_detail_info')" :width="120" />
-                <WjFlexGridColumnGroup binding="isb_id" :header="t('text-isb_id')" :width="100" />
-                <WjFlexGridColumnGroup binding="bom_id" :header="t('text-bom_id')" :width="100" />
-                <WjFlexGridColumnGroup binding="routing_id" :header="t('text-routing_id')" :width="100" />
-                <WjFlexGridColumnGroup binding="oper_id" :header="t('text-oper_id')" :width="100" />
-                <WjFlexGridColumnGroup binding="res_id" :header="t('text-res_id')" :width="100" />
+                <WjFlexGridColumnGroup binding="short_detail_info" :header="t('text-short_detail_info')" :width="300" />
+                <WjFlexGridColumnGroup binding="isb_id" :header="t('text-isb_id')" :width="300" />
+                <WjFlexGridColumnGroup binding="bom_id" :header="t('text-bom_id')" :width="300" />
+                <WjFlexGridColumnGroup binding="routing_id" :header="t('text-routing_id')" :width="100" :visible="false" />
+                <WjFlexGridColumnGroup binding="oper_id" :header="t('text-oper_id')" :width="100" :visible="false" />
+                <WjFlexGridColumnGroup binding="res_id" :header="t('text-res_id')" :width="100" :visible="false" />
               </ExtendFlexGrid>
             </div>
           </Pane>
@@ -134,6 +134,7 @@ import { WjFlexGridColumnGroup } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid"
 import { type FlexGrid, CellRange } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
 import { EmptyState, Pane, Popup, SplitPane } from "@vmscloud/moz-ui-components";
 import BomMapInterface from "@/views/templates/sp/new-rtf-report/components/bom-map/BomMapInterface.vue";
+import { getProjectId } from "@/api/client";
 import type { ReplanRtfDetail, ShortData } from "./onTimeRescheduledPlanResult";
 
 const { t } = useTranslation();
