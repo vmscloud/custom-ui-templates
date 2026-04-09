@@ -1,0 +1,1186 @@
+{
+  "success": true,
+  "count": 118,
+  "data": [
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-01",
+      "plan_qty": 45681.6,
+      "capa": 1164.0,
+      "str_rate": 3924.5,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-01",
+      "plan_qty": 35727.98,
+      "capa": 1164.0,
+      "str_rate": 3069.4,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-01",
+      "plan_qty": 8786.06,
+      "capa": 1164.0,
+      "str_rate": 754.8,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "3. 다중_HDI",
+      "date": "2026-04-01",
+      "plan_qty": 94.18,
+      "capa": 1164.0,
+      "str_rate": 8.1,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-01",
+      "plan_qty": 1073.38,
+      "capa": 1164.0,
+      "str_rate": 92.2,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-02",
+      "plan_qty": 2072.82,
+      "capa": 1164.0,
+      "str_rate": 178.1,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-02",
+      "plan_qty": 1448.11,
+      "capa": 1164.0,
+      "str_rate": 124.4,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-02",
+      "plan_qty": 619.77,
+      "capa": 1164.0,
+      "str_rate": 53.2,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-02",
+      "plan_qty": 4.95,
+      "capa": 1164.0,
+      "str_rate": 0.4,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-03",
+      "plan_qty": 543.34,
+      "capa": 1164.0,
+      "str_rate": 46.7,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-03",
+      "plan_qty": 512.91,
+      "capa": 1164.0,
+      "str_rate": 44.1,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-03",
+      "plan_qty": 30.43,
+      "capa": 1164.0,
+      "str_rate": 2.6,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-04",
+      "plan_qty": 842.83,
+      "capa": 1164.0,
+      "str_rate": 72.4,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-04",
+      "plan_qty": 817.01,
+      "capa": 1164.0,
+      "str_rate": 70.2,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-04",
+      "plan_qty": 0.0,
+      "capa": 1164.0,
+      "str_rate": 0.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-04",
+      "plan_qty": 25.82,
+      "capa": 1164.0,
+      "str_rate": 2.2,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-05",
+      "plan_qty": 471.82,
+      "capa": 1164.0,
+      "str_rate": 40.5,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-05",
+      "plan_qty": 261.07,
+      "capa": 1164.0,
+      "str_rate": 22.4,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-05",
+      "plan_qty": 139.0,
+      "capa": 1164.0,
+      "str_rate": 11.9,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "3. 다중_HDI",
+      "date": "2026-04-05",
+      "plan_qty": 0.0,
+      "capa": 1164.0,
+      "str_rate": 0.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-05",
+      "plan_qty": 71.76,
+      "capa": 1164.0,
+      "str_rate": 6.2,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-06",
+      "plan_qty": 312.59,
+      "capa": 1164.0,
+      "str_rate": 26.9,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-06",
+      "plan_qty": 296.19,
+      "capa": 1164.0,
+      "str_rate": 25.4,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "3. 다중_HDI",
+      "date": "2026-04-06",
+      "plan_qty": 16.4,
+      "capa": 1164.0,
+      "str_rate": 1.4,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-06",
+      "plan_qty": 0.0,
+      "capa": 1164.0,
+      "str_rate": 0.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-07",
+      "plan_qty": 371.47,
+      "capa": 1164.0,
+      "str_rate": 31.9,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-07",
+      "plan_qty": 261.93,
+      "capa": 1164.0,
+      "str_rate": 22.5,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-07",
+      "plan_qty": 0.0,
+      "capa": 1164.0,
+      "str_rate": 0.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-07",
+      "plan_qty": 109.54,
+      "capa": 1164.0,
+      "str_rate": 9.4,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-08",
+      "plan_qty": 1120.12,
+      "capa": 1164.0,
+      "str_rate": 96.2,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-08",
+      "plan_qty": 777.59,
+      "capa": 1164.0,
+      "str_rate": 66.8,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-08",
+      "plan_qty": 334.52,
+      "capa": 1164.0,
+      "str_rate": 28.7,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-08",
+      "plan_qty": 8.01,
+      "capa": 1164.0,
+      "str_rate": 0.7,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-09",
+      "plan_qty": 703.06,
+      "capa": 1164.0,
+      "str_rate": 60.4,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-09",
+      "plan_qty": 56.2,
+      "capa": 1164.0,
+      "str_rate": 4.8,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-09",
+      "plan_qty": 637.45,
+      "capa": 1164.0,
+      "str_rate": 54.8,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-09",
+      "plan_qty": 9.41,
+      "capa": 1164.0,
+      "str_rate": 0.8,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-10",
+      "plan_qty": 99.7,
+      "capa": 1164.0,
+      "str_rate": 8.6,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-10",
+      "plan_qty": 99.7,
+      "capa": 1164.0,
+      "str_rate": 8.6,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-10",
+      "plan_qty": 0.0,
+      "capa": 1164.0,
+      "str_rate": 0.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-10",
+      "plan_qty": 0.0,
+      "capa": 1164.0,
+      "str_rate": 0.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-11",
+      "plan_qty": 436.62,
+      "capa": 1164.0,
+      "str_rate": 37.5,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-11",
+      "plan_qty": 365.83,
+      "capa": 1164.0,
+      "str_rate": 31.4,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-11",
+      "plan_qty": 25.64,
+      "capa": 1164.0,
+      "str_rate": 2.2,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-11",
+      "plan_qty": 45.14,
+      "capa": 1164.0,
+      "str_rate": 3.9,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-12",
+      "plan_qty": 477.21,
+      "capa": 1164.0,
+      "str_rate": 41.0,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-12",
+      "plan_qty": 275.19,
+      "capa": 1164.0,
+      "str_rate": 23.6,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-12",
+      "plan_qty": 86.42,
+      "capa": 1164.0,
+      "str_rate": 7.4,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-12",
+      "plan_qty": 115.6,
+      "capa": 1164.0,
+      "str_rate": 9.9,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-13",
+      "plan_qty": 654.8,
+      "capa": 1164.0,
+      "str_rate": 56.3,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-13",
+      "plan_qty": 620.72,
+      "capa": 1164.0,
+      "str_rate": 53.3,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-13",
+      "plan_qty": 34.08,
+      "capa": 1164.0,
+      "str_rate": 2.9,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-14",
+      "plan_qty": 293.12,
+      "capa": 1164.0,
+      "str_rate": 25.2,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-14",
+      "plan_qty": 285.55,
+      "capa": 1164.0,
+      "str_rate": 24.5,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-14",
+      "plan_qty": 7.57,
+      "capa": 1164.0,
+      "str_rate": 0.7,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-15",
+      "plan_qty": 289.52,
+      "capa": 1164.0,
+      "str_rate": 24.9,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-15",
+      "plan_qty": 289.52,
+      "capa": 1164.0,
+      "str_rate": 24.9,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-15",
+      "plan_qty": 0.0,
+      "capa": 1164.0,
+      "str_rate": 0.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-15",
+      "plan_qty": 0.0,
+      "capa": 1164.0,
+      "str_rate": 0.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-16",
+      "plan_qty": 641.44,
+      "capa": 1164.0,
+      "str_rate": 55.1,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-16",
+      "plan_qty": 423.59,
+      "capa": 1164.0,
+      "str_rate": 36.4,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-16",
+      "plan_qty": 204.43,
+      "capa": 1164.0,
+      "str_rate": 17.6,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-16",
+      "plan_qty": 13.42,
+      "capa": 1164.0,
+      "str_rate": 1.2,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-17",
+      "plan_qty": 783.96,
+      "capa": 1164.0,
+      "str_rate": 67.4,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-17",
+      "plan_qty": 398.8,
+      "capa": 1164.0,
+      "str_rate": 34.3,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-17",
+      "plan_qty": 371.74,
+      "capa": 1164.0,
+      "str_rate": 31.9,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-17",
+      "plan_qty": 13.42,
+      "capa": 1164.0,
+      "str_rate": 1.2,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-18",
+      "plan_qty": 307.85,
+      "capa": 1164.0,
+      "str_rate": 26.4,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-18",
+      "plan_qty": 194.13,
+      "capa": 1164.0,
+      "str_rate": 16.7,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-18",
+      "plan_qty": 113.72,
+      "capa": 1164.0,
+      "str_rate": 9.8,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-19",
+      "plan_qty": 17.38,
+      "capa": 1164.0,
+      "str_rate": 1.5,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-19",
+      "plan_qty": 17.38,
+      "capa": 1164.0,
+      "str_rate": 1.5,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-19",
+      "plan_qty": 0.0,
+      "capa": 1164.0,
+      "str_rate": 0.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-19",
+      "plan_qty": 0.0,
+      "capa": 1164.0,
+      "str_rate": 0.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-20",
+      "plan_qty": 930.76,
+      "capa": 1164.0,
+      "str_rate": 80.0,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-20",
+      "plan_qty": 564.7,
+      "capa": 1164.0,
+      "str_rate": 48.5,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-20",
+      "plan_qty": 335.14,
+      "capa": 1164.0,
+      "str_rate": 28.8,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-20",
+      "plan_qty": 30.92,
+      "capa": 1164.0,
+      "str_rate": 2.7,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-21",
+      "plan_qty": 527.84,
+      "capa": 1164.0,
+      "str_rate": 45.3,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-21",
+      "plan_qty": 192.69,
+      "capa": 1164.0,
+      "str_rate": 16.6,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-21",
+      "plan_qty": 335.14,
+      "capa": 1164.0,
+      "str_rate": 28.8,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-21",
+      "plan_qty": 0.0,
+      "capa": 1164.0,
+      "str_rate": 0.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-22",
+      "plan_qty": 174.42,
+      "capa": 1164.0,
+      "str_rate": 15.0,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-22",
+      "plan_qty": 64.22,
+      "capa": 1164.0,
+      "str_rate": 5.5,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-22",
+      "plan_qty": 86.42,
+      "capa": 1164.0,
+      "str_rate": 7.4,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-22",
+      "plan_qty": 23.79,
+      "capa": 1164.0,
+      "str_rate": 2.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-23",
+      "plan_qty": 1312.27,
+      "capa": 1164.0,
+      "str_rate": 112.7,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-23",
+      "plan_qty": 689.63,
+      "capa": 1164.0,
+      "str_rate": 59.2,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-23",
+      "plan_qty": 616.5,
+      "capa": 1164.0,
+      "str_rate": 53.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-23",
+      "plan_qty": 6.13,
+      "capa": 1164.0,
+      "str_rate": 0.5,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-24",
+      "plan_qty": 374.01,
+      "capa": 1164.0,
+      "str_rate": 32.1,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-24",
+      "plan_qty": 26.22,
+      "capa": 1164.0,
+      "str_rate": 2.3,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-24",
+      "plan_qty": 311.1,
+      "capa": 1164.0,
+      "str_rate": 26.7,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-24",
+      "plan_qty": 36.69,
+      "capa": 1164.0,
+      "str_rate": 3.2,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-25",
+      "plan_qty": 542.32,
+      "capa": 1164.0,
+      "str_rate": 46.6,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-25",
+      "plan_qty": 366.1,
+      "capa": 1164.0,
+      "str_rate": 31.5,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-25",
+      "plan_qty": 137.02,
+      "capa": 1164.0,
+      "str_rate": 11.8,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-25",
+      "plan_qty": 39.2,
+      "capa": 1164.0,
+      "str_rate": 3.4,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-26",
+      "plan_qty": 329.8,
+      "capa": 1164.0,
+      "str_rate": 28.3,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-26",
+      "plan_qty": 329.8,
+      "capa": 1164.0,
+      "str_rate": 28.3,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-26",
+      "plan_qty": 0.0,
+      "capa": 1164.0,
+      "str_rate": 0.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-26",
+      "plan_qty": 0.0,
+      "capa": 1164.0,
+      "str_rate": 0.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-27",
+      "plan_qty": 743.23,
+      "capa": 1164.0,
+      "str_rate": 63.9,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-27",
+      "plan_qty": 348.63,
+      "capa": 1164.0,
+      "str_rate": 30.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-27",
+      "plan_qty": 382.53,
+      "capa": 1164.0,
+      "str_rate": 32.9,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-27",
+      "plan_qty": 12.06,
+      "capa": 1164.0,
+      "str_rate": 1.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-28",
+      "plan_qty": 470.06,
+      "capa": 1164.0,
+      "str_rate": 40.4,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-28",
+      "plan_qty": 79.49,
+      "capa": 1164.0,
+      "str_rate": 6.8,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-28",
+      "plan_qty": 371.38,
+      "capa": 1164.0,
+      "str_rate": 31.9,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-28",
+      "plan_qty": 19.19,
+      "capa": 1164.0,
+      "str_rate": 1.6,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-29",
+      "plan_qty": 167.07,
+      "capa": 1164.0,
+      "str_rate": 14.4,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-29",
+      "plan_qty": 125.36,
+      "capa": 1164.0,
+      "str_rate": 10.8,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-29",
+      "plan_qty": 0.0,
+      "capa": 1164.0,
+      "str_rate": 0.0,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-29",
+      "plan_qty": 41.71,
+      "capa": 1164.0,
+      "str_rate": 3.6,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "TOTAL",
+      "date": "2026-04-30",
+      "plan_qty": 410.22,
+      "capa": 1164.0,
+      "str_rate": 35.2,
+      "base_line": 100,
+      "sort_order": 0
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "1. VIPPO",
+      "date": "2026-04-30",
+      "plan_qty": 17.59,
+      "capa": 1164.0,
+      "str_rate": 1.5,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "2. 다중_SEQ",
+      "date": "2026-04-30",
+      "plan_qty": 371.69,
+      "capa": 1164.0,
+      "str_rate": 31.9,
+      "base_line": 100,
+      "sort_order": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "item_group_id": "4. 일반",
+      "date": "2026-04-30",
+      "plan_qty": 20.94,
+      "capa": 1164.0,
+      "str_rate": 1.8,
+      "base_line": 100,
+      "sort_order": 1
+    }
+  ]
+}

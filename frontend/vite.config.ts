@@ -35,7 +35,6 @@ export default defineConfig(({ mode }) => {
       "@moz-shared/types": path.resolve(__dirname, "src/shims/moz-shared/types"),
       "@vmscloud/moz-wijmo-grid/utils": path.resolve(__dirname, "src/shims/moz-wijmo-grid/utils"),
       "@vmscloud/moz-wijmo-grid/store": path.resolve(__dirname, "src/shims/moz-wijmo-grid/store"),
-      "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid.multirow": "@grapecity/wijmo.vue2.grid.multirow",
     },
   },
   css: {

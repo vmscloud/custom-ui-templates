@@ -207,7 +207,7 @@ export const fetchPegInfo = (params: { planVer: string; demandID: string }) =>
   api.post<ApiResponse>(`${RTF_REPORT_URL()}/peg-info`, params);
 
 export const fetchBomMap = (params: { planVer: string; demandID: string; onlyTargetBom?: boolean; uomType?: string }) =>
-  api.post<ApiResponse>(`${RTF_REPORT_URL()}/bom-map`, params);
+  api.post<ApiResponse>(`${RTF_REPORT_URL()}/RarBomMapViewNew`, params);
 
 export const fetchItemProps = (params: { planVer: string; itemID: string }) =>
   api.post<ApiResponse>(`${RTF_REPORT_URL()}/item-props`, params);
@@ -306,6 +306,7 @@ export function useOnTimeRescheduledPlanResult() {
   const demandInfoData: Ref<any[]> = ref([]);
   const pegInfoData: Ref<any[]> = ref([]);
   const bomMapData: Ref<any[]> = ref([]);
+  const bomMapShortLogs: Ref<any[]> = ref([]);
   const bufferPlanTargetData: Ref<any[]> = ref([]);
 
   // === Freeze State ===
@@ -509,7 +510,11 @@ export function useOnTimeRescheduledPlanResult() {
   async function loadBomMap(planVer: string, demandID: string) {
     try {
       const res = await fetchBomMap({ planVer, demandID, onlyTargetBom: true, uomType: committedUomType.value });
-      if (res.success) bomMapData.value = res.data;
+      if (res.success && res.data) {
+        bomMapData.value = res.data.bomNetworkInfos || [];
+        demandInfoData.value = res.data.demandInfos || {};
+        bomMapShortLogs.value = res.data.shortLogs || [];
+      }
     } catch (e) {
       console.error("BOM 구조 조회 오류:", e);
     }
@@ -611,6 +616,7 @@ export function useOnTimeRescheduledPlanResult() {
     demandInfoData.value = [];
     pegInfoData.value = [];
     bomMapData.value = [];
+    bomMapShortLogs.value = [];
     bufferPlanTargetData.value = [];
     selectedDemandID.value = "";
     selectedSummaryItem.value = null;
@@ -650,6 +656,7 @@ export function useOnTimeRescheduledPlanResult() {
     demandInfoData,
     pegInfoData,
     bomMapData,
+    bomMapShortLogs,
     bufferPlanTargetData,
 
     // Selection state

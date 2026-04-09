@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "count": 2,
+  "data": [
+    {
+      "value": "샘플"
+    },
+    {
+      "value": "양산"
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "planVer": "20260403-M-01",
+  "projectId": "EED70012-E49D-4BA5-AD05-870C338DF39A",
+  "generatedAt": "2026-04-06",
+
+  "LoadFactorByOperGroup": {
+    "main": {
+      "count": 106,
+      "params": { "planVer": "20260403-M-01", "fromDate": "2026-04-01", "toDate": "2026-04-30", "operGroupIDs": [], "includeUndefinedCapa": true },
+      "sample": [
+        { "oper_group_id": "099. 출검 편평도", "capa": 18900, "plan_qty": 1667.3, "str_rate": 8.8, "base_line": 100 },
+        { "oper_group_id": "028. AOI 외층(CO2/LP)", "capa": 12000, "plan_qty": 10360.9, "str_rate": 86.3, "base_line": 100 },
+        { "oper_group_id": "036. L/DRILL(PET)", "capa": 6300, "plan_qty": 3700.4, "str_rate": 58.7, "base_line": 100 },
+        { "oper_group_id": "999. HK", "capa": 0, "plan_qty": 41364.62, "str_rate": 0.0, "base_line": 100 },
+        { "oper_group_id": "031. 판넬도금", "capa": 1164, "plan_qty": 62103.25, "str_rate": 177.8, "base_line": 100 },
+        { "oper_group_id": "022. 플라즈마", "capa": 1336, "plan_qty": 51479.02, "str_rate": 128.4, "base_line": 100 },
+        { "oper_group_id": "039. 진공메꿈", "capa": 745, "plan_qty": 31056.77, "str_rate": 139.0, "base_line": 100 }
+      ]
+    },
+    "operGroups": {
+      "count": 106,
+      "sample": [
+        { "oper_group_id": "001. 자재출고", "oper_group_name": "", "oper_group_seq": 1 },
+        { "oper_group_id": "002. 내층 전처리노광", "oper_group_name": "", "oper_group_seq": 1 },
+        { "oper_group_id": "003. 내층 DES", "oper_group_name": "", "oper_group_seq": 1 }
+      ]
+    }
+  },
+
+  "ReExecutePlan": {
+    "operGroups": {
+      "count": 112,
+      "sample": [
+        { "oper_group_id": "001. 자재출고", "oper_group_name": "", "oper_group_seq": 1 },
+        { "oper_group_id": "002. 내층 전처리노광", "oper_group_name": "", "oper_group_seq": 1 },
+        { "oper_group_id": "003. 내층 DES", "oper_group_name": "", "oper_group_seq": 1 }
+      ]
+    }
+  },
+
+  "OnTimeRescheduledPlanResult": {
+    "summary": {
+      "count": 32,
+      "params": { "planVer": "20260403-M-01", "aggregateType": "MONTH", "summary": "itemGroup", "uomType": "DEFAULT" },
+      "total": {
+        "custID": "[TOTAL]", "itemGroupID": "[TOTAL]", "prodType": "[TOTAL]", "region": "[TOTAL]",
+        "qtyUom": "EA", "demandID": "5121488", "due": "[TOTAL]",
+        "demandCnt": 835, "demandQty": 249361,
+        "totalQty": 227802.44, "rtfQty": 115314.19, "earlyQty": 12371.44, "onTimeQty": 11424.55,
+        "lateQty": 91518.2, "shortQty": 112488.25, "upcomingQty": 109352,
+        "ratio_rtf": 50.6, "ratio_early": 5.4, "ratio_ontime": 5.0, "ratio_late": 40.2, "ratio_short": 49.4
+      },
+      "sample": [
+        { "custID": "HPE", "itemGroupID": "1. VIPPO", "prodType": "양산", "region": "대구", "qtyUom": "EA", "demandID": "5121461", "due": "2025-11-01 00:00:00", "demandCnt": 4, "demandQty": 86, "totalQty": 86, "rtfQty": 86, "earlyQty": 0, "onTimeQty": 0, "lateQty": 86, "shortQty": 0, "upcomingQty": 0, "ratio_rtf": 100, "ratio_early": 0, "ratio_ontime": 0, "ratio_late": 100, "ratio_short": 0 },
+        { "custID": "Arista Networks", "itemGroupID": "1. VIPPO", "prodType": "양산", "region": "대구", "qtyUom": "EA", "demandID": "5121488", "due": "2025-12-01 00:00:00", "demandCnt": 6, "demandQty": 268, "totalQty": 268, "rtfQty": 268, "earlyQty": 0, "onTimeQty": 0, "lateQty": 268, "shortQty": 0, "upcomingQty": 0, "ratio_rtf": 100, "ratio_early": 0, "ratio_ontime": 0, "ratio_late": 100, "ratio_short": 0 },
+        { "custID": "JUNIPER NETWORK", "itemGroupID": "1. VIPPO", "prodType": "양산", "region": "대구", "qtyUom": "EA", "demandID": "5122232", "due": "2026-01-01 00:00:00", "demandCnt": 29, "demandQty": 943, "totalQty": 943, "rtfQty": 941.0, "earlyQty": 0, "onTimeQty": 0, "lateQty": 941, "shortQty": 2.0, "upcomingQty": 0, "ratio_rtf": 99.8, "ratio_early": 0, "ratio_ontime": 0, "ratio_late": 99.8, "ratio_short": 0.2 }
+      ]
+    },
+    "detail": {
+      "count": 390,
+      "params": { "planVer": "20260403-M-01", "aggregateType": "MONTH", "summary": "itemGroup", "uomType": "DEFAULT", "dueMonth": "202604" },
+      "sample": [
+        { "demandID": "5121294", "demandPriority": null, "custID": "CISCO SYSTEMS, INC", "itemGroupID": "4. 일반", "itemID": "10012101F", "itemName": "10012101F", "itemLabel": "10012101F / 10012101F", "siteID": "ISU", "siteName": "ISU", "demandQty": 100, "dueDate": "2026-04-01 (-365, +730)", "maxEarlinessDay": 365, "maxLatenessDay": 730, "totalQty": 100, "rtfQty": 0, "earlyQty": 0, "onTimeQty": 0, "lateQty": 0, "shortQty": 100, "upcomingQty": 0, "ratio_rtf": 0, "ratio_early": 0, "ratio_ontime": 0, "ratio_late": 0, "ratio_short": 100, "qtyUom": "EA", "prod_type": "양산" },
+        { "demandID": "5121965", "demandPriority": null, "custID": "CISCO SYSTEMS, INC", "itemGroupID": "1. VIPPO", "itemID": "10011609D", "itemName": "10011609D", "itemLabel": "10011609D / 10011609D", "siteID": "ISU", "siteName": "ISU", "demandQty": 50, "dueDate": "2026-04-01 (-365, +730)", "maxEarlinessDay": 365, "maxLatenessDay": 730, "totalQty": 50, "rtfQty": 0, "earlyQty": 0, "onTimeQty": 0, "lateQty": 0, "shortQty": 50, "upcomingQty": 0, "ratio_rtf": 0, "ratio_early": 0, "ratio_ontime": 0, "ratio_late": 0, "ratio_short": 100, "qtyUom": "EA", "prod_type": "양산" }
+      ]
+    },
+    "prodTypes": {
+      "count": 2,
+      "data": [ { "value": "샘플" }, { "value": "양산" } ]
+    },
+    "customers": {
+      "count": 25,
+      "sample": [
+        { "cust_id": "(주)다산네트웍스", "cust_name": "(주)다", "cust_label": "(주)다산네트웍스 / (주)다" },
+        { "cust_id": "Accton Technology Coporation", "cust_name": "Acct", "cust_label": "Accton Technology Coporation / Acct" },
+        { "cust_id": "Advantest", "cust_name": "Jabi", "cust_label": "Advantest / Jabi" }
+      ]
+    },
+    "itemGroups": {
+      "count": 4,
+      "data": [ "1. VIPPO", "2. 다중_SEQ", "3. 다중_HDI", "4. 일반" ]
+    }
+  },
+
+  "PlanDashboard": {
+    "dashboard": {
+      "params": { "planVer": "20260403-M-01", "region": "RTF", "detailRegion": "all", "aggregateType": "MONTH", "userId": "", "menuId": "/pa/PlanDashboard2" },
+      "note": "복합 API — frozenVer + rtfSummary + operGroupCapa + resGroupReport + prodReport + otdSummary 등"
+    },
+    "frozenVer": "20260403-M-01",
+    "settings": { "note": "dp_user_widget_config에서 사용자별 위젯 설정 조회" }
+  },
+
+  "RTFReport": {
+    "Main2": {
+      "count": 35,
+      "params": { "planVer": "20260403-M-01", "aggregateType": "MONTH", "summary": "itemGroup", "uomType": "DEFAULT" },
+      "sample": [
+        { "demandID": "5119286", "due": "2025-11-01 00:00:00", "demandCnt": 4, "demandQty": 86, "rtfQty": 86, "onTimeQty": 0, "lateQty": 86, "rtfRatio": 100, "onTimeRatio": 0, "lateRatio": 100, "custID": "Arista Networks", "itemGroupID": "1. VIPPO", "demandType": "양산", "region": "대구", "qtyUom": "EA" },
+        { "demandID": "5120998", "due": "2025-12-01 00:00:00", "demandCnt": 6, "demandQty": 268, "rtfQty": 268, "onTimeQty": 0, "lateQty": 268, "rtfRatio": 100, "onTimeRatio": 0, "lateRatio": 100, "custID": "Palo Alto Networks", "itemGroupID": "1. VIPPO", "demandType": "양산", "region": "대구", "qtyUom": "EA" }
+      ]
+    },
+    "note": "C# 프록시 — 원본과 동일한 응답"
+  }
+}

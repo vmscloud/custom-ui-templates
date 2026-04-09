@@ -1,0 +1,173 @@
+{
+  "success": true,
+  "data": {
+    "frozenVer": "20260403-M-01",
+    "rtfSummary": {
+      "frozen": {
+        "demandQty": 9009.56279733,
+        "earlyQty": 1518.38575733,
+        "earlyRatio": 16.9,
+        "ontimeQty": 1918.25621849,
+        "ontimeRatio": 21.3,
+        "lateQty": 5159.33706415,
+        "lateRatio": 57.20000000000001,
+        "shortQty": 413.58375736,
+        "shortRatio": 4.599999999999994,
+        "rtfQty": 8595.97903997,
+        "rtfRatio": 95.4,
+        "upcomingQty": 0,
+        "upcomingRatio": 0,
+        "qtyUom": "㎡",
+        "uomType": "CONVERSION"
+      },
+      "actual": {
+        "demandQty": 9009.56279733,
+        "earlyQty": 1518.38575733,
+        "earlyRatio": 16.9,
+        "ontimeQty": 1918.25621849,
+        "ontimeRatio": 21.3,
+        "lateQty": 5159.33706415,
+        "lateRatio": 57.20000000000001,
+        "shortQty": 413.58375736,
+        "shortRatio": 4.599999999999994,
+        "rtfQty": 8595.97903997,
+        "rtfRatio": 95.4,
+        "upcomingQty": 0,
+        "upcomingRatio": 0,
+        "qtyUom": "㎡",
+        "uomType": "CONVERSION"
+      },
+      "plan": {
+        "demandQty": 9009.56279733,
+        "earlyQty": 1518.38575733,
+        "earlyRatio": 16.9,
+        "ontimeQty": 1918.25621849,
+        "ontimeRatio": 21.3,
+        "lateQty": 5159.33706415,
+        "lateRatio": 57.20000000000001,
+        "shortQty": 413.58375736,
+        "shortRatio": 4.599999999999994,
+        "rtfQty": 8595.97903997,
+        "rtfRatio": 95.4,
+        "upcomingQty": 0,
+        "upcomingRatio": 0,
+        "qtyUom": "㎡",
+        "uomType": "CONVERSION"
+      }
+    },
+    "operGroupCapa": [],
+    "resGroupReport": [
+      {
+        "res_group_id": "001. 자재출고",
+        "avg_utilization": 100.5,
+        "min_utilization": 100.0,
+        "max_utilization": 101.4,
+        "setup_count": 0.0
+      },
+      {
+        "res_group_id": "037. 패턴DOT",
+        "avg_utilization": 100.0,
+        "min_utilization": 100.0,
+        "max_utilization": 100.0,
+        "setup_count": 0.0
+      },
+      {
+        "res_group_id": "035. AOI(백드릴)",
+        "avg_utilization": 100.0,
+        "min_utilization": 100.0,
+        "max_utilization": 100.0,
+        "setup_count": 0.0
+      },
+      {
+        "res_group_id": "013. 1차 L/UP",
+        "avg_utilization": 100.0,
+        "min_utilization": 100.0,
+        "max_utilization": 100.0,
+        "setup_count": 0.0
+      }
+    ],
+    "prodReport": {
+      "detail": [],
+      "summary": [
+        {
+          "total_avg_prod_qty": 119360.0
+        }
+      ]
+    },
+    "otdSummary": {
+      "qtyUom": "",
+      "uomType": "CONVERSION",
+      "periodType": "Month",
+      "frozenVer": "20260403-M-01",
+      "frozenQty": 0,
+      "planQty": 0,
+      "actQty": 0,
+      "list": []
+    },
+    "stdSummaryReport": [
+      {
+        "buffer_id": "BOH_WIP_QTY",
+        "boh_qty": 489910.83,
+        "eoh_qty": null,
+        "boh_days": null,
+        "eoh_days": null,
+        "is_final_item": 0
+      },
+      {
+        "buffer_id": "CUST",
+        "boh_qty": 0.0,
+        "eoh_qty": 12561.41750001,
+        "boh_days": 0.0,
+        "eoh_days": 0.12408796,
+        "is_final_item": 0
+      }
+    ],
+    "errorLogSummary": [
+      {
+        "severity": "Critical",
+        "cnt": 0
+      },
+      {
+        "severity": "Info",
+        "cnt": 6384
+      },
+      {
+        "severity": "Notice",
+        "cnt": 49
+      },
+      {
+        "severity": "Warning",
+        "cnt": 9
+      }
+    ],
+    "shortLogSummary": [],
+    "peggingReport": {
+      "summary": [
+        {
+          "wip_qty": 489914.83,
+          "peg_qty": 290314.26925601,
+          "unpeg_qty": 199600.56074399,
+          "peg_ratio": 59.2581,
+          "unpeg_ratio": 40.7419
+        }
+      ],
+      "reasons": [
+        {
+          "unpeg_reason": "Excess",
+          "unpeg_qty": 184236.56074398814,
+          "unpeg_ratio": 37.61
+        },
+        {
+          "unpeg_reason": "NoTarget",
+          "unpeg_qty": 15360.0,
+          "unpeg_ratio": 3.14
+        },
+        {
+          "unpeg_reason": "Not In Buffer Master",
+          "unpeg_qty": 4.0,
+          "unpeg_ratio": 0.0
+        }
+      ]
+    }
+  }
+}

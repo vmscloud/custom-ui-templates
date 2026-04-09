@@ -41,3 +41,4 @@ class ReplanRtfProdDetailRequest(BaseModel):
     planVer: str
     demandID: str
     uomType: str = "DEFAULT"
+    userId: str = ""

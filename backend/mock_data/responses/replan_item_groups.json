@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "count": 4,
+  "data": [
+    {
+      "item_group": "1. VIPPO"
+    },
+    {
+      "item_group": "2. 다중_SEQ"
+    },
+    {
+      "item_group": "3. 다중_HDI"
+    },
+    {
+      "item_group": "4. 일반"
+    }
+  ]
+}

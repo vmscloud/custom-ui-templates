@@ -73,7 +73,7 @@
               v-if="bomMapData.length"
               :bomNetworkInfos="bomMapData"
               :demandInfos="demandInfoData"
-              :shortLogs="(shortData as any)"
+              :shortLogs="(bomMapShortLogs as any)"
               :initKey="demandInfoData?.item_id"
               :planCycleData="{
                 planVer,
@@ -94,7 +94,7 @@
             <div class="grid-sort-reason">
               <ExtendFlexGrid
                 name="onTimeReplanShortDetail"
-                :itemsSource="shortData"
+                :itemsSource="bomMapShortLogs"
                 height="100%"
                 :isReadOnly="true"
                 allowSorting="None"
@@ -148,11 +148,13 @@ interface Props {
   shortData: ShortData[];
   shortLoading?: boolean;
   bomMapData?: any[];
+  bomMapShortLogs?: any[];
   demandInfoData?: any;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   bomMapData: () => [],
+  bomMapShortLogs: () => [],
   demandInfoData: () => ({}),
 });
 

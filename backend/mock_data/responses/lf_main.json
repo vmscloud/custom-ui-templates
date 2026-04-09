@@ -1,0 +1,748 @@
+{
+  "success": true,
+  "count": 106,
+  "data": [
+    {
+      "oper_group_id": "001. 자재출고",
+      "capa": 23428.0,
+      "plan_qty": 607884.96,
+      "str_rate": 86.5,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "002. 내층 전처리노광",
+      "capa": 23428.0,
+      "plan_qty": 603323.39,
+      "str_rate": 85.8,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "003. 내층 DES",
+      "capa": 23428.0,
+      "plan_qty": 613620.29,
+      "str_rate": 87.3,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "004. 외형(선가공내층)",
+      "capa": 0.0,
+      "plan_qty": 7005.21,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "005. DRILL(선가공내층)",
+      "capa": 0.0,
+      "plan_qty": 1668.7,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "006. HI-POT 내층",
+      "capa": 15000.0,
+      "plan_qty": 312421.51,
+      "str_rate": 69.4,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "007. GUIDE가공",
+      "capa": 23428.0,
+      "plan_qty": 607243.6,
+      "str_rate": 86.4,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "008. AOI 내층",
+      "capa": 23428.0,
+      "plan_qty": 621529.14,
+      "str_rate": 88.4,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "009. AOI 내층 보류",
+      "capa": 0.0,
+      "plan_qty": 117.13,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "010. 대체옥사이드",
+      "capa": 9000.0,
+      "plan_qty": 192032.89,
+      "str_rate": 97.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "011. B/O",
+      "capa": 21000.0,
+      "plan_qty": 334236.68,
+      "str_rate": 53.1,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "012. BONDFILM",
+      "capa": 9000.0,
+      "plan_qty": 136069.47,
+      "str_rate": 79.6,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "013. 1차 L/UP",
+      "capa": 750.0,
+      "plan_qty": 73312.5,
+      "str_rate": 325.8,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "014. 2차 L/UP",
+      "capa": 750.0,
+      "plan_qty": 20898.89,
+      "str_rate": 92.9,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "015. PRESS",
+      "capa": 750.0,
+      "plan_qty": 20945.72,
+      "str_rate": 93.1,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "016. X-RAY 가이드",
+      "capa": 750.0,
+      "plan_qty": 99.55,
+      "str_rate": 6.6,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "017. 적층재단",
+      "capa": 750.0,
+      "plan_qty": 21007.47,
+      "str_rate": 93.4,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "018. X-RAY 측정",
+      "capa": 0.0,
+      "plan_qty": 0.31,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "019. 두께 측정",
+      "capa": 300.0,
+      "plan_qty": 30.52,
+      "str_rate": 10.2,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "020. DRILL",
+      "capa": 1048.0,
+      "plan_qty": 44104.74,
+      "str_rate": 140.3,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "021. 디버링",
+      "capa": 1596.0,
+      "plan_qty": 73680.03,
+      "str_rate": 153.9,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "022. 플라즈마",
+      "capa": 1336.0,
+      "plan_qty": 51479.02,
+      "str_rate": 128.4,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "023. L/DRILL(UV)",
+      "capa": 420.0,
+      "plan_qty": 7662.53,
+      "str_rate": 86.9,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "024. L/DRILL(CO2)",
+      "capa": 420.0,
+      "plan_qty": 7908.81,
+      "str_rate": 89.7,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "025. 디스미어",
+      "capa": 1191.0,
+      "plan_qty": 56770.85,
+      "str_rate": 158.9,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "026. 화학연마",
+      "capa": 470.0,
+      "plan_qty": 13828.64,
+      "str_rate": 163.5,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "027. HALF에칭",
+      "capa": 130.0,
+      "plan_qty": 8239.6,
+      "str_rate": 264.1,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "028. AOI 외층(CO2/LP)",
+      "capa": 400.0,
+      "plan_qty": 10360.86,
+      "str_rate": 117.7,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "029. 판넬 화학동",
+      "capa": 200.0,
+      "plan_qty": 11341.19,
+      "str_rate": 218.1,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "030. 수평화학동",
+      "capa": 150.0,
+      "plan_qty": 739.07,
+      "str_rate": 82.1,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "capa": 1164.0,
+      "plan_qty": 62103.25,
+      "str_rate": 177.8,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "032. CU-FILL 도금",
+      "capa": 150.0,
+      "plan_qty": 110.72,
+      "str_rate": 73.8,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "033. 홀체크",
+      "capa": 998.0,
+      "plan_qty": 36404.41,
+      "str_rate": 121.6,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "034. BACK드릴 1차",
+      "capa": 302.0,
+      "plan_qty": 18190.22,
+      "str_rate": 207.7,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "035. AOI(백드릴)",
+      "capa": 270.0,
+      "plan_qty": 18889.49,
+      "str_rate": 259.1,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "036. L/DRILL(PET)",
+      "capa": 210.0,
+      "plan_qty": 3700.44,
+      "str_rate": 76.6,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "037. 패턴DOT",
+      "capa": 500.0,
+      "plan_qty": 28397.99,
+      "str_rate": 189.3,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "038. MASKING",
+      "capa": 860.0,
+      "plan_qty": 41158.42,
+      "str_rate": 159.5,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "039. 진공메꿈",
+      "capa": 745.0,
+      "plan_qty": 31056.77,
+      "str_rate": 139.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "040. 진공메꿈 건조",
+      "capa": 1050.0,
+      "plan_qty": 18465.83,
+      "str_rate": 60.6,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "042. 세라믹연마(메꿈/기타)",
+      "capa": 1200.0,
+      "plan_qty": 49263.1,
+      "str_rate": 136.8,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "043. 수동연마",
+      "capa": 780.0,
+      "plan_qty": 32041.88,
+      "str_rate": 146.7,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "044. 인쇄 메꿈",
+      "capa": 280.0,
+      "plan_qty": 6785.48,
+      "str_rate": 2423.4,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "045. 외층 D/F 박리",
+      "capa": 1000.0,
+      "plan_qty": 29035.99,
+      "str_rate": 96.8,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "046. 드릴(후가공)",
+      "capa": 470.0,
+      "plan_qty": 13654.73,
+      "str_rate": 103.8,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "047. 외층 BELT",
+      "capa": 100.0,
+      "plan_qty": 27.15,
+      "str_rate": 27.2,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "048. 외층전처리",
+      "capa": 182.0,
+      "plan_qty": 3701.46,
+      "str_rate": 96.8,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "049. 외층전처리노광",
+      "capa": 1700.0,
+      "plan_qty": 72271.2,
+      "str_rate": 141.7,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "050. 외층 현상",
+      "capa": 1600.0,
+      "plan_qty": 72468.47,
+      "str_rate": 151.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "051. 패턴PT",
+      "capa": 550.0,
+      "plan_qty": 28859.01,
+      "str_rate": 174.9,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "052. 에칭",
+      "capa": 700.0,
+      "plan_qty": 29586.1,
+      "str_rate": 140.9,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "053. 중간검사",
+      "capa": 810.0,
+      "plan_qty": 44101.13,
+      "str_rate": 181.5,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "054. DRILL 재작업",
+      "capa": 0.0,
+      "plan_qty": 19.13,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "055. 저저항",
+      "capa": 600.0,
+      "plan_qty": 25260.93,
+      "str_rate": 140.3,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "056. AOI JET",
+      "capa": 670.0,
+      "plan_qty": 30565.27,
+      "str_rate": 152.1,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "057. AVI(메꿈)",
+      "capa": 500.0,
+      "plan_qty": 24122.41,
+      "str_rate": 160.8,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "058. AOI 외층",
+      "capa": 750.0,
+      "plan_qty": 36896.2,
+      "str_rate": 164.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "060. 인쇄 JET",
+      "capa": 1300.0,
+      "plan_qty": 54397.5,
+      "str_rate": 139.5,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "061. 인쇄 SCREEN",
+      "capa": 220.0,
+      "plan_qty": 2004.97,
+      "str_rate": 60.8,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "062. 인쇄 SPRAY",
+      "capa": 900.0,
+      "plan_qty": 51706.78,
+      "str_rate": 191.5,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "063. 인쇄 현상",
+      "capa": 1050.0,
+      "plan_qty": 53732.05,
+      "str_rate": 170.6,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "064. 인쇄 건조",
+      "capa": 1080.0,
+      "plan_qty": 690.24,
+      "str_rate": 21.3,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "065. 마킹",
+      "capa": 700.0,
+      "plan_qty": 31778.36,
+      "str_rate": 151.3,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "066. 무전해 JET",
+      "capa": 500.0,
+      "plan_qty": 20758.07,
+      "str_rate": 148.3,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "067. ENEPIG",
+      "capa": 33.0,
+      "plan_qty": 1689.72,
+      "str_rate": 5120.4,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "068. 무전해금",
+      "capa": 450.0,
+      "plan_qty": 11737.47,
+      "str_rate": 93.2,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "069. 전해금도금",
+      "capa": 132.0,
+      "plan_qty": 7192.07,
+      "str_rate": 209.6,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "070. 전해금 박리",
+      "capa": 138.0,
+      "plan_qty": 7192.07,
+      "str_rate": 226.6,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "071. 레이저마킹",
+      "capa": 0.0,
+      "plan_qty": 1.67,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "072. 쿠폰검사",
+      "capa": 0.0,
+      "plan_qty": 12080.89,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "073. BACK드릴 2차",
+      "capa": 546.0,
+      "plan_qty": 25001.56,
+      "str_rate": 152.6,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "075. 외형",
+      "capa": 651.0,
+      "plan_qty": 35250.93,
+      "str_rate": 180.5,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "076. 외형(면취,밀링)",
+      "capa": 357.0,
+      "plan_qty": 11677.21,
+      "str_rate": 121.1,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "077. 외형(V-CUT)",
+      "capa": 200.0,
+      "plan_qty": 69.7,
+      "str_rate": 5.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "078. 외형 수세",
+      "capa": 550.0,
+      "plan_qty": 351.92,
+      "str_rate": 16.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "079. A/C 휨교정",
+      "capa": 489.0,
+      "plan_qty": 2338.04,
+      "str_rate": 59.8,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "080. A/C 건조",
+      "capa": 1000.0,
+      "plan_qty": 314.08,
+      "str_rate": 15.7,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "081. A/C",
+      "capa": 621.0,
+      "plan_qty": 31785.15,
+      "str_rate": 170.6,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "082. A/C 무빙",
+      "capa": 40.0,
+      "plan_qty": 581.18,
+      "str_rate": 90.8,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "083. BD SLIVER",
+      "capa": 360.0,
+      "plan_qty": 17057.71,
+      "str_rate": 157.9,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "084. A/C HI-POT",
+      "capa": 562.0,
+      "plan_qty": 29067.21,
+      "str_rate": 172.4,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "085. A/C 리플로우",
+      "capa": 0.0,
+      "plan_qty": 980.75,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "086. A/C, 엘에이 저저항",
+      "capa": 250.0,
+      "plan_qty": 17858.3,
+      "str_rate": 238.1,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "087. A/C 분할/보류",
+      "capa": 0.0,
+      "plan_qty": 47.6,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "088. PRE FLUX",
+      "capa": 500.0,
+      "plan_qty": 12886.52,
+      "str_rate": 151.6,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "089. 산세",
+      "capa": 335.0,
+      "plan_qty": 1973.62,
+      "str_rate": 73.6,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "090. AFVI",
+      "capa": 500.0,
+      "plan_qty": 18895.92,
+      "str_rate": 126.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "091. 육검",
+      "capa": 688.0,
+      "plan_qty": 27943.13,
+      "str_rate": 135.4,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "092. 육검 분할/보류",
+      "capa": 0.0,
+      "plan_qty": 339.83,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "093. AFVI 보류/분할",
+      "capa": 0.0,
+      "plan_qty": 489.62,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "094. TAPE",
+      "capa": 0.0,
+      "plan_qty": 100.33,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "095. SILVER",
+      "capa": 300.0,
+      "plan_qty": 1184.27,
+      "str_rate": 14.1,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "096. WHITE-TIN",
+      "capa": 300.0,
+      "plan_qty": 81.01,
+      "str_rate": 4.5,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "097. 출검 1차",
+      "capa": 630.0,
+      "plan_qty": 12876.68,
+      "str_rate": 73.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "098. 출검 2차",
+      "capa": 663.0,
+      "plan_qty": 28406.39,
+      "str_rate": 204.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "099. 출검 편평도",
+      "capa": 630.0,
+      "plan_qty": 1667.28,
+      "str_rate": 44.1,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "100. 출검 보류",
+      "capa": 0.0,
+      "plan_qty": 2.02,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "101. 포장",
+      "capa": 0.0,
+      "plan_qty": 35350.72,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "999. HK",
+      "capa": 0.0,
+      "plan_qty": 41364.62,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "999. L/DRILL(재처리)",
+      "capa": null,
+      "plan_qty": 44.41,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "999. QRB",
+      "capa": 0.0,
+      "plan_qty": 3.51,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "999. 기타",
+      "capa": 0.0,
+      "plan_qty": 158.04,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "999. 리페어",
+      "capa": 0.0,
+      "plan_qty": 9.13,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "999. 인쇄 박리",
+      "capa": 0.0,
+      "plan_qty": 46.6,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "999. 적층건조",
+      "capa": null,
+      "plan_qty": 0.21,
+      "str_rate": 0.0,
+      "base_line": 100
+    },
+    {
+      "oper_group_id": "999. 적층재처리",
+      "capa": null,
+      "plan_qty": 1240.66,
+      "str_rate": 0.0,
+      "base_line": 100
+    }
+  ]
+}

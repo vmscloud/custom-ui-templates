@@ -1,0 +1,131 @@
+{
+  "success": true,
+  "count": 25,
+  "data": [
+    {
+      "cust_id": "(주)다산네트웍스",
+      "cust_name": "(주)다",
+      "cust_label": "(주)다산네트웍스 / (주)다"
+    },
+    {
+      "cust_id": "Accton Technology Coporation",
+      "cust_name": "Acct",
+      "cust_label": "Accton Technology Coporation / Acct"
+    },
+    {
+      "cust_id": "Advantest",
+      "cust_name": "Jabi",
+      "cust_label": "Advantest / Jabi"
+    },
+    {
+      "cust_id": "Arista Networks",
+      "cust_name": "Jabi",
+      "cust_label": "Arista Networks / Jabi"
+    },
+    {
+      "cust_id": "Barefoot Networks",
+      "cust_name": "Joyt",
+      "cust_label": "Barefoot Networks / Joyt"
+    },
+    {
+      "cust_id": "Broadcom",
+      "cust_name": "Broa",
+      "cust_label": "Broadcom / Broa"
+    },
+    {
+      "cust_id": "CISCO SYSTEMS, INC",
+      "cust_name": "Shen",
+      "cust_label": "CISCO SYSTEMS, INC / Shen"
+    },
+    {
+      "cust_id": "Celestica HPS",
+      "cust_name": "CEL ",
+      "cust_label": "Celestica HPS / CEL "
+    },
+    {
+      "cust_id": "DELTA NETWORKS, INC.",
+      "cust_name": "DELT",
+      "cust_label": "DELTA NETWORKS, INC. / DELT"
+    },
+    {
+      "cust_id": "ELM",
+      "cust_name": "CELE",
+      "cust_label": "ELM / CELE"
+    },
+    {
+      "cust_id": "F5 Networks",
+      "cust_name": "Amph",
+      "cust_label": "F5 Networks / Amph"
+    },
+    {
+      "cust_id": "Fruit",
+      "cust_name": "Frui",
+      "cust_label": "Fruit / Frui"
+    },
+    {
+      "cust_id": "HPE",
+      "cust_name": "HPE",
+      "cust_label": "HPE / HPE"
+    },
+    {
+      "cust_id": "JUNIPER NETWORK",
+      "cust_name": "Juni",
+      "cust_label": "JUNIPER NETWORK / Juni"
+    },
+    {
+      "cust_id": "MediaTek",
+      "cust_name": "Medi",
+      "cust_label": "MediaTek / Medi"
+    },
+    {
+      "cust_id": "Microsoft",
+      "cust_name": "MS_P",
+      "cust_label": "Microsoft / MS_P"
+    },
+    {
+      "cust_id": "N",
+      "cust_name": "Sanm",
+      "cust_label": "N / Sanm"
+    },
+    {
+      "cust_id": "NextHop",
+      "cust_name": "Next",
+      "cust_label": "NextHop / Next"
+    },
+    {
+      "cust_id": "Nvidia Corporation",
+      "cust_name": "Wist",
+      "cust_label": "Nvidia Corporation / Wist"
+    },
+    {
+      "cust_id": "Palo Alto Networks",
+      "cust_name": "Flex",
+      "cust_label": "Palo Alto Networks / Flex"
+    },
+    {
+      "cust_id": "Pure Storage",
+      "cust_name": "Pure",
+      "cust_label": "Pure Storage / Pure"
+    },
+    {
+      "cust_id": "Quanta Computer Inc.",
+      "cust_name": "Quan",
+      "cust_label": "Quanta Computer Inc. / Quan"
+    },
+    {
+      "cust_id": "SONUS NETWORKS",
+      "cust_name": "Sanm",
+      "cust_label": "SONUS NETWORKS / Sanm"
+    },
+    {
+      "cust_id": "리벨리온(주)",
+      "cust_name": "리벨리온",
+      "cust_label": "리벨리온(주) / 리벨리온"
+    },
+    {
+      "cust_id": null,
+      "cust_name": null,
+      "cust_label": null
+    }
+  ]
+}

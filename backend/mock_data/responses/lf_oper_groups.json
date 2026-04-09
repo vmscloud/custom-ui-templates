@@ -1,0 +1,536 @@
+{
+  "success": true,
+  "count": 106,
+  "data": [
+    {
+      "oper_group_id": "001. 자재출고",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "002. 내층 전처리노광",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "003. 내층 DES",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "004. 외형(선가공내층)",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "005. DRILL(선가공내층)",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "006. HI-POT 내층",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "007. GUIDE가공",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "008. AOI 내층",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "009. AOI 내층 보류",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "010. 대체옥사이드",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "011. B/O",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "012. BONDFILM",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "013. 1차 L/UP",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "014. 2차 L/UP",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "015. PRESS",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "016. X-RAY 가이드",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "017. 적층재단",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "018. X-RAY 측정",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "019. 두께 측정",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "020. DRILL",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "021. 디버링",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "022. 플라즈마",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "023. L/DRILL(UV)",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "024. L/DRILL(CO2)",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "025. 디스미어",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "026. 화학연마",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "027. HALF에칭",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "028. AOI 외층(CO2/LP)",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "029. 판넬 화학동",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "030. 수평화학동",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "031. 판넬도금",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "032. CU-FILL 도금",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "033. 홀체크",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "034. BACK드릴 1차",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "035. AOI(백드릴)",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "036. L/DRILL(PET)",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "037. 패턴DOT",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "038. MASKING",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "039. 진공메꿈",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "040. 진공메꿈 건조",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "042. 세라믹연마(메꿈/기타)",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "043. 수동연마",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "044. 인쇄 메꿈",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "045. 외층 D/F 박리",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "046. 드릴(후가공)",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "047. 외층 BELT",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "048. 외층전처리",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "049. 외층전처리노광",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "050. 외층 현상",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "051. 패턴PT",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "052. 에칭",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "053. 중간검사",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "054. DRILL 재작업",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "055. 저저항",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "056. AOI JET",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "057. AVI(메꿈)",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "058. AOI 외층",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "060. 인쇄 JET",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "061. 인쇄 SCREEN",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "062. 인쇄 SPRAY",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "063. 인쇄 현상",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "064. 인쇄 건조",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "065. 마킹",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "066. 무전해 JET",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "067. ENEPIG",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "068. 무전해금",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "069. 전해금도금",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "070. 전해금 박리",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "071. 레이저마킹",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "072. 쿠폰검사",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "073. BACK드릴 2차",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "075. 외형",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "076. 외형(면취,밀링)",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "077. 외형(V-CUT)",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "078. 외형 수세",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "079. A/C 휨교정",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "080. A/C 건조",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "081. A/C",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "082. A/C 무빙",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "083. BD SLIVER",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "084. A/C HI-POT",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "085. A/C 리플로우",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "086. A/C, 엘에이 저저항",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "087. A/C 분할/보류",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "088. PRE FLUX",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "089. 산세",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "090. AFVI",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "091. 육검",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "092. 육검 분할/보류",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "093. AFVI 보류/분할",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "094. TAPE",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "095. SILVER",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "096. WHITE-TIN",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "097. 출검 1차",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "098. 출검 2차",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "099. 출검 편평도",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "100. 출검 보류",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "101. 포장",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "999. HK",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "999. L/DRILL(재처리)",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "999. QRB",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "999. 기타",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "999. 리페어",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "999. 인쇄 박리",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "999. 적층건조",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    },
+    {
+      "oper_group_id": "999. 적층재처리",
+      "oper_group_name": "",
+      "oper_group_seq": 1
+    }
+  ]
+}

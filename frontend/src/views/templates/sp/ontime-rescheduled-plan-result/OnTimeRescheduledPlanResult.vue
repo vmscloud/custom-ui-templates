@@ -163,6 +163,7 @@
                 :short-data="shortData"
                 :short-loading="shortLoading"
                 :bom-map-data="bomMapData"
+                :bom-map-short-logs="bomMapShortLogs"
                 :demand-info-data="demandInfoData"
                 @demand-selected="handleDemandSelect"
                 @load-short="onLoadShort"
@@ -313,6 +314,7 @@ const {
   demandInfoData,
   pegInfoData,
   bomMapData,
+  bomMapShortLogs,
   selectedDemandID,
   frozenStatus,
   loading,

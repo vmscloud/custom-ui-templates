@@ -15,7 +15,7 @@
     "@tanstack/vue-virtual": "^3.13.18",
     "@vmscloud/moz-ui-chart": "^1.0.12",
     "@vmscloud/moz-ui-components": "^1.2.10",
-    "@vmscloud/moz-wijmo-grid": "^1.0.24",
+    "@vmscloud/moz-wijmo-grid": "^1.0.30",
     "axios": "^1.13.5",
     "dayjs": "^1.11.19",
     "es-toolkit": "^1.44.0",

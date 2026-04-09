@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "Mozart Cloud Custom UI"
     APP_VERSION: str = "0.1.0"
     DEBUG: bool = False
+    USE_MOCK: bool = False  # True: DB 없이 캡처된 mock 데이터로 응답
 
     # 데이터베이스 설정
     # DATABASE_URL: str = "postgresql://mzcdev:cloud-vms1!@mzcrds-dev.cboeqa8ie939.ap-northeast-2.rds.amazonaws.com/aleatorik"
