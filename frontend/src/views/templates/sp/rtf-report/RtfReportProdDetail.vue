@@ -66,7 +66,7 @@
     <div class="pivot-container">
       <ExtendPivotGrid
         ref="extendPivotGridRef"
-        :emptyState="{ isLoading: !data || data.length === 0 }"
+        :emptyState="{ isLoading: loading, isReadOnly: !loading && (!data || data.length === 0) }"
         name="rtfProdDetailPivot"
         height="100%"
         :itemsSource="data"
@@ -200,6 +200,7 @@ interface Props {
   demandId: string;
   uomType: string;
   isZoomed: boolean;
+  loading?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -237,63 +238,63 @@ function formatRatio(val: any): string {
 
 const pivotFields = computed(() => [
   {
-    binding: "oper_group_id",
+    binding: "operGroupID",
     header: "공정 그룹",
     dataType: DataType.String,
     align: "left" as const,
     width: 100,
   },
   {
-    binding: "oper_id",
+    binding: "operID",
     header: "공정",
     dataType: DataType.String,
     align: "left" as const,
     width: 100,
   },
   {
-    binding: "item_id",
+    binding: "itemID",
     header: "제품",
     dataType: DataType.String,
     align: "left" as const,
     width: 120,
   },
   {
-    binding: "site_id",
+    binding: "siteID",
     header: "사이트",
     dataType: DataType.String,
     align: "left" as const,
     width: 80,
   },
   {
-    binding: "item_type",
+    binding: "itemType",
     header: "제품 유형",
     dataType: DataType.String,
     align: "left" as const,
     width: 80,
   },
   {
-    binding: "wip_qty",
+    binding: "wipQty",
     header: "WIP 수량",
     dataType: DataType.Number,
     align: "right" as const,
     aggregate: Aggregate.Sum,
   },
   {
-    binding: "peg_qty",
+    binding: "pegQty",
     header: "Peg 수량",
     dataType: DataType.Number,
     align: "right" as const,
     aggregate: Aggregate.Sum,
   },
   {
-    binding: "used_total_qty",
+    binding: "usedTotalQty",
     header: "사용 총량",
     dataType: DataType.Number,
     align: "right" as const,
     aggregate: Aggregate.Sum,
   },
   {
-    binding: "out_plan_qty",
+    binding: "outPlanQty",
     header: "계획 산출량",
     dataType: DataType.Number,
     align: "right" as const,
@@ -301,14 +302,14 @@ const pivotFields = computed(() => [
     aggregate: Aggregate.Sum,
   },
   {
-    binding: "plan_date",
+    binding: "planDate",
     header: "계획일",
     dataType: DataType.String,
     align: "right" as const,
     width: 76,
   },
   {
-    binding: "plan_month",
+    binding: "planMonth",
     header: "계획월",
     dataType: DataType.String,
     align: "right" as const,

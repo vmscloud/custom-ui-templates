@@ -406,18 +406,28 @@ class RtfReportService:
 
     def _get_handler(self, api_url: str):
         routes = {
-            # ── 필터 쿼리 ──
+            # ── 필터 쿼리 (legacy APS 이름) ──
             "ComCustInRtf": self._handle_customers,
             "ComItemGroupInRtf": self._handle_item_groups,
             "RarRtfReport/GetRegions": self._handle_regions,
             "RarRtfReport/GetDemandTypes": self._handle_demand_types,
             "RarRtfReport/GetProdTypes": self._handle_prod_types,
-            # ── 핵심 데이터 (C# in-memory 처리 재현) ──
+            # ── 핵심 데이터 (C# in-memory 처리 재현, legacy 이름) ──
             "RarRtfReport/Main2": self._handle_main,
             "RarRtfReport/Detail2": self._handle_detail,
             "RarRtfReport/Short": self._handle_short,
             "RarRtfReport/PlanEndDate": self._handle_plan_end_date,
-            # ── Phase 2: 신규 엔드포인트 ──
+            # ── REST 스타일 별칭 (rtf-report 페이지 프론트엔드용) ──
+            "summary": self._handle_main,
+            "detail": self._handle_detail,
+            "short": self._handle_short,
+            "prod-detail": self._handle_prod_detail2,
+            "demand-info": self._handle_demand_info,
+            "peg-info": self._handle_peg_info_detail,
+            "demand-summary": self._handle_demand_summary,
+            "buffer-plan-target": self._handle_buffer_plan_target,
+            "item-props": self._handle_get_props,
+            # ── Phase 2: 신규 엔드포인트 (legacy APS 이름) ──
             "RarPeggingReport/DemandInfo": self._handle_demand_info,
             "RarPeggingReport/PegInfoDetail": self._handle_peg_info_detail,
             "RarPlanByProd/Detail2": self._handle_prod_detail2,

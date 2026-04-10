@@ -28,13 +28,13 @@
       align="center"
     />
     <WjFlexGridColumn
-      binding="demand_cnt"
+      binding="demandCnt"
       header="수요 건수"
       aggregate="Sum"
       :width="80"
     />
     <WjFlexGridColumn
-      binding="demand_qty"
+      binding="demandQty"
       header="수요 수량"
       dataType="Number"
       aggregate="Sum"
@@ -43,7 +43,7 @@
       format="n0"
     />
     <WjFlexGridColumn
-      binding="rtf_qty"
+      binding="rtfQty"
       header="RTF 수량"
       dataType="Number"
       aggregate="Sum"
@@ -52,14 +52,14 @@
       format="n0"
     />
     <WjFlexGridColumn
-      binding="qty_uom"
+      binding="qtyUom"
       header="단위"
       dataType="String"
       :width="90"
       :visible="false"
     />
     <WjFlexGridColumn
-      binding="on_time_ratio"
+      binding="onTimeRatio"
       header="정시 생산 비율"
       dataType="Number"
       aggregate="Avg"
@@ -67,7 +67,7 @@
       :width="90"
     />
     <WjFlexGridColumn
-      binding="on_time_qty"
+      binding="onTimeQty"
       header="On-Time 수량"
       dataType="Number"
       aggregate="Sum"
@@ -77,7 +77,7 @@
       format="n0"
     />
     <WjFlexGridColumn
-      binding="late_ratio"
+      binding="lateRatio"
       header="지연 비율"
       dataType="Number"
       aggregate="Avg"
@@ -85,7 +85,7 @@
       :width="90"
     />
     <WjFlexGridColumn
-      binding="late_qty"
+      binding="lateQty"
       header="Late 수량"
       dataType="Number"
       aggregate="Sum"
@@ -95,7 +95,7 @@
       format="n0"
     />
     <WjFlexGridColumn
-      binding="rtf_ratio"
+      binding="rtfRatio"
       header="RTF 비율"
       dataType="Number"
       aggregate="Avg"

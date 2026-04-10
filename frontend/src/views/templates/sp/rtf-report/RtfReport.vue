@@ -37,8 +37,8 @@
           v-if="summaryType === 'itemGroup'"
           v-model="selectedItemGroups"
           :items-source="itemGroupSource"
-          key-prop="item_group_id"
-          display-prop="item_group_id"
+          key-prop="item_group"
+          display-prop="item_group"
           label="제품 그룹"
           header-format="{count:n0} GROUPS"
           :use-filter="true"
@@ -49,8 +49,8 @@
           v-if="summaryType === 'region'"
           v-model="selectedRegions"
           :items-source="regionSource"
-          key-prop="site_id"
-          display-prop="site_name"
+          key-prop="value"
+          display-prop="value"
           label="지역"
           header-format="{count:n0} REGIONS"
           :use-filter="true"
@@ -61,8 +61,8 @@
           v-if="summaryType === 'demandType'"
           v-model="selectedDemandTypes"
           :items-source="demandTypeSource"
-          key-prop="demand_type"
-          display-prop="demand_type"
+          key-prop="value"
+          display-prop="value"
           label="수요 유형"
           header-format="{count:n0} DEMAND TYPES"
           :use-filter="true"
@@ -152,6 +152,7 @@
         >
           <RtfReportProdDetail
             :data="prodDetailData"
+            :loading="prodDetailLoading"
             :demand-summary-data="demandSummaryData"
             :demand-info-data="demandInfoData"
             :peg-info-data="pegInfoData"
@@ -231,6 +232,7 @@ const {
   // UI
   loading,
   detailLoading,
+  prodDetailLoading,
   // 메서드
   commitFilters,
   loadFilters,
@@ -306,17 +308,17 @@ function onCustomersClose() {
 }
 function onItemGroupsClose() {
   if (selectedItemGroups.value.length === 0) {
-    selectedItemGroups.value = itemGroupSource.value.map((g) => g.item_group_id);
+    selectedItemGroups.value = itemGroupSource.value.map((g) => g.item_group);
   }
 }
 function onRegionsClose() {
   if (selectedRegions.value.length === 0) {
-    selectedRegions.value = regionSource.value.map((r) => r.site_id);
+    selectedRegions.value = regionSource.value.map((r) => r.value);
   }
 }
 function onDemandTypesClose() {
   if (selectedDemandTypes.value.length === 0) {
-    selectedDemandTypes.value = demandTypeSource.value.map((d) => d.demand_type);
+    selectedDemandTypes.value = demandTypeSource.value.map((d) => d.value);
   }
 }
 

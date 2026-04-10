@@ -18,41 +18,42 @@ export interface ApiResponse<T = any> {
 /** RTF 요약 그리드 데이터 */
 export interface RtfSummaryData {
   due: string;
-  cust_id: string;
-  item_group_id: string;
+  custID: string;
+  itemGroupID: string;
   region: string;
-  demand_type: string;
-  demand_cnt: number;
-  demand_qty: number;
-  rtf_qty: number;
-  qty_uom: string;
-  on_time_ratio: number;
-  on_time_qty: number;
-  late_ratio: number;
-  late_qty: number;
-  rtf_ratio: number;
+  demandType: string;
+  demandCnt: number;
+  demandQty: number;
+  rtfQty: number;
+  qtyUom: string;
+  onTimeRatio: number;
+  onTimeQty: number;
+  lateRatio: number;
+  lateQty: number;
+  rtfRatio: number;
+  group_name?: string;
   [key: string]: any;
 }
 
 /** RTF 상세 그리드 데이터 */
 export interface RtfDetailData {
-  demand_id: string;
-  cust_id: string;
-  on_time_ratio: number;
-  late_ratio: number;
-  rtf_ratio: number;
-  show_detail_col: string;
-  item_group_id: string;
-  item_id: string;
-  item_name: string;
-  due_week: string;
-  due_date: string;
-  demand_qty: number;
-  on_time_qty: number;
-  late_qty: number;
-  rtf_qty: number;
-  short_qty: number;
-  qty_uom: string;
+  demandID: string;
+  custID: string;
+  onTimeRatio: number;
+  lateRatio: number;
+  rtfRatio: number;
+  _short_detail: string;
+  itemGroupID: string;
+  itemID: string;
+  itemName: string;
+  dueWeek: string;
+  dueDate: string;
+  demandQty: number;
+  onTimeQty: number;
+  lateQty: number;
+  rtfQty: number;
+  shortQty: number;
+  qtyUom: string;
   demand_type: string;
   item_type: string;
   prod_type: string;
@@ -279,6 +280,7 @@ export function useRtfReport() {
   // === UI 상태 ===
   const loading = ref(false);
   const detailLoading = ref(false);
+  const prodDetailLoading = ref(false);
   const error = ref<string | null>(null);
 
   // === 스냅샷 확정 ===
@@ -313,15 +315,15 @@ export function useRtfReport() {
       }
       if (itemGroupRes.success) {
         itemGroupSource.value = itemGroupRes.data;
-        selectedItemGroups.value = itemGroupRes.data.map((g: any) => g.item_group_id);
+        selectedItemGroups.value = itemGroupRes.data.map((g: any) => g.item_group);
       }
       if (regionRes.success) {
         regionSource.value = regionRes.data;
-        selectedRegions.value = regionRes.data.map((r: any) => r.site_id);
+        selectedRegions.value = regionRes.data.map((r: any) => r.value);
       }
       if (demandTypeRes.success) {
         demandTypeSource.value = demandTypeRes.data;
-        selectedDemandTypes.value = demandTypeRes.data.map((d: any) => d.demand_type);
+        selectedDemandTypes.value = demandTypeRes.data.map((d: any) => d.value);
       }
       if (propRes.success) propColumns.value = propRes.data;
     } catch (e) {
@@ -347,7 +349,18 @@ export function useRtfReport() {
         uomType: committedUomType.value,
       });
       if (res.success) {
-        summaryData.value = res.data;
+        // group_name 필드 추가 (Summary 그리드 그룹핑용)
+        const groupField: Record<string, string> = {
+          itemGroup: "itemGroupID",
+          cust: "custID",
+          region: "region",
+          demandType: "demandType",
+        };
+        const gf = groupField[committedSummaryType.value] || "itemGroupID";
+        summaryData.value = res.data.map((r: any) => ({
+          ...r,
+          group_name: r[gf] ?? "",
+        }));
       } else {
         error.value = res.error || res.message || "요약 데이터 조회 실패";
       }
@@ -365,11 +378,11 @@ export function useRtfReport() {
 
     // 요약 유형에 따라 그룹 키 결정
     const groupKeyMap: Record<string, string> = {
-      itemGroup: item.item_group_id,
-      cust: item.cust_id,
-      region: item.region,
-      demandType: item.demand_type,
-      due: item.due,
+      itemGroup: (item as any).itemGroupID,
+      cust: (item as any).custID,
+      region: (item as any).region,
+      demandType: (item as any).demandType,
+      due: (item as any).due,
     };
     const groupKey = groupKeyMap[committedSummaryType.value] || "";
 
@@ -392,7 +405,7 @@ export function useRtfReport() {
         detailData.value = res.data;
         // 첫 번째 행의 demandID를 선택
         if (res.data.length > 0) {
-          selectedDemandID.value = res.data[0].demand_id;
+          selectedDemandID.value = res.data[0].demandID;
         }
       }
     } catch (e) {
@@ -416,15 +429,21 @@ export function useRtfReport() {
   }
 
   async function loadProdDetail(planVer: string, demandID: string) {
+    prodDetailLoading.value = true;
     try {
       const res = await fetchProdDetail({
         planVer,
         demandID,
         uomType: committedUomType.value,
       });
-      if (res.success) prodDetailData.value = res.data;
+      if (res.success) {
+        // 백엔드가 { detail: [...], period: [...] } 구조로 반환
+        prodDetailData.value = res.data?.detail ?? res.data ?? [];
+      }
     } catch (e) {
       console.error("생산 상세 조회 오류:", e);
+    } finally {
+      prodDetailLoading.value = false;
     }
   }
 
@@ -563,6 +582,7 @@ export function useRtfReport() {
     // UI 상태
     loading,
     detailLoading,
+    prodDetailLoading,
     error,
 
     // 메서드

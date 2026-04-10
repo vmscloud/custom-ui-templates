@@ -20,22 +20,22 @@
       }"
     >
       <!-- 기본 컬럼 -->
-      <WjFlexGridColumn binding="demand_id" header="수요 ID" :width="100" />
-      <WjFlexGridColumn binding="cust_id" header="고객" :width="100" />
+      <WjFlexGridColumn binding="demandID" header="수요 ID" :width="100" />
+      <WjFlexGridColumn binding="custID" header="고객" :width="100" />
       <WjFlexGridColumn
-        binding="on_time_ratio"
+        binding="onTimeRatio"
         header="On-Time %"
         :width="85"
         align="right"
       />
       <WjFlexGridColumn
-        binding="late_ratio"
+        binding="lateRatio"
         header="Late %"
         :width="75"
         align="right"
       />
       <WjFlexGridColumn
-        binding="rtf_ratio"
+        binding="rtfRatio"
         header="RTF %"
         :width="75"
         align="right"
@@ -48,56 +48,56 @@
         :isReadOnly="true"
       />
       <WjFlexGridColumn
-        binding="item_group_id"
+        binding="itemGroupID"
         header="제품 그룹"
         :width="100"
       />
-      <WjFlexGridColumn binding="item_id" header="제품 ID" :width="100" />
-      <WjFlexGridColumn binding="item_name" header="제품명" :width="120" />
+      <WjFlexGridColumn binding="itemID" header="제품 ID" :width="100" />
+      <WjFlexGridColumn binding="itemName" header="제품명" :width="120" />
       <WjFlexGridColumn
-        binding="due_week"
+        binding="dueWeek"
         header="납기 주차"
         :width="90"
         align="center"
       />
-      <WjFlexGridColumn binding="due_date" header="납기일" :width="100" />
+      <WjFlexGridColumn binding="dueDate" header="납기일" :width="100" />
       <WjFlexGridColumn
-        binding="demand_qty"
+        binding="demandQty"
         header="수요량"
         :width="90"
         align="right"
         format="n0"
       />
       <WjFlexGridColumn
-        binding="on_time_qty"
+        binding="onTimeQty"
         header="On-Time 수량"
         :width="100"
         align="right"
         format="n0"
       />
       <WjFlexGridColumn
-        binding="late_qty"
+        binding="lateQty"
         header="Late 수량"
         :width="90"
         align="right"
         format="n0"
       />
       <WjFlexGridColumn
-        binding="rtf_qty"
+        binding="rtfQty"
         header="RTF 수량"
         :width="90"
         align="right"
         format="n0"
       />
       <WjFlexGridColumn
-        binding="short_qty"
+        binding="shortQty"
         header="Short 수량"
         :width="90"
         align="right"
         format="n0"
       />
       <WjFlexGridColumn
-        binding="qty_uom"
+        binding="qtyUom"
         header="단위"
         :width="60"
         :visible="false"
@@ -156,31 +156,48 @@
             :use-tool-box="false"
           >
             <WjFlexGridColumn
-              binding="short_type"
+              binding="shortType"
               header="부족 유형"
               :width="100"
+              align="center"
             />
             <WjFlexGridColumn
-              binding="short_category"
+              binding="shortCategory"
               header="부족 분류"
-              :width="100"
-            />
-            <WjFlexGridColumn
-              binding="short_reason"
-              header="부족 사유"
               :width="150"
             />
             <WjFlexGridColumn
-              binding="short_qty"
+              binding="shortReason"
+              header="부족 사유"
+              :width="200"
+            />
+            <WjFlexGridColumn
+              binding="shortQty"
               header="부족 수량"
               :width="100"
               align="right"
               format="n0"
             />
             <WjFlexGridColumn
-              binding="qty_uom"
+              binding="qtyUom"
               header="단위"
               :width="60"
+              :visible="false"
+            />
+            <WjFlexGridColumn
+              binding="shortDetailInfo"
+              header="부족 상세 정보"
+              :width="300"
+            />
+            <WjFlexGridColumn
+              binding="isbID"
+              header="ISB 코드"
+              :width="300"
+            />
+            <WjFlexGridColumn
+              binding="bomID"
+              header="BOM 코드"
+              :width="300"
             />
           </ExtendFlexGrid>
         </div>
@@ -201,14 +218,14 @@
             :isReadOnly="true"
             :use-tool-box="false"
           >
-            <WjFlexGridColumn binding="item_id" header="제품 ID" :width="120" />
+            <WjFlexGridColumn binding="itemID" header="제품 ID" :width="120" />
             <WjFlexGridColumn
               binding="item_type"
               header="제품 유형"
               :width="100"
             />
             <WjFlexGridColumn
-              binding="item_name"
+              binding="itemName"
               header="제품명"
               :width="150"
             />
@@ -262,12 +279,12 @@
             :use-tool-box="false"
           >
             <WjFlexGridColumn
-              binding="demand_id"
+              binding="demandID"
               header="수요 ID"
               :width="120"
             />
             <WjFlexGridColumn
-              binding="item_id"
+              binding="itemID"
               header="제품 ID"
               :width="120"
             />
@@ -282,12 +299,12 @@
               :width="100"
             />
             <WjFlexGridColumn
-              binding="due_date"
+              binding="dueDate"
               header="납기일"
               :width="110"
             />
             <WjFlexGridColumn
-              binding="demand_qty"
+              binding="demandQty"
               header="수요량"
               :width="90"
               align="right"
@@ -299,7 +316,7 @@
               :width="80"
             />
             <WjFlexGridColumn
-              binding="cust_id"
+              binding="custID"
               header="고객 ID"
               :width="100"
             />
@@ -420,24 +437,24 @@ function onSelectionChanged(s: FlexGrid, e: any) {
   const dataItem = (row as any).dataItem as RtfDetailData;
   if (!dataItem) return;
 
-  selectedDemandId.value = dataItem.demand_id ?? "";
-  selectedItemId.value = dataItem.item_id ?? "";
+  selectedDemandId.value = dataItem.demandID ?? "";
+  selectedItemId.value = dataItem.itemID ?? "";
 
-  if (dataItem.demand_id) {
-    emit("demand-selected", dataItem.demand_id);
+  if (dataItem.demandID) {
+    emit("demand-selected", dataItem.demandID);
   }
 }
 
 // === FormatItem ===
 
 const QTY_BINDINGS = [
-  "demand_qty",
-  "on_time_qty",
-  "late_qty",
-  "rtf_qty",
-  "short_qty",
+  "demandQty",
+  "onTimeQty",
+  "lateQty",
+  "rtfQty",
+  "shortQty",
 ];
-const RATIO_BINDINGS = ["on_time_ratio", "late_ratio", "rtf_ratio"];
+const RATIO_BINDINGS = ["onTimeRatio", "lateRatio", "rtfRatio"];
 
 function onFormatItem(s: FlexGrid, e: any) {
   if (e.panel !== s.cells) return;
@@ -458,8 +475,8 @@ function onFormatItem(s: FlexGrid, e: any) {
     if (!e.cell.dataset.clickBound) {
       e.cell.dataset.clickBound = "1";
       e.cell.addEventListener("click", () => {
-        if (dataItem.demand_id) {
-          emit("load-short", dataItem.demand_id);
+        if (dataItem.demandID) {
+          emit("load-short", dataItem.demandID);
           shortPopupVisible.value = true;
         }
       });
@@ -483,14 +500,14 @@ function onFormatItem(s: FlexGrid, e: any) {
   }
 
   // Row-level conditional formatting (applied to entire row)
-  if (dataItem.rtf_ratio < 100) {
+  if (dataItem.rtfRatio < 100) {
     e.cell.classList.add("ratio-short");
-  } else if (dataItem.rtf_ratio === 100 && dataItem.late_ratio > 0) {
+  } else if (dataItem.rtfRatio === 100 && dataItem.lateRatio > 0) {
     e.cell.classList.add("ratio-late");
   }
 
   // RTF ratio font color for shortage
-  if (binding === "rtf_ratio" && dataItem.rtf_ratio < 100) {
+  if (binding === "rtfRatio" && dataItem.rtfRatio < 100) {
     e.cell.classList.add("ratio-short-font");
   }
 }

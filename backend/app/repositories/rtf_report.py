@@ -20,26 +20,59 @@ class RtfReportRepository:
     @staticmethod
     def get_prop_ids(project_id: str, plan_ver: str) -> dict:
         """
-        odv_report_prop_config에서 productionAreaPropID, prodTypePropID 조회
+        odv_report_prop_config.RPT_SHIPMENT_PLAN의 prop_json에서
+        productionAreaPropID, prodTypePropID 조회.
+
+        NOTE: C# RarRtfReportService.SetPropIDToQuery는 DEMAND_REGION을
+        productionAreaPropID로 사용함 (DPConstant.DEMANDREGION). 우선순위는
+        DEMAND_REGION > PRODUCTION_AREA (폴백).
         """
+        import json as _json
+
+        partition_key = f"{project_id}@{plan_ver[:6]}"
         query = """
-        SELECT prop_id, prop_type
+        SELECT prop_json
         FROM odv_report_prop_config
         WHERE partition_key = ?
           AND plan_ver = ?
-          AND prop_type IN ('PRODUCTION_AREA', 'PROD_TYPE')
+          AND table_name = 'RPT_SHIPMENT_PLAN'
+        LIMIT 1
         """
         try:
-            rows = execute_query(query, (project_id, plan_ver))
+            rows = execute_query(query, (partition_key, plan_ver))
         except Exception:
             return {}
 
-        result = {}
-        for row in rows:
-            if row.get("prop_type") == "PRODUCTION_AREA":
-                result["productionAreaPropID"] = row["prop_id"]
-            elif row.get("prop_type") == "PROD_TYPE":
-                result["prodTypePropID"] = row["prop_id"]
+        if not rows:
+            return {}
+
+        raw = rows[0].get("prop_json", "{}")
+        try:
+            config = _json.loads(raw) if isinstance(raw, str) else (raw or {})
+        except (TypeError, ValueError):
+            return {}
+
+        demand_region_key: str | None = None
+        production_area_key: str | None = None
+        prod_type_key: str | None = None
+        for key, val in config.items():
+            if not isinstance(val, dict):
+                continue
+            display_name = val.get("PropID", {}).get("Value", "")
+            if display_name == "DEMAND_REGION":
+                demand_region_key = key
+            elif display_name == "PRODUCTION_AREA":
+                production_area_key = key
+            elif display_name == "PROD_TYPE":
+                prod_type_key = key
+
+        result: dict = {}
+        # DEMAND_REGION 우선, PRODUCTION_AREA 폴백 (C# DPConstant.DEMANDREGION 동작)
+        area_key = demand_region_key or production_area_key
+        if area_key:
+            result["productionAreaPropID"] = area_key
+        if prod_type_key:
+            result["prodTypePropID"] = prod_type_key
         return result
 
     # ── 필터 쿼리 ──
@@ -649,13 +682,17 @@ class RtfReportRepository:
                 ),
                 MAX(kv.key)
             ) AS "maxDate"
-        FROM rpt_demand_plan_isb a
+        FROM (
+            SELECT * FROM rpt_demand_plan_isb
+            WHERE partition_key = ?
+              AND plan_ver = ?
+              AND demand_id = ?
+              AND plan_qty_detail_json IS NOT NULL
+              AND json_format(plan_qty_detail_json) NOT IN ('{}', 'null', '[]')
+        ) a
         CROSS JOIN UNNEST(
-            CAST(json_parse(a.plan_qty_detail_json) AS MAP(VARCHAR, VARCHAR))
+            CAST(json_parse(json_format(a.plan_qty_detail_json)) AS MAP(VARCHAR, VARCHAR))
         ) AS kv(key, value)
-        WHERE a.partition_key = ?
-          AND a.plan_ver = ?
-          AND a.demand_id = ?
         """
         return execute_query(query, (project_id, plan_ver, demand_id))
 
@@ -873,13 +910,17 @@ class RtfReportRepository:
                    0 AS wip_qty,
                    kv.key AS plan_date,
                    CAST(kv.value AS DOUBLE) AS out_plan_qty
-            FROM rpt_demand_plan_isb a
+            FROM (
+                SELECT * FROM rpt_demand_plan_isb
+                WHERE partition_key = ?
+                  AND plan_ver = ?
+                  AND demand_id = ?
+                  AND plan_qty_detail_json IS NOT NULL
+                  AND json_format(plan_qty_detail_json) NOT IN ('{}', 'null', '[]')
+            ) a
             CROSS JOIN UNNEST(
-                CAST(json_parse(a.plan_qty_detail_json) AS MAP(VARCHAR, VARCHAR))
+                CAST(json_parse(json_format(a.plan_qty_detail_json)) AS MAP(VARCHAR, VARCHAR))
             ) AS kv(key, value)
-            WHERE a.partition_key = ?
-              AND a.plan_ver = ?
-              AND a.demand_id = ?
         )
         SELECT
             a.item_id AS "itemID",

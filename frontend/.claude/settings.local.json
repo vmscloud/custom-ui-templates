@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx vue-tsc:*)",
+      "mcp__chrome-devtools__list_pages",
+      "Bash(tasklist)",
+      "Bash(python -c \"from app.api.v1.endpoints import odv_demand; print\\('OK'\\)\")"
+    ]
+  }
+}
