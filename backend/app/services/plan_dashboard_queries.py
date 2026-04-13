@@ -220,70 +220,74 @@ ORDER BY cnt DESC
 # C# GetOTDSummaryRowsWithFrozenAndPlan / GetOTDSummaryRowsWithFrozenAndAct 대응
 OTD_BUFFER_PLAN_SUMMARY_SQL = """
 SELECT
-    COALESCE(b.item_group_id, 'Unknown') AS category,
-    ROUND(CAST(SUM(b.conv_qty) AS DOUBLE), 1) AS total_qty,
-    SUM(b.conv_qty) AS origin_total_qty,
+    COALESCE({group_by_column}, 'Unknown') AS category,
+    ROUND(CAST(SUM(b.in_plan_conv_qty) AS DOUBLE), 1) AS total_qty,
+    SUM(b.in_plan_conv_qty) AS origin_total_qty,
     MAX(b.conv_qty_uom) AS qty_uom,
     ROUND(CAST(SUM(CASE
-        WHEN b.due_date >= '{cycle_start}' AND b.due_date < '{cycle_end}' THEN b.conv_qty ELSE 0
+        WHEN b.due_date >= '{cycle_start}' AND b.due_date < '{cycle_end}' THEN b.in_plan_conv_qty ELSE 0
     END) AS DOUBLE), 1) AS current_due_bucket_prod_qty,
     ROUND(CAST(SUM(CASE
-        WHEN b.due_date < '{cycle_start}' THEN b.conv_qty ELSE 0
+        WHEN b.due_date < '{cycle_start}' THEN b.in_plan_conv_qty ELSE 0
     END) AS DOUBLE), 1) AS previous_due_bucket_prod_qty,
     ROUND(CAST(SUM(CASE
-        WHEN b.due_date >= '{cycle_end}' AND b.due_date < '{next_cycle_end}' THEN b.conv_qty ELSE 0
+        WHEN b.due_date >= '{cycle_end}' AND b.due_date < '{next_cycle_end}' THEN b.in_plan_conv_qty ELSE 0
     END) AS DOUBLE), 1) AS next_due_bucket_prod_qty,
     ROUND(CAST(SUM(CASE
-        WHEN b.due_date >= '{next_cycle_end}' THEN b.conv_qty ELSE 0
+        WHEN b.due_date >= '{next_cycle_end}' THEN b.in_plan_conv_qty ELSE 0
     END) AS DOUBLE), 1) AS after_next_due_bucket_prod_qty
 FROM rpt_buffer_plan b
 INNER JOIN (
-    SELECT DISTINCT STD_BUFFER_ID AS buffer_id
-    FROM ODV_REPORT_STD_BUFFER_CONFIG
+    SELECT DISTINCT buffer_id
+    FROM odv_buffer_master
     WHERE partition_key = '{partition_key}'
       AND plan_ver = '{plan_ver}'
-      AND FINAL_ITEM_STD_BUFFER_YN = 'Y'
-) fb ON b.buffer_id = fb.buffer_id
+      AND final_item_buffer_yn = 'y'
+) fb ON b.std_buffer_id = fb.buffer_id
 WHERE b.partition_key = '{partition_key}'
   AND b.plan_ver = '{plan_ver}'
+  AND {group_by_column} IS NOT NULL
   {production_area_filter}
-GROUP BY b.item_group_id
-ORDER BY b.item_group_id
+GROUP BY {group_by_column}
+ORDER BY {group_by_column}
 """
 
 # OTD: ope_exec_actual에서 item_group별 실적 집계
 OTD_ACTUAL_SUMMARY_SQL = """
 SELECT
-    COALESCE(a.item_group_id, 'Unknown') AS category,
-    ROUND(CAST(SUM(a.conv_qty) AS DOUBLE), 1) AS total_qty,
-    SUM(a.conv_qty) AS origin_total_qty,
+    COALESCE({group_by_column}, 'Unknown') AS category,
+    ROUND(CAST(SUM(a.plan_conv_qty) AS DOUBLE), 1) AS total_qty,
+    SUM(a.plan_conv_qty) AS origin_total_qty,
     MAX(a.conv_qty_uom) AS qty_uom,
     ROUND(CAST(SUM(CASE
-        WHEN a.plan_date >= '{cycle_start}' AND a.plan_date < '{cycle_end}' THEN a.conv_qty ELSE 0
+        WHEN a.plan_date >= '{cycle_start}' AND a.plan_date < '{cycle_end}' THEN a.plan_conv_qty ELSE 0
     END) AS DOUBLE), 1) AS current_due_bucket_prod_qty,
     ROUND(CAST(SUM(CASE
-        WHEN a.plan_date < '{cycle_start}' THEN a.conv_qty ELSE 0
+        WHEN a.plan_date < '{cycle_start}' THEN a.plan_conv_qty ELSE 0
     END) AS DOUBLE), 1) AS previous_due_bucket_prod_qty,
     ROUND(CAST(SUM(CASE
-        WHEN a.plan_date >= '{cycle_end}' AND a.plan_date < '{next_cycle_end}' THEN a.conv_qty ELSE 0
+        WHEN a.plan_date >= '{cycle_end}' AND a.plan_date < '{next_cycle_end}' THEN a.plan_conv_qty ELSE 0
     END) AS DOUBLE), 1) AS next_due_bucket_prod_qty,
     ROUND(CAST(SUM(CASE
-        WHEN a.plan_date >= '{next_cycle_end}' THEN a.conv_qty ELSE 0
+        WHEN a.plan_date >= '{next_cycle_end}' THEN a.plan_conv_qty ELSE 0
     END) AS DOUBLE), 1) AS after_next_due_bucket_prod_qty
 FROM ope_exec_actual a
 INNER JOIN (
-    SELECT DISTINCT STD_BUFFER_ID AS buffer_id
-    FROM ODV_REPORT_STD_BUFFER_CONFIG
+    SELECT DISTINCT buffer_id
+    FROM odv_buffer_master
     WHERE partition_key = '{partition_key}'
       AND plan_ver = '{plan_ver}'
-      AND FINAL_ITEM_STD_BUFFER_YN = 'Y'
+      AND final_item_buffer_yn = 'y'
 ) fb ON a.buffer_id = fb.buffer_id
-WHERE a.partition_key = '{partition_key}'
-  AND a.plan_ver = '{plan_ver}'
-  AND a.in_out_type = 'In'
+WHERE a.project_id = '{project_id}'
+  AND a.inout_type = 'In'
+  AND (a.oper_id IS NULL OR a.oper_id = '')
+  AND a.plan_date >= '{cycle_start}'
+  AND a.plan_date <= '{cycle_end}'
+  AND {group_by_column} IS NOT NULL
   {production_area_filter}
-GROUP BY a.item_group_id
-ORDER BY a.item_group_id
+GROUP BY {group_by_column}
+ORDER BY {group_by_column}
 """
 
 PROD_QTY_SQL = """
@@ -350,21 +354,60 @@ ORDER BY is_final_item DESC, p.INDEX_NAME
 LIMIT 2
 """
 
+# Sub5: 공정 그룹별 부하율 — C# OperGroupStrRate_Total_P_Cmd1.sql 완전 포팅
+# rpt_oper_group_target 기반, std_ts 보정 포함
 OPER_GROUP_CAPA_SQL = """
+WITH calculated_data AS (
+    SELECT
+        t.oper_group_id,
+        t.out_target_qty,
+        t.out_target_conv_qty,
+        t.prop_json,
+        CASE
+            WHEN CAST(t.target_datetime AS TIMESTAMP) <= TIMESTAMP '{plan_start}'
+            THEN DATE '{plan_start}'
+            ELSE CAST(t.target_datetime AS DATE)
+        END AS calculated_target_date
+    FROM rpt_oper_group_target t
+    WHERE t.partition_key = '{partition_key}'
+      AND t.plan_ver = '{plan_ver}'
+      AND (CAST(t.target_datetime AS TIMESTAMP) >= TIMESTAMP '{from_date}'
+           OR CAST(t.target_datetime AS TIMESTAMP) < TIMESTAMP '{plan_start}')
+      AND CAST(t.target_datetime AS TIMESTAMP) <= TIMESTAMP '{to_date} 23:59:59'
+      AND t.oper_group_id <> '#Undefined'
+      AND t.demand_type <> '#Dummy'
+      AND t.oper_id IS NOT NULL
+      {oper_group_filter}
+),
+main_agg AS (
+    SELECT
+        cd.oper_group_id,
+        cd.calculated_target_date,
+        SUM(
+            CASE
+                WHEN json_extract_scalar(cd.prop_json, '$.{uom_prop_id}') IS NULL
+                  OR json_extract_scalar(cd.prop_json, '$.{uom_prop_id}') = 'DEFAULT'
+                THEN CAST(cd.out_target_qty AS DOUBLE)
+                ELSE CAST(cd.out_target_conv_qty AS DOUBLE)
+            END
+        ) AS total_target_qty,
+        MAX(CAST(json_extract_scalar(cd.prop_json, '$.{capa_prop_id}') AS DOUBLE)) AS capa
+    FROM calculated_data cd
+    WHERE cd.calculated_target_date >= DATE '{from_date}'
+      AND cd.calculated_target_date <= DATE '{to_date}'
+    GROUP BY cd.oper_group_id, cd.calculated_target_date
+)
 SELECT
-    INDEX_NAME AS oper_group_id,
-    time_key,
-    MAX(CASE WHEN CATEGORY_NAME LIKE '%UTILIZATION' AND CATEGORY_NAME NOT LIKE '%_MIN' AND CATEGORY_NAME NOT LIKE '%_MAX' THEN plan_value END) AS utilization,
-    MAX(CASE WHEN CATEGORY_NAME LIKE '%CAPA' THEN plan_value END) AS capa,
-    MAX(CASE WHEN CATEGORY_NAME LIKE '%LOAD' THEN plan_value END) AS load_value
-FROM out_plan_index
-WHERE partition_key = '{partition_key}'
-  AND plan_ver = '{plan_ver}'
-  AND CATEGORY_NAME LIKE 'OPER_GROUP%'
-  AND time_uom = 'Day'
-  {oper_group_filter}
-GROUP BY INDEX_NAME, time_key
-ORDER BY INDEX_NAME, time_key
+    oper_group_id,
+    MAX(COALESCE(capa, 0)) * {capa_days} AS capa,
+    ROUND(CAST(SUM(total_target_qty) AS DOUBLE), 1) AS plan_qty,
+    CASE
+        WHEN COALESCE(MAX(capa), 0) * {capa_days} = 0 THEN 0
+        ELSE ROUND(CAST(SUM(total_target_qty) / (MAX(capa) * {capa_days}) * 100 AS DOUBLE), 1)
+    END AS utilization,
+    100 AS base_line
+FROM main_agg
+GROUP BY oper_group_id
 """
 
 RES_GROUP_MASTER_SQL = """

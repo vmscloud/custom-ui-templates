@@ -85,6 +85,30 @@ class PlanDashboardRepository:
             )
 
     @staticmethod
+    def get_rpt_prop_config(project_id: str, plan_ver: str, table_name: str) -> dict:
+        """odv_report_prop_config에서 prop_json 파싱 반환"""
+        import json as _json
+        pk = f"{project_id}@{plan_ver[:6]}"
+        rows = execute_query(
+            f"SELECT prop_json FROM odv_report_prop_config WHERE partition_key = '{pk}' AND plan_ver = '{plan_ver}' AND table_name = '{table_name}' LIMIT 1"
+        )
+        if not rows:
+            return {}
+        raw = rows[0].get("prop_json", "{}")
+        return _json.loads(raw) if isinstance(raw, str) else (raw or {})
+
+    @staticmethod
+    def get_plan_config_dates(project_id: str, plan_ver: str) -> dict:
+        """plan_start_datetime을 조회해 from_date 반환"""
+        rows = execute_query(
+            f"SELECT plan_start_datetime FROM cfg_plan_config WHERE project_id = '{project_id}' AND plan_ver = '{plan_ver}' LIMIT 1"
+        )
+        if not rows:
+            return {"from_date": plan_ver[:4] + "-" + plan_ver[4:6] + "-01"}
+        start = rows[0]["plan_start_datetime"]
+        return {"from_date": str(start)[:10]}
+
+    @staticmethod
     def get_plan_cycle_dates(project_id: str, plan_ver: str) -> dict:
         """Plan cycle의 시작/종료 날짜를 조회합니다 (OTD bucket 분류용)."""
         rows = execute_query(

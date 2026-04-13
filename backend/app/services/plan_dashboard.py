@@ -614,12 +614,44 @@ class PlanDashboardService:
         rtf_category_name = params.region if params.region != "RTF" else ""
 
         # 4. Build SQL for non-RTF panels
-        # Oper Group Capa
+        # Oper Group Capa — C# uses rpt_oper_group_target + cfg_plan_config dates
         oper_group_filter = self._build_oper_group_filter(settings_map)
+        try:
+            plan_config = self.repo.get_plan_config_dates(project_id, params.planVer)
+            oper_from_date = plan_config.get("from_date", "2026-04-01")
+            capa_days = 30
+            from datetime import datetime as _dt, timedelta as _td
+            oper_to_date = (_dt.strptime(oper_from_date, "%Y-%m-%d") + _td(days=capa_days - 1)).strftime("%Y-%m-%d")
+        except Exception:
+            oper_from_date = params.planVer[:4] + "-" + params.planVer[4:6] + "-01"
+            oper_to_date = oper_from_date  # fallback
+            capa_days = 30
+
+        # prop_json key 동적 조회 (OperGroupCapa, OperGroupQtyUOM)
+        capa_prop_id = "PROP01"
+        uom_prop_id = "PROP02"
+        try:
+            prop_cfg = self.repo.get_rpt_prop_config(project_id, params.planVer, "RPT_OPER_GROUP_TARGET")
+            for k, v in prop_cfg.items():
+                if not isinstance(v, dict):
+                    continue
+                display = v.get("PropID", {}).get("Value", "")
+                if display == "OperGroupCapa":
+                    capa_prop_id = k
+                elif display == "OperGroupQtyUOM":
+                    uom_prop_id = k
+        except Exception:
+            pass
         oper_group_sql = Q.OPER_GROUP_CAPA_SQL.format(
             partition_key=partition_key,
             plan_ver=params.planVer,
             oper_group_filter=oper_group_filter,
+            from_date=oper_from_date,
+            to_date=oper_to_date,
+            plan_start=oper_from_date,
+            capa_days=capa_days,
+            capa_prop_id=capa_prop_id,
+            uom_prop_id=uom_prop_id,
         )
 
         # Res Group
@@ -698,9 +730,14 @@ class PlanDashboardService:
             self._trino(project_id, short_sql),
             self._trino(project_id, peg_sql),
             self._trino(project_id, unpeg_sql),
-            # OTD summary (index 12)
+            # OTD summary: Sub4=FrozenAndAct (index 12), Sub6=FrozenAndPlan (index 13)
             self._get_otd_summary(
-                project_id, params.planVer, frozen_ver, params.productionArea
+                project_id, params.planVer, frozen_ver, params.productionArea,
+                otd_type="ACT",
+            ),
+            self._get_otd_summary(
+                project_id, params.planVer, frozen_ver, params.productionArea,
+                otd_type="PLAN",
             ),
             return_exceptions=True,
         )
@@ -710,11 +747,11 @@ class PlanDashboardService:
         rtf_actual = results[1] if not isinstance(results[1], Exception) else RTFSummaryCreator._empty_summary()
         rtf_plan = results[2] if not isinstance(results[2], Exception) else RTFSummaryCreator._empty_summary()
 
-        # OTD summary
-        otd_data = results[12] if not isinstance(results[12], Exception) else {
-            "qtyUom": "", "uomType": "CONVERSION", "periodType": "Month",
-            "frozenVer": frozen_ver, "frozenQty": 0, "planQty": 0, "actQty": 0, "list": [],
-        }
+        # OTD summaries (Sub4=FrozenAndAct, Sub6=FrozenAndPlan)
+        _empty_otd = {"qtyUom": "", "uomType": "CONVERSION", "periodType": "Month",
+            "frozenVer": frozen_ver, "frozenQty": 0, "planQty": 0, "actQty": 0, "list": []}
+        otd_act = results[12] if not isinstance(results[12], Exception) else _empty_otd
+        otd_plan = results[13] if not isinstance(results[13], Exception) else _empty_otd
 
         # 6. Error master from PostgreSQL (글로벌 마스터, project_id 불필요)
         try:
@@ -738,7 +775,8 @@ class PlanDashboardService:
                     "detail": self._safe_rows(results[5]),
                     "summary": self._safe_rows(results[6]),
                 },
-                "otdSummary": otd_data,
+                "otdSummaryAct": otd_act,
+                "otdSummaryPlan": otd_plan,
                 "stdSummaryReport": self._safe_rows(results[7]),
                 "errorLogSummary": self._merge_error_log(
                     error_master, self._safe_rows(results[8])
@@ -875,6 +913,7 @@ class PlanDashboardService:
         frozen_ver: str,
         production_area: str = "",
         data_type: str = "ITEMGROUP",
+        otd_type: str = "ACT",
     ) -> dict[str, Any]:
         """
         OTD Summary — frozen/plan/actual 모두 조회
@@ -882,16 +921,50 @@ class PlanDashboardService:
         """
         partition_key = f"{project_id}@{plan_ver[:6]}"
         frozen_partition_key = f"{project_id}@{frozen_ver[:6]}"
-        # production_area 필터는 rpt_buffer_plan 테이블 스키마에 맞게 조정 필요
-        # 일단 필터 없이 조회하여 데이터 존재 여부 확인
+        # production_area 필터: C# 원본은 PRODUCTION_AREA(PROP01) 사용 (rpt_buffer_plan용)
         production_area_filter = ""
+        if production_area:
+            try:
+                bp_cfg = self.repo.get_rpt_prop_config(project_id, plan_ver, "RPT_BUFFER_PLAN")
+                for k, v in bp_cfg.items():
+                    if isinstance(v, dict) and v.get("PropID", {}).get("Value") == "PRODUCTION_AREA":
+                        production_area_filter = f"AND json_extract_scalar(b.prop_json, '$.{k}') LIKE '{production_area}%'"
+                        break
+            except Exception:
+                pass
         cycle_dates = self._get_cycle_dates(project_id, plan_ver)
+
+        # dataType → SQL GROUP BY 컬럼 매핑
+        # C# 원본: DEMANDTYPE → prod_type (prop_json의 PROD_TYPE 키로 추출)
+        # ITEMGROUP → item_group_id
+        prod_type_prop_key = "PROP03"  # 기본값
+        try:
+            bp_cfg2 = self.repo.get_rpt_prop_config(project_id, plan_ver, "RPT_BUFFER_PLAN")
+            for k, v in bp_cfg2.items():
+                if isinstance(v, dict) and v.get("PropID", {}).get("Value") == "PROD_TYPE":
+                    prod_type_prop_key = k
+                    break
+        except Exception:
+            pass
+
+        group_by_map = {
+            "ITEMGROUP": "b.item_group_id",
+            "DEMANDTYPE": f"json_extract_scalar(b.prop_json, '$.{prod_type_prop_key}')",
+        }
+        group_by_column = group_by_map.get(data_type, "b.item_group_id")
+        # actual SQL: a. prefix + actual은 demand_type 컬럼 직접 사용 (prop_json 없음)
+        act_group_by_map = {
+            "ITEMGROUP": "a.item_group_id",
+            "DEMANDTYPE": "a.demand_type",
+        }
+        act_group_by_column = act_group_by_map.get(data_type, "a.item_group_id")
 
         common_params = {
             "production_area_filter": production_area_filter,
             "cycle_start": cycle_dates["cycle_start"],
             "cycle_end": cycle_dates["cycle_end"],
             "next_cycle_end": cycle_dates["next_cycle_end"],
+            "group_by_column": group_by_column,
         }
 
         # Frozen 데이터 (frozen_ver 기준)
@@ -907,17 +980,22 @@ class PlanDashboardService:
             **common_params,
         )
         # Actual 데이터
+        act_common = {**common_params, "group_by_column": act_group_by_column}
         actual_sql = Q.OTD_ACTUAL_SUMMARY_SQL.format(
             partition_key=partition_key,
             plan_ver=plan_ver,
-            **common_params,
+            project_id=project_id,
+            **act_common,
         )
 
-        frozen_result, plan_result, actual_result = await asyncio.gather(
-            self._trino_safe(project_id, frozen_sql),
-            self._trino_safe(project_id, plan_sql),
-            self._trino_safe(project_id, actual_sql),
-        )
+        # otd_type에 따라 필요한 쿼리만 실행
+        frozen_result = await self._trino_safe(project_id, frozen_sql)
+        if otd_type == "PLAN":
+            plan_result = await self._trino_safe(project_id, plan_sql)
+            actual_result = []
+        else:  # ACT
+            plan_result = []
+            actual_result = await self._trino_safe(project_id, actual_sql)
 
         # UOM 추출
         qty_uom = ""
@@ -1009,19 +1087,26 @@ class PlanDashboardService:
 
     @staticmethod
     def _build_oper_group_filter(settings_map: dict) -> str:
-        """위젯 설정에서 operGroupIDs 필터 빌드"""
+        """위젯 설정에서 operGroupIDs 필터 빌드.
+        C# 원본: widget_value는 {"015. PRESS":{"uom_type":"CONV",...},...} 형태.
+        키가 operGroupID. 설정 없으면 C# DEFAULT_WIDGET_VALUE 기본값 사용.
+        """
+        DEFAULT_OPER_GROUPS = [
+            "015. PRESS", "020. DRILL", "031. 판넬도금", "037. 패턴DOT",
+            "051. 패턴PT", "060. 인쇄 JET", "061. 인쇄 SCREEN",
+            "062. 인쇄 SPRAY", "065. 마킹",
+        ]
         raw = settings_map.get("OperGroupUtilization", "")
-        if not raw:
-            return ""
-        try:
-            data = json.loads(raw)
-            ids = data.get("operGroupIDs", [])
-            if ids:
-                in_clause = ", ".join(f"'{oid}'" for oid in ids)
-                return f"AND INDEX_NAME IN ({in_clause})"
-        except (json.JSONDecodeError, AttributeError):
-            pass
-        return ""
+        ids = DEFAULT_OPER_GROUPS
+        if raw:
+            try:
+                data = json.loads(raw)
+                if isinstance(data, dict) and len(data) > 0:
+                    ids = list(data.keys())
+            except (json.JSONDecodeError, AttributeError):
+                pass
+        in_clause = ", ".join(f"'{oid}'" for oid in ids)
+        return f"AND t.oper_group_id IN ({in_clause})"
 
     @staticmethod
     def _build_res_group_filter(settings_map: dict) -> str:

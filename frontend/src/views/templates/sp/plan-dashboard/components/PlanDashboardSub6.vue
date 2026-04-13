@@ -59,11 +59,16 @@
       </div>
     </div>
     <div class="container-body-wrapper">
-      <div v-if="hasData" class="grid-wrapper">
+      <div v-if="otdLoading" class="loading-wrapper">
+        <div class="loading-spinner" />
+      </div>
+      <div v-else-if="hasData" class="grid-wrapper">
         <SimpleGrid
           :itemsSource="gridData"
           :simpleColumns="simpleColumns"
           :simpleFormatItem="simpleFormatItem"
+          :enableCellMerge="true"
+          :mergeColumnIndex="0"
         />
       </div>
       <div v-else class="no-data">{{ t("msg-data_empty") }}</div>
@@ -72,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, ref } from "vue";
+import { computed, inject, ref, watch } from "vue";
 import { useTranslation } from "i18next-vue";
 import { Button, Radio } from "@vmscloud/moz-ui-components";
 import type { usePlanDashboard } from "../planDashboard";
@@ -97,7 +102,20 @@ const replanOptionSource = computed(() => [
   { value: "DEMANDTYPE", label: t("text-isu_prod_type") },
 ]);
 
-const otdData = computed(() => dashboardData.value?.otdSummary);
+const { refreshOtdSummary } = planDashboard;
+
+const otdData = computed(() => dashboardData.value?.otdSummaryPlan ?? dashboardData.value?.otdSummary);
+
+const otdLoading = ref(false);
+
+// Radio 전환 시 Sub6(PLAN) OTD만 재조회
+watch(replanOption, async (newVal) => {
+  if (planVer.value) {
+    otdLoading.value = true;
+    await refreshOtdSummary(planVer.value, newVal, "PLAN");
+    otdLoading.value = false;
+  }
+});
 
 const frozenData = computed(() => ({
   qtyUom: otdData.value?.qtyUom ?? "",
@@ -121,27 +139,27 @@ const simpleColumns = computed(() => [
   {
     binding: "category",
     id: 0,
-    header: t("text-type"),
+    header: t("text-isu_item_group"),
     type: "string",
-    width: 100,
-  },
-  {
-    binding: "total_qty",
-    id: 1,
-    header: t("text-total_qty"),
-    type: "number",
     width: 90,
   },
-  { binding: "current_due_bucket_prod_qty", id: 2, header: "Early", type: "number", width: 80 },
-  { binding: "previous_due_bucket_prod_qty", id: 3, header: "On-time", type: "number", width: 90 },
-  { binding: "next_due_bucket_prod_qty", id: 4, header: "Late", type: "number", width: 80 },
-  { binding: "after_next_due_bucket_prod_qty", id: 5, header: "Short", type: "number", width: 80 },
   {
-    binding: "rtfRatio",
-    id: 6,
-    header: t("text-plan_dashboard-rtf_ratio"),
+    binding: "rowType",
+    id: 1,
+    header: t("text-type"),
     type: "string",
-    width: 70,
+    width: 55,
+  },
+  { binding: "previous_due_bucket_prod_qty", id: 2, header: t("text-previous_month"), type: "number", width: 60 },
+  { binding: "current_due_bucket_prod_qty", id: 3, header: t("text-current_month"), type: "number", width: 60 },
+  { binding: "next_due_bucket_prod_qty", id: 4, header: t("text-next_month"), type: "number", width: 60 },
+  { binding: "after_next_due_bucket_prod_qty", id: 5, header: t("text-after_next_month"), type: "number", width: 60 },
+  {
+    binding: "total_qty",
+    id: 6,
+    header: t("text-total"),
+    type: "number",
+    width: 60,
   },
 ]);
 
@@ -150,38 +168,41 @@ const gridData = computed(() => {
   const frozenRows = list.filter((r: any) => r.type === "FROZEN");
   const planRows = list.filter((r: any) => r.type === "PLAN");
 
-  const rtfFrozen = dashboardData.value?.rtfSummary?.frozen;
-  const rtfPlan = dashboardData.value?.rtfSummary?.plan;
+  // item_group별 월초+재수립 2행 병합 구조 (APS 원본과 동일)
+  const frozenMap = new Map<string, any>();
+  for (const row of frozenRows) frozenMap.set(row.category, row);
 
+  const planMap = new Map<string, any>();
+  for (const row of planRows) planMap.set(row.category, row);
+
+  const categories = [...new Set([...frozenMap.keys(), ...planMap.keys()])].sort();
   const rows: any[] = [];
-  for (const row of frozenRows) {
-    rows.push({ ...row, category: row.category, rtfRatio: "" });
-  }
-  if (frozenRows.length === 0 && rtfFrozen) {
+
+  for (const cat of categories) {
+    const frozen = frozenMap.get(cat);
+    const plan = planMap.get(cat);
+
+    // 월초 행
     rows.push({
-      category: "Frozen",
-      type: "FROZEN",
-      total_qty: rtfFrozen.demandQty,
-      current_due_bucket_prod_qty: rtfFrozen.earlyQty,
-      previous_due_bucket_prod_qty: rtfFrozen.ontimeQty,
-      next_due_bucket_prod_qty: rtfFrozen.lateQty,
-      after_next_due_bucket_prod_qty: rtfFrozen.shortQty,
-      rtfRatio: rtfFrozen.rtfRatio.toFixed(1) + "%",
+      category: cat,
+      rowType: t("text-early_in_the_month"),
+      previous_due_bucket_prod_qty: frozen?.previous_due_bucket_prod_qty ?? 0,
+      current_due_bucket_prod_qty: frozen?.current_due_bucket_prod_qty ?? 0,
+      next_due_bucket_prod_qty: frozen?.next_due_bucket_prod_qty ?? 0,
+      after_next_due_bucket_prod_qty: frozen?.after_next_due_bucket_prod_qty ?? 0,
+      total_qty: frozen?.total_qty ?? 0,
+      _isFrozen: true,
     });
-  }
-  for (const row of planRows) {
-    rows.push({ ...row, category: row.category, rtfRatio: "" });
-  }
-  if (planRows.length === 0 && rtfPlan) {
+    // 재수립 행
     rows.push({
-      category: "Plan",
-      type: "PLAN",
-      total_qty: rtfPlan.demandQty,
-      current_due_bucket_prod_qty: rtfPlan.earlyQty,
-      previous_due_bucket_prod_qty: rtfPlan.ontimeQty,
-      next_due_bucket_prod_qty: rtfPlan.lateQty,
-      after_next_due_bucket_prod_qty: rtfPlan.shortQty,
-      rtfRatio: rtfPlan.rtfRatio.toFixed(1) + "%",
+      category: cat,
+      rowType: t("text-isu_revised_plan_qty"),
+      previous_due_bucket_prod_qty: plan?.previous_due_bucket_prod_qty ?? 0,
+      current_due_bucket_prod_qty: plan?.current_due_bucket_prod_qty ?? 0,
+      next_due_bucket_prod_qty: plan?.next_due_bucket_prod_qty ?? 0,
+      after_next_due_bucket_prod_qty: plan?.after_next_due_bucket_prod_qty ?? 0,
+      total_qty: plan?.total_qty ?? 0,
+      _isFrozen: false,
     });
   }
   return rows;
@@ -211,8 +232,17 @@ const simpleFormatItem = (
     return;
   }
 
-  // Row background based on type
-  if (rowData.type === "FROZEN") {
+  // 유형 셀 스타일
+  if (columnKey === "rowType") {
+    element.style.textAlign = "center";
+    element.style.fontSize = "12px";
+    element.style.color = "#565f6e";
+    const cv = element.querySelector(".cell-value") as HTMLElement | null;
+    if (cv) cv.style.justifyContent = "center";
+  }
+
+  // 월초(frozen) 행: 연한 배경 / 재수립 행: 흰색
+  if (rowData._isFrozen) {
     element.style.backgroundColor = "#F8F8FD";
   } else {
     element.style.backgroundColor = "#FFFFFF";
@@ -352,5 +382,26 @@ const simpleFormatItem = (
   color: #939aac;
   font-size: 13px;
   height: 100%;
+}
+
+.loading-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e1e3f0;
+  border-top: 3px solid #4568e0;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 </style>

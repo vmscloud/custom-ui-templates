@@ -76,6 +76,36 @@ async def get_rtf_detail(
         return _error_response(500, "RTF 상세 조회", e)
 
 
+@router.post("/otd-summary")
+async def get_otd_summary(
+    params: dict,
+    project_id: str = Path(..., description="프로젝트 ID"),
+    service: PlanDashboardService = Depends(get_plan_dashboard_service),
+):
+    """OTD Summary 단독 조회 (dataType 변경 시)"""
+    try:
+        plan_ver = params.get("planVer", "")
+        data_type = params.get("dataType", "ITEMGROUP")
+        production_area = params.get("productionArea", "")
+
+        # frozen ver 조회
+        try:
+            frozen_ver = service.repo.get_frozen_ver(project_id, plan_ver)
+        except Exception:
+            frozen_ver = plan_ver
+
+        otd_type = params.get("otdType", "ACT")
+        result = await service._get_otd_summary(
+            project_id, plan_ver, frozen_ver,
+            production_area=production_area,
+            data_type=data_type,
+            otd_type=otd_type,
+        )
+        return {"success": True, "data": result}
+    except Exception as e:
+        return _error_response(500, "OTD Summary 조회", e)
+
+
 @router.post("/res-group-report")
 async def get_res_group_report(
     params: ResGroupRequest,

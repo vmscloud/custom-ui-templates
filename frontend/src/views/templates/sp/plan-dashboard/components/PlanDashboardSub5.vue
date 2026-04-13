@@ -80,7 +80,14 @@ const hasData = computed(() => {
   return (dashboardData.value?.operGroupCapa?.length ?? 0) > 0;
 });
 
-/** Group by oper_group_id and average utilization across time_keys */
+// C# 원본 widget config priority 순서
+const PRIORITY_ORDER = [
+  "015. PRESS", "020. DRILL", "031. 판넬도금", "037. 패턴DOT",
+  "051. 패턴PT", "060. 인쇄 JET", "061. 인쇄 SCREEN",
+  "062. 인쇄 SPRAY", "065. 마킹",
+];
+
+/** Group by oper_group_id, sort by widget priority */
 const groupedData = computed(() => {
   const capaData = dashboardData.value?.operGroupCapa ?? [];
   const groupMap = new Map<string, number[]>();
@@ -94,10 +101,18 @@ const groupedData = computed(() => {
     groupMap.get(id)!.push(util);
   }
 
+  // priority 순서로 정렬
+  const sortedKeys = [...groupMap.keys()].sort((a, b) => {
+    const ia = PRIORITY_ORDER.indexOf(a);
+    const ib = PRIORITY_ORDER.indexOf(b);
+    return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+  });
+
   const categories: string[] = [];
   const utilValues: number[] = [];
 
-  for (const [id, values] of groupMap) {
+  for (const id of sortedKeys) {
+    const values = groupMap.get(id)!;
     categories.push(id);
     const avg = values.reduce((sum, v) => sum + v, 0) / values.length;
     utilValues.push(avg);
@@ -177,10 +192,10 @@ const chartOption = computed(() => {
       },
     },
     grid: {
-      top: 60,
-      bottom: 35,
+      top: 50,
+      bottom: 45,
       left: 30,
-      right: 40,
+      right: 20,
       containLabel: true,
     },
     xAxis: {
@@ -208,9 +223,11 @@ const chartOption = computed(() => {
     dataZoom: [
       {
         type: "slider" as const,
-        bottom: 20,
-        height: 10,
+        bottom: 5,
+        height: 12,
         showDetail: false,
+        startValue: 0,
+        endValue: Math.min(4, categories.length - 1),
       },
       {
         type: "inside" as const,

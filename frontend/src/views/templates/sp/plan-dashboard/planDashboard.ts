@@ -218,6 +218,9 @@ export const fetchDashboard = (params: DashboardParams) =>
 export const fetchRtfDetail = (params: RtfDetailParams) =>
   api.post<ApiResponse>(`${BASE_URL()}/rtf-detail`, params);
 
+export const fetchOtdSummary = (params: { planVer: string; dataType?: string; productionArea?: string; otdType?: string }) =>
+  api.post<ApiResponse>(`${BASE_URL()}/otd-summary`, params);
+
 export const fetchResGroupReport = (params: ResGroupParams) =>
   api.post<ApiResponse>(`${BASE_URL()}/res-group-report`, params);
 
@@ -266,6 +269,7 @@ export function usePlanDashboard() {
           default: return "";
         }
       }
+      case "RTF_APEX": return "APEX";
       default: return "";
     }
   });
@@ -380,6 +384,26 @@ export function usePlanDashboard() {
     }
   }
 
+  async function refreshOtdSummary(planVer: string, dataType: string = "ITEMGROUP", otdType: string = "ACT") {
+    try {
+      const res = await fetchOtdSummary({
+        planVer,
+        dataType,
+        productionArea: productionArea.value,
+        otdType,
+      });
+      if (res.success && dashboardData.value) {
+        const key = otdType === "PLAN" ? "otdSummaryPlan" : "otdSummaryAct";
+        dashboardData.value = {
+          ...dashboardData.value,
+          [key]: res.data,
+        };
+      }
+    } catch (e) {
+      console.error("OTD Summary 새로고침 오류:", e);
+    }
+  }
+
   // === 상태 초기화 ===
 
   function reset() {
@@ -411,6 +435,7 @@ export function usePlanDashboard() {
     loadDashboard,
     loadSettings,
     saveSetting,
+    refreshOtdSummary,
     refreshResGroup,
     refreshProdReport,
     reset,

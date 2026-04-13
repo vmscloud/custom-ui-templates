@@ -137,6 +137,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, provide } from "vue";
 import { useTranslation } from "i18next-vue";
+import { showMessage } from "@moz-shared/utils";
 import {
   Controller,
   Radio,
@@ -192,6 +193,7 @@ const {
 provide("planDashboard", planDashboard);
 provide("openLinkNewTab", openLinkNewTab);
 provide("planMonth", planMonth);
+provide("hostPlanVer", planVer);
 
 // 로컬 상태
 const showSettings = ref(false);
@@ -204,6 +206,7 @@ const regionOptions = [
   { value: "RTF", label: "전체" },
   { value: "RTF_대구", label: "대구" },
   { value: "RTF_HK", label: "HK" },
+  { value: "RTF_APEX", label: "APEX" },
 ];
 
 const detailRegionOptions = [
@@ -230,7 +233,10 @@ const infoCount = computed(() => {
 // 이벤트 핸들러
 
 async function handleSearch() {
-  if (!planVer.value) return;
+  if (!planVer.value) {
+    showMessage("계획 버전을 선택해주세요.", false);
+    return;
+  }
   const uid = currentUserId.value;
   userId.value = uid;
   reset();
