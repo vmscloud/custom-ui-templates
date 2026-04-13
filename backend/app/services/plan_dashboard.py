@@ -278,8 +278,24 @@ class PlanDashboardService:
         frozen_ver: str,
         rtf_settings: dict | None,
         category_name: str = "",
+        production_area: str = "",
     ) -> dict:
-        """현재 planVer 기준 RTF Summary (Plan)"""
+        """
+        현재 planVer 기준 RTF Summary (Plan).
+        C# 원본: GetRTFSummary(!isFrozenVer 분기)
+        1. 먼저 실적(actual) 기반 short/upcoming 계산
+        2. plan index에서 early/ontime/late 가져옴
+        3. shortQty = (actShort + actUpcoming) - (planOntime + planLate)
+        """
+        # Step 1: 실적 기반 summary (short/upcoming)
+        act_summary = await self._get_rtf_summary_on_frozen_and_act(
+            project_id, plan_ver, frozen_ver, rtf_settings, category_name,
+            production_area=production_area,
+        )
+        act_short = act_summary.get("shortQty", 0)
+        act_upcoming = act_summary.get("upcomingQty", 0)
+
+        # Step 2: plan index에서 early/ontime/late
         partition_key = f"{project_id}@{plan_ver[:6]}"
         category_filter = self._build_category_filter(rtf_settings, category_name)
         index_data = await self._get_rtf_index_data(
@@ -288,7 +304,46 @@ class PlanDashboardService:
         creator = RTFSummaryCreator(
             index_data, settings=rtf_settings, is_frozen=False
         )
-        return creator.compute_summary()
+        plan = creator.compute_summary()
+
+        plan_early = plan.get("earlyQty", 0)
+        plan_ontime = plan.get("ontimeQty", 0)
+        plan_late = plan.get("lateQty", 0)
+
+        # Step 3: C# 로직 — short = (actShort + actUpcoming) - (planOntime + planLate)
+        adjusted_short = (act_short + act_upcoming) - (plan_ontime + plan_late)
+        if adjusted_short < 0:
+            adjusted_short = 0
+
+        total = plan_early + plan_ontime + plan_late + adjusted_short
+        rtf_qty = plan_early + plan_ontime + plan_late
+
+        if total > 0:
+            rtf_ratio = round(rtf_qty / total * 1000) / 10
+            early_ratio = round(plan_early / total * 1000) / 10
+            ontime_ratio = round(plan_ontime / total * 1000) / 10
+            late_ratio = rtf_ratio - ontime_ratio - early_ratio
+            short_ratio = 100 - rtf_ratio
+        else:
+            rtf_ratio = early_ratio = ontime_ratio = late_ratio = short_ratio = 0.0
+
+        return {
+            "demandQty": round(total, 2),
+            "earlyQty": round(plan_early, 2),
+            "earlyRatio": early_ratio,
+            "ontimeQty": round(plan_ontime, 2),
+            "ontimeRatio": ontime_ratio,
+            "lateQty": round(plan_late, 2),
+            "lateRatio": late_ratio,
+            "shortQty": round(adjusted_short, 2),
+            "shortRatio": short_ratio,
+            "rtfQty": round(rtf_qty, 2),
+            "rtfRatio": rtf_ratio,
+            "upcomingQty": round(act_upcoming, 2),
+            "upcomingRatio": round(act_upcoming / (total + act_upcoming) * 1000) / 10 if (total + act_upcoming) > 0 else 0,
+            "qtyUom": plan.get("qtyUom", ""),
+            "uomType": plan.get("uomType", "CONVERSION"),
+        }
 
     async def _get_rtf_summary_on_frozen_and_act(
         self,
@@ -297,29 +352,227 @@ class PlanDashboardService:
         frozen_ver: str,
         rtf_settings: dict | None,
         category_name: str = "",
+        production_area: str = "",
     ) -> dict:
         """
         실적(Actual) 기반 RTF Summary.
-        ope_exec_actual / rpt_shipment_plan 이 없을 수 있으므로
-        실패 시 plan 기준 summary로 fallback.
+        C# GetRTFSummaryFromAct 포팅:
+        1. ope_exec_actual에서 실적 데이터 조회
+        2. rpt_shipment_plan에서 demand 데이터 조회
+        3. 실적 기반 early/ontime/late/short 집계
         """
+        import json as _json
+        from datetime import datetime, timedelta
+
         try:
             partition_key = f"{project_id}@{plan_ver[:6]}"
-            category_filter = self._build_category_filter(rtf_settings, category_name)
-            index_data = await self._get_rtf_index_data(
-                project_id, partition_key, plan_ver, category_filter
+
+            # 계획 시작/종료일 조회
+            cycle_dates = self._get_cycle_dates(project_id, plan_ver)
+            cycle_start = cycle_dates.get("cycle_start", "")
+            cycle_end = cycle_dates.get("cycle_end", "")
+            plan_start = cycle_start  # plan_start_datetime
+
+            # Final item buffer IDs 조회
+            buffer_sql = Q.FINAL_ITEM_BUFFER_SQL.format(
+                partition_key=partition_key, plan_ver=plan_ver
             )
-            creator = RTFSummaryCreator(
-                index_data, settings=rtf_settings, is_frozen=False
+            buffer_result = await self._trino_safe(project_id, buffer_sql)
+            buffer_ids = [r.get("buffer_id", "") for r in buffer_result if r.get("buffer_id")]
+
+            if not buffer_ids:
+                return RTFSummaryCreator._empty_summary()
+
+            buffer_ids_str = ", ".join(f"'{b}'" for b in buffer_ids)
+
+            # 실적 데이터 조회 (ope_exec_actual)
+            # actEndDate: 과거 사이클이면 cycle_end, 아니면 plan_start - 1day
+            act_end = plan_start  # 간략화: plan_start를 기준으로 실적 범위
+            act_sql = Q.OTD_EXEC_ACTUAL_SQL.format(
+                project_id=project_id,
+                buffer_ids=buffer_ids_str,
+                start_date=cycle_start,
+                end_date=act_end,
+                production_area_filter="",
             )
-            return creator.compute_summary()
-        except Exception:
-            logger.warning(
-                "Actual RTF summary failed, falling back to plan-based summary"
-            )
-            return await self._get_rtf_summary_on_frozen_and_plan(
-                project_id, plan_ver, frozen_ver, rtf_settings, category_name
-            )
+            act_rows = await self._trino_safe(project_id, act_sql)
+
+            # 실적 집계: demand별 rtf_qty / status
+            summary = {
+                "earlyQty": 0.0, "ontimeQty": 0.0, "lateQty": 0.0,
+                "shortQty": 0.0, "demandQty": 0.0, "upcomingQty": 0.0,
+            }
+            rtf_demand_dict: dict[str, float] = {}
+            qty_uoms: set[str] = set()
+
+            try:
+                cycle_start_dt = datetime.strptime(cycle_start[:10], "%Y-%m-%d")
+                cycle_end_dt = datetime.strptime(cycle_end[:10], "%Y-%m-%d")
+            except (ValueError, TypeError):
+                cycle_start_dt = cycle_end_dt = datetime.now()
+
+            # plan_start_datetime 조회 (C# SetPlanStartEndDate)
+            plan_start_dt = cycle_start_dt
+            try:
+                ps_sql = f"SELECT plan_start_datetime FROM postgresql.mzc_aps.cfg_plan_config WHERE project_id = '{project_id}' AND plan_ver = '{plan_ver}' LIMIT 1"
+                ps_rows = await self._trino_safe(project_id, ps_sql)
+                if ps_rows:
+                    ps_val = str(ps_rows[0].get("plan_start_datetime", ""))[:10]
+                    plan_start_dt = datetime.strptime(ps_val, "%Y-%m-%d")
+            except Exception:
+                pass
+
+            # Phase 1: 실적 행 처리
+            for row in act_rows:
+                oper_id = row.get("oper_id") or ""
+                if oper_id:
+                    continue  # oper_id가 비어있는 행만 처리
+
+                detail_json = row.get("detail_json")
+                if not detail_json:
+                    continue
+                try:
+                    detail = _json.loads(detail_json) if isinstance(detail_json, str) else detail_json
+                except Exception:
+                    continue
+
+                demand_id = detail.get("demand_id", "")
+                due_date_str = detail.get("due_date", "")
+                plan_date_str = (row.get("plan_date") or "")[:10]
+
+                try:
+                    due_dt = datetime.strptime(due_date_str[:10], "%Y-%m-%d")
+                    plan_dt = datetime.strptime(plan_date_str[:10], "%Y-%m-%d")
+                except (ValueError, TypeError):
+                    continue
+
+                plan_qty = float(row.get("conv_qty") or row.get("plan_qty") or 0)
+                qty_uom = row.get("conv_qty_uom") or row.get("qty_uom") or ""
+                if qty_uom:
+                    qty_uoms.add(qty_uom)
+
+                # C# GetActStatus: planDate vs dueDate vs cycle 범위
+                if plan_dt > due_dt:
+                    status = "late"
+                elif cycle_start_dt <= due_dt < cycle_end_dt:
+                    status = "on_time"
+                elif due_dt >= cycle_end_dt:
+                    status = "early"
+                else:
+                    status = ""
+
+                if status == "early":
+                    summary["earlyQty"] += plan_qty
+                elif status == "on_time":
+                    summary["ontimeQty"] += plan_qty
+                elif status == "late":
+                    summary["lateQty"] += plan_qty
+
+                rtf_demand_dict[demand_id] = rtf_demand_dict.get(demand_id, 0) + plan_qty
+
+            # Phase 2: Demand 조회 (rpt_shipment_plan) - C# GetDemands
+            # C# 원본: uomType=CONVERSION, toDate=cycleEndDate, regions→productionArea 필터
+            # region prop_key로 DEMAND_REGION(PROP02) 필터 적용
+            import json as _json2
+            # Region (productionArea) 필터 구성
+            region_filter = ""
+            if production_area:
+                try:
+                    pc_sql = f"SELECT prop_json FROM odv_report_prop_config WHERE partition_key = '{partition_key}' AND plan_ver = '{plan_ver}' AND table_name = 'RPT_SHIPMENT_PLAN' LIMIT 1"
+                    pc_rows = await self._trino_safe(project_id, pc_sql)
+                    if pc_rows:
+                        pc_cfg = _json2.loads(pc_rows[0].get("prop_json", "{}")) if isinstance(pc_rows[0].get("prop_json"), str) else pc_rows[0].get("prop_json", {})
+                        for k, v in pc_cfg.items():
+                            if isinstance(v, dict) and v.get("PropID", {}).get("Value") == "DEMAND_REGION":
+                                # C# 원본: prop_json->>propID LIKE productionArea || '%'
+                                region_filter = f"AND json_extract_scalar(prop_json, '$.{k}') LIKE '{production_area}%'"
+                                break
+                except Exception:
+                    pass
+
+            # C# 원본 RptShipmentPlan_Select_Prop_ISU_P_Cmd1.sql 완전 재현:
+            # - SafetyStock 제외 안함 (원본에 없음)
+            # - #Dummy만 제외
+            # - toDate: strict < (due_date < cycleEnd)
+            # - productionArea: prop_json LIKE
+            cycle_end_ymd = cycle_end.replace("-", "")
+            demand_sql = f"""
+            SELECT demand_id,
+                   MAX(CAST(demand_conv_qty AS DOUBLE)) AS demand_qty,
+                   MAX(due_date) AS due_date
+            FROM rpt_shipment_plan
+            WHERE partition_key = '{partition_key}'
+              AND plan_ver = '{plan_ver}'
+              AND demand_type <> '#Dummy'
+              AND due_date < '{cycle_end_ymd}'
+              {region_filter}
+            GROUP BY demand_id
+            """
+            demand_rows = await self._trino_safe(project_id, demand_sql)
+
+            for row in demand_rows:
+                did = row.get("demand_id", "")
+                demand_qty = float(row.get("demand_qty") or 0)
+                due_str = str(row.get("due_date", ""))[:10].replace("-", "")
+
+                try:
+                    due_dt = datetime.strptime(due_str[:8], "%Y%m%d") if len(due_str) >= 8 else plan_start_dt
+                except ValueError:
+                    due_dt = plan_start_dt
+
+                # C#: _planStartDate > dueDate ? SHORT : UPCOMING
+                category = "short" if plan_start_dt > due_dt else "upcoming"
+
+                summary["demandQty"] += demand_qty
+
+                if did in rtf_demand_dict:
+                    # 실적이 있는 demand: short = demand_qty - rtf_qty
+                    short_qty = demand_qty - rtf_demand_dict[did]
+                    if short_qty > 0:
+                        if category == "short":
+                            summary["shortQty"] += short_qty
+                        else:
+                            summary["upcomingQty"] += short_qty
+                else:
+                    # 실적이 없는 demand: 전부 short 또는 upcoming
+                    if category == "short":
+                        summary["shortQty"] += demand_qty
+                    else:
+                        summary["upcomingQty"] += demand_qty
+
+            # 비율 계산
+            total = summary["earlyQty"] + summary["ontimeQty"] + summary["lateQty"] + summary["shortQty"]
+            rtf_qty = summary["earlyQty"] + summary["ontimeQty"] + summary["lateQty"]
+
+            if total > 0:
+                rtf_ratio = round(rtf_qty / total * 1000) / 10
+                early_ratio = round(summary["earlyQty"] / total * 1000) / 10
+                ontime_ratio = round(summary["ontimeQty"] / total * 1000) / 10
+                late_ratio = rtf_ratio - ontime_ratio - early_ratio
+                short_ratio = 100 - rtf_ratio
+            else:
+                rtf_ratio = early_ratio = ontime_ratio = late_ratio = short_ratio = 0.0
+
+            return {
+                "demandQty": round(total, 2),
+                "earlyQty": round(summary["earlyQty"], 2),
+                "earlyRatio": early_ratio,
+                "ontimeQty": round(summary["ontimeQty"], 2),
+                "ontimeRatio": ontime_ratio,
+                "lateQty": round(summary["lateQty"], 2),
+                "lateRatio": late_ratio,
+                "shortQty": round(summary["shortQty"], 2),
+                "shortRatio": short_ratio,
+                "rtfQty": round(rtf_qty, 2),
+                "rtfRatio": rtf_ratio,
+                "upcomingQty": round(summary["upcomingQty"], 2),
+                "upcomingRatio": round(summary["upcomingQty"] / summary["demandQty"] * 1000) / 10 if summary["demandQty"] > 0 else 0,
+                "qtyUom": ", ".join(qty_uoms) if qty_uoms else "",
+                "uomType": "CONVERSION",
+            }
+        except Exception as e:
+            logger.warning(f"Actual RTF summary failed: {e}, returning empty")
+            return RTFSummaryCreator._empty_summary()
 
     # =======================================================================
     # 메인 대시보드
@@ -428,10 +681,12 @@ class PlanDashboardService:
                 project_id, params.planVer, frozen_ver, rtf_settings, rtf_category_name
             ),
             self._get_rtf_summary_on_frozen_and_act(
-                project_id, params.planVer, frozen_ver, rtf_settings, rtf_category_name
+                project_id, params.planVer, frozen_ver, rtf_settings, rtf_category_name,
+                production_area=params.productionArea
             ),
             self._get_rtf_summary_on_frozen_and_plan(
-                project_id, params.planVer, frozen_ver, rtf_settings, rtf_category_name
+                project_id, params.planVer, frozen_ver, rtf_settings, rtf_category_name,
+                production_area=params.productionArea
             ),
             # Non-RTF panels (indices 3-11)
             self._trino(project_id, oper_group_sql),

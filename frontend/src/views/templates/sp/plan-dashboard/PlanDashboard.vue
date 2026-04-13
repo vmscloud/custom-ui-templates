@@ -163,7 +163,14 @@ import IconToastWarning from "./assets/IconToastWarning.vue";
 import IconSetting from "./assets/IconSetting.vue";
 
 // Host 데이터
-const { planVer } = useHostPlanCycle();
+const { planVer, fromDate } = useHostPlanCycle();
+const planMonth = computed(() => {
+  const fd = fromDate.value;
+  if (fd && fd.length >= 7) return fd.substring(5, 7);
+  // fallback: planVer에서 추출 (예: "20260403-M-01" → "04")
+  const pv = planVer.value;
+  return pv && pv.length >= 6 ? pv.substring(4, 6) : "";
+});
 const { userInfo } = useHostUser();
 const { openLinkNewTab } = useHostNavigation();
 
@@ -184,6 +191,7 @@ const {
 // provide to sub-components
 provide("planDashboard", planDashboard);
 provide("openLinkNewTab", openLinkNewTab);
+provide("planMonth", planMonth);
 
 // 로컬 상태
 const showSettings = ref(false);

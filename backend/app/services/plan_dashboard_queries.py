@@ -44,33 +44,33 @@ WHERE partition_key = '{partition_key}'
 """
 
 # OTD: ope_exec_actual 조회 (실적 데이터)
+# NOTE: PG 스키마에서 partition_key/plan_ver 없음, project_id 사용. inout_type (underscore 없음)
 OTD_EXEC_ACTUAL_SQL = """
 SELECT
     plan_date,
     CAST(plan_qty AS DOUBLE) AS plan_qty,
-    CAST(conv_qty AS DOUBLE) AS conv_qty,
+    CAST(plan_conv_qty AS DOUBLE) AS conv_qty,
     qty_uom,
     conv_qty_uom,
     oper_id,
     buffer_id,
     detail_json
 FROM ope_exec_actual
-WHERE partition_key = '{partition_key}'
-  AND plan_ver = '{plan_ver}'
-  AND in_out_type = 'In'
+WHERE project_id = '{project_id}'
+  AND inout_type = 'In'
   AND buffer_id IN ({buffer_ids})
   AND plan_date >= '{start_date}'
   AND plan_date <= '{end_date}'
   {production_area_filter}
 """
 
-# Final item buffer IDs
+# Final item buffer IDs (C# 원본: OdvBufferMaster → final_item_buffer_yn)
 FINAL_ITEM_BUFFER_SQL = """
-SELECT DISTINCT STD_BUFFER_ID AS buffer_id
-FROM ODV_REPORT_STD_BUFFER_CONFIG
+SELECT DISTINCT buffer_id
+FROM odv_buffer_master
 WHERE partition_key = '{partition_key}'
   AND plan_ver = '{plan_ver}'
-  AND FINAL_ITEM_STD_BUFFER_YN = 'Y'
+  AND final_item_buffer_yn = 'y'
 """
 
 # Demand types list

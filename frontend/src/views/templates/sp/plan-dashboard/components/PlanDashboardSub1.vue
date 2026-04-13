@@ -2,7 +2,7 @@
   <div class="container">
     <div class="container-header-wrapper">
       <div class="header-top">
-        <div class="panel-title">{{ t('text-isu_current_month_otd_fcst_rate', { month: '' }).trim() }}</div>
+        <div class="panel-title">{{ t('text-isu_current_month_otd_fcst_rate', { month: planMonth }) }}</div>
         <span class="unit-label">{{ qtyUom ? t('text-fgs_stock_report_qty_uom', { unit: qtyUom }) : '' }}</span>
       </div>
       <div class="kpi-section">
@@ -68,6 +68,7 @@ use([
 type PlanDashboardContext = ReturnType<typeof usePlanDashboard>;
 const planDashboard = inject<PlanDashboardContext>("planDashboard")!;
 const { dashboardData } = planDashboard;
+const planMonth = inject<any>("planMonth", computed(() => ""));
 
 const COLORS = {
   early: "#aac7e8",
@@ -114,25 +115,25 @@ const legendItems = computed(() => {
     {
       title: t('text-plan_dashboard-early'),
       color: COLORS.early,
-      ratio: early.toFixed(2),
+      ratio: early.toFixed(1),
       qty: earlyQty.value.toLocaleString(),
     },
     {
       title: t('text-plan_dashboard-on_time'),
       color: COLORS.ontime,
-      ratio: ontime.toFixed(2),
+      ratio: ontime.toFixed(1),
       qty: ontimeQty.value.toLocaleString(),
     },
     {
       title: t('text-plan_dashboard-late'),
       color: COLORS.late,
-      ratio: late.toFixed(2),
+      ratio: late.toFixed(1),
       qty: lateQty.value.toLocaleString(),
     },
     {
       title: t('text-plan_dashboard-short'),
       color: COLORS.short,
-      ratio: short.toFixed(2),
+      ratio: short.toFixed(1),
       qty: shortQty.value.toLocaleString(),
     },
   ];

@@ -1509,7 +1509,7 @@
     "text-context-open_fgs_stock_in_plan": "완제품 생산 계획 열기",
     "desc-factor-DispatcherControl_DoFilter-ISUDispatcherControl_DoFilter": "소량lot 제외하는 필터-소량기준은 파라메터로 지정가능",
     "desc-factor-LotGroupKey-TKGPo": "PD_ID 기준 LotGroup 설정",
-    "text-plan_dashboard-rtf_ratio": "RTF 비율",
+    "text-plan_dashboard-rtf_ratio": "납기 준수율",
     "msg-popup-progress-status_calculating": "엑셀 업로드를 준비하고 있습니다. 잠시만 기다려 주세요.",
     "text-project": "프로젝트",
     "text-org_arrival_datetime": "생산 준비 완료 일시",
