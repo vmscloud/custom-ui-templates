@@ -229,7 +229,7 @@ export const fetchProdReport = (params: ProdReportParams) =>
 
 export const fetchSettings = (userId: string, menuId?: string) =>
   api.get<SettingsResponse>(`${BASE_URL()}/settings`, {
-    params: { userId, menuId: menuId || "/pa/PlanDashboard2" },
+    params: { userId, menuId: menuId || "/pa/PlanDashboard" },
   });
 
 export const saveSettings = (params: SettingsSaveParams) =>
@@ -298,7 +298,7 @@ export function usePlanDashboard() {
         detailRegion: detailRegion.value,
         aggregateType: aggregateType.value,
         userId: resolvedUserId,
-        menuId: "/pa/PlanDashboard2",
+        menuId: "/pa/PlanDashboard",
         regions: regionParams.value,
         productionArea: productionArea.value,
       });
@@ -340,7 +340,7 @@ export function usePlanDashboard() {
     try {
       const res = await saveSettings({
         userId: uid,
-        menuId: "/pa/PlanDashboard2",
+        menuId: "/pa/PlanDashboard",
         widgetId,
         widgetValue,
       });

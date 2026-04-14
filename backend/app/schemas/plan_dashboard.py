@@ -23,7 +23,7 @@ class DashboardRequest(BaseModel):
     )
     userId: str = Field(default="", description="사용자 ID (위젯 설정 조회용)")
     menuId: str = Field(
-        default="/pa/PlanDashboard2", description="메뉴 ID (위젯 설정 조회용)"
+        default="/pa/PlanDashboard", description="메뉴 ID (위젯 설정 조회용)"
     )
     regions: list[str] = Field(default=[], description="지역 필터 목록")
     productionArea: str = Field(default="", description="생산 영역 필터")
@@ -71,7 +71,7 @@ class SettingsQueryParams(BaseModel):
 
     userId: str = Field(..., description="사용자 ID")
     menuId: str = Field(
-        default="/pa/PlanDashboard2", description="메뉴 ID"
+        default="/pa/PlanDashboard", description="메뉴 ID"
     )
     planVer: str = Field(default="", description="Plan version (설비그룹 팝업용)")
 
@@ -84,7 +84,7 @@ class SettingsSaveRequest(BaseModel):
 
     userId: str = Field(..., description="사용자 ID")
     menuId: str = Field(
-        default="/pa/PlanDashboard2", description="메뉴 ID"
+        default="/pa/PlanDashboard", description="메뉴 ID"
     )
     widgetId: str = Field(..., description="위젯 ID (e.g. rtfReportPopup, ResGroupPopup)")
     widgetValue: str = Field(

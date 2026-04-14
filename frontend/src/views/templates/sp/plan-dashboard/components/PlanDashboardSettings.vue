@@ -1,7 +1,7 @@
 <template>
   <Popup
     class="dashboard-setting-detail-popup"
-    title="위젯 상세 설정"
+    :title="t('text-popup-dashboard_widget_setting')"
     :visible="true"
     preset="save"
     :width="1036"
@@ -19,10 +19,10 @@
       <template #rtfReport>
         <div class="tab-body-content rtf-report-tab">
           <div class="setting-popup-section">
-            <div class="setting-popup-sub-title">수량 UOM 설정</div>
+            <div class="setting-popup-sub-title">{{ t('text-popup-rtf_report_qty_uom_setting_title') }}</div>
             <div class="setting-popup-sub-section">
               <div class="setting-popup-sub-desc">
-                RTF Report에 표시할 수량 UOM을 선택합니다.
+                {{ t('msg-popup-rtf_report_qty_uom_setting') }}
               </div>
               <Select
                 :key-prop="'value'"
@@ -33,10 +33,10 @@
             </div>
           </div>
           <div class="setting-popup-section">
-            <div class="setting-popup-sub-title">집계 기준 설정</div>
+            <div class="setting-popup-sub-title">{{ t('text-popup-dashboard_aggr_setting') }}</div>
             <div class="setting-popup-sub-section">
               <div class="setting-popup-sub-desc">
-                RTF 집계 기준을 LOT 또는 DEMAND 단위로 설정합니다.
+                {{ t('desc-dashboard-compare_plan_vs_sales') }}
               </div>
               <Radio
                 :valueExpr="'value'"
@@ -62,14 +62,14 @@
           >
             <WjFlexGridColumn
               binding="category"
-              header="분류"
+              :header="t('text-type')"
               :width="125"
               :isReadOnly="true"
               align="center"
             />
             <WjFlexGridColumn
               binding="planType"
-              header="계획 유형"
+              :header="t('text-plan_type')"
               :width="130"
               :isReadOnly="true"
               align="center"
@@ -100,7 +100,7 @@
             />
             <WjFlexGridColumn
               binding="apply_excluded"
-              header="제외"
+              :header="t('text-excluded')"
               :width="120"
               align="center"
             />
@@ -112,10 +112,10 @@
       <template #prodPerformance>
         <div class="tab-body-content rtf-report-tab">
           <div class="setting-popup-section">
-            <div class="setting-popup-sub-title">수량 UOM 설정</div>
+            <div class="setting-popup-sub-title">{{ t('text-popup-rtf_report_qty_uom_setting_title') }}</div>
             <div class="setting-popup-sub-section">
               <div class="setting-popup-sub-desc">
-                생산 실적 RTF Report에 표시할 수량 UOM을 선택합니다.
+                {{ t('msg-popup-rtf_report_qty_uom_setting') }}
               </div>
               <Select
                 :key-prop="'value'"
@@ -132,10 +132,10 @@
       <template #rePlanPerformance>
         <div class="tab-body-content rtf-report-tab">
           <div class="setting-popup-section">
-            <div class="setting-popup-sub-title">수량 UOM 설정</div>
+            <div class="setting-popup-sub-title">{{ t('text-popup-rtf_report_qty_uom_setting_title') }}</div>
             <div class="setting-popup-sub-section">
               <div class="setting-popup-sub-desc">
-                재계획 RTF Report에 표시할 수량 UOM을 선택합니다.
+                {{ t('msg-popup-rtf_report_qty_uom_setting') }}
               </div>
               <Select
                 :key-prop="'value'"
@@ -152,10 +152,10 @@
       <template #onTimeDelivery>
         <div class="tab-body-content">
           <div class="setting-popup-section">
-            <div class="setting-popup-sub-title">수량 UOM 설정</div>
+            <div class="setting-popup-sub-title">{{ t('text-popup-stock_report_qty_uom_setting_title') }}</div>
             <div class="setting-popup-sub-section">
               <div class="setting-popup-sub-desc">
-                월초 계획 vs. 실적 비교에 표시할 수량 UOM을 선택합니다.
+                {{ t('msg-popup-stock_report_qty_uom_setting') }}
               </div>
               <Select
                 :key-prop="'value'"
@@ -174,19 +174,19 @@
           <div class="setting-popup-section">
             <div class="oper-group-text-wrapper">
               <div class="setting-popup-sub-title">
-                공정 그룹 표시 여부 설정
+                {{ t('text-popup-res_util_report_setting') }}
               </div>
               <div class="setting-popup-sub-desc">
-                표시할 공정 그룹을 선택하고 순서를 변경할 수 있습니다.
+                {{ t('msg-popup-res_util_report_setting') }}
               </div>
             </div>
             <div class="oper-group-selection-container">
               <div>
                 <div class="setting-popup-sub-title oper-group-text-title">
-                  선택 가능 공정 그룹
+                  {{ t('text-plan_dashboard_isu-available_oper_groups') }}
                 </div>
                 <div class="setting-popup-sub-desc">
-                  목록에 추가할 그룹을 선택하세요.
+                  {{ t('desc-plan_dashboard_isu-select_oper_groups') }}
                 </div>
                 <div class="oper-group-selection-list">
                   <div
@@ -328,14 +328,14 @@
         </div>
       </template>
 
-      <!-- Tab 6: 설비 가동 현황 -->
+      <!-- Tab 6: 설비 가동 현황 (resGroupSummary) -->
       <template #resGroupSummary>
         <div class="tab-body-content">
           <div class="setting-popup-section">
-            <div class="setting-popup-sub-title">수량 UOM 설정</div>
+            <div class="setting-popup-sub-title">{{ t('text-popup-res_util_report_period_setting') }}</div>
             <div class="setting-popup-sub-section">
               <div class="setting-popup-sub-desc">
-                설비 가동 현황에 표시할 수량 UOM을 선택합니다.
+                {{ t('msg-popup-res_util_report_period_setting') }}
               </div>
               <Select
                 :key-prop="'value'"
@@ -352,10 +352,10 @@
       <template #rePlanDelivery>
         <div class="tab-body-content">
           <div class="setting-popup-section">
-            <div class="setting-popup-sub-title">수량 UOM 설정</div>
+            <div class="setting-popup-sub-title">{{ t('text-popup-stock_report_qty_uom_setting_title') }}</div>
             <div class="setting-popup-sub-section">
               <div class="setting-popup-sub-desc">
-                확정 계획 vs. 재수립 계획 비교에 표시할 수량 UOM을 선택합니다.
+                {{ t('msg-popup-stock_report_qty_uom_setting') }}
               </div>
               <Select
                 :key-prop="'value'"
@@ -402,15 +402,15 @@ const uomOptions = [
 ];
 
 // Tab itemSource for vertical Tab component (matches original format)
-const itemSource = [
-  { id: "rtfReport", text: "당월 예상 납기 준수율" },
-  { id: "prodPerformance", text: "생산 실적의 납기 준수율" },
-  { id: "rePlanPerformance", text: "재계획의 납기 준수율" },
-  { id: "onTimeDelivery", text: "월초 계획 vs. 실적" },
-  { id: "stockInPlan", text: "공정 그룹별 부하율(향후 30일)" },
-  { id: "resGroupSummary", text: "설비 가동 현황" },
-  { id: "rePlanDelivery", text: "확정 계획 vs. 재수립 계획" },
-];
+const itemSource = computed(() => [
+  { id: "rtfReport", text: t("text-isu_current_month_otd_expected_rate") },
+  { id: "prodPerformance", text: t("text-plan_dashboard_isu-act_rtf_report") },
+  { id: "rePlanPerformance", text: t("text-plan_dashboard_isu-replan_rtf_report") },
+  { id: "onTimeDelivery", text: t("text-plan_dashboard_isu-frozen_act_comparison_report") },
+  { id: "stockInPlan", text: t("text-plan_dashboard_isu-oper_group_utilization_report") },
+  { id: "resGroupSummary", text: t("text-plan_dashboard-res_util_report") },
+  { id: "rePlanDelivery", text: t("text-plan_dashboard_isu-frozen_replan_comparison_report") },
+]);
 
 const activeTab = ref("rtfReport");
 
