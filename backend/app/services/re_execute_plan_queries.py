@@ -27,11 +27,11 @@ ORDER BY oper_group_seq, oper_group_id
 
 # 버퍼 목록 조회 - rpt_buffer_plan에서 추출
 BUFFERS_SQL = """
-SELECT DISTINCT buffer_id
+SELECT DISTINCT std_buffer_id AS buffer_id
 FROM rpt_buffer_plan
 WHERE partition_key = '{partition_key}'
   AND plan_ver = '{plan_ver}'
-ORDER BY buffer_id
+ORDER BY std_buffer_id
 """
 
 # 개별 공정(Oper) 목록 조회 - rpt_oper_group_plan에서 추출
@@ -75,46 +75,51 @@ ORDER BY demand_type
 """
 
 # 공정 그룹 기준 피벗 데이터 (summaryType=OPERGROUP)
+# C# 원본: startDate=cycleStart, endDate=cycleEnd 필터 적용
 PIVOT_OPER_GROUP_SQL = """
 SELECT
     oper_group_id,
     item_group_id,
     demand_type,
-    CAST(plan_date AS VARCHAR) AS plan_date,
-    plan_month,
-    plan_week,
+    CAST(plan_date AS VARCHAR) AS date,
+    plan_month AS month,
+    plan_week AS week,
     ROUND(CAST(SUM({qty_col}) AS DOUBLE), 2) AS qty
 FROM rpt_oper_group_plan
 WHERE partition_key = '{partition_key}'
   AND plan_ver = '{plan_ver}'
+  AND plan_date >= '{start_date}'
+  AND plan_date <= '{end_date}'
   {oper_group_filter}
   {oper_filter}
   {demand_type_filter}
   {item_group_filter}
 GROUP BY oper_group_id, item_group_id, demand_type, plan_date, plan_month, plan_week
-ORDER BY oper_group_id, plan_date
+ORDER BY oper_group_id, date
 """
 
 # 버퍼 기준 피벗 데이터 (summaryType=BUFFER)
 PIVOT_BUFFER_SQL = """
 SELECT
-    buffer_id,
+    std_buffer_id AS buffer_id,
     item_group_id,
     demand_type,
     cust_id,
-    CAST(plan_date AS VARCHAR) AS plan_date,
-    plan_month,
-    plan_week,
+    CAST(plan_date AS VARCHAR) AS date,
+    plan_month AS month,
+    plan_week AS week,
     ROUND(CAST(SUM({qty_col}) AS DOUBLE), 2) AS qty
 FROM rpt_buffer_plan
 WHERE partition_key = '{partition_key}'
   AND plan_ver = '{plan_ver}'
+  AND plan_date >= '{start_date}'
+  AND plan_date <= '{end_date}'
   {buffer_filter}
   {customer_filter}
   {demand_type_filter}
   {item_group_filter}
-GROUP BY buffer_id, item_group_id, demand_type, cust_id, plan_date, plan_month, plan_week
-ORDER BY buffer_id, plan_date
+GROUP BY std_buffer_id, item_group_id, demand_type, cust_id, plan_date, plan_month, plan_week
+ORDER BY std_buffer_id, plan_date
 """
 
 # 수요 목록 조회 (상세 FlexGrid용)

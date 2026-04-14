@@ -301,6 +301,16 @@
                       v-model="reExecuteState.demandVer"
                       :disabled="false"
                       :placeholder="autoDemandVer"
+                      :rules="[{
+                        validator: async (value: string) => {
+                          if (!value) return true;
+                          try {
+                            const res = await fetchDemandVerValidCheck({ demand_ver: value });
+                            if (res?.data?.length > 0) return '이미 존재하는 수요 버전입니다.';
+                            return true;
+                          } catch { return true; }
+                        }
+                      }]"
                     />
                   </div>
                 </div>
