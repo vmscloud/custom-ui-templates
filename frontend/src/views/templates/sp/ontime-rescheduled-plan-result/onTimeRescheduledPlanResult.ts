@@ -5,6 +5,7 @@
  * 기존 APS 뷰의 apiCall/vue-query 패턴을 custom API(axios) 기반으로 전환.
  */
 import { api, getProjectId } from "@/api/client";
+import { useQtyUomQuery } from "@/composables/useQtyUomQuery";
 import { ref, computed, type Ref } from "vue";
 
 // ===== API Base URLs =====
@@ -268,7 +269,11 @@ export function useOnTimeRescheduledPlanResult() {
   // === Filter State ===
   const summaryType = ref<SummaryType>("itemGroup");
   const aggType = ref<string>("MONTH");
-  const uomType = ref<string>("DEFAULT");
+  const { uomType, qtyUOMSource } = useQtyUomQuery(
+    ["DEFAULT", "CONVERSION"],
+    "DEFAULT",
+    { menuID: "actReportUomType" },
+  );
   const prodStatus = ref<ProdStatusType>("default");
   const region = ref<string>("default");
   const hkDetail = ref<string>("HK");
@@ -628,6 +633,7 @@ export function useOnTimeRescheduledPlanResult() {
     summaryType,
     aggType,
     uomType,
+    qtyUOMSource,
     prodStatus,
     region,
     hkDetail,

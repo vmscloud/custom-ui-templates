@@ -107,9 +107,9 @@
             <Select
               :label="t('text-qty_uom')"
               v-model="uomType"
-              :items-source="uomOptions"
+              :items-source="qtyUOMSource"
               key-prop="value"
-              display-prop="label"
+              display-prop="displayValue"
             />
             <Radio
               v-model="prodStatus"
@@ -296,6 +296,7 @@ const {
   summaryType,
   aggType,
   uomType,
+  qtyUOMSource,
   prodStatus,
   region,
   hkDetail,
@@ -360,11 +361,6 @@ const summaryOptions = computed(() => [
 const aggTypeOptions = [
   { value: "WEEK", label: "WEEK" },
   { value: "MONTH", label: "MONTH" },
-];
-
-const uomOptions = [
-  { value: "DEFAULT", label: "DEFAULT" },
-  { value: "CONVERSION", label: "CONVERSION" },
 ];
 
 const prodStatusOptions = computed(() => [

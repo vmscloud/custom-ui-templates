@@ -144,22 +144,9 @@ export function useGetDemandTypesQuery(planVer: Ref<string>) {
 }
 
 // ── useQtyUomQuery ──
-
-export function useQtyUomQuery(
-  types: QtyUOMType[],
-  defaultValue: QtyUOMType,
-  _options?: { menuID?: string }
-) {
-  const uomType = ref<QtyUOMType>(defaultValue);
-  const qtyUOMSource = ref(
-    types.map((t) => ({
-      value: t,
-      displayValue: t === "DEFAULT" ? "Default" : "Conversion",
-    }))
-  );
-
-  return { uomType, qtyUOMSource };
-}
+// 공용 훅(`@/composables/useQtyUomQuery`)으로 위임 — URL `qtyUOM` 파라미터 우선 +
+// localStorage 캐시 + i18n 적용된 표시값. 원본 useQtyUomQuery와 동일한 시그니처.
+export { useQtyUomQuery } from "@/composables/useQtyUomQuery";
 
 // ── useAggTypeQuery ──
 

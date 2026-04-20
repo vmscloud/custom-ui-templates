@@ -2,6 +2,7 @@
  * Demand Distribution API 호출 및 데이터 관리
  */
 import { api, getProjectId } from "@/api/client";
+import { useQtyUomQuery } from "@/composables/useQtyUomQuery";
 import { ref, type Ref } from "vue";
 
 // ===== Types =====
@@ -189,7 +190,11 @@ export function useDemandDistribution() {
   const selectedDemandVer = ref<string>("");
   const aggregateType = ref<"WEEK" | "MONTH" | "YEAR">("WEEK");
   const summary = ref<"sum" | "count">("sum");
-  const uomType = ref<string>("DEFAULT");
+  const { uomType, qtyUOMSource } = useQtyUomQuery(
+    ["DEFAULT", "CONVERSION"],
+    "DEFAULT",
+    { menuID: "DemandDistribution" },
+  );
   const selectedColumns = ref<string[]>([]);
 
   // Methods
@@ -232,7 +237,10 @@ export function useDemandDistribution() {
     try {
       const response = await fetchUomPreference(userId, menuId);
       if (response.success) {
-        uomType.value = response.uomType;
+        const v = response.uomType;
+        if (v === "DEFAULT" || v === "CONVERSION") {
+          uomType.value = v;
+        }
       }
     } catch (e) {
       console.error("UOM Preference 조회 오류:", e);
@@ -300,6 +308,7 @@ export function useDemandDistribution() {
     aggregateType,
     summary,
     uomType,
+    qtyUOMSource,
     selectedColumns,
 
     // Methods

@@ -74,52 +74,63 @@ WHERE partition_key = '{partition_key}'
 ORDER BY demand_type
 """
 
-# 공정 그룹 기준 피벗 데이터 (summaryType=OPERGROUP)
-# C# 원본: startDate=cycleStart, endDate=cycleEnd 필터 적용
+# plan_date가 'YYYYMMDD' 문자열로 저장돼 있어 DATE 캐스팅이 불가능하므로
+# WHERE 비교는 문자열 직접 비교, 출력 alias는 'YYYY-MM-DD'로 조립.
+# start_date / end_date 플레이스홀더는 'YYYYMMDD' 형태로 주입됩니다.
+
+# 공정 그룹 기준 피벗 데이터 (summaryType=OPERGROUP) — 원본 RptOperGroupPlan_Select_ISU_P_Cmd1.sql 동등
 PIVOT_OPER_GROUP_SQL = """
 SELECT
     oper_group_id,
+    oper_id,
+    buffer_id,
+    cust_id,
     item_group_id,
     demand_type,
-    CAST(plan_date AS VARCHAR) AS date,
-    plan_month AS month,
-    plan_week AS week,
-    ROUND(CAST(SUM({qty_col}) AS DOUBLE), 2) AS qty
+    demand_id,
+    due_month,
+    substr(CAST(plan_date AS VARCHAR), 1, 4)
+      || '-' || substr(CAST(plan_date AS VARCHAR), 5, 2)
+      || '-' || substr(CAST(plan_date AS VARCHAR), 7, 2) AS date,
+    CAST({qty_col} AS DOUBLE) AS qty,
+    json_extract_scalar(prop_json, '$.production_area') AS region
 FROM rpt_oper_group_plan
 WHERE partition_key = '{partition_key}'
   AND plan_ver = '{plan_ver}'
-  AND plan_date >= '{start_date}'
-  AND plan_date <= '{end_date}'
+  AND CAST(plan_date AS VARCHAR) >= '{start_date}'
+  AND CAST(plan_date AS VARCHAR) <= '{end_date}'
   {oper_group_filter}
   {oper_filter}
   {demand_type_filter}
   {item_group_filter}
-GROUP BY oper_group_id, item_group_id, demand_type, plan_date, plan_month, plan_week
-ORDER BY oper_group_id, date
+  {customer_filter}
+  {region_filter}
 """
 
-# 버퍼 기준 피벗 데이터 (summaryType=BUFFER)
+# 버퍼 기준 피벗 데이터 (summaryType=BUFFER) — 원본 RptBufferPlan_Select_ISU_P_Cmd1.sql 동등
 PIVOT_BUFFER_SQL = """
 SELECT
     std_buffer_id AS buffer_id,
+    item_id,
+    cust_id,
     item_group_id,
     demand_type,
-    cust_id,
-    CAST(plan_date AS VARCHAR) AS date,
-    plan_month AS month,
-    plan_week AS week,
-    ROUND(CAST(SUM({qty_col}) AS DOUBLE), 2) AS qty
+    due_month,
+    substr(CAST(plan_date AS VARCHAR), 1, 4)
+      || '-' || substr(CAST(plan_date AS VARCHAR), 5, 2)
+      || '-' || substr(CAST(plan_date AS VARCHAR), 7, 2) AS date,
+    CAST({qty_col} AS DOUBLE) AS qty,
+    json_extract_scalar(prop_json, '$.production_area') AS region
 FROM rpt_buffer_plan
 WHERE partition_key = '{partition_key}'
   AND plan_ver = '{plan_ver}'
-  AND plan_date >= '{start_date}'
-  AND plan_date <= '{end_date}'
+  AND CAST(plan_date AS VARCHAR) >= '{start_date}'
+  AND CAST(plan_date AS VARCHAR) <= '{end_date}'
   {buffer_filter}
   {customer_filter}
   {demand_type_filter}
   {item_group_filter}
-GROUP BY std_buffer_id, item_group_id, demand_type, cust_id, plan_date, plan_month, plan_week
-ORDER BY std_buffer_id, plan_date
+  {region_filter}
 """
 
 # 수요 목록 조회 (상세 FlexGrid용)

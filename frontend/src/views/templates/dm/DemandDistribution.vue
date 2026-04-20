@@ -40,9 +40,9 @@
         />
         <Select
           v-model="uomType"
-          :items-source="uomOptions"
+          :items-source="qtyUOMSource"
           key-prop="value"
-          display-prop="label"
+          display-prop="displayValue"
           label="수량 단위"
         />
         <MultiSelect
@@ -106,6 +106,7 @@ const {
   aggregateType,
   summary,
   uomType,
+  qtyUOMSource,
   selectedColumns,
   loadDemandVersions,
   loadColumnMetadata,
@@ -123,12 +124,6 @@ const aggregateOptions = ref([
 const summaryOptions = ref([
   { value: "sum", label: "Demand Qty" },
   { value: "count", label: "Item Count" },
-]);
-
-// UOM type options
-const uomOptions = ref([
-  { value: "DEFAULT", label: "DEFAULT" },
-  { value: "CONVERSION", label: "CONVERSION" },
 ]);
 
 // Column options source

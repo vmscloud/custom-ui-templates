@@ -78,9 +78,9 @@
         />
         <Select
           v-model="uomType"
-          :items-source="uomOptions"
+          :items-source="qtyUOMSource"
           key-prop="value"
-          display-prop="label"
+          display-prop="displayValue"
           label="수량 단위"
         />
         <Radio
@@ -200,6 +200,7 @@ const {
   summaryType,
   aggType,
   uomType,
+  qtyUOMSource,
   prodStatus,
   selectedCustomers,
   selectedItemGroups,
@@ -264,11 +265,6 @@ const summaryOptions = [
 const aggTypeOptions = [
   { value: "WEEK", label: "WEEK" },
   { value: "MONTH", label: "MONTH" },
-];
-
-const uomOptions = [
-  { value: "DEFAULT", label: "DEFAULT" },
-  { value: "CONVERSION", label: "CONVERSION" },
 ];
 
 const prodStatusOptions = [

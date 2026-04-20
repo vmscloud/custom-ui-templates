@@ -5,6 +5,7 @@
  * APS ReExecutePlan.ts를 custom-ui-templates 패턴으로 포팅.
  */
 import { api, getProjectId } from "@/api/client";
+import { useQtyUomQuery } from "@/composables/useQtyUomQuery";
 import { CollectionView } from "@vmscloud/moz-wijmo-grid/wijmo";
 import { useTranslation } from "i18next-vue";
 import {
@@ -179,12 +180,12 @@ export const useReExecutePlanQuery = (
   const demandTypeSource = ref<any[]>([]);
   const demandTypeIsSuccess = ref(false);
 
-  // UOM
-  const uomType = ref<string>("DEFAULT");
-  const qtyUOMSource = ref<any[]>([
-    { value: "DEFAULT", displayValue: "DEFAULT" },
-    { value: "CONVERSION", displayValue: "CONVERSION" },
-  ]);
+  // UOM — 원본 useQtyUomQuery와 동일한 초기화(URL qtyUOM → localStorage → defaultValue)
+  const { uomType, qtyUOMSource } = useQtyUomQuery(
+    ["DEFAULT", "CONVERSION"],
+    "DEFAULT",
+    { menuID: "reExecutePlanUomType" },
+  );
 
   const widgetSummarySource = ref<any[]>([
     { label: t("text-upper-item_group"), value: "itemGroup" },
@@ -700,9 +701,10 @@ export const useReExecutePlanQuery = (
 
   const loadOperGroupSource = async (param: any) => {
     if (!param) return;
+    const pv =
+      typeof param === "string" ? param : param?.planVer || planVer.value;
+    if (!pv) return; // planVer 미정 상태에서 fetch/flag 변경 방지
     try {
-      const pv =
-        typeof param === "string" ? param : param?.planVer || planVer.value;
       const result = (await fetchOperGroups(pv)) as any;
       if (result?.success && result?.data?.length) {
         operGroupSource.value = result.data;
@@ -724,11 +726,12 @@ export const useReExecutePlanQuery = (
 
   const loadOperSource = async (param: any) => {
     if (!param) return;
+    const pv =
+      typeof param === "string"
+        ? param
+        : param?.plan_ver || param?.planVer || planVer.value;
+    if (!pv) return;
     try {
-      const pv =
-        typeof param === "string"
-          ? param
-          : param?.plan_ver || param?.planVer || planVer.value;
       const result = (await fetchOperSource(pv)) as any;
       if (result.data && result.data.length) {
         operSource.value = result.data;
@@ -748,11 +751,12 @@ export const useReExecutePlanQuery = (
 
   const loadBufferSource = async (param: any) => {
     if (!param) return;
+    const pv =
+      typeof param === "string"
+        ? param
+        : param?.plan_ver || param?.planVer || planVer.value;
+    if (!pv) return;
     try {
-      const pv =
-        typeof param === "string"
-          ? param
-          : param?.plan_ver || param?.planVer || planVer.value;
       const result = (await fetchBuffers(pv)) as any;
       if (result.data && result.data.length) {
         bufferSource.value = result.data;
@@ -877,10 +881,14 @@ export const useReExecutePlanQuery = (
     }
   };
 
-  // loadParams
+  // loadParams — operGroupIDs는 마스터(odv_oper_group_master) 기반 리스트로 항상 명시 전송.
+  //  우리 Iceberg 복사본에 마스터에 없는 가상 oper_group_id(예: '#Undefined')가 섞여 있어서
+  //  빈 배열을 보내면 원본에 없는 가상 그룹이 포함되어 값이 부풀어 오름.
+  //  마스터 리스트로 IN 필터를 걸면 원본과 동일한 집합이 집계됨.
   const loadParams = computed(() => ({
     planVer: planVer.value,
     planCycleID: planCycleID.value,
+    summaryType: "OPERGROUP" as "OPERGROUP" | "BUFFER",
     aggregateType: summaryType.value,
     summary: summaryType.value as
       | "cust"
@@ -898,7 +906,7 @@ export const useReExecutePlanQuery = (
       demandTypes: demandType.value,
     }),
     uomType: uomType.value,
-    ...{ operGroupIDs: operGroups.value },
+    operGroupIDs: operGroups.value,
   }));
 
   const addPrefix = (value: string) => {
@@ -912,6 +920,10 @@ export const useReExecutePlanQuery = (
   const actEndDate = ref<string>("");
 
   const onMainLoad = async () => {
+    // 마스터가 아직 로드되지 않은 상태에서 호출되면 operGroupIDs=[]로 전송돼
+    // 백엔드가 전체(가상 그룹 포함) row를 집계해 값이 부풀어 오른다. 마스터 대기.
+    if (!planVer.value) return;
+    if (!operGroupSource.value.length) return;
     mainQueryIsPending.value = true;
     try {
       const result = (await fetchMain(loadParams.value)) as any;
@@ -955,6 +967,7 @@ export const useReExecutePlanQuery = (
 
   // Load filter data
   const loadCustData = async () => {
+    if (!planVer.value) return;
     try {
       const result = await fetchCustInRtf(planVer.value);
       if (result?.data?.length) {
@@ -972,6 +985,7 @@ export const useReExecutePlanQuery = (
   };
 
   const loadItemGroupData = async () => {
+    if (!planVer.value) return;
     try {
       const result = await fetchItemGroupInRtf(planVer.value);
       if (result?.data?.length) {
@@ -991,6 +1005,7 @@ export const useReExecutePlanQuery = (
   };
 
   const loadRegionData = async () => {
+    if (!planVer.value) return;
     try {
       const result = await fetchRegions(planVer.value);
       if (result?.data?.length) {
@@ -1017,6 +1032,7 @@ export const useReExecutePlanQuery = (
   };
 
   const loadDemandTypeData = async () => {
+    if (!planVer.value) return;
     try {
       const result = await fetchDemandTypes(planVer.value);
       if (result?.data?.length) {

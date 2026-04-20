@@ -2,6 +2,7 @@
  * RTF Report API 호출 및 데이터 관리
  */
 import { api, getProjectId } from "@/api/client";
+import { useQtyUomQuery } from "@/composables/useQtyUomQuery";
 import { ref, type Ref } from "vue";
 
 // ===== Types =====
@@ -236,7 +237,11 @@ export function useRtfReport() {
   // === 필터 상태 (UI 바인딩용 — 사용자가 자유롭게 변경) ===
   const summaryType = ref<string>("itemGroup");
   const aggType = ref<string>("MONTH");
-  const uomType = ref<string>("DEFAULT");
+  const { uomType, qtyUOMSource } = useQtyUomQuery(
+    ["DEFAULT", "CONVERSION"],
+    "DEFAULT",
+    { menuID: "rtfReportUomType" },
+  );
   const prodStatus = ref<string>("default");
   const selectedCustomers = ref<string[]>([]);
   const selectedItemGroups = ref<string[]>([]);
@@ -543,6 +548,7 @@ export function useRtfReport() {
     summaryType,
     aggType,
     uomType,
+    qtyUOMSource,
     prodStatus,
     selectedCustomers,
     selectedItemGroups,
