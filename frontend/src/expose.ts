@@ -14,23 +14,56 @@ import "@vmscloud/moz-ui-chart/style.css";
 import { defineComponent, h, inject, type Component } from "vue";
 import { setProjectIdResolver } from "@/api/client";
 import { HOST_DATA_KEY } from "@/composables/useHostStores";
+import { loadLanguageFromHost } from "@/plugins/i18n";
 
 /**
- * Host 환경에서 자동으로 projectId resolver를 설정하는 래퍼
- * Module Federation으로 로드될 때 각 뷰가 hostData에 접근할 수 있도록 함
+ * 원본 APS `packages/aps/src/utils/i18n.ts` 의 loadLanguage 와 동일하게
+ * `SamLanguage/<lang>` API 를 호출해 i18next 에 번역 번들을 주입한다.
+ *
+ * - Module Federation 으로 로드된 리모트에서 bootstrap.ts 가 실행되지 않아
+ *   리모트 i18next 에 번역이 비어있던 문제를 원본과 동일한 방식으로 해결.
+ * - 리모트 i18next 인스턴스가 host 와 독립이든 공유든, SamLanguage 응답을
+ *   자기 인스턴스에 addResourceBundle 하므로 host 번역을 덮어쓰지 않는다.
+ * - 세션이 없는 dev 단독 실행에서는 호출이 401 로 실패하고 fallback 없이
+ *   정적 JSON(plugins/i18n.ts 의 초기 init) 을 유지.
+ */
+let _i18nHostInitPromise: Promise<void> | null = null;
+
+function ensureRemoteI18n(hostData: any): Promise<void> {
+  if (_i18nHostInitPromise) return _i18nHostInitPromise;
+  _i18nHostInitPromise = (async () => {
+    const lang =
+      hostData?.value?.projectInfo?.userInfo?.language ||
+      hostData?.value?.projectInfo?.language ||
+      (typeof navigator !== "undefined"
+        ? navigator.language?.split("-")[0]
+        : "") ||
+      "ko";
+    const projectId = hostData?.value?.projectInfo?.currentProjectID ?? "";
+    await loadLanguageFromHost(projectId, lang);
+  })();
+  return _i18nHostInitPromise;
+}
+
+/**
+ * Host 환경에서 projectId resolver 설정 + SamLanguage 번역 로드
  */
 function withHostInit(loader: () => Promise<{ default: Component }>) {
   return () =>
     loader().then((mod) => ({
       ...mod,
       default: defineComponent({
-        setup(_, { attrs, slots }) {
+        async setup(_, { attrs, slots }) {
           const hostData = inject<any>(HOST_DATA_KEY, null);
+
           if (hostData) {
             setProjectIdResolver(
               () => hostData.value?.projectInfo?.currentProjectID ?? "",
             );
           }
+
+          await ensureRemoteI18n(hostData);
+
           return () => h(mod.default, attrs, slots);
         },
       }),

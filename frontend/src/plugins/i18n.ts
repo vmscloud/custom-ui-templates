@@ -36,9 +36,7 @@ i18next.init({
 });
 
 /**
- * loadLanguage — 언어 전환
- * 원본 APS: SamLanguage API에서 동적으로 로드
- * 여기서는 정적 JSON에서 로드
+ * loadLanguage — 정적 JSON 기반 언어 전환 (dev 단독 실행 전용)
  */
 export async function loadLanguage(lang: string) {
   const data = langResources[lang];
@@ -46,6 +44,46 @@ export async function loadLanguage(lang: string) {
     i18next.addResourceBundle(lang, 'translation', data, true, true);
   }
   await i18next.changeLanguage(lang);
+}
+
+/**
+ * loadLanguageFromHost — APS SamLanguage API 로부터 번역 로드
+ *
+ * Module Federation 으로 호스트 환경에 올라갔을 때 사용.
+ * 원본 APS `packages/aps/src/utils/i18n.ts` 의 loadLanguage 와 동일한 패턴.
+ *
+ * - host 와 리모트의 i18next 는 각각 독립 인스턴스라 서로의 resource 를 덮지 않음
+ * - 원본 서버 번역(정식 text-* 키) 을 리모트의 i18next 에 그대로 주입해 이용
+ * - 세션이 없으면 401 — 그 경우 정적 JSON(위 init 결과) 을 유지
+ */
+export async function loadLanguageFromHost(
+  projectId: string,
+  lang: string,
+): Promise<boolean> {
+  if (!projectId || !lang) return false;
+  try {
+    const res = await fetch(
+      `/api/aps/backend/${encodeURIComponent(projectId)}/SamLanguage/${encodeURIComponent(lang)}`,
+      { credentials: 'include' },
+    );
+    if (!res.ok) return false;
+    const body = await res.json();
+    const data = body?.data;
+    if (!data) return false;
+    if (data.sys) {
+      i18next.addResourceBundle('sy', 'translation', data.sys, true, true);
+    }
+    if (data.lang) {
+      i18next.addResourceBundle(lang, 'translation', data.lang, true, true);
+    }
+    if (i18next.language !== lang) {
+      await i18next.changeLanguage(lang);
+    }
+    return true;
+  } catch (e) {
+    console.warn('[i18n] SamLanguage 로드 실패', e);
+    return false;
+  }
 }
 
 export default (app: App) => {
