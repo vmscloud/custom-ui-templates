@@ -373,6 +373,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from "vue";
+import { useTranslation } from "i18next-vue";
 import { Popup, Radio, Select, Tab } from "@vmscloud/moz-ui-components";
 import { ExtendFlexGrid } from "@vmscloud/moz-wijmo-grid";
 import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
@@ -395,11 +396,14 @@ const emit = defineEmits<{
   saved: [];
 }>();
 
-// UOM options shared across tabs
-const uomOptions = [
-  { value: "DEFAULT", label: "DEFAULT" },
-  { value: "CONVERSION", label: "CONVERSION" },
-];
+const { t } = useTranslation();
+
+// UOM options — 원본 번역값과 맞추려면 i18n 기반으로 label을 구성해야 함
+// (text-default_uom = "EA", text-conversion_uom = "㎡")
+const uomOptions = computed(() => [
+  { value: "DEFAULT", label: t("text-default_uom") },
+  { value: "CONVERSION", label: t("text-conversion_uom") },
+]);
 
 // Tab itemSource for vertical Tab component (matches original format)
 const itemSource = computed(() => [

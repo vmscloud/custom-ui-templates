@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useTranslation } from "i18next-vue";
 import { Popup, Radio, Select } from "@vmscloud/moz-ui-components";
 import { fetchWidgetSettings, saveWidgetSettings } from "./onTimeRescheduledPlanResult";
@@ -57,10 +57,11 @@ const emit = defineEmits<{
   saved: [settings: { rtfStd: string; uomType: string }];
 }>();
 
-const uomOptions = [
-  { value: "DEFAULT", label: "DEFAULT" },
-  { value: "CONVERSION", label: "CONVERSION" },
-];
+// UOM 라벨은 원본 번역값(EA / ㎡)을 i18n 통해 사용
+const uomOptions = computed(() => [
+  { value: "DEFAULT", label: t("text-default_uom") },
+  { value: "CONVERSION", label: t("text-conversion_uom") },
+]);
 
 const rtfStd = ref("LOT");
 const uomType = ref("DEFAULT");

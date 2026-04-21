@@ -144,6 +144,10 @@ export interface DashboardData {
     detail: ProdReportDetailRow[];
   };
   otdSummary: OTDSummary;
+  /** refreshOtdSummary(otdType="ACT") 시 채워짐 */
+  otdSummaryAct?: OTDSummary;
+  /** refreshOtdSummary(otdType="PLAN") 시 채워짐 */
+  otdSummaryPlan?: OTDSummary;
   stdSummaryReport: StdSummaryReportRow[];
   errorLogSummary: ErrorLogSummaryRow[];
   shortLogSummary: ShortLogSummaryRow[];

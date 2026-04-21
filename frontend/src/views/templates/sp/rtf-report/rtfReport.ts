@@ -442,8 +442,15 @@ export function useRtfReport() {
         uomType: committedUomType.value,
       });
       if (res.success) {
-        // 백엔드가 { detail: [...], period: [...] } 구조로 반환
-        prodDetailData.value = res.data?.detail ?? res.data ?? [];
+        // 백엔드가 { detail: [...], period: [...] } 구조 또는 배열을 직접 반환
+        const raw = res.data as unknown as
+          | { detail?: RtfProdDetailData[] }
+          | RtfProdDetailData[]
+          | null
+          | undefined;
+        prodDetailData.value = Array.isArray(raw)
+          ? raw
+          : (raw?.detail ?? []);
       }
     } catch (e) {
       console.error("생산 상세 조회 오류:", e);
