@@ -1,0 +1,33 @@
+# 컨테이너 이미지에 포함하면 안 되는 파일.
+# .env* 는 로컬 개발 전용 값 (APS_BACKEND_BASE_URL=http://localhost:8080 등)이 들어있어
+# 이미지에 포함되면 운영에서 OS 환경변수 override 가 어려워지고, 잘못된 dotenv 가
+# 그대로 읽혀 proxy 호출이 502 로 떨어질 수 있다. 반드시 제외.
+.env
+.env.*
+!.env.example
+
+# 파이썬/도구 산출물
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# IDE/OS
+.vscode/
+.idea/
+.DS_Store
+
+# Git
+.git/
+.gitignore
+
+# 로컬 실행 스크립트 (운영 불필요)
+run-dev.ps1
+run-mock.ps1
+
+# 캡처된 mock 응답 (필요 시 별도로 관리)
+mock_data/responses/
