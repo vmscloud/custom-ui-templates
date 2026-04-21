@@ -47,13 +47,18 @@ function ensureRemoteI18n(hostData: any): Promise<void> {
 
 /**
  * Host 환경에서 projectId resolver 설정 + SamLanguage 번역 로드
+ *
+ * 주의: `async setup()` 은 host 가 <Suspense> 경계를 제공하지 않는 한
+ * 마운트 자체가 막혀 화면이 비어버린다. 따라서 setup 은 **동기**로 유지하고
+ * 번역 로드는 fire-and-forget. i18next 가 addResourceBundle 후
+ * languageChanged 이벤트를 쏘면 i18next-vue 가 reactive 하게 라벨을 갱신한다.
  */
 function withHostInit(loader: () => Promise<{ default: Component }>) {
   return () =>
     loader().then((mod) => ({
       ...mod,
       default: defineComponent({
-        async setup(_, { attrs, slots }) {
+        setup(_, { attrs, slots }) {
           const hostData = inject<any>(HOST_DATA_KEY, null);
 
           if (hostData) {
@@ -62,7 +67,8 @@ function withHostInit(loader: () => Promise<{ default: Component }>) {
             );
           }
 
-          await ensureRemoteI18n(hostData);
+          // 번역은 비동기로 적재하되 렌더를 막지 않는다.
+          void ensureRemoteI18n(hostData);
 
           return () => h(mod.default, attrs, slots);
         },
