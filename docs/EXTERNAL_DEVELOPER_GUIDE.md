@@ -211,7 +211,30 @@ Host 상태 (projectInfo, planCycle, menu) 접근 가능
 4. 권한 선택: `read:packages` (최소 권한)
 5. 토큰 복사
 
-#### 2단계: 환경변수 설정
+#### 2단계: 토큰 주입 방식 선택
+
+> ⚠️ **토큰은 절대 저장소에 커밋하지 마세요.**
+> `frontend/.npmrc` 는 `.gitignore` 로 추적 제외되어 있고, 저장소에 커밋되는 파일은 placeholder 만 있는 `frontend/.npmrc.example` 뿐입니다.
+> 실수로 푸시된 경우 즉시 해당 PAT 을 GitHub 에서 revoke 한 후 새로 발급하세요.
+
+##### 옵션 A — `frontend/.npmrc` 파일 사용 (권장)
+
+```bash
+cd frontend
+cp .npmrc.example .npmrc
+# .npmrc 를 에디터로 열어 <SET_PAT_TOKEN> 부분을 방금 발급받은 ghp_... 토큰으로 교체
+```
+
+결과 파일:
+
+```
+@vmscloud:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=ghp_xxxxxxxxxxxxxxxxxxxxx
+```
+
+`pnpm install` 시 이 파일이 자동 적용됩니다.
+
+##### 옵션 B — 환경 변수 `NPM_TOKEN`
 
 **Windows (PowerShell)**:
 ```powershell
@@ -223,11 +246,11 @@ $env:NPM_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxx"
 export NPM_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxx"
 ```
 
-**또는 .npmrc 파일 생성** (저장소 루트):
-```
-//npm.pkg.github.com/:_authToken=ghp_xxxxxxxxxxxxxxxxxxxxx
-@vmscloud:registry=https://npm.pkg.github.com
-```
+개인 홈 디렉토리의 `~/.npmrc` 에 넣어도 동일하게 적용됩니다 (레포 루트 `.npmrc` 가 없을 때 fallback).
+
+##### 옵션 C — Docker 빌드 시크릿 (CI/배포)
+
+`deploy-custom-ui.ps1` 이 이미 `docker build --secret id=npm_token,src=<파일>` 형식으로 토큰을 주입합니다. 이 방식은 레이어 히스토리에 토큰이 남지 않아 가장 안전합니다.
 
 ### 4.2 의존성 설치
 

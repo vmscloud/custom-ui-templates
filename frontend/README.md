@@ -98,28 +98,48 @@ MenuStore ──────────┘                       │
 
 ### 1. 환경 설정
 
-#### NPM_TOKEN 설정
+#### NPM 토큰 설정 (`@vmscloud/*` 패키지 설치용)
 
-`@vmscloud/moz-component` 패키지 설치를 위해 GitHub Personal Access Token이 필요합니다.
+`@vmscloud/moz-ui-components`, `@vmscloud/moz-wijmo-grid` 등은 GitHub Packages 프라이빗 레지스트리에 배포되어 있어 **개인용 PAT(Personal Access Token)** 이 필요합니다.
 
-1. GitHub → Settings → Developer settings → Personal access tokens
-2. `read:packages` 권한이 있는 토큰 생성
-3. 환경변수 설정:
+1. GitHub → Settings → Developer settings → Personal access tokens → **Tokens (classic)**
+2. `read:packages` 권한만 있는 토큰 생성 → 발급된 `ghp_xxx...` 값 복사
+
+**⚠️ 보안 주의**
+- 토큰 값은 **절대 저장소에 커밋하지 마세요.**
+- `frontend/.npmrc` 는 `.gitignore` 로 관리됩니다 (토큰 유출 방지).
+- 커밋되는 파일은 placeholder 가 들어있는 `frontend/.npmrc.example` 뿐입니다.
+
+##### 옵션 A — `.npmrc` 파일 복사 (권장)
+
+```bash
+cd frontend
+cp .npmrc.example .npmrc
+# .npmrc 를 에디터로 열어 <SET_PAT_TOKEN> 부분을 발급받은 토큰으로 교체
+```
+
+`.npmrc` 포맷:
+
+```
+@vmscloud:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=<SET_PAT_TOKEN>
+```
+
+##### 옵션 B — 환경 변수 `NPM_TOKEN`
 
 ```bash
 # Windows (PowerShell)
-$env:NPM_TOKEN="your_github_token_here"
+$env:NPM_TOKEN="ghp_your_token_here"
 
 # macOS/Linux
-export NPM_TOKEN="your_github_token_here"
+export NPM_TOKEN="ghp_your_token_here"
 ```
 
-또는 `.env` 파일 생성:
+`pnpm install` 시 파이프라인이 `NPM_TOKEN` 을 읽어 인증합니다.
 
-```bash
-cp env.example.txt .env
-# .env 파일 편집하여 NPM_TOKEN 설정
-```
+##### 유출되었을 때
+
+실수로 토큰이 커밋/푸시된 경우 **즉시 GitHub 토큰 설정에서 해당 PAT 을 revoke** 한 뒤 새 토큰을 발급하세요. 히스토리에서 완전히 제거하려면 `git filter-repo` 또는 BFG 사용이 추가로 필요합니다.
 
 ### 2. 의존성 설치
 

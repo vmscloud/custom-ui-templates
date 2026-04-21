@@ -13,6 +13,37 @@
 
 ## 첫 세팅
 
+### 1) NPM 토큰 준비 (`.npmrc` 설정)
+
+`@vmscloud/*` 패키지는 GitHub Packages 프라이빗 레지스트리라 **PAT(Personal Access Token)** 가 필요합니다.
+
+1. GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. `read:packages` 권한으로 발급.
+3. 아래 중 한 가지 방식으로 주입.
+
+```bash
+cd frontend
+cp .npmrc.example .npmrc
+# .npmrc 를 열어 <SET_PAT_TOKEN> 을 발급받은 ghp_... 값으로 교체
+```
+
+`.npmrc` 예시:
+
+```
+@vmscloud:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=ghp_xxxxxxxxxxxxxxxxxxxxx
+```
+
+환경 변수 방식도 허용합니다.
+
+```powershell
+$env:NPM_TOKEN="ghp_..."
+```
+
+> ⚠️ **`frontend/.npmrc` 는 `.gitignore` 에 포함돼 있어 절대 저장소에 커밋되지 않습니다.** 저장소에 올라가는 건 placeholder 가 들어간 `frontend/.npmrc.example` 뿐입니다. 실수로 토큰이 커밋됐다면 즉시 GitHub 토큰 설정에서 revoke + 새 토큰 발급하세요.
+
+### 2) 의존성 설치
+
 ```powershell
 # 백엔드
 cd backend
