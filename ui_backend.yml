@@ -39,9 +39,9 @@ services:
       #   호스트 nginx 가 /api/aps/backend/... 를 ApiGateway 로 라우팅하는
       #   흐름과 동일하게, 같은 mzc_network overlay 의 ApiGateway 서비스
       #   alias 로 바로 쏜다(포트는 기본 80, 생략).
-      #     예) APS_BACKEND_BASE_URL=http://apigw
+      #     예) APS_BACKEND_BASE_URL=http://mzc_common_proxy
       #         APS_BACKEND_BASE_URL=https://dev.mozart-cloud.com
-      - APS_BACKEND_BASE_URL=${APS_BACKEND_BASE_URL:-http://apigw}
+      - APS_BACKEND_BASE_URL=${APS_BACKEND_BASE_URL:-http://mzc_common_proxy}
       - FLUENTBIT_URL=http://logger:9880
       - SYSTEM_NAME=custom
       - COMPONENT_NAME=backend
