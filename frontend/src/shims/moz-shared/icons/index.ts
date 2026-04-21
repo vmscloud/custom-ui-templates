@@ -7,3 +7,7 @@ export { default as IconExpandArrow } from './IconExpandArrow.vue';
 export { default as IconClose } from './IconClose.vue';
 export { default as IconCopy } from './IconCopy.vue';
 export { default as IconSearch } from './IconSearch.vue';
+export { default as IconLineEdit } from './IconLineEdit.vue';
+export { default as IconReExecute } from './IconReExecute.vue';
+export { default as IconDataCheck } from './IconDataCheck.vue';
+export { default as IconResultCheck } from './IconResultCheck.vue';

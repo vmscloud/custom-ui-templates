@@ -130,6 +130,34 @@ async def get_demand_types(
         return _error_response(500, "수요유형 목록 조회", e)
 
 
+@router.get("/plan-cycle-info")
+async def get_plan_cycle_info(
+    project_id: str = Path(..., description="프로젝트 ID"),
+    plan_ver: str = Query(..., alias="planVer", description="Plan version"),
+    service: ReExecutePlanService = Depends(get_re_execute_plan_service),
+):
+    """계획 재실행 '버전 정보' 팝업용 — cycle id + frozen plan ver."""
+    try:
+        data = service.get_plan_cycle_info(project_id, plan_ver)
+        return {"success": True, "data": data}
+    except Exception as e:
+        return _error_response(500, "플랜 사이클 정보 조회", e)
+
+
+@router.get("/demand-vers")
+async def get_demand_vers(
+    project_id: str = Path(..., description="프로젝트 ID"),
+    plan_cycle_id: str = Query(..., alias="planCycleID", description="Plan cycle ID"),
+    service: ReExecutePlanService = Depends(get_re_execute_plan_service),
+):
+    """수요 버전 목록 — 원본 ComDemandVer 동등."""
+    try:
+        data = service.get_demand_vers(project_id, plan_cycle_id)
+        return {"success": True, "count": len(data), "data": data}
+    except Exception as e:
+        return _error_response(500, "수요 버전 목록 조회", e)
+
+
 @router.post("/main")
 async def get_main(
     params: ReExecuteMainRequest,

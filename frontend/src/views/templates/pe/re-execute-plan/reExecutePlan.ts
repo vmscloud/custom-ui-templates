@@ -7,6 +7,7 @@
 import { api, getProjectId } from "@/api/client";
 import { useQtyUomQuery } from "@/composables/useQtyUomQuery";
 import { CollectionView } from "@vmscloud/moz-wijmo-grid/wijmo";
+import dayjs, { type Dayjs } from "dayjs";
 import { useTranslation } from "i18next-vue";
 import {
   computed,
@@ -82,8 +83,12 @@ export const fetchBuffers = (planVer: string) =>
 export const fetchDemandSource = (params: any) =>
   api.post<any>(`${BASE_URL()}/proxy/demand-source`, params);
 
-export const fetchPlanCycleInfo = (params?: any) =>
-  api.post<any>(`${BASE_URL()}/proxy/plan-cycle-info`, params ?? {});
+export const fetchPlanCycleInfo = (planVer?: string) => {
+  const pv = planVer ?? "";
+  return api.get<{ data: any }>(
+    `${BASE_URL()}/plan-cycle-info?planVer=${encodeURIComponent(pv)}`,
+  );
+};
 
 export const fetchExecutionFlows = (params?: any) =>
   api.post<any>(`${BASE_URL()}/proxy/execution-flows`, params ?? {});
@@ -97,8 +102,12 @@ export const fetchScenarioConfig = (scenarioID: string) =>
 export const fetchScenarioModules = (params: { scenarioID: string }) =>
   api.post<any>(`${BASE_URL()}/proxy/scenario-modules`, params);
 
-export const fetchDemandVer = (params: any) =>
-  api.post<any>(`${BASE_URL()}/proxy/demand-ver`, params);
+export const fetchDemandVer = (params: { planCycleID: string }) => {
+  const pc = params?.planCycleID ?? "";
+  return api.get<{ data: any[] }>(
+    `${BASE_URL()}/demand-vers?planCycleID=${encodeURIComponent(pc)}`,
+  );
+};
 
 export const fetchNewDemandVer = (params: { demand_ver: string }) =>
   api.post<any>(`${BASE_URL()}/proxy/demand-ver-latest`, params);
@@ -479,14 +488,13 @@ export const useReExecutePlanQuery = (
 
   const inboundSource = ref<InboundItemType[]>([initNoExecution()]);
 
-  const now = new Date();
-  const pad = (n: number) => String(n).padStart(2, "0");
-  const nowTimeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const nowDayjs = dayjs();
+  const nowTimeStr = nowDayjs.format("HH:mm");
 
   const reExecuteState = ref<{
     executionFlowID: string | null;
     planCycleID: string;
-    startDate: Date;
+    startDate: Dayjs;
     planStartTime: string;
     period: string | number;
     demandVer: string;
@@ -509,9 +517,9 @@ export const useReExecutePlanQuery = (
   }>({
     executionFlowID: null,
     planCycleID: "",
-    startDate: now,
+    startDate: nowDayjs,
     planStartTime: nowTimeStr,
-    period: getDaysUntilEndOfMonth(now),
+    period: getDaysUntilEndOfMonth(nowDayjs.toDate()),
     demandVer: "",
     demandDesc: "",
     viewDemandDetail: false,
@@ -534,9 +542,14 @@ export const useReExecutePlanQuery = (
   watch(
     () => reExecuteState.value.startDate,
     (newVal) => {
-      reExecuteState.value.period = getDaysUntilEndOfMonth(
-        newVal instanceof Date ? newVal : new Date(newVal as any),
-      );
+      // newVal은 Dayjs. getDaysUntilEndOfMonth는 Date를 기대하므로 변환.
+      const dateObj =
+        newVal && typeof (newVal as any).toDate === "function"
+          ? (newVal as any).toDate()
+          : newVal instanceof Date
+            ? newVal
+            : new Date(newVal as any);
+      reExecuteState.value.period = getDaysUntilEndOfMonth(dateObj);
     },
   );
 
@@ -547,8 +560,9 @@ export const useReExecutePlanQuery = (
   const currentPlanCycleSource = ref<any>({});
 
   const loadPlanCycleInfo = async () => {
+    if (!planVer.value) return;
     try {
-      const result = await fetchPlanCycleInfo();
+      const result = await fetchPlanCycleInfo(planVer.value);
       if (result && result.data) {
         currentPlanCycleSource.value = result.data;
         reExecuteState.value.planCycleID = result.data?.plan_cycle_id ?? "";
@@ -1126,6 +1140,11 @@ export const useReExecutePlanQuery = (
 
   watch(planVer, async (newValue) => {
     if (newValue) {
+      // plan cycle 정보 먼저 확보 → planCycleID 세팅되어야 demandVer도 조회 가능
+      await loadPlanCycleInfo();
+      await loadDemandVer({
+        planCycleID: reExecuteState.value.planCycleID,
+      });
       await loadOperGroupSource({
         plan_ver: planVer.value,
         schema_name: "OperGroupMaster",

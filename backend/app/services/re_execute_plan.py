@@ -236,6 +236,78 @@ class ReExecutePlanService:
             pass
         return ""
 
+    def get_plan_cycle_info(
+        self, project_id: str, plan_ver: str
+    ) -> dict[str, Any]:
+        """
+        "버전 정보" 팝업과 frozen plan 배너에 쓰는 cycle 정보.
+        원본 `PlmSysOperPlan/PlanCycleInfo`에서 최소 필드만 반환.
+        frozen_plan_ver는 cfg_plan_cycle_info.frozen_plan_ver 원본 값(plan_ver와 동일해도 그대로).
+        """
+        try:
+            rows = execute_query(
+                f"""SELECT c.plan_cycle_id,
+                           ci.start_datetime, ci.end_datetime,
+                           ci.frozen_plan_ver
+                    FROM cfg_plan_config c
+                    LEFT JOIN cfg_plan_cycle_info ci
+                        ON c.project_id = ci.project_id
+                       AND c.plan_cycle_id = ci.plan_cycle_id
+                    WHERE c.project_id = '{project_id}' AND c.plan_ver = '{plan_ver}'
+                    LIMIT 1"""
+            )
+        except Exception:
+            rows = []
+        plan_cycle_id = ""
+        start_dt = ""
+        end_dt = ""
+        frozen_plan_ver = ""
+        if rows:
+            row = rows[0]
+            plan_cycle_id = str(row.get("plan_cycle_id") or "")
+            start_dt = str(row.get("start_datetime") or "")
+            end_dt = str(row.get("end_datetime") or "")
+            frozen_plan_ver = str(row.get("frozen_plan_ver") or "")
+        return {
+            "plan_cycle_id": plan_cycle_id,
+            "frozen_plan_ver": frozen_plan_ver,
+            "start_datetime": start_dt,
+            "end_datetime": end_dt,
+        }
+
+    def get_demand_vers(
+        self, project_id: str, plan_cycle_id: str
+    ) -> list[dict[str, Any]]:
+        """
+        원본 ComDemandVer_Select_P_Cmd1.sql 동등.
+          SELECT demand_ver, description, demand_type, update_datetime
+          FROM cfg_demand_ver
+          WHERE project_id=@ AND plan_cycle_id=@ AND demand_type <> 'plan'
+          ORDER BY update_datetime DESC
+        """
+        if not plan_cycle_id:
+            return []
+        try:
+            rows = execute_query(
+                f"""SELECT demand_ver, description, demand_type, update_datetime
+                    FROM cfg_demand_ver
+                    WHERE project_id = '{project_id}'
+                      AND plan_cycle_id = '{plan_cycle_id}'
+                      AND demand_type <> 'plan'
+                    ORDER BY update_datetime DESC"""
+            )
+            return [
+                {
+                    "demand_ver": r.get("demand_ver"),
+                    "description": r.get("description"),
+                    "demand_type": r.get("demand_type"),
+                    "update_datetime": str(r.get("update_datetime") or ""),
+                }
+                for r in rows
+            ]
+        except Exception:
+            return []
+
     def _get_cycle_dates(self, project_id: str, plan_ver: str) -> tuple[str, str]:
         """plan cycle start/end 조회"""
         try:
@@ -491,12 +563,14 @@ class ReExecutePlanService:
             total_frozen = 0.0
             total_demand_ids: set[str] = set()
 
+            # 원본 C# AddPlanQty/AddTargetQty는 double을 반올림 없이 누적.
+            # 표시 단(Wijmo format="n2")에서만 소수 2자리로 렌더링하므로 여기서는
+            # 중간 반올림을 하지 않는다. 중간에 round를 걸면 누적 오차로 값이 밀린다.
             for d in sorted(info["dates"].keys()):
                 cell = info["dates"][d]
-                plan_qty = round(cell["plan_qty"], 2)
-                frozen_qty = round(cell["frozen_qty"], 2)
+                plan_qty = cell["plan_qty"]
+                frozen_qty = cell["frozen_qty"]
                 accum_diff += plan_qty - frozen_qty
-                diff_qty = round(accum_diff, 2)
 
                 total_plan += plan_qty
                 total_frozen += frozen_qty
@@ -513,7 +587,7 @@ class ReExecutePlanService:
                 }
                 result_data.append({**common, "plan_type": "PLAN", "qty": plan_qty})
                 result_data.append({**common, "plan_type": "FROZEN", "qty": frozen_qty})
-                result_data.append({**common, "plan_type": "DIFF", "qty": diff_qty})
+                result_data.append({**common, "plan_type": "DIFF", "qty": accum_diff})
 
             # TOTAL 행 (원본 CalculateDiff 말미에 dateDict["TOTAL"] 생성)
             total_demand_list = sorted(total_demand_ids)
@@ -524,9 +598,9 @@ class ReExecutePlanService:
                 "week": "",
                 "demandIDs": total_demand_list,
             }
-            result_data.append({**total_common, "plan_type": "PLAN", "qty": round(total_plan, 2)})
-            result_data.append({**total_common, "plan_type": "FROZEN", "qty": round(total_frozen, 2)})
-            result_data.append({**total_common, "plan_type": "DIFF", "qty": round(accum_diff, 2)})
+            result_data.append({**total_common, "plan_type": "PLAN", "qty": total_plan})
+            result_data.append({**total_common, "plan_type": "FROZEN", "qty": total_frozen})
+            result_data.append({**total_common, "plan_type": "DIFF", "qty": accum_diff})
 
         act_start = plan_start_iso or self._get_plan_start_date(project_id, params.planVer)
         # 원본 GetActPeriod: endDate = _endDatetime.AddDays(-1)

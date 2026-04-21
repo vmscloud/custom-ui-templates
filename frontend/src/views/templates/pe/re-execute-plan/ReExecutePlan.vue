@@ -32,12 +32,12 @@
     <template #action>
       <Button :text="t('버전 정보')" @click="openVerInfo">
         <template #icon>
-          <span style="font-size: 14px;">&#9998;</span>
+          <IconLineEdit :size="'14'" :color="'#ffffff'" />
         </template>
       </Button>
       <Button :text="t('text-plan_excute')" @click="openReExecute">
         <template #icon>
-          <span style="font-size: 14px;">&#9654;</span>
+          <IconReExecute :size="'14'" :color="'#ffffff'" />
         </template>
       </Button>
     </template>
@@ -333,12 +333,18 @@
     :executionFlowSource="useReExecutePlan.executionFlowSource.value"
     :scenarioList="useReExecutePlan.scenarioList.value"
     :inboundSource="useReExecutePlan.inboundSource.value"
+    :scenarioModuleDataSource="useReExecutePlan.scenarioModuleDataSource.value"
+    :phaseColumns="useReExecutePlan.phaseColumns.value"
     :planVer="planVer"
     :parentMenuName="t('text-menu-production_planning')"
     :menuName="t('text-re_plan_excute')"
     :planStartDate="useReExecutePlan.actStartDate?.value || ''"
     :planCycleId="useReExecutePlan.reExecuteState?.value?.planCycleID || ''"
-    :demandVer="useReExecutePlan.reExecuteState?.value?.demandVer || ''"
+    :demandVer="
+      useReExecutePlan.reExecuteState?.value?.demandVer ||
+      useReExecutePlan.demandVerSource?.value?.[0]?.demand_ver ||
+      ''
+    "
     @close="closeReExecute"
     @update:visible="(v: boolean) => { if (!v) closeReExecute(); }"
   />
@@ -386,6 +392,7 @@ import {
   watch,
 } from "vue";
 import { useHostPlanCycle } from "@/composables/useHostStores";
+import { IconLineEdit, IconReExecute } from "@moz-shared/icons";
 import { useReExecutePlanQuery } from "./reExecutePlan";
 import ReExecutePlanPop from "./ReExecutePlanPop.vue";
 
@@ -1342,9 +1349,11 @@ const frozenPlanVerInfo = computed(() => {
   return "-";
 });
 
+// 원본 ReExecutePlan.vue: demandVerSource(ComDemandVer) 최신 항목의 demand_ver.
 const demandVerInfo = computed(() => {
-  if (demandSource.value?.length) {
-    return demandSource.value[0]?.demand_ver;
+  const list = useReExecutePlan.demandVerSource?.value;
+  if (list && list.length) {
+    return list[list.length - 1]?.demand_ver ?? "-";
   }
   return "-";
 });
@@ -1391,9 +1400,10 @@ onBeforeUnmount(() => {
 
 // FROZEN PLAN VER 정보 조회 (Vue file level)
 const loadPlanCycleInfoLocal = async () => {
+  if (!planVer.value) return;
   try {
     const { fetchPlanCycleInfo: fetchPCI } = await import("./reExecutePlan");
-    const result = await fetchPCI();
+    const result = await fetchPCI(planVer.value);
     if (result && result.data) {
       currentPlanCycleSource.value = result.data;
     } else {
@@ -1406,6 +1416,11 @@ const loadPlanCycleInfoLocal = async () => {
 };
 
 onMounted(async () => {
+  await loadPlanCycleInfoLocal();
+});
+
+// planVer가 host에서 주입된 후에도 다시 로드
+watch(planVer, async () => {
   await loadPlanCycleInfoLocal();
 });
 

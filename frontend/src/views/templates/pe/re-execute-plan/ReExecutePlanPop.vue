@@ -31,21 +31,22 @@
       <div class="step-indicator-wrapper">
         <div :class="{ 'step-item-wrapper': true, 'current-step': currentStep === 1 }" @click="currentStep = 1">
           <div class="icon">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="3" y="4" width="14" height="12" rx="2" :stroke="currentStep === 1 ? '#4568e0' : '#6a7184'" stroke-width="1.5" fill="none"/>
-              <line x1="7" y1="8" x2="13" y2="8" :stroke="currentStep === 1 ? '#4568e0' : '#6a7184'" stroke-width="1.5"/>
-              <line x1="7" y1="12" x2="11" y2="12" :stroke="currentStep === 1 ? '#4568e0' : '#6a7184'" stroke-width="1.5"/>
-            </svg>
+            <IconDataCheck
+              :size="'20'"
+              class="icon-data-check"
+              :color="currentStep === 1 ? '#4568e0' : '#6a7184'"
+            />
           </div>
           <div class="title">{{ t('text-demand_info_edit_check') }}</div>
         </div>
         <div class="step-item-line"></div>
         <div :class="{ 'step-item-wrapper': true, 'current-step': currentStep === 2 }" @click="currentStep = 2">
           <div class="icon">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="10" cy="10" r="7" :stroke="currentStep === 2 ? '#4568e0' : '#6a7184'" stroke-width="1.5" fill="none"/>
-              <polyline points="7,10 9.5,12.5 13.5,7.5" :stroke="currentStep === 2 ? '#4568e0' : '#6a7184'" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            <IconResultCheck
+              :size="'20'"
+              class="icon-result-check"
+              :color="currentStep === 2 ? '#4568e0' : '#6a7184'"
+            />
           </div>
           <div class="title">{{ t('text-engine_re_execute') }}</div>
         </div>
@@ -614,7 +615,7 @@
                       </div>
                     </div>
                   </div>
-                  <!-- Simplified ExecutionFlowMasterDetailSummary replacement -->
+                  <!-- 원본 ExecutionFlowMasterDetailSummary: 요약 카드 + 시나리오 모듈 그리드 -->
                   <div
                     v-show="reExecuteState.viewScenarioDetail"
                     class="execution-flow-summary-placeholder"
@@ -639,6 +640,39 @@
                           <span class="flow-value">{{ reExecuteState.outboundScenarioID ? t('text-enabled') : t('text-disabled') }}</span>
                         </div>
                       </template>
+                    </div>
+                    <div class="scenario-module-grid-wrapper">
+                      <ExtendFlexGrid
+                        :use-filter="false"
+                        :allow-sorting="'None'"
+                        :items-source="scenarioModuleDataSource"
+                        :is-read-only="true"
+                        :allow-pinning="false"
+                        :use-context-menu="false"
+                        :height="'260px'"
+                        :use-tool-box="false"
+                        :use-extend-footer="false"
+                        :name="'re-execute-plan-scenario-module-grid'"
+                        :id="'re-execute-plan-scenario-module-grid-id'"
+                      >
+                        <WjFlexGridColumn
+                          binding="module_id"
+                          :header="t('text-module_id')"
+                          :width="160"
+                        />
+                        <WjFlexGridColumn
+                          binding="description"
+                          :header="t('text-option')"
+                          :width="338"
+                        />
+                        <WjFlexGridColumn
+                          v-for="col in phaseColumns"
+                          :key="`phase-${col.binding}`"
+                          :binding="String(col.binding)"
+                          :header="t(col.header)"
+                          :width="col.width as any"
+                        />
+                      </ExtendFlexGrid>
                     </div>
                   </div>
                 </div>
@@ -728,6 +762,7 @@ import { useTranslation } from "i18next-vue";
 import { ExtendFlexGrid, type ExtendGrid } from "@vmscloud/moz-wijmo-grid";
 import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
 import { type FlexGrid } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
+import { IconDataCheck, IconResultCheck } from "@moz-shared/icons";
 import {
   Button,
   DateInput,
@@ -815,6 +850,9 @@ interface Props {
   executionFlowSource?: ExecutionFlowType[];
   scenarioList?: ScenarioType[];
   inboundSource?: InboundItemType[];
+  // 시나리오 모듈 상세 (원본 ExecutionFlowMasterDetailSummary의 하단 그리드)
+  scenarioModuleDataSource?: any[];
+  phaseColumns?: { binding: string | number; header: string; width: string | number }[];
   // Initial state
   initialReExecuteState?: Partial<ReExecuteStateType>;
 }
@@ -836,6 +874,8 @@ const props = withDefaults(defineProps<Props>(), {
   executionFlowSource: () => [],
   scenarioList: () => [],
   inboundSource: () => [],
+  scenarioModuleDataSource: () => [],
+  phaseColumns: () => [],
 });
 
 const emit = defineEmits<{
@@ -861,11 +901,26 @@ const isClickConfirm = ref(false);
 const isDuplicated = ref(false);
 const isAdvancedOption = ref(false);
 
+// composable(useReExecutePlanQuery)과 동일한 초기값 규칙:
+//   startDate   = dayjs() (오늘)
+//   period      = 오늘~월말까지 남은 일수 (inclusive)
+//   planStartTime = props.factoryStartTime 없으면 현재 시각
+// 원본은 단일 reExecuteState를 공유하지만 포팅본은 팝업이 로컬 ref라, 최소한 초기값이
+// composable과 어긋나지 않도록 맞춘다.
+const _initNow = dayjs();
+const _initPeriod = (() => {
+  const today = _initNow.toDate();
+  const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+  return (
+    Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)) + 1
+  );
+})();
+
 const reExecuteState = ref<ReExecuteStateType>({
   planCycleID: props.planCycleId || "",
-  startDate: dayjs(),
-  planStartTime: props.factoryStartTime || "06:00",
-  period: 7,
+  startDate: _initNow,
+  planStartTime: props.factoryStartTime || _initNow.format("HH:mm"),
+  period: _initPeriod,
   demandVer: "",
   demandDesc: "",
   planDesc: "",
