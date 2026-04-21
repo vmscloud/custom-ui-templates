@@ -303,16 +303,20 @@ watch(detailRegion, async (newVal, oldVal) => {
 
 .content-section {
   overflow-y: auto;
+  overflow-x: hidden;
   padding-left: 20px;
-  padding-right: 12px;
+  padding-right: 20px;
   padding-bottom: 0;
   flex: 1;
+  box-sizing: border-box;
 }
 
 .dashboard-grid {
   display: grid;
   grid-template-rows: minmax(315px, 35vh) 30px auto;
-  grid-template-columns: repeat(3, 1fr);
+  // minmax(0, 1fr) 로 columns 가 컨테이너 폭을 초과하지 못하도록 제약.
+  // 뷰포트가 좁아져도 panel 내부가 축소되며, 과도하게 좁아지면 가로 스크롤.
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-areas:
     "a b c"
     "filter filter filter"
@@ -322,13 +326,15 @@ watch(detailRegion, async (newVal, oldVal) => {
   padding-bottom: 20px;
   column-gap: 22px;
   row-gap: 16px;
+  box-sizing: border-box;
 }
 
 .panel {
   width: 100%;
   height: 100%;
   min-height: 0;
-  min-width: 514px;
+  // grid 컬럼이 1fr 로 축소될 수 있도록 grid item 의 min-width 는 0.
+  min-width: 0;
   overflow: hidden;
 }
 
