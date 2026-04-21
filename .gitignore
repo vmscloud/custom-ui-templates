@@ -28,6 +28,11 @@ dist-ssr
 .env.local
 .env.*.local
 
+# Secrets (GitHub Packages PAT 등)
+# frontend/.npmrc 는 민감한 _authToken 을 포함하므로 절대 커밋 금지.
+# 셋업은 frontend/.npmrc.example 을 복사해서 토큰 값만 교체하세요.
+frontend/.npmrc
+
 # TypeScript cache
 *.tsbuildinfo
 

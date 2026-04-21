@@ -1,3 +1,2 @@
 @vmscloud:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=<SET_PAT_TOKEN>
-
