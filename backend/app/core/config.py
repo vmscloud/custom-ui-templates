@@ -55,7 +55,14 @@ class Settings(BaseSettings):
     QUERY_EXECUTOR_LIMIT: int = 50000
     QUERY_TIMEOUT_SECONDS: int = 120
 
-    # APS C# 백엔드 (프록시)
+    # APS C# 백엔드 (프록시 upstream)
+    #   /api/custom/backend/.../proxy/* 호출은 이 URL 로 forward 된다.
+    #   호스트 nginx 가 /api/aps/backend/... 를 ApiGateway 로 라우팅하는
+    #   흐름과 동일하게 Swarm overlay(mzc_network) 의 ApiGateway 서비스
+    #   alias 로 바로 쏜다(포트는 기본 80, 생략).
+    #     예) 내부: APS_BACKEND_BASE_URL=http://apigw
+    #         외부: APS_BACKEND_BASE_URL=https://dev.mozart-cloud.com
+    #   로컬 개발 기본값은 http://localhost:8080 (개발자 PC 의 로컬 ApiGateway).
     APS_BACKEND_BASE_URL: str = "http://localhost:8080"
 
 

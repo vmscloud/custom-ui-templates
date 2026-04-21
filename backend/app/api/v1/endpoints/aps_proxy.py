@@ -90,15 +90,23 @@ async def proxy_to_aps(
             content = {"data": resp.text} if resp.text else {"success": resp.is_success}
 
         return JSONResponse(status_code=resp.status_code, content=content)
-    except httpx.ConnectError:
-        logger.error(f"[APS Proxy] C# 백엔드 연결 실패: {aps_url}")
-        return JSONResponse(
-            status_code=502,
-            content={"success": False, "error": "APS 백엔드에 연결할 수 없습니다."},
-        )
+    except httpx.ConnectError as e:
+        logger.error(f"[APS Proxy] C# 백엔드 연결 실패: {aps_url} ({e})")
+        content = {
+            "success": False,
+            "error": (
+                "APS 백엔드에 연결할 수 없습니다. "
+                "APS_BACKEND_BASE_URL 환경변수가 올바른 APS 호스트를 가리키는지 확인하세요."
+            ),
+        }
+        if settings.DEBUG:
+            content["target"] = aps_url
+            content["detail"] = str(e)
+        return JSONResponse(status_code=502, content=content)
     except Exception as e:
         logger.exception(f"[APS Proxy] 프록시 오류: {e}")
-        return JSONResponse(
-            status_code=500,
-            content={"success": False, "error": f"프록시 오류: {str(e)}"},
-        )
+        content = {"success": False, "error": "APS 프록시 호출 중 오류가 발생했습니다."}
+        if settings.DEBUG:
+            content["target"] = aps_url
+            content["detail"] = str(e)
+        return JSONResponse(status_code=500, content=content)

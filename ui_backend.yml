@@ -28,6 +28,14 @@ services:
       - QUERY_TIMEOUT_SECONDS=120
       - TRINO_CATALOG=iceberg
       - TRINO_SCHEMA_APS=mzc_aps
+      # APS C# 백엔드 프록시 upstream.
+      #   /api/custom/backend/.../proxy/* 요청이 이 URL 로 forward 된다.
+      #   호스트 nginx 가 /api/aps/backend/... 를 ApiGateway 로 라우팅하는
+      #   흐름과 동일하게, 같은 mzc_network overlay 의 ApiGateway 서비스
+      #   alias 로 바로 쏜다(포트는 기본 80, 생략).
+      #     예) APS_BACKEND_BASE_URL=http://apigw
+      #         APS_BACKEND_BASE_URL=https://dev.mozart-cloud.com
+      - APS_BACKEND_BASE_URL=${APS_BACKEND_BASE_URL:-http://apigw}
       - FLUENTBIT_URL=http://logger:9880
       - SYSTEM_NAME=custom
       - COMPONENT_NAME=backend
