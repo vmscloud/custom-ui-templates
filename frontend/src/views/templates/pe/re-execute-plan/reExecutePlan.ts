@@ -102,6 +102,13 @@ export const fetchScenarioConfig = (scenarioID: string) =>
 export const fetchScenarioModules = (params: { scenarioID: string }) =>
   api.post<any>(`${BASE_URL()}/proxy/scenario-modules`, params);
 
+// 원본 ExecutionFlowMasterDetailSummary 가 inbound 탭 트리/데이터 스토리지 그리드에 쓰는
+// PlmInboundScenarioMaster/Config 프록시. inboundScenarioID 기준 option tree 반환.
+export const fetchInboundScenarioConfig = (params: {
+  inboundScenarioID: string;
+  planVer?: string;
+}) => api.post<any>(`${BASE_URL()}/proxy/inbound-scenario-config`, params);
+
 export const fetchDemandVer = (params: { planCycleID: string }) => {
   const pc = params?.planCycleID ?? "";
   return api.get<{ data: any[] }>(
@@ -373,6 +380,12 @@ export const useReExecutePlanQuery = (
 
   const mainQueryIsPending = ref(false);
 
+  // 원본(lb/re-execute-plan)은 TanStack useQuery 의 isPending 을 바로 쓰지만,
+  //   그 경우 HTTP fetch 가 끝난 직후 스피너가 사라져 Wijmo PivotEngine 이 동기 집계하는
+  //   수초 동안 빈 화면으로 보이는 UX 불만이 있다. isPivotRendering 은 "fetch 시작 ~
+  //   pivot 의 첫 loadedRows" 구간만 덮는 보조 플래그. watchdog 없이 loadedRows 에만 의존.
+  const isPivotRendering = ref(false);
+
   const onLoad = async () => {
     await onMainLoad();
     await loadPlanVerInfo();
@@ -627,11 +640,15 @@ export const useReExecutePlanQuery = (
 
   const scenarioConfigSource = shallowRef<any[]>([]);
 
-  const loadScenarioConfig = async () => {
+  const loadScenarioConfig = async (scenarioIDOverride?: string) => {
+    const scenarioID =
+      scenarioIDOverride ?? reExecuteState.value.scenarioID ?? "";
+    if (!scenarioID) {
+      scenarioConfigSource.value = [];
+      return;
+    }
     try {
-      const result = await fetchScenarioConfig(
-        reExecuteState.value.scenarioID ?? "",
-      );
+      const result = await fetchScenarioConfig(scenarioID);
       if (result && result.data) {
         scenarioConfigSource.value = result.data;
       } else {
@@ -863,6 +880,102 @@ export const useReExecutePlanQuery = (
     }
   };
 
+  // inbound 탭 tree/data_storage 그리드 데이터.
+  //   원본 ExecutionFlowMasterDetailSummary: inboundID 바뀔 때 PlmInboundScenarioMaster/Config 호출,
+  //   응답을 Category/Menu 로 트리화해서 표시한다. 우리는 원본과 달리 다국어 키 변환(menuType==='Category'→
+  //   t(optionID), 'cfg_*'→t('text-global-upper-*') 등)은 템플릿에서 직접 다루지 않고 원본 데이터 형태 그대로
+  //   넘긴다 (i18n 키 매핑은 필요 시 별도 유틸로).
+  const inboundItemOptions = shallowRef<any>({});
+
+  const loadInboundItemOptions = async (inboundScenarioID: string) => {
+    if (!inboundScenarioID) {
+      inboundItemOptions.value = {};
+      return;
+    }
+    try {
+      const result = await fetchInboundScenarioConfig({
+        inboundScenarioID,
+        ...(planVer.value ? { planVer: planVer.value } : {}),
+      });
+      if (result && result.data) {
+        const raw = result.data;
+        const list: any[] = Array.isArray(raw.list) ? [...raw.list] : [];
+        // 원본 menuListToTree 와 동일: multilingual(i18n 키 변환) + Y/N→boolean + Category 트리화
+        const root: Record<string, any> = {};
+        list.forEach((item) => {
+          if (item.menuType === "Category") {
+            root[item.menuID] = item;
+            item.multilingual = t(item.optionID);
+          }
+          if (item.optionID?.startsWith("cfg_")) {
+            item.multilingual = t(
+              item.optionID.replace("cfg_", "text-global-upper-"),
+            );
+          }
+          if (item.optionID?.startsWith("ope_")) {
+            item.multilingual = t(
+              item.optionID.replace("ope_", "text-global-upper-"),
+            );
+          }
+          item.optionValue = item?.optionValue === "Y";
+        });
+
+        list
+          .filter((item) => item.menuType === "Menu")
+          .forEach((item) => {
+            const parent = root[item.menuID];
+            const childIdx = list.findIndex(
+              (m) => m.optionID === item.optionID,
+            );
+            if (!parent || childIdx < 0) return;
+            const childData = list.splice(childIdx, 1);
+            parent.children = parent.children ?? [];
+            parent.children.push(...childData);
+            parent.children.sort(
+              (x: any, y: any) => (x.seq ?? 0) - (y.seq ?? 0),
+            );
+            if (parent.children.some((c: any) => c.optionValue)) {
+              parent.optionValue = true;
+            }
+          });
+        list.sort((a, b) => (a.seq ?? 0) - (b.seq ?? 0));
+
+        inboundItemOptions.value = {
+          ...raw,
+          list: list.filter((item) => item.optionID),
+        };
+      } else {
+        inboundItemOptions.value = {};
+      }
+    } catch {
+      console.error("InboundItemOptions 조회 오류");
+      inboundItemOptions.value = {};
+    }
+  };
+
+  watch(
+    () => reExecuteState.value.inboundScenarioID,
+    (newVal) => {
+      loadInboundItemOptions(newVal ?? "");
+    },
+  );
+
+  // executionFlow 선택 기반(Simple 모드)일 때도 inboundID가 바뀌면 로드되도록, 선택된 flow
+  // 에서 도출되는 inboundID를 감시한다.
+  watch(
+    () => {
+      const flow = executionFlowSource.value.find(
+        (f) => f.execution_flow_id === reExecuteState.value.executionFlowID,
+      );
+      return flow?.inbound_scenario_id || null;
+    },
+    (newVal) => {
+      if (!reExecuteState.value.inboundScenarioID) {
+        loadInboundItemOptions(newVal ?? "");
+      }
+    },
+  );
+
   const isDuplicated = ref<boolean>(false);
 
   const checkDemandVerValid = async (param: { demand_ver: string }) => {
@@ -939,6 +1052,7 @@ export const useReExecutePlanQuery = (
     if (!planVer.value) return;
     if (!operGroupSource.value.length) return;
     mainQueryIsPending.value = true;
+    isPivotRendering.value = true;
     try {
       const result = (await fetchMain(loadParams.value)) as any;
       const pivotRows = result?.pivotData ?? result?.data ?? [];
@@ -974,8 +1088,13 @@ export const useReExecutePlanQuery = (
       pivotDataSource.value = [];
       actStartDate.value = "";
       actEndDate.value = "";
+      isPivotRendering.value = false; // 에러 시 스피너 해제
     } finally {
       mainQueryIsPending.value = false;
+      // 데이터 없음 → 집계할 게 없으니 즉시 해제. 있으면 pivotOnInitialized/loadedRows 에서 해제.
+      if (!pivotDataSource.value?.length) {
+        isPivotRendering.value = false;
+      }
     }
   };
 
@@ -1166,14 +1285,69 @@ export const useReExecutePlanQuery = (
     }
   });
 
+  // 팝업 오픈 시: 선택 플로우에 해당하는 engine config / module / inbound tree 재조회.
+  //   원본(ExecutionFlowMasterDetailSummary) 은 팝업 sub 컴포넌트 마운트 시 immediate watch 로
+  //   호출되는데, 우리는 composable 스코프에서 watch 해서 ID 가 이미 onMounted 때 세팅되면
+  //   watch 가 다시 발사되지 않아 팝업 열 때 상세가 비어있었다.
+  const resolveActiveInboundID = () => {
+    if (isAdvancedOption.value) {
+      return reExecuteState.value.inboundScenarioID ?? "";
+    }
+    const flow = executionFlowSource.value.find(
+      (f) => f.execution_flow_id === reExecuteState.value.executionFlowID,
+    ) as any;
+    return flow?.inbound_scenario_id ?? "";
+  };
+  const resolveActiveScenarioID = () => {
+    if (isAdvancedOption.value) {
+      return reExecuteState.value.scenarioID ?? "";
+    }
+    const flow = executionFlowSource.value.find(
+      (f) => f.execution_flow_id === reExecuteState.value.executionFlowID,
+    ) as any;
+    return flow?.engine_scenario_id ?? flow?.scenario_id ?? "";
+  };
+
+  const reloadExecutionFlowDetail = async () => {
+    const scenarioID = resolveActiveScenarioID();
+    const inboundID = resolveActiveInboundID();
+    await Promise.all([
+      scenarioID
+        ? (async () => {
+            await loadScenarioConfig(scenarioID);
+            await loadScenarioModules({ scenarioID });
+          })()
+        : Promise.resolve().then(() => {
+            scenarioConfigSource.value = [];
+            scenarioModuleDataSource.value = [];
+          }),
+      loadInboundItemOptions(inboundID),
+    ]);
+  };
+
   watch(isOpen, async (newVal) => {
     if (newVal) {
       await loadNewDemandVer({
         demand_ver:
           demandVerSource.value[demandVerSource.value.length - 1]?.demand_ver,
       });
+      // 팝업 오픈 시점에 현재 선택된 flow 기준으로 3탭 상세 재조회
+      await reloadExecutionFlowDetail();
     }
   });
+
+  // 선택 플로우/모드 변경에도 상세 재조회 (simple↔advanced 토글 포함)
+  watch(
+    [
+      () => reExecuteState.value.executionFlowID,
+      () => isAdvancedOption.value,
+    ],
+    async () => {
+      if (isOpen.value) {
+        await reloadExecutionFlowDetail();
+      }
+    },
+  );
 
   watch(
     () => reExecuteState.value.scenarioID,
@@ -1210,6 +1384,7 @@ export const useReExecutePlanQuery = (
 
     // api 호출
     mainQueryIsPending,
+    isPivotRendering,
     onLoad,
     loadParams,
     isPageFetching,
@@ -1284,6 +1459,7 @@ export const useReExecutePlanQuery = (
     reExecutePlanMutation,
     scenarioModuleDataSource,
     phaseColumns,
+    inboundItemOptions,
 
     checkDemandVerValid,
     isDuplicated,

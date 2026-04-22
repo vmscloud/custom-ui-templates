@@ -615,65 +615,498 @@
                       </div>
                     </div>
                   </div>
-                  <!-- 원본 ExecutionFlowMasterDetailSummary: 요약 카드 + 시나리오 모듈 그리드 -->
-                  <div
-                    v-show="reExecuteState.viewScenarioDetail"
-                    class="execution-flow-summary-placeholder"
-                  >
-                    <div class="flow-summary-card">
-                      <div class="flow-summary-title">{{ t('text-execution_flow_detail') }}</div>
-                      <div class="flow-summary-row" v-if="!isAdvancedOption">
-                        <span class="flow-label">{{ t('text-execution_flow') }}:</span>
-                        <span class="flow-value">{{ selectedExecutionFlowName || t('text-not_selected') }}</span>
-                      </div>
-                      <template v-else>
-                        <div class="flow-summary-row">
-                          <span class="flow-label">{{ t('text-inbound_scenario') }}:</span>
-                          <span class="flow-value">{{ selectedInboundName || t('text-use_aps_data') }}</span>
-                        </div>
-                        <div class="flow-summary-row">
-                          <span class="flow-label">{{ t('text-engine_scenario') }}:</span>
-                          <span class="flow-value">{{ selectedScenarioName || t('text-no_execution') }}</span>
-                        </div>
-                        <div class="flow-summary-row">
-                          <span class="flow-label">{{ t('text-outbound') }}:</span>
-                          <span class="flow-value">{{ reExecuteState.outboundScenarioID ? t('text-enabled') : t('text-disabled') }}</span>
+                  <!-- 원본 ExecutionFlowMasterDetailSummary: 인바운드 / 엔진 / 아웃바운드 탭 구조.
+                       운영 동작과 동일하게 토글과 무관하게 항상 노출한다 (토글은 legacy UI). -->
+                  <div class="execution-flow-summary-placeholder">
+                    <Tab
+                      style="flex: 1; overflow: hidden"
+                      v-model="flowSummaryTab"
+                      :itemSource="[
+                        { id: 'inbound', text: t('text-execution_flow_inbound') },
+                        { id: 'engine', text: t('text-engine') },
+                        { id: 'outbound', text: t('text-outbound') },
+                      ]"
+                    >
+                      <!-- ===== Inbound 탭 ===== -->
+                      <template #inbound>
+                        <div class="plan-execute-inner-wrapper">
+                          <span
+                            :class="{
+                              'plan-execute-desc-text': true,
+                              'flow-master-summary-desc-empty': !executionFlowDataResult.inboundDesc,
+                            }"
+                            v-if="
+                              executionFlowDataResult.inboundID &&
+                              executionFlowDataResult.inboundID !== 'use_aps_data' &&
+                              executionFlowDataResult.inboundID !== 'use_ver_data'
+                            "
+                          >
+                            {{
+                              executionFlowDataResult.inboundDesc ||
+                              `(${t('desc-inbound_scenario_no_description')})`
+                            }}
+                          </span>
+                          <div class="plan-execute-desc-grid-outer-wrapper">
+                            <div class="plan-execute-desc-grid-wrapper">
+                              <!-- 1) 실행 플로우 단계 + 선택된 inbound scenarioName -->
+                              <div
+                                class="plan-execute-desc-grid-item-wrapper single-row-grid"
+                                :style="executionFlowDataResult.inboundID ? {} : { flex: 1 }"
+                              >
+                                <ExtendFlexGrid
+                                  :items-source="[executionFlowDataResult]"
+                                  :is-read-only="true"
+                                  :use-tool-box="false"
+                                  :use-extend-footer="false"
+                                  :use-context-menu="false"
+                                  :use-sort="false"
+                                  :allow-sorting="'None'"
+                                  :use-filter="false"
+                                  :style="{ height: '100%' }"
+                                  :name="'re-execute-plan-flow-inbound'"
+                                  :id="'re-execute-plan-flow-inbound-id'"
+                                >
+                                  <WjFlexGridColumn
+                                    width="*"
+                                    binding="_step"
+                                    :header="t('text-execution_flow_step')"
+                                  >
+                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
+                                      <span class="wj-cell-text">{{
+                                        t('text-execution_flow_inbound')
+                                      }}</span>
+                                      <span style="display: none">{{ cell.row.index }}</span>
+                                    </WjFlexGridCellTemplate>
+                                  </WjFlexGridColumn>
+                                  <WjFlexGridColumn
+                                    :width="160"
+                                    binding="inboundID"
+                                    :header="t('text-option_value')"
+                                    align="center"
+                                  >
+                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
+                                      <span
+                                        class="wj-cell-text"
+                                        v-if="cell.item.inboundID === 'use_aps_data'"
+                                        >{{ t('text-use_aps_data') }}</span
+                                      >
+                                      <span
+                                        class="wj-cell-text"
+                                        v-else-if="cell.item.inboundID === 'use_ver_data'"
+                                        >{{ t('text-use_ver_data') }}</span
+                                      >
+                                      <span class="wj-cell-text" v-else-if="!cell.item.inboundID">
+                                        <IconClose color="#dc5a5a" size="12" />
+                                      </span>
+                                      <span class="wj-cell-text" v-else>{{
+                                        cell.item.inboundName
+                                      }}</span>
+                                    </WjFlexGridCellTemplate>
+                                  </WjFlexGridColumn>
+                                </ExtendFlexGrid>
+                              </div>
+
+                              <!-- 2) 참조 데이터 설정 (tableFilterList / tableFilterType) -->
+                              <div
+                                class="plan-execute-desc-grid-item-wrapper single-row-grid"
+                                v-if="executionFlowDataResult.inboundID && inboundItemOptions?.tableFilterList"
+                              >
+                                <ExtendFlexGrid
+                                  :items-source="[inboundItemOptions]"
+                                  :is-read-only="true"
+                                  :use-tool-box="false"
+                                  :use-extend-footer="false"
+                                  :use-context-menu="false"
+                                  :use-sort="false"
+                                  :allow-sorting="'None'"
+                                  :use-filter="false"
+                                  :style="{ height: '100%' }"
+                                  :name="'re-execute-plan-flow-inbound-ref'"
+                                  :id="'re-execute-plan-flow-inbound-ref-id'"
+                                >
+                                  <WjFlexGridColumn
+                                    width="*"
+                                    binding="tableFilterList"
+                                    :header="t('text-ref_data_setting')"
+                                  />
+                                  <WjFlexGridColumn
+                                    :width="160"
+                                    binding="tableFilterType"
+                                    :header="t('text-option_value')"
+                                    align="center"
+                                  >
+                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
+                                      <span class="wj-cell-text">{{
+                                        cell.item.tableFilterType === 'Include'
+                                          ? t('text-include_table')
+                                          : t('text-exclude_table')
+                                      }}</span>
+                                    </WjFlexGridCellTemplate>
+                                  </WjFlexGridColumn>
+                                </ExtendFlexGrid>
+                              </div>
+
+                              <!-- 3) Inbound config tree (OPER RES PROP VALUE / CALENDAR / SYSTEM 등) -->
+                              <div
+                                class="plan-execute-desc-grid-item-wrapper inbound-treegrid-wrapper"
+                                style="flex: 1"
+                                v-if="
+                                  executionFlowDataResult.inboundID &&
+                                  executionFlowDataResult.inboundID !== 'use_aps_data' &&
+                                  executionFlowDataResult.inboundID !== 'use_ver_data' &&
+                                  inboundItemOptions?.list?.length
+                                "
+                              >
+                                <ExtendFlexGrid
+                                  class="inbound-treegrid"
+                                  :items-source="inboundItemOptions.list"
+                                  child-items-path="children"
+                                  :format-item="onInboundDataProcessingGridFormatItem"
+                                  :is-read-only="true"
+                                  :use-tool-box="false"
+                                  :use-extend-footer="false"
+                                  :use-context-menu="false"
+                                  :use-sort="false"
+                                  :allow-sorting="'None'"
+                                  :use-filter="false"
+                                  :style="inboundTreeHeightStyle"
+                                  :name="'re-execute-plan-flow-inbound-tree'"
+                                  :id="'re-execute-plan-flow-inbound-tree-id'"
+                                >
+                                  <WjFlexGridColumn
+                                    binding="menuID"
+                                    :header="t('text-menu_id')"
+                                    :visible="false"
+                                  />
+                                  <WjFlexGridColumn
+                                    width="*"
+                                    binding="multilingual"
+                                    :header="t('text-data_processing_list')"
+                                  />
+                                  <WjFlexGridColumn
+                                    :width="152"
+                                    binding="optionValue"
+                                    :header="t('text-option_value')"
+                                  >
+                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
+                                      <span class="wj-cell-text">
+                                        <IconCheck
+                                          v-if="cell.item.optionValue === true"
+                                          color="#4568e0"
+                                          size="14"
+                                        />
+                                        <IconClose
+                                          v-if="cell.item.optionValue === false"
+                                          color="#dc5a5a"
+                                          size="12"
+                                        />
+                                      </span>
+                                    </WjFlexGridCellTemplate>
+                                  </WjFlexGridColumn>
+                                </ExtendFlexGrid>
+                              </div>
+
+                              <!-- 4) 데이터 저장 여부 -->
+                              <div
+                                class="plan-execute-desc-grid-item-wrapper single-row-grid"
+                                v-if="
+                                  executionFlowDataResult.inboundID &&
+                                  executionFlowDataResult.inboundID !== 'use_aps_data' &&
+                                  executionFlowDataResult.inboundID !== 'use_ver_data' &&
+                                  typeof inboundItemOptions?.saveCfgValue === 'boolean'
+                                "
+                              >
+                                <ExtendFlexGrid
+                                  class="inbound-treegrid"
+                                  :items-source="[inboundItemOptions]"
+                                  :is-read-only="true"
+                                  :use-tool-box="false"
+                                  :use-extend-footer="false"
+                                  :use-context-menu="false"
+                                  :use-sort="false"
+                                  :allow-sorting="'None'"
+                                  :use-filter="false"
+                                  :style="{ height: '100%' }"
+                                  :name="'re-execute-plan-flow-inbound-save'"
+                                  :id="'re-execute-plan-flow-inbound-save-id'"
+                                >
+                                  <WjFlexGridColumn
+                                    width="*"
+                                    binding=""
+                                    :header="t('text-data_storage')"
+                                  >
+                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
+                                      <span
+                                        class="wj-cell-text"
+                                        v-if="typeof cell.item.saveCfgValue === 'boolean'"
+                                        >{{ t('desc-data_storage') }}</span
+                                      >
+                                    </WjFlexGridCellTemplate>
+                                  </WjFlexGridColumn>
+                                  <WjFlexGridColumn
+                                    :width="160"
+                                    binding="saveCfgValue"
+                                    :header="t('text-option_value')"
+                                    align="center"
+                                  >
+                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
+                                      <span class="wj-cell-text">
+                                        <IconCheck
+                                          v-if="cell.item.saveCfgValue"
+                                          color="#4568e0"
+                                          size="14"
+                                        />
+                                        <IconClose
+                                          v-else-if="cell.item.saveCfgValue === false"
+                                          color="#dc5a5a"
+                                          size="12"
+                                        />
+                                      </span>
+                                    </WjFlexGridCellTemplate>
+                                  </WjFlexGridColumn>
+                                </ExtendFlexGrid>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </template>
-                    </div>
-                    <div class="scenario-module-grid-wrapper">
-                      <ExtendFlexGrid
-                        :use-filter="false"
-                        :allow-sorting="'None'"
-                        :items-source="scenarioModuleDataSource"
-                        :is-read-only="true"
-                        :allow-pinning="false"
-                        :use-context-menu="false"
-                        :height="'260px'"
-                        :use-tool-box="false"
-                        :use-extend-footer="false"
-                        :name="'re-execute-plan-scenario-module-grid'"
-                        :id="'re-execute-plan-scenario-module-grid-id'"
-                      >
-                        <WjFlexGridColumn
-                          binding="module_id"
-                          :header="t('text-module_id')"
-                          :width="160"
-                        />
-                        <WjFlexGridColumn
-                          binding="description"
-                          :header="t('text-option')"
-                          :width="338"
-                        />
-                        <WjFlexGridColumn
-                          v-for="col in phaseColumns"
-                          :key="`phase-${col.binding}`"
-                          :binding="String(col.binding)"
-                          :header="t(col.header)"
-                          :width="col.width as any"
-                        />
-                      </ExtendFlexGrid>
-                    </div>
+
+                      <!-- ===== Engine 탭 ===== -->
+                      <template #engine>
+                        <div class="plan-execute-inner-wrapper">
+                          <span
+                            :class="{
+                              'plan-execute-desc-text': true,
+                              'flow-master-summary-desc-empty': !executionFlowDataResult.scenarioDesc,
+                            }"
+                          >
+                            {{
+                              executionFlowDataResult.scenarioDesc ||
+                              `(${t('desc-engine_scenario_no_description')})`
+                            }}
+                          </span>
+                          <div class="plan-execute-desc-grid-outer-wrapper">
+                            <div class="plan-execute-desc-grid-wrapper">
+                              <!-- 엔진 기본 정보 -->
+                              <div
+                                class="plan-execute-desc-grid-item-wrapper single-row-grid"
+                                :style="executionFlowDataResult.scenarioID ? {} : { flex: 1 }"
+                              >
+                                <ExtendFlexGrid
+                                  :items-source="[executionFlowDataResult]"
+                                  :is-read-only="true"
+                                  :use-tool-box="false"
+                                  :use-extend-footer="false"
+                                  :use-context-menu="false"
+                                  :use-sort="false"
+                                  :allow-sorting="'None'"
+                                  :use-filter="false"
+                                  :style="{ height: '100%' }"
+                                  :name="'re-execute-plan-flow-engine'"
+                                  :id="'re-execute-plan-flow-engine-id'"
+                                >
+                                  <WjFlexGridColumn
+                                    width="*"
+                                    binding="_step"
+                                    :header="t('text-execution_flow_step')"
+                                  >
+                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
+                                      <span class="wj-cell-text">{{ t('text-engine') }}</span>
+                                      <span style="display: none">{{ cell.row.index }}</span>
+                                    </WjFlexGridCellTemplate>
+                                  </WjFlexGridColumn>
+                                  <WjFlexGridColumn
+                                    :width="160"
+                                    binding="scenarioID"
+                                    :header="t('text-option_value')"
+                                    align="center"
+                                  >
+                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
+                                      <span class="wj-cell-text" v-if="cell.item.scenarioID">{{
+                                        cell.item.scenarioName
+                                      }}</span>
+                                      <span class="wj-cell-text" v-else>
+                                        <IconClose color="#dc5a5a" size="12" />
+                                      </span>
+                                    </WjFlexGridCellTemplate>
+                                  </WjFlexGridColumn>
+                                </ExtendFlexGrid>
+                              </div>
+                              <!-- 글로벌 옵션 (scenarioConfigSource) -->
+                              <div
+                                class="plan-execute-desc-grid-item-wrapper"
+                                style="flex: 1"
+                                v-if="executionFlowDataResult.scenarioID && scenarioConfigSource.length"
+                              >
+                                <ExtendFlexGrid
+                                  :items-source="scenarioConfigSource"
+                                  :is-read-only="true"
+                                  :use-tool-box="false"
+                                  :use-extend-footer="false"
+                                  :use-context-menu="false"
+                                  :use-sort="false"
+                                  :allow-sorting="'None'"
+                                  :use-filter="false"
+                                  :allow-pinning="false"
+                                  :allow-resizing="false"
+                                  :format-item="engineFormatItem"
+                                  :style="engineGlobalHeightStyle"
+                                  :name="'re-execute-plan-flow-engine-global'"
+                                  :id="'re-execute-plan-flow-engine-global-id'"
+                                >
+                                  <WjFlexGridColumn
+                                    binding="description"
+                                    :header="t('text-option')"
+                                    width="*"
+                                  />
+                                  <WjFlexGridColumn
+                                    binding="optionValue"
+                                    :header="t('text-option_value')"
+                                    :width="152"
+                                    align="center"
+                                  >
+                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
+                                      <span
+                                        class="wj-cell-text"
+                                        v-if="cell.item.uiType !== 'TOGGLE'"
+                                        >{{ cell.item.optionValue }}</span
+                                      >
+                                      <span class="wj-cell-text" v-else>
+                                        <IconCheck
+                                          v-if="cell.item.optionValue === 'Y'"
+                                          color="#4568e0"
+                                          size="14"
+                                        />
+                                        <IconClose
+                                          v-if="cell.item.optionValue === 'N'"
+                                          color="#dc5a5a"
+                                          size="12"
+                                        />
+                                      </span>
+                                    </WjFlexGridCellTemplate>
+                                  </WjFlexGridColumn>
+                                </ExtendFlexGrid>
+                              </div>
+                              <!-- 시나리오 모듈 리스트 (phaseColumns 동적) -->
+                              <div
+                                class="plan-execute-desc-grid-item-wrapper"
+                                style="flex: 1"
+                                v-if="executionFlowDataResult.scenarioID && scenarioModuleDataSource.length"
+                              >
+                                <ExtendFlexGrid
+                                  :items-source="scenarioModuleDataSource"
+                                  :initialized="onInitializedScenarioModule"
+                                  :format-item="engineFormatItem"
+                                  :is-read-only="true"
+                                  :use-tool-box="false"
+                                  :use-extend-footer="false"
+                                  :use-context-menu="false"
+                                  :use-sort="false"
+                                  :allow-sorting="'None'"
+                                  :use-filter="false"
+                                  :allow-pinning="false"
+                                  :style="engineModuleHeightStyle"
+                                  :name="'re-execute-plan-flow-engine-modules'"
+                                  :id="'re-execute-plan-flow-engine-modules-id'"
+                                >
+                                  <WjFlexGridColumn
+                                    binding="module_id"
+                                    :header="t('text-module_id')"
+                                    :width="getWidthByKey('S3')"
+                                  />
+                                  <WjFlexGridColumn
+                                    binding="description"
+                                    :header="t('text-option')"
+                                    width="*"
+                                  />
+                                  <WjFlexGridColumn
+                                    v-for="col in phaseColumns"
+                                    :key="`phase-${String(col.binding)}-${scenarioModuleDataSource.length}`"
+                                    :binding="String(col.binding)"
+                                    :header="t(col.header)"
+                                    :width="152"
+                                    align="center"
+                                  >
+                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
+                                      <span
+                                        class="wj-cell-text"
+                                        v-if="cell.item.ui_type !== 'TOGGLE'"
+                                        >{{ cell.item[String(col.binding)] }}</span
+                                      >
+                                      <span class="wj-cell-text" v-else>
+                                        <IconCheck
+                                          v-if="cell.item[String(col.binding)] === 'Y'"
+                                          color="#4568e0"
+                                          size="14"
+                                        />
+                                        <IconClose
+                                          v-if="cell.item[String(col.binding)] === 'N'"
+                                          color="#dc5a5a"
+                                          size="12"
+                                        />
+                                      </span>
+                                    </WjFlexGridCellTemplate>
+                                  </WjFlexGridColumn>
+                                </ExtendFlexGrid>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </template>
+
+                      <!-- ===== Outbound 탭 ===== -->
+                      <template #outbound>
+                        <div class="plan-execute-inner-wrapper">
+                          <div class="plan-execute-desc-grid-outer-wrapper">
+                            <div class="plan-execute-desc-grid-wrapper">
+                              <div class="plan-execute-desc-grid-item-wrapper single-row-grid">
+                                <ExtendFlexGrid
+                                  :items-source="[executionFlowDataResult]"
+                                  :is-read-only="true"
+                                  :use-tool-box="false"
+                                  :use-extend-footer="false"
+                                  :use-context-menu="false"
+                                  :use-sort="false"
+                                  :allow-sorting="'None'"
+                                  :use-filter="false"
+                                  :style="{ height: '100%' }"
+                                  :name="'re-execute-plan-flow-outbound'"
+                                  :id="'re-execute-plan-flow-outbound-id'"
+                                >
+                                  <WjFlexGridColumn
+                                    width="*"
+                                    binding="_step"
+                                    :header="t('text-execution_flow_step')"
+                                  >
+                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
+                                      <span class="wj-cell-text">{{ t('text-outbound') }}</span>
+                                      <span style="display: none">{{ cell.row.index }}</span>
+                                    </WjFlexGridCellTemplate>
+                                  </WjFlexGridColumn>
+                                  <WjFlexGridColumn
+                                    :width="160"
+                                    binding="outboundID"
+                                    :header="t('text-option_value')"
+                                    align="center"
+                                  >
+                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
+                                      <span class="wj-cell-text">
+                                        <IconCheck
+                                          v-if="cell.item.outboundID"
+                                          color="#4568e0"
+                                          size="14"
+                                        />
+                                        <IconClose v-else color="#dc5a5a" size="12" />
+                                      </span>
+                                    </WjFlexGridCellTemplate>
+                                  </WjFlexGridColumn>
+                                </ExtendFlexGrid>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </template>
+                    </Tab>
                   </div>
                 </div>
 
@@ -720,7 +1153,8 @@
               <Button
                 :text="t('text-plan_excute')"
                 class="execute-button"
-                :disabled="isDuplicated"
+                :disabled="isDuplicated || isExecuting"
+                :loading="isExecuting"
                 @click="
                   () => {
                     onClickConfirm();
@@ -760,9 +1194,9 @@
 import { computed, nextTick, ref, toRaw, watch } from "vue";
 import { useTranslation } from "i18next-vue";
 import { ExtendFlexGrid, type ExtendGrid } from "@vmscloud/moz-wijmo-grid";
-import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
-import { type FlexGrid } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
-import { IconDataCheck, IconResultCheck } from "@moz-shared/icons";
+import { WjFlexGridCellTemplate, WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
+import { AllowMerging, type FlexGrid } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
+import { IconCheck, IconClose, IconDataCheck, IconResultCheck } from "@moz-shared/icons";
 import {
   Button,
   DateInput,
@@ -770,6 +1204,7 @@ import {
   NumberInput,
   Popup,
   Select,
+  Tab,
   TextArea,
   TimePicker,
   Toggle,
@@ -852,7 +1287,16 @@ interface Props {
   inboundSource?: InboundItemType[];
   // 시나리오 모듈 상세 (원본 ExecutionFlowMasterDetailSummary의 하단 그리드)
   scenarioModuleDataSource?: any[];
+  scenarioConfigSource?: any[];
   phaseColumns?: { binding: string | number; header: string; width: string | number }[];
+  // inbound 탭 전용 (PlmInboundScenarioMaster/Config 응답 → 트리/데이터 저장 그리드)
+  inboundItemOptions?: {
+    list?: any[];
+    tableFilterList?: any[];
+    tableFilterType?: string;
+    saveCfgValue?: boolean;
+    [key: string]: any;
+  };
   // Initial state
   initialReExecuteState?: Partial<ReExecuteStateType>;
 }
@@ -875,7 +1319,9 @@ const props = withDefaults(defineProps<Props>(), {
   scenarioList: () => [],
   inboundSource: () => [],
   scenarioModuleDataSource: () => [],
+  scenarioConfigSource: () => [],
   phaseColumns: () => [],
+  inboundItemOptions: () => ({}),
 });
 
 const emit = defineEmits<{
@@ -900,6 +1346,9 @@ const isClickCancel = ref(false);
 const isClickConfirm = ref(false);
 const isDuplicated = ref(false);
 const isAdvancedOption = ref(false);
+// 확정 버튼 클릭 → postReExecutePlan 요청이 진행중인 동안 true. moz Button 의
+// :loading 에 연결되어 스피너 + disabled 처리된다.
+const isExecuting = ref(false);
 
 // composable(useReExecutePlanQuery)과 동일한 초기값 규칙:
 //   startDate   = dayjs() (오늘)
@@ -1009,6 +1458,152 @@ const selectedScenarioName = computed(() => {
   const found = props.scenarioList.find((s) => s.scenarioID === id);
   return found?.scenarioName || id;
 });
+
+// ===== Execution Flow Detail Tab =====
+const flowSummaryTab = ref<string>("inbound");
+
+// 원본 ExecutionFlowMasterDetailSummary 의 executionFlowDataResult 와 동일한 평탄화 구조.
+// 팝업에서는 선택된 Flow 기준으로 { inboundID, inboundName, inboundDesc, scenarioID, scenarioName,
+// scenarioDesc, outboundID } 를 단일 객체로 만들어 하단 그리드 3개에 공급한다.
+const executionFlowDataResult = computed(() => {
+  if (isAdvancedOption.value) {
+    const inboundId = reExecuteState.value.inboundScenarioID ?? "";
+    const scenarioId = reExecuteState.value.scenarioID ?? "";
+    const outboundId = reExecuteState.value.outboundScenarioID ?? "";
+    const inbound = props.inboundSource.find((s) => s.inboundScenarioID === inboundId);
+    const scenario = props.scenarioList.find((s) => s.scenarioID === scenarioId);
+    return {
+      inboundID: inboundId,
+      inboundName: inbound?.inboundScenarioName ?? inboundId,
+      inboundDesc: (inbound as any)?.inboundScenarioDesc ?? "",
+      scenarioID: scenarioId,
+      scenarioName: scenario?.scenarioName ?? scenarioId,
+      scenarioDesc: (scenario as any)?.scenarioDesc ?? "",
+      outboundID: outboundId,
+    };
+  }
+  const flowId = reExecuteState.value.executionFlowID;
+  const flow = props.executionFlowSource.find((f) => f.execution_flow_id === flowId) as any;
+  const inboundId = flow?.inbound_scenario_id ?? flow?.inboundScenarioID ?? "";
+  // 원본 ExecutionFlowMasterType 에서 엔진 시나리오 필드는 engine_scenario_id.
+  //   과거 scenario_id 로 찾고 있어서 scenarioID 가 항상 비어 엔진/아웃바운드 탭이 비어보였다.
+  const scenarioId =
+    flow?.engine_scenario_id ??
+    flow?.scenario_id ??
+    flow?.engineScenarioID ??
+    flow?.scenarioID ??
+    "";
+  const outboundId = flow?.outbound_scenario_id ?? flow?.outboundScenarioID ?? "";
+  const inbound = props.inboundSource.find((s) => s.inboundScenarioID === inboundId);
+  const scenario = props.scenarioList.find((s) => s.scenarioID === scenarioId);
+  return {
+    inboundID: inboundId,
+    inboundName:
+      inbound?.inboundScenarioName ??
+      flow?.inbound_scenario_name ??
+      flow?.inboundScenarioName ??
+      inboundId,
+    inboundDesc:
+      (inbound as any)?.inboundScenarioDesc ??
+      flow?.inbound_scenario_desc ??
+      flow?.inboundScenarioDesc ??
+      "",
+    scenarioID: scenarioId,
+    scenarioName:
+      scenario?.scenarioName ?? flow?.scenario_name ?? flow?.scenarioName ?? scenarioId,
+    scenarioDesc:
+      (scenario as any)?.scenarioDesc ?? flow?.scenario_desc ?? flow?.scenarioDesc ?? "",
+    outboundID: outboundId,
+  };
+});
+
+// 각 multi-row 그리드 높이 계산: 헤더 1 + 데이터 행 수만큼 확장.
+//   그리드 내부에 scroll 이 생기지 않도록 전체 행을 다 펼친 높이를 준다.
+//   Wijmo FlexGrid 기본 rowHeight ≒ 28px, header padding 포함 여유 40px.
+const ROW_H = 28;
+const HEADER_H = 40;
+const computeAutoHeight = (rowCount: number) =>
+  `${HEADER_H + Math.max(1, rowCount) * ROW_H}px`;
+
+// Inbound tree grid: Category + 확장된 Menu 자식까지 합친 총 가시 row 수.
+const inboundTreeHeightStyle = computed(() => {
+  const list = props.inboundItemOptions?.list ?? [];
+  let count = 0;
+  for (const item of list) {
+    count += 1;
+    if (Array.isArray(item.children)) {
+      count += item.children.length;
+    }
+  }
+  return { height: computeAutoHeight(count) };
+});
+
+// Engine global options & module 그리드: items length 기반.
+const engineGlobalHeightStyle = computed(() => ({
+  height: computeAutoHeight(props.scenarioConfigSource?.length ?? 0),
+}));
+const engineModuleHeightStyle = computed(() => ({
+  height: computeAutoHeight(props.scenarioModuleDataSource?.length ?? 0),
+}));
+
+// ===== Execution Flow Summary grid helpers (원본 ExecutionFlowMasterDetailSummary 이식) =====
+// Engine global/module 그리드 공통 formatItem.
+//   1) description 컬럼은 raw 문자열이 i18n key일 수 있어 t() 로 번역해 치환한다.
+//   2) scenarioModule 그리드에서 max_phase 를 초과한 phase_N 컬럼은 'union-null' 클래스로 음영 처리
+//      (module A는 phase_2까지인데 module B가 phase_1까지인 경우, 테이블 합집합 union 이므로 B의 phase_2 셀을 빈 셀로 마킹).
+//   3) option_id === 'DefaultRuleSet' + max_phase 내 phase 인데 값 없음 → 'error-mark' 로 표시.
+const engineFormatItem = (_s: any, e: any) => {
+  if (!e.panel || e.panel.cellType !== 1) return;
+  const item = e.getRow?.()?.dataItem;
+  if (!item) return;
+  const col: string | undefined = e.getColumn?.()?.binding;
+  if (!col) return;
+  const cellSpan = e.cell.querySelector("span") ?? e.cell;
+
+  if (col === "description") {
+    const rawDesc = item[col];
+    const translated = rawDesc != null ? t(String(rawDesc)) : "";
+    cellSpan.textContent = translated;
+  }
+
+  const phaseMatch = col.match(/^phase_(\d+)$/);
+  if (phaseMatch && item.max_phase != null) {
+    const phaseN = parseInt(phaseMatch[1], 10);
+    if (phaseN > item.max_phase) {
+      e.cell.classList.add("union-null");
+    }
+    if (
+      phaseN <= item.max_phase &&
+      !item[col] &&
+      item.option_id === "DefaultRuleSet"
+    ) {
+      e.cell.classList.add("error-mark");
+      e.cell.classList.add("error-cell");
+    }
+  }
+};
+
+// Inbound tree grid 의 data cell span 색을 진하게. (원본 onInboundDataProcessingGridFormatItem)
+const onInboundDataProcessingGridFormatItem = (_s: any, e: any) => {
+  if (!e.panel) return;
+  if (e.panel.cellType !== 1) {
+    e.cell.classList.add("wj-align-center");
+    return;
+  }
+  if (e.cell?.children) {
+    for (const node of Array.from(e.cell.children) as HTMLElement[]) {
+      if (node.tagName === "SPAN") node.style.color = "#28364e";
+    }
+  }
+};
+
+// Module 그리드 초기화 시 첫 컬럼(module_id) merge 허용. 원본과 동일한 처리.
+const onInitializedScenarioModule = (flexGrid: FlexGrid) => {
+  flexGrid.allowMerging = AllowMerging.All;
+  if (flexGrid.columns.length > 0) {
+    flexGrid.columns[0].allowMerging = true;
+  }
+};
 
 // ===== Grid State =====
 const grid = ref<FlexGrid | null>(null);
@@ -1172,6 +1767,7 @@ const onClickConfirm = async () => {
 
   console.log("[ReExecutePlanPop] Execute params:", param);
 
+  isExecuting.value = true;
   try {
     await postReExecutePlan(param);
     emit("executed", param);
@@ -1187,6 +1783,8 @@ const onClickConfirm = async () => {
     closePopup();
   } catch (error) {
     console.error("[ReExecutePlanPop] Execute error:", error);
+  } finally {
+    isExecuting.value = false;
   }
 
   return true;
@@ -1579,38 +2177,71 @@ watch(
   }
 }
 
+// 원본 ExecutionFlowMasterDetailSummary SCSS 그대로.
+//   그리드들은 세로로 stack (flex-direction: column), outer-wrapper 에 overflow: auto
+//   로 담고, 각 item 은 height: fit-content 로 내용만큼 세로 차지.
 .execution-flow-summary-placeholder {
-  .flow-summary-card {
-    border: 1px solid #bac6d4;
-    border-radius: 6px;
-    background-color: #f8f8fd;
-    padding: 18px 16px;
+  width: 100%;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+
+  .plan-execute-inner-wrapper {
+    height: 100%;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    min-height: 100px;
+    gap: 10px;
+    padding: 12px 0 0 0;
 
-    .flow-summary-title {
-      font-size: 14px;
+    .plan-execute-desc-text {
+      color: #6a7184;
+      font-size: 13px;
       font-weight: 500;
-      color: #28364e;
-      margin-bottom: 4px;
+      word-break: keep-all;
+
+      &.flow-master-summary-desc-empty {
+        color: #8998b5;
+        font-style: italic;
+      }
     }
 
-    .flow-summary-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
+    .plan-execute-desc-grid-outer-wrapper {
+      height: 100%;
+      overflow: auto;
+      flex: 1;
+      display: grid;
 
-      .flow-label {
-        color: #6a7184;
-        font-weight: 400;
-      }
+      .plan-execute-desc-grid-wrapper {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 11px;
+        overflow: hidden;
 
-      .flow-value {
-        color: #28364e;
-        font-weight: 500;
+        .plan-execute-desc-grid-item-wrapper {
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          height: fit-content;
+          min-height: 120px;
+
+          // 한 행짜리 그리드 (실행 플로우 단계 / 참조 데이터 / 데이터 저장 / 아웃바운드 step).
+          //   header(~28px) + row(~32px) + border 여유 ≒ 72px.
+          &.single-row-grid {
+            min-height: 0;
+            height: 72px;
+          }
+
+          // 원본 ExecutionFlowMasterDetailSummary 와 동일.
+          :deep(.wj-cell.union-null) {
+            background-color: #f0f2f5;
+          }
+          :deep(.wj-cell.error-mark),
+          :deep(.wj-cell.error-cell) {
+            background-color: #fdecec;
+          }
+        }
       }
     }
   }

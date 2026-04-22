@@ -160,9 +160,7 @@
             v-memo="[pivotDataSource, valueFields]"
             :name="`re-execute-plan-pivot`"
             :id="`re-execute-plan-pivot-id`"
-            :emptyState="{
-              isLoading: mainQueryIsPending,
-            }"
+            :emptyState="{ isLoading: false }"
             class="prod-plan-ins-main"
             ref="extendPivot"
             height="100%"
@@ -183,11 +181,18 @@
             :pivotRef="extendPivot"
             :usePivotChart="false"
             :use-tool-box-setting="false"
-            :loading="mainQueryIsPending"
+            :loading="false"
             :use-tool-box="false"
             :use-preset="true"
           >
           </ExtendPivotGrid>
+          <!-- ExtendPivotGrid 내장 loading overlay 는 v-memo 에 갇혀 false 로 갱신 안 됨 →
+               내장은 항상 off 로 고정하고, fetch + PivotEngine 집계 전 구간을 v-memo 밖
+               overlay 로 커버. -->
+          <div v-if="isPivotRendering" class="pivot-rendering-overlay">
+            <div class="pivot-rendering-spinner"></div>
+            <div class="pivot-rendering-text">{{ t('text-loading') || '로딩 중...' }}</div>
+          </div>
         </div>
       </Pane>
       <Pane size="40%" min-size="30%">
@@ -334,7 +339,9 @@
     :scenarioList="useReExecutePlan.scenarioList.value"
     :inboundSource="useReExecutePlan.inboundSource.value"
     :scenarioModuleDataSource="useReExecutePlan.scenarioModuleDataSource.value"
+    :scenarioConfigSource="useReExecutePlan.scenarioConfigSource.value"
     :phaseColumns="useReExecutePlan.phaseColumns.value"
+    :inboundItemOptions="useReExecutePlan.inboundItemOptions.value"
     :planVer="planVer"
     :parentMenuName="t('text-menu-production_planning')"
     :menuName="t('text-re_plan_excute')"
@@ -452,6 +459,7 @@ const {
   isPageFetching,
   loadParams,
   mainQueryIsPending,
+  isPivotRendering,
 
   loadDemandSource,
   getDemandSourceIsPending,
@@ -863,7 +871,18 @@ const pivotOnInitialized = (pivotGrid: PivotGrid) => {
 };
 
 const onPivotLoadedRows = () => {
+  // 컬럼 구성이 바뀌면 캐시 무효화. loadedRows 는 한 번의 재집계 후 호출.
+  columnHeaderDateCache.clear();
+
   toggleCollapsibleSubtotals();
+  // Wijmo 가 행 집계 → 렌더 완료한 시점. 한 프레임 뒤에 스피너 내림.
+  //   바로 내리면 셀 formatItem 첫 패스가 스피너 해제 이후 메인 스레드를 잡아먹어
+  //   체감상 여전히 멈춤처럼 보일 수 있어 rAF 로 다음 프레임까지 양보.
+  if (isPivotRendering.value) {
+    requestAnimationFrame(() => {
+      isPivotRendering.value = false;
+    });
+  }
 };
 
 // 문서 전체 클릭 이벤트 (피봇 그리드 외부 클릭 감지)
@@ -1017,92 +1036,88 @@ const getRowDataWithTotalFilter = (rowIndex: number) => {
   }
 };
 
+// ─────────────────────────────────────────────────────────────────
+// pivotFormatItem 최적화: 셀마다 호출되므로 가능한 한 캐시/조기탈출.
+//   - RE_* : regex 를 매 호출마다 컴파일하지 않도록 모듈 스코프로 승격
+//   - NUMBER_FMT : toLocaleString(옵션) 대신 Intl.NumberFormat 한 인스턴스 재사용
+//   - columnHeaderDateCache : 컬럼 헤더 → 날짜 문자열 Map. pivot loadedRows 마다 초기화.
+// ─────────────────────────────────────────────────────────────────
+const RE_DATE = /(\d{4}-\d{2}-\d{2})/;
+const RE_TEXT_DATE = /text-date:(\d{4}-\d{2}-\d{2})/;
+const RE_KO_DATE = /날짜:(\d{4}-\d{2}-\d{2})/;
+const RE_LEADING_DIGIT_PREFIX = /^\d+_/;
+const NUMBER_FMT = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+const columnHeaderDateCache = new Map<number, string | null>();
+
 const pivotFormatItem = (s: PivotGrid, e: any) => {
-  if (e.panel === s.cells) {
+  const onCells = e.panel === s.cells;
+
+  // 1) 셀 패널에서만: DIFF 행 특수 표시
+  if (onCells) {
     const row = s.rows[e.row];
-    if (row && row.dataItem) {
-      const dataItem = row.dataItem;
-
-      // 1. DIFF row 확인
+    const dataItem = row?.dataItem;
+    if (dataItem) {
       const isDiffRow = isDiffRowCheck(dataItem);
-
-      // 2. text-sum column 확인
-      const isTextSumColumn = isTextSumColumnCheck(s, e);
-
-      // 3. 개별 데이터 컬럼이 아닌지 확인
-      const isNotDataColumn = isNotDataColumnCheck(s, e);
-
-      // 4. text-week 부분합 확인
-      const isTextWeekSubtotal = isTextWeekSubtotalCheck(s, e);
-
-      // 5. 총합계 확인
-      const isGrandTotal = isGrandTotalCheck(s, e);
-
-      if (isDiffRow && isTextWeekSubtotal) {
-        const lastValue = findLastValueInAllData(dataItem);
-        if (lastValue !== null) {
-          const formattedValue = Math.round(lastValue * 100) / 100;
-          const displayValue = formattedValue.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          });
-          e.cell.textContent = displayValue;
-        }
-      } else if (isDiffRow && isGrandTotal) {
-        const lastValue = findLastValueInAllData(dataItem);
-        if (lastValue !== null) {
-          const formattedValue = Math.round(lastValue * 100) / 100;
-          const displayValue = formattedValue.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          });
-          e.cell.textContent = displayValue;
-        }
-      } else if (isDiffRow && isTextSumColumn && isNotDataColumn) {
-        const lastValue = findLastValueInSum(s, e);
-        if (lastValue !== null) {
-          const formattedValue = Math.round(lastValue * 100) / 100;
-          const displayValue = formattedValue.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          });
-          e.cell.textContent = displayValue;
-        }
-      }
-    }
-  }
-
-  // valueFields인 경우에만 날짜 범위 확인
-  if (e.panel === s.cells && actStartDate.value && actEndDate.value) {
-    // isInRange placeholder - inline check
-    const column = s.columns[e.col];
-    if (column?.header) {
-      const header = column.header;
-      const dateMatch = header.match(/(\d{4}-\d{2}-\d{2})/);
-      if (dateMatch) {
-        const cellDate = dateMatch[1];
-        if (cellDate >= actStartDate.value && cellDate <= actEndDate.value) {
-          e.cell.style.backgroundColor = "#357e631a";
+      if (isDiffRow) {
+        const isTextWeekSubtotal = isTextWeekSubtotalCheck(s, e);
+        const isGrandTotal = isGrandTotalCheck(s, e);
+        let lastValue: number | null = null;
+        if (isTextWeekSubtotal || isGrandTotal) {
+          lastValue = findLastValueInAllData(dataItem);
         } else {
-          e.cell.style.backgroundColor = "";
-          e.cell.classList.remove("date-range-highlight");
+          const isTextSumColumn = isTextSumColumnCheck(s, e);
+          const isNotDataColumn = isNotDataColumnCheck(s, e);
+          if (isTextSumColumn && isNotDataColumn) {
+            lastValue = findLastValueInSum(s, e);
+          }
+        }
+        if (lastValue !== null) {
+          const rounded = Math.round(lastValue * 100) / 100;
+          e.cell.textContent = NUMBER_FMT.format(rounded);
         }
       }
     }
   }
 
-  if (e.cell.textContent) {
-    const text = e.cell.textContent;
-    const cleanText = text.replace(/,/g, "");
-    const number = Number(cleanText);
+  // 2) 셀 패널 + act 기간 지정 시 날짜 범위 하이라이트
+  if (onCells && actStartDate.value && actEndDate.value) {
+    let cached = columnHeaderDateCache.get(e.col);
+    if (cached === undefined) {
+      const header = s.columns[e.col]?.header ?? "";
+      const m = header.match(RE_DATE);
+      cached = m ? m[1] : null;
+      columnHeaderDateCache.set(e.col, cached);
+    }
+    if (cached) {
+      if (cached >= actStartDate.value && cached <= actEndDate.value) {
+        e.cell.style.backgroundColor = "#357e631a";
+      } else if (e.cell.style.backgroundColor) {
+        e.cell.style.backgroundColor = "";
+        e.cell.classList.remove("date-range-highlight");
+      }
+    }
+  }
 
-    if (!isNaN(number) && number < 0) {
-      e.cell.style.color = "#d32f2f";
-      e.cell.classList.add("negative-number");
+  // 3) 셀 텍스트 기반 후처리
+  const text = e.cell.textContent;
+  if (text) {
+    // 첫 글자가 숫자/쉼표/-/. 일 때만 Number 파싱 시도 (대부분 셀은 문자라 빠르게 건너뜀)
+    const first = text.charCodeAt(0);
+    const maybeNumber =
+      (first >= 48 && first <= 57) || first === 45 || first === 46;
+    if (maybeNumber) {
+      const n = Number(text.replace(/,/g, ""));
+      if (!isNaN(n) && n < 0) {
+        e.cell.style.color = "#d32f2f";
+        e.cell.classList.add("negative-number");
+      }
     }
 
-    if (/^\d+_/.test(text)) {
-      e.cell.textContent = text.replace(/^\d+_/, "");
+    if (RE_LEADING_DIGIT_PREFIX.test(text)) {
+      e.cell.textContent = text.replace(RE_LEADING_DIGIT_PREFIX, "");
     }
 
     if (e.cell.textContent === "DIFF") {
@@ -1110,22 +1125,21 @@ const pivotFormatItem = (s: PivotGrid, e: any) => {
     }
   }
 
-  if (e.cell.textContent === "text-aggr_value") {
-    if (loadParams.value.aggregateType === "itemGroup") {
-      e.cell.textContent = t("text-item_group");
-    }
-    if (loadParams.value.aggregateType === "demandType") {
-      e.cell.textContent = t("text-demand_type");
-    }
-    if (loadParams.value.aggregateType === "region") {
-      e.cell.textContent = t("text-upper-region");
-    }
-    if (loadParams.value.aggregateType === "cust") {
-      e.cell.textContent = t("text-upper-customer");
-    }
+  const currentText = e.cell.textContent;
+  if (currentText === "text-aggr_value") {
+    const agg = loadParams.value.aggregateType;
+    if (agg === "itemGroup") e.cell.textContent = t("text-item_group");
+    else if (agg === "demandType") e.cell.textContent = t("text-demand_type");
+    else if (agg === "region") e.cell.textContent = t("text-upper-region");
+    else if (agg === "cust") e.cell.textContent = t("text-upper-customer");
   }
 
-  if (e.cell.textContent.includes(t("text-month"))) {
+  // 4) 월 헤더 DOM 변환은 한 번만. 이미 include-qty-uom 달린 셀은 재구성 스킵.
+  if (
+    currentText &&
+    !e.cell.classList.contains("include-qty-uom") &&
+    currentText.includes(t("text-month"))
+  ) {
     e.cell.classList.add("include-qty-uom");
     e.cell.textContent = "";
 
@@ -1135,13 +1149,8 @@ const pivotFormatItem = (s: PivotGrid, e: any) => {
     container.style.justifyContent = "space-between";
 
     const div = document.createElement("div");
-    let text;
-    if (loadParams.value.uomType === "DEFAULT") {
-      text = "(단위: EA)";
-    } else {
-      text = "(단위: m\u00B2)";
-    }
-    div.textContent = text;
+    div.textContent =
+      loadParams.value.uomType === "DEFAULT" ? "(단위: EA)" : "(단위: m\u00B2)";
     container.appendChild(div);
 
     const div2 = document.createElement("div");
@@ -1297,25 +1306,16 @@ const findLastValueInAllData = (dataItem: any) => {
     let maxDate = "";
 
     for (const key of dateKeys) {
-      if (key.includes("text-date")) {
-        const dateMatch = key.match(/text-date:(\d{4}-\d{2}-\d{2})/);
-        if (dateMatch) {
-          const currentDate = dateMatch[1];
-          if (currentDate > maxDate) {
-            maxDate = currentDate;
-            lastDateKey = key;
-          }
-        }
-      }
-
-      if (key.includes("날짜")) {
-        const dateMatch = key.match(/날짜:(\d{4}-\d{2}-\d{2})/);
-        if (dateMatch) {
-          const currentDate = dateMatch[1];
-          if (currentDate > maxDate) {
-            maxDate = currentDate;
-            lastDateKey = key;
-          }
+      const m = key.includes("text-date")
+        ? key.match(RE_TEXT_DATE)
+        : key.includes("날짜")
+          ? key.match(RE_KO_DATE)
+          : null;
+      if (m) {
+        const currentDate = m[1];
+        if (currentDate > maxDate) {
+          maxDate = currentDate;
+          lastDateKey = key;
         }
       }
     }
@@ -1474,9 +1474,46 @@ watch([planVer, pivotDataSource], () => {
 
 .re-execute-pane {
   height: 100%;
+  width: 100%;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.pivot-rendering-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(1px);
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.pivot-rendering-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #d6def8;
+  border-top-color: #4568e0;
+  border-radius: 50%;
+  animation: pivot-rendering-spin 0.8s linear infinite;
+}
+
+.pivot-rendering-text {
+  font-size: 12px;
+  color: #434c60;
+  font-weight: 500;
+}
+
+@keyframes pivot-rendering-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .modify-demand-pane {

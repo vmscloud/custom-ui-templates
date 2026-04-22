@@ -23,6 +23,7 @@ PROXY_ROUTES = {
     "scenarios": ("PlmScenarioMaster", "GET"),
     "scenario-config": ("PlmScenarioMaster/Config/OptionConfigGlobal", "POST"),
     "scenario-modules": ("PlmScenarioMaster/Config/AllModules", "POST"),
+    "inbound-scenario-config": ("PlmInboundScenarioMaster/Config", "POST"),
     "demand-ver": ("ComDemandVer", "POST"),
     "demand-ver-latest": ("MdmDemandVer/GetLastRev", "POST"),
     "demand-ver-check": ("MdmDemandVer", "GET"),

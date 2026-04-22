@@ -4,6 +4,7 @@ export { default as IconNotice } from './IconNotice.vue';
 export { default as IconToastWarning } from './IconToastWarning.vue';
 export { default as IconCollapseArrow } from './IconCollapseArrow.vue';
 export { default as IconExpandArrow } from './IconExpandArrow.vue';
+export { default as IconCheck } from './IconCheck.vue';
 export { default as IconClose } from './IconClose.vue';
 export { default as IconCopy } from './IconCopy.vue';
 export { default as IconSearch } from './IconSearch.vue';
