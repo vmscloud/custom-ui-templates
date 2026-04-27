@@ -22,6 +22,28 @@ declare module "@vmscloud/moz-wijmo-grid/store" {
   export default useGridControlStore;
 }
 
+declare module "@vmscloud/moz-wijmo-grid/excel" {
+  export type ColumnMap = Record<string, string>;
+  export interface DownloadBigDataParam {
+    file_name: string;
+    column_map?: ColumnMap;
+    proxy_path?: string;
+    data_path?: string;
+    data_method?: "GET" | "POST";
+    data_parameter?: string | Record<string, any>;
+    client_id?: string;
+    is_stream?: boolean;
+    data_server?: string;
+    project_id?: string;
+    api_key?: string;
+    file_format?: "excel" | "csv";
+  }
+  export function downloadBigData(
+    param: DownloadBigDataParam,
+  ): Promise<{ queued: true }>;
+  export function createColumnMapForExport(grid: any): ColumnMap;
+}
+
 declare module "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid.multirow" {
   import { Component } from "vue";
   export const WjMultiRow: Component;

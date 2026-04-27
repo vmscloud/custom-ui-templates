@@ -192,6 +192,8 @@ import LoadFactorByOperGroupSub1 from "./LoadFactorByOperGroupSub1.vue";
 import LoadFactorByOperGroupSub2 from "./LoadFactorByOperGroupSub2.vue";
 import LoadFactorByOperGroupSub3 from "./LoadFactorByOperGroupSub3.vue";
 import IconDownload from "./assets/IconDownload.vue";
+import { downloadBigData } from "@vmscloud/moz-wijmo-grid/excel";
+import { getProjectId } from "@/api/client";
 
 const { t } = useTranslation(); // 다국어
 
@@ -455,15 +457,46 @@ const showPopup = () => {
   isShowPopup.value = true;
 };
 
+// LoadFactorByOperGroup Sub3 그리드와 동일한 바인딩/헤더 순서.
+//   원본 APS 에서는 Sub3 FlexGrid 인스턴스에서 createColumnMapForExport(grid) 로
+//   자동 추출했지만, 포팅본에선 Sub3 grid ref 를 부모로 노출하지 않아 정적 맵 사용.
+const LOAD_FACTOR_DETAIL_COLUMN_MAP: Record<string, string> = {
+  oper_group_id: t("text-isu_oper_group_id"),
+  str_date: t("text-isu_str_date"),
+  capa: t("text-isu_capa"),
+  str_qty: t("text-isu_str_qty"),
+  outer_str_area: t("text-isu_outer_str_area"),
+  inner_str_area: t("text-isu_inner_str_area"),
+  str_rate: t("text-isu_str_rate"),
+  floor_number: t("text-isu_floor_number"),
+  item_id: t("text-isu_item_id"),
+  item_group_id: t("text-isu_item_group_id"),
+  demand_id: t("text-isu_demand_id"),
+  due_date: t("text-isu_due_date"),
+  aps_due_date: t("text-isu_aps_due_date"),
+  oper_id: t("text-isu_oper_id"),
+};
+
 const downloadExcelData = async () => {
-  // Excel download - placeholder for actual implementation
-  console.log("Download excel data", {
-    file_name: `LoadFactorByOperGroup_Detail_Export`,
-    params: {
-      ...mainLoadParams.value,
-      operGroupIDs: excelDownloadOperGroupIds.value,
-    },
-  });
+  // 원본 aps/LoadFactorByOperGroup.ts 의 downloadBigData 호출과 동일 형태.
+  //   - 원본은 @/stores/queryStore 의 downloadBigData (aps-local) 를 사용했는데
+  //     그 함수는 백엔드 Excel 큐 + SSE 인프라에 의존. 우리는 shim 의 downloadBigData
+  //     (proxy POST → JSON → wijmo Workbook → save) 로 동일 시그니처 유지.
+  try {
+    await downloadBigData({
+      file_name: "LoadFactorByOperGroup_Detail_Export",
+      column_map: LOAD_FACTOR_DETAIL_COLUMN_MAP,
+      proxy_path: `/api/custom/backend/${getProjectId()}/load-factor/detail-excel`,
+      data_method: "POST",
+      data_parameter: {
+        ...mainLoadParams.value,
+        operGroupIDs: excelDownloadOperGroupIds.value,
+      },
+    });
+    isShowPopup.value = false;
+  } catch (error) {
+    console.error("[LoadFactorByOperGroup] 세부데이터 다운로드 실패:", error);
+  }
 };
 
 // ===== Lifecycle =====

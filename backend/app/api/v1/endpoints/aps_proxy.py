@@ -24,6 +24,8 @@ PROXY_ROUTES = {
     "scenario-config": ("PlmScenarioMaster/Config/OptionConfigGlobal", "POST"),
     "scenario-modules": ("PlmScenarioMaster/Config/AllModules", "POST"),
     "inbound-scenario-config": ("PlmInboundScenarioMaster/Config", "POST"),
+    # LoadFactorByOperGroup 세부데이터 다운로드: 공정 그룹별 가동률 상세 집계 (14컬럼)
+    "load-factor-detail": ("RarStrByOperGroup/Detail", "POST"),
     "demand-ver": ("ComDemandVer", "POST"),
     "demand-ver-latest": ("MdmDemandVer/GetLastRev", "POST"),
     "demand-ver-check": ("MdmDemandVer", "GET"),
