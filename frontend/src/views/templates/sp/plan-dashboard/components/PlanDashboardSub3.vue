@@ -12,7 +12,10 @@
             @click="
               openLinkNewTab({
                 path: `/sp/OnTimeRescheduledPlanResult`,
-                query: { planVer: planVer || '' },
+                query: {
+                  planVer: planVer || '',
+                  region: rtfReportRegion,
+                },
               }, true)
             "
           >
@@ -87,12 +90,21 @@ use([
 
 type PlanDashboardContext = ReturnType<typeof usePlanDashboard>;
 const planDashboard = inject<PlanDashboardContext>("planDashboard")!;
-const { dashboardData } = planDashboard;
+const { dashboardData, region } = planDashboard;
 const openLinkNewTab = inject<(route: any, force?: boolean) => void>(
   "openLinkNewTab",
   () => {},
 );
 const { planVer } = useHostPlanCycle();
+
+// Dashboard region (ex. "RTF_대구") → OnTimeRescheduledPlanResult region param.
+//   원본 patch(#3929): "RTF" 또는 null 은 'default' 로, "RTF_xxx" 는 "xxx" 로 변환.
+//   파라미터를 넘기지 않으면 RTF 리포트가 기본 region 으로 뜨고 대시보드 값과 불일치함.
+const rtfReportRegion = computed(() => {
+  const v = region.value;
+  if (!v || v === "RTF") return "default";
+  return v.replace("RTF_", "");
+});
 
 const COLORS = {
   ontime: "#6daafa",
