@@ -5,6 +5,9 @@
   "description": "Pinned MCP servers launched via `node` for deterministic, cross-platform startup. See ../.mcp.json",
   "dependencies": {
     "chrome-devtools-mcp": "1.0.1",
-    "@modelcontextprotocol/server-sequential-thinking": "2025.12.18"
+    "@modelcontextprotocol/server-sequential-thinking": "2025.12.18",
+    "@playwright/mcp": "0.0.68",
+    "@modelcontextprotocol/server-github": "2025.4.8",
+    "@modelcontextprotocol/server-postgres": "0.6.2"
   }
 }

@@ -62,6 +62,15 @@ Write-Host '  [i]   chrome-devtools MCP 도구 사용 시 디버그 모드 Chrom
 Write-Host '          chrome.exe --remote-debugging-port=9222' -ForegroundColor DarkGray
 Write-Host '          (MCP 서버 기동에는 불필요, 실제 도구 호출 때만 필요)' -ForegroundColor DarkGray
 
+# .env — 내부 MCP 서버(github/postgres)의 비밀정보. make mcp-local 로 local 스코프 등록.
+Write-Host ''
+if (Test-Path (Join-Path $PSScriptRoot '.env')) {
+    Write-Host '  [OK]  .env    존재 (내부 MCP 서버용 → make mcp-local)' -ForegroundColor Green
+} else {
+    Write-Host '  [!]   .env    없음 — 내부 github/postgres MCP 사용 시 필요 [선택]' -ForegroundColor Yellow
+    Write-Host '          설치 : Copy-Item .env.example .env  후 값 교체 → make mcp-local' -ForegroundColor Yellow
+}
+
 Write-Host ''
 if ($script:missing.Count -gt 0) {
     Write-Host ("=== 누락된 필수 도구: {0} ===" -f ($script:missing -join ', ')) -ForegroundColor Red

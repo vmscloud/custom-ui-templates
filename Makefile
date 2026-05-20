@@ -38,6 +38,10 @@ install-backend: ## 백엔드 의존성 설치 (uv, dev 그룹 포함)
 install-tools: ## MCP 서버 의존성 설치 (.mcp.json 이 node 로 실행, lockfile 기반)
 	Set-Location $(TOOLS_DIR); npm ci
 
+.PHONY: mcp-local
+mcp-local: ## 내부 MCP 서버(github/postgres)를 .env 기반으로 local 스코프에 등록 (공개 레포 미노출)
+	& './$(TOOLS_DIR)/setup-local-mcp.ps1'
+
 ##@ Dev
 
 .PHONY: dev-frontend

@@ -16,6 +16,13 @@
         "${CLAUDE_PROJECT_DIR:-.}/tools/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js"
       ]
     },
+    "playwright": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PROJECT_DIR:-.}/tools/node_modules/@playwright/mcp/cli.js"
+      ]
+    },
     "serena": {
       "type": "stdio",
       "command": "uvx",
