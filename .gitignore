@@ -33,6 +33,12 @@ dist-ssr
 # 셋업은 frontend/.npmrc.example 을 복사해서 토큰 값만 교체하세요.
 frontend/.npmrc
 
+# Module Federation 임시 산출물 (빌드 부산물)
+frontend/.__mf__temp/
+
+# 에이전트/툴링 디렉터리
+.omc/
+
 # TypeScript cache
 *.tsbuildinfo
 
