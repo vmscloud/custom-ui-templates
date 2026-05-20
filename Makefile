@@ -6,6 +6,7 @@ SHELL       := powershell.exe
 FRONTEND_DIR := frontend
 BACKEND_DIR  := backend
 TOOLS_DIR    := tools
+CHECK_SCRIPT := check-prereqs.ps1
 
 # 프론트엔드 패키지 매니저 (기본 pnpm). npm 사용 시: make install-frontend PM=npm
 PM ?= pnpm
@@ -16,10 +17,14 @@ PM ?= pnpm
 help: ## 사용 가능한 명령어 목록 출력
 	@[Console]::OutputEncoding=[Text.Encoding]::UTF8; Get-Content '$(firstword $(MAKEFILE_LIST))' -Encoding UTF8 | ForEach-Object { if ($$_ -match '^##@ (.*)') { ''; $$matches[1] } elseif ($$_ -match '^([a-zA-Z_-]+):.*?## (.*)') { '  {0,-20} {1}' -f $$matches[1], $$matches[2] } }
 
+.PHONY: check
+check: ## 사전 요구사항(node/npm/pnpm/uv) 점검 및 설치 가이드 출력
+	$$env:PM='$(PM)'; & './$(CHECK_SCRIPT)'
+
 ##@ Install
 
 .PHONY: install
-install: install-backend install-frontend install-tools ## 프론트엔드 + 백엔드 + MCP 툴 의존성 모두 설치
+install: check install-backend install-frontend install-tools ## 사전점검 후 프론트엔드 + 백엔드 + MCP 툴 의존성 모두 설치
 
 .PHONY: install-frontend
 install-frontend: ## 프론트엔드 의존성 설치 (기본 pnpm, PM=npm 으로 npm)
