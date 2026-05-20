@@ -15,14 +15,14 @@ importers:
         specifier: ^3.13.18
         version: 3.13.18(vue@3.4.38(typescript@5.9.3))
       '@vmscloud/moz-ui-chart':
-        specifier: ^1.0.12
-        version: 1.0.12(@vmscloud/moz-ui-components@1.2.10(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3)))(@vue/runtime-core@3.5.28)(vue-router@4.2.5(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))
+        specifier: ^1.0.14
+        version: 1.0.14(@vmscloud/moz-ui-components@1.2.21(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3)))(@vue/runtime-core@3.5.28)(vue-router@4.2.5(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))
       '@vmscloud/moz-ui-components':
-        specifier: ^1.2.10
-        version: 1.2.10(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3))
+        specifier: ^1.2.21
+        version: 1.2.21(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3))
       '@vmscloud/moz-wijmo-grid':
-        specifier: ^1.0.30
-        version: 1.0.30(@vmscloud/moz-ui-components@1.2.10(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(i18next-vue@3.0.0(i18next@23.16.8)(vue@3.4.38(typescript@5.9.3)))(i18next@23.16.8)(pinia@2.1.7(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)))(vue-router@4.2.5(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))
+        specifier: ^1.0.32
+        version: 1.0.32(@vmscloud/moz-ui-components@1.2.21(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(i18next-vue@3.0.0(i18next@23.16.8)(vue@3.4.38(typescript@5.9.3)))(i18next@23.16.8)(pinia@2.1.7(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)))(vue-router@4.2.5(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))
       axios:
         specifier: ^1.13.5
         version: 1.13.5
@@ -1175,9 +1175,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@swc/helpers@0.5.18':
-    resolution: {integrity: sha512-TXTnIcNJQEKwThMMqBXsZ4VGAza6bvN4pa41Rkqoio6QBKMvo+5lexeTMScGCIxtzgQJzElcvIltani+adC5PQ==}
-
   '@tanstack/match-sorter-utils@8.19.4':
     resolution: {integrity: sha512-Wo1iKt2b9OT7d+YGhvEPD3DXvPv2etTusIMhMUoG7fbhmxcXCtIjJDEygy91Y2JFlwGyjqiBPRozme7UD8hoqg==}
     engines: {node: '>=12'}
@@ -1202,23 +1199,17 @@ packages:
     peerDependencies:
       vue: ^2.7.0 || ^3.0.0
 
-  '@types/command-line-args@5.2.3':
-    resolution: {integrity: sha512-uv0aG6R0Y8WHZLTamZwtfsDLVRnOa+n+n5rEvFWL5Na5gZ8V2Teab/duDPFzIIIhs9qizDpcavCusCLJZu62Kw==}
-
-  '@types/command-line-usage@5.0.4':
-    resolution: {integrity: sha512-BwR5KP3Es/CSht0xqBcUXS3qCAUVXwpRKsV2+arxeb65atasuXG9LykC9Ab10Cw3s2raH92ZqOeILaQbsB2ACg==}
-
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
   '@types/file-saver@2.0.7':
     resolution: {integrity: sha512-dNKVfHd/jk0SkR/exKGj2ggkB45MAkzvWCaqLUUgkyjITkGNzH8H+yUwr+BLJUBjZOe9w8X3wgmXhZDRg1ED6A==}
 
-  '@types/node@20.19.33':
-    resolution: {integrity: sha512-Rs1bVAIdBs5gbTIKza/tgpMuG1k3U/UMJLWecIMxNdJFDMzcM5LOiLVRYh3PilWEYDIeUDv7bpiHPLPsbydGcw==}
-
   '@types/node@25.2.3':
     resolution: {integrity: sha512-m0jEgYlYz+mDJZ2+F4v8D1AyQb+QzsNqRuI7xg1VQX/KlKS0qT9r1Mo16yo5F/MtifXFgaofIFsdFMox2SxIbQ==}
+
+  '@uwdata/flechette@2.5.0':
+    resolution: {integrity: sha512-NSB9xIPVsxpEcnEvtLfbvH/tEqZWiD4bfdz/yBUAUBEe0Z0C3zmA/Y4GOCsLZe4ChxiHaedFBZzVdUxQ+NVcMA==}
 
   '@vitejs/plugin-vue@5.2.4':
     resolution: {integrity: sha512-7Yx/SXSOcQq5HiiV3orevHUFn+pmMB4cgbEkDYgnkUWb0WfeQ/wa2yFv6D5ICiCQOVpjA7vYDXrC7AGO8yjDHA==}
@@ -1227,25 +1218,25 @@ packages:
       vite: ^5.0.0 || ^6.0.0
       vue: ^3.2.25
 
-  '@vmscloud/moz-ui-chart@1.0.12':
-    resolution: {integrity: sha512-YollzehpCAbvwk61CPIQ0kLvQCJ4fe2WSZGOz+126RalcYSmtWrcUMVON7JUo0oPkMMGaTNSP3bY6R+g9qpiCg==, tarball: https://npm.pkg.github.com/download/@vmscloud/moz-ui-chart/1.0.12/5d981035bf6aa24244019c52cbf1601271ee2e9b}
+  '@vmscloud/moz-ui-chart@1.0.14':
+    resolution: {integrity: sha512-3HbOcdKUHZu4TxqI2Ilm+jzYRO2XJ7LQJihk5HY5UhlW9Pdhjmw8A6n/XholZzXI6+V9SKdQXliRIhnksLf6Zw==, tarball: https://npm.pkg.github.com/download/@vmscloud/moz-ui-chart/1.0.14/c16897aa27f6538c22ba806a73c2f7052528b601}
     peerDependencies:
-      '@vmscloud/moz-ui-components': ^1.2.9
+      '@vmscloud/moz-ui-components': ^1.2.20
       vue: '>=3.4.0'
       vue-router: '>=4.2.0'
 
-  '@vmscloud/moz-ui-components@1.2.10':
-    resolution: {integrity: sha512-mr9OhOMYYDjcpXVoOaZd5eI317/tEV2qx0IDtYsl8eeHl79Hm7Ajk2AV8hfDYY57z13FlplIU8YIXdNSKKWWCw==, tarball: https://npm.pkg.github.com/download/@vmscloud/moz-ui-components/1.2.10/5710e3726978e90485cf0ca0afc7bfa7b04a6a80}
+  '@vmscloud/moz-ui-components@1.2.21':
+    resolution: {integrity: sha512-AZK6Q4nHk4GiVUGJWouNrjly16A2gva54r1RlDVOZcdUd+PaWwNl2niByFAtbq8nyKTStGhfOv+dENCv4yxahQ==, tarball: https://npm.pkg.github.com/download/@vmscloud/moz-ui-components/1.2.21/b1b7d00889da7b2baf978ad2a90f5ae09673a73e}
     peerDependencies:
       '@tanstack/vue-virtual': '>=3.0.0'
       dayjs: '>=1.11.0'
       es-toolkit: '>=1.0.0'
       vue: '>=3.4.0'
 
-  '@vmscloud/moz-wijmo-grid@1.0.30':
-    resolution: {integrity: sha512-HY/z4y3lmu65h1t33/RE4cZcEz0VJdiXuZu8pXZwgt/wGnQWu+pGRPUrpj3stgWhL6RuRdNGK718nzuGWqni9w==, tarball: https://npm.pkg.github.com/download/@vmscloud/moz-wijmo-grid/1.0.30/c5bcd565fc97ad9a5e72f83c669d019b9ccd9af6}
+  '@vmscloud/moz-wijmo-grid@1.0.32':
+    resolution: {integrity: sha512-TXH9wcJsMr9SdSOaPwioMLLQnEmyzRXvmoOLi/fFaP/53g21S5zrz1yNuEuUNPoucWOcFpaBWJiN3Fx9/OGeXw==, tarball: https://npm.pkg.github.com/download/@vmscloud/moz-wijmo-grid/1.0.32/6ab5dcfa43f3eb50662874b609337a0c00bed3f2}
     peerDependencies:
-      '@vmscloud/moz-ui-components': ^1.2.14
+      '@vmscloud/moz-ui-components': ^1.2.20
       dayjs: '>=1.11.0'
       i18next: '>=23.0.0'
       i18next-vue: '>=3.0.0'
@@ -1347,20 +1338,8 @@ packages:
     resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==}
     engines: {node: '>=8'}
 
-  apache-arrow@15.0.2:
-    resolution: {integrity: sha512-RvwlFxLRpO405PLGffx4N2PYLiF7FD86Q1hHl6J2XCWiq+tTCzpb9ngFw0apFDcXZBMpCzMuwAvA7hjyL1/73A==}
-    hasBin: true
-
-  arquero@5.4.1:
-    resolution: {integrity: sha512-yZhBU0/bYaB3mfqWShl0Opb3WaIOOWpnQ/pNvpIwQ5AXm4vd6ryljjl1l5RtHR/ENK7BSmNJD6SPygLXhnan9A==}
-
-  array-back@3.1.0:
-    resolution: {integrity: sha512-TkuxA4UCOvxuDK6NZYXCalszEzj+TLszyASooky+i742l9TqsOdYCMJJupxRic61hwquNtppB3hgcuq9SVSH1Q==}
-    engines: {node: '>=6'}
-
-  array-back@6.2.2:
-    resolution: {integrity: sha512-gUAZ7HPyb4SJczXAMUXMGAvI976JoK3qEx9v1FTmeYuJj0IBiaKttG1ydtGKdkfqWkIkouke7nG8ufGy77+Cvw==}
-    engines: {node: '>=12.17'}
+  arquero@8.0.3:
+    resolution: {integrity: sha512-7YQwe/GPVBUiahaPwEwgvu6VHyuhX0Ut61JZlIJYsAobOH5unLBwTmh43BobhX/N4dW1sb8WyKlQ8GjFq2whzQ==}
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
@@ -1397,17 +1376,9 @@ packages:
     resolution: {integrity: sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==}
     engines: {node: '>= 0.4'}
 
-  chalk-template@0.4.0:
-    resolution: {integrity: sha512-/ghrgmhfY8RaSdeo43hNXxpoHAtxdbskUHjPpfqUWGttFgycUhYPGx3YZBCnUCvOa7Doivn1IZec3DEGFoMgLg==}
-    engines: {node: '>=12'}
-
   chalk@3.0.0:
     resolution: {integrity: sha512-4D3B6Wf41KOYRFdszmDqMCGq5VV/uMAB273JILmO+3jAlh8X4qDtdtgCR3fxtbLEMzSx22QdhnDcJvu2u1fVwg==}
     engines: {node: '>=8'}
-
-  chalk@4.1.2:
-    resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
-    engines: {node: '>=10'}
 
   chokidar@4.0.3:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
@@ -1430,14 +1401,6 @@ packages:
   combined-stream@1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
-
-  command-line-args@5.2.1:
-    resolution: {integrity: sha512-H4UfQhZyakIjC74I9d34fGYDwk3XpSr17QhEd0Q3I9Xq1CETHo4Hcuo87WyWHpAF1aSLjLRf5lD9ZGX2qStUvg==}
-    engines: {node: '>=4.0.0'}
-
-  command-line-usage@7.0.3:
-    resolution: {integrity: sha512-PqMLy5+YGwhMh1wS04mVG44oqDsgyLRSKJBdOo1bnYhMKBW65gZF1dRp2OZRhiTjgUHljy99qkO7bsctLaw35Q==}
-    engines: {node: '>=12.20.0'}
 
   content-disposition@0.5.4:
     resolution: {integrity: sha512-FveZTNuGw04cxlAiWbzi6zTAL/lhehaWbTtgluJh4/E95DqMwTmha3KZN1aAWA8cFIhHzMZUvLevkw5Rqk+tSQ==}
@@ -1600,13 +1563,6 @@ packages:
   find-pkg@2.0.0:
     resolution: {integrity: sha512-WgZ+nKbELDa6N3i/9nrHeNznm+lY3z4YfhDDWgW+5P0pdmMj26bxaxU11ookgY3NyP9GC7HvZ9etp0jRFqGEeQ==}
     engines: {node: '>=8'}
-
-  find-replace@3.0.0:
-    resolution: {integrity: sha512-6Tb2myMioCAgv5kfvP5/PkZZ/ntTpVK39fHY7WkWBgvbeE+VHd/tZuZ4mrC+bxh4cfOZeYKVPaJIZtZXV7GNCQ==}
-    engines: {node: '>=4.0.0'}
-
-  flatbuffers@23.5.26:
-    resolution: {integrity: sha512-vE+SI9vrJDwi1oETtTIFldC/o9GsVKRM+s6EL0nQgxXlYV1Vc4Tk30hj4xGICftInKQKj1F3up2n8UbIVobISQ==}
 
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
@@ -1781,10 +1737,6 @@ packages:
   js-base64@3.7.8:
     resolution: {integrity: sha512-hNngCeKxIUQiEUN3GPJOkz4wF/YvdUdbNL9hsBcMQTkKzboD7T/q3OYOuuPZLUE6dBxSGpwhk5mwuDud7JVAow==}
 
-  json-bignum@0.0.3:
-    resolution: {integrity: sha512-2WHyXj3OfHSgNyuzDbSxI1w2jgw5gkWSWhS7Qg4bWXx1nLk3jnbwfUeS0PSba3IzpTUWdHxBieELUzXRjQB2zg==}
-    engines: {node: '>=0.8'}
-
   jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
 
@@ -1830,9 +1782,6 @@ packages:
 
   lodash._stringtopath@4.8.0:
     resolution: {integrity: sha512-SXL66C731p0xPDC5LZg4wI5H+dJo/EO4KTqOMwLYCH3+FmmfAKJEZCm6ohGpI+T1xwsDsJCfL4OnhorllvlTPQ==}
-
-  lodash.camelcase@4.3.0:
-    resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
 
   lodash.clonedeepwith@4.5.0:
     resolution: {integrity: sha512-QRBRSxhbtsX1nc0baxSkkK5WlVTTm/s48DSukcGcWZwIyI8Zz+lB+kFiELJXtzfH4Aj6kMWQ1VWW4U5uUDgZMA==}
@@ -1932,15 +1881,6 @@ packages:
 
   node-addon-api@7.1.1:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
-
-  node-fetch@2.7.0:
-    resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
-    engines: {node: 4.x || >=6.0.0}
-    peerDependencies:
-      encoding: ^0.1.0
-    peerDependenciesMeta:
-      encoding:
-        optional: true
 
   node-schedule@2.1.1:
     resolution: {integrity: sha512-OXdegQq03OmXEjt2hZP33W2YPs/E5BcFQks46+G2gAxs4gHOIVD1u7EqlYLYSKsaIpyKCK9Gbk0ta1/gjRSMRQ==}
@@ -2134,10 +2074,6 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  table-layout@4.1.1:
-    resolution: {integrity: sha512-iK5/YhZxq5GO5z8wb0bY1317uDF3Zjpha0QFFLA8/trAoiLbQD0HUbMesEaxyzUgDxi2QlcbM8IvqOlEjgoXBA==}
-    engines: {node: '>=12.17'}
-
   tinyglobby@0.2.15:
     resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
     engines: {node: '>=12.0.0'}
@@ -2145,9 +2081,6 @@ packages:
   toidentifier@1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
-
-  tr46@0.0.3:
-    resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
 
   tslib@2.3.0:
     resolution: {integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==}
@@ -2171,17 +2104,6 @@ packages:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
     hasBin: true
-
-  typical@4.0.0:
-    resolution: {integrity: sha512-VAH4IvQ7BDFYglMd7BPRDfLgxZZX4O4TFcRDA6EN5X7erNJJq+McIEp8np9aVtxrCJ6qx4GTYVfOWNjcqwZgRw==}
-    engines: {node: '>=8'}
-
-  typical@7.3.0:
-    resolution: {integrity: sha512-ya4mg/30vm+DOWfBg4YK3j2WD6TWtRkCbasOJr40CseYENzCUby/7rIvXA99JGsQHeNxLbnXdyLLxKSv3tauFw==}
-    engines: {node: '>=12.17'}
-
-  undici-types@6.21.0:
-    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
@@ -2298,19 +2220,9 @@ packages:
       typescript:
         optional: true
 
-  webidl-conversions@3.0.1:
-    resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
-
-  whatwg-url@5.0.0:
-    resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
-
   which@1.3.1:
     resolution: {integrity: sha512-HxJdYWq1MTIQbJ3nw0cqssHoTNU267KlrDuGZ1WYlxDStUtKUhOaJmh112/TZmHxxUfuJqPXSOm7tDyas0OSIQ==}
     hasBin: true
-
-  wordwrapjs@5.1.1:
-    resolution: {integrity: sha512-0yweIbkINJodk27gX9LBGMzyQdBDan3s/dEAiwBOj+Mf0PPyWL6/rikalkv8EeD0E8jm4o5RXEOrFTP3NXbhJg==}
-    engines: {node: '>=12.17'}
 
   ws@8.18.0:
     resolution: {integrity: sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==}
@@ -4164,10 +4076,6 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.57.1':
     optional: true
 
-  '@swc/helpers@0.5.18':
-    dependencies:
-      tslib: 2.8.1
-
   '@tanstack/match-sorter-utils@8.19.4':
     dependencies:
       remove-accents: 0.5.0
@@ -4189,31 +4097,25 @@ snapshots:
       '@tanstack/virtual-core': 3.13.18
       vue: 3.4.38(typescript@5.9.3)
 
-  '@types/command-line-args@5.2.3': {}
-
-  '@types/command-line-usage@5.0.4': {}
-
   '@types/estree@1.0.8': {}
 
   '@types/file-saver@2.0.7': {}
 
-  '@types/node@20.19.33':
-    dependencies:
-      undici-types: 6.21.0
-
   '@types/node@25.2.3':
     dependencies:
       undici-types: 7.16.0
+
+  '@uwdata/flechette@2.5.0': {}
 
   '@vitejs/plugin-vue@5.2.4(vite@6.4.1(@types/node@25.2.3)(less@4.5.1)(sass@1.97.3))(vue@3.4.38(typescript@5.9.3))':
     dependencies:
       vite: 6.4.1(@types/node@25.2.3)(less@4.5.1)(sass@1.97.3)
       vue: 3.4.38(typescript@5.9.3)
 
-  '@vmscloud/moz-ui-chart@1.0.12(@vmscloud/moz-ui-components@1.2.10(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3)))(@vue/runtime-core@3.5.28)(vue-router@4.2.5(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))':
+  '@vmscloud/moz-ui-chart@1.0.14(@vmscloud/moz-ui-components@1.2.21(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3)))(@vue/runtime-core@3.5.28)(vue-router@4.2.5(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))':
     dependencies:
-      '@vmscloud/moz-ui-components': 1.2.10(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3))
-      arquero: 5.4.1
+      '@vmscloud/moz-ui-components': 1.2.21(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3))
+      arquero: 8.0.3
       echarts: 5.6.0
       echarts-stat: 1.2.0
       es-toolkit: 1.44.0
@@ -4223,9 +4125,8 @@ snapshots:
     transitivePeerDependencies:
       - '@vue/composition-api'
       - '@vue/runtime-core'
-      - encoding
 
-  '@vmscloud/moz-ui-components@1.2.10(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3))':
+  '@vmscloud/moz-ui-components@1.2.21(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3))':
     dependencies:
       '@tanstack/vue-virtual': 3.13.18(vue@3.4.38(typescript@5.9.3))
       clsx: 2.1.1
@@ -4233,10 +4134,10 @@ snapshots:
       es-toolkit: 1.44.0
       vue: 3.4.38(typescript@5.9.3)
 
-  '@vmscloud/moz-wijmo-grid@1.0.30(@vmscloud/moz-ui-components@1.2.10(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(i18next-vue@3.0.0(i18next@23.16.8)(vue@3.4.38(typescript@5.9.3)))(i18next@23.16.8)(pinia@2.1.7(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)))(vue-router@4.2.5(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))':
+  '@vmscloud/moz-wijmo-grid@1.0.32(@vmscloud/moz-ui-components@1.2.21(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(i18next-vue@3.0.0(i18next@23.16.8)(vue@3.4.38(typescript@5.9.3)))(i18next@23.16.8)(pinia@2.1.7(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)))(vue-router@4.2.5(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))':
     dependencies:
       '@grapecity/wijmo.all': 5.20232.939
-      '@vmscloud/moz-ui-components': 1.2.10(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3))
+      '@vmscloud/moz-ui-components': 1.2.21(@tanstack/vue-virtual@3.13.18(vue@3.4.38(typescript@5.9.3)))(dayjs@1.11.19)(es-toolkit@1.44.0)(vue@3.4.38(typescript@5.9.3))
       axios: 1.13.5
       bytebuffer: 5.0.1
       crypto-js: 4.2.0
@@ -4384,29 +4285,10 @@ snapshots:
     dependencies:
       color-convert: 2.0.1
 
-  apache-arrow@15.0.2:
+  arquero@8.0.3:
     dependencies:
-      '@swc/helpers': 0.5.18
-      '@types/command-line-args': 5.2.3
-      '@types/command-line-usage': 5.0.4
-      '@types/node': 20.19.33
-      command-line-args: 5.2.1
-      command-line-usage: 7.0.3
-      flatbuffers: 23.5.26
-      json-bignum: 0.0.3
-      tslib: 2.8.1
-
-  arquero@5.4.1:
-    dependencies:
+      '@uwdata/flechette': 2.5.0
       acorn: 8.15.0
-      apache-arrow: 15.0.2
-      node-fetch: 2.7.0
-    transitivePeerDependencies:
-      - encoding
-
-  array-back@3.1.0: {}
-
-  array-back@6.2.2: {}
 
   asynckit@0.4.0: {}
 
@@ -4445,16 +4327,7 @@ snapshots:
       es-errors: 1.3.0
       function-bind: 1.1.2
 
-  chalk-template@0.4.0:
-    dependencies:
-      chalk: 4.1.2
-
   chalk@3.0.0:
-    dependencies:
-      ansi-styles: 4.3.0
-      supports-color: 7.2.0
-
-  chalk@4.1.2:
     dependencies:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
@@ -4479,20 +4352,6 @@ snapshots:
   combined-stream@1.0.8:
     dependencies:
       delayed-stream: 1.0.0
-
-  command-line-args@5.2.1:
-    dependencies:
-      array-back: 3.1.0
-      find-replace: 3.0.0
-      lodash.camelcase: 4.3.0
-      typical: 4.0.0
-
-  command-line-usage@7.0.3:
-    dependencies:
-      array-back: 6.2.2
-      chalk-template: 0.4.0
-      table-layout: 4.1.1
-      typical: 7.3.0
 
   content-disposition@0.5.4:
     dependencies:
@@ -4641,12 +4500,6 @@ snapshots:
   find-pkg@2.0.0:
     dependencies:
       find-file-up: 2.0.1
-
-  find-replace@3.0.0:
-    dependencies:
-      array-back: 3.1.0
-
-  flatbuffers@23.5.26: {}
 
   flatted@3.3.3: {}
 
@@ -4820,8 +4673,6 @@ snapshots:
 
   js-base64@3.7.8: {}
 
-  json-bignum@0.0.3: {}
-
   jsonfile@4.0.0:
     optionalDependencies:
       graceful-fs: 4.2.11
@@ -4902,8 +4753,6 @@ snapshots:
   lodash._stringtopath@4.8.0:
     dependencies:
       lodash._basetostring: 4.12.0
-
-  lodash.camelcase@4.3.0: {}
 
   lodash.clonedeepwith@4.5.0: {}
 
@@ -4987,10 +4836,6 @@ snapshots:
 
   node-addon-api@7.1.1:
     optional: true
-
-  node-fetch@2.7.0:
-    dependencies:
-      whatwg-url: 5.0.0
 
   node-schedule@2.1.1:
     dependencies:
@@ -5188,19 +5033,12 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  table-layout@4.1.1:
-    dependencies:
-      array-back: 6.2.2
-      wordwrapjs: 5.1.1
-
   tinyglobby@0.2.15:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
 
   toidentifier@1.0.1: {}
-
-  tr46@0.0.3: {}
 
   tslib@2.3.0: {}
 
@@ -5225,12 +5063,6 @@ snapshots:
       mime-types: 3.0.2
 
   typescript@5.9.3: {}
-
-  typical@4.0.0: {}
-
-  typical@7.3.0: {}
-
-  undici-types@6.21.0: {}
 
   undici-types@7.16.0: {}
 
@@ -5302,18 +5134,9 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  webidl-conversions@3.0.1: {}
-
-  whatwg-url@5.0.0:
-    dependencies:
-      tr46: 0.0.3
-      webidl-conversions: 3.0.1
-
   which@1.3.1:
     dependencies:
       isexe: 2.0.0
-
-  wordwrapjs@5.1.1: {}
 
   ws@8.18.0: {}
 
