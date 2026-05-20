@@ -1,0 +1,10 @@
+{
+  "name": "custom-ui-templates-mcp-tools",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Pinned MCP servers launched via `node` for deterministic, cross-platform startup. See ../.mcp.json",
+  "dependencies": {
+    "chrome-devtools-mcp": "1.0.1",
+    "@modelcontextprotocol/server-sequential-thinking": "2025.12.18"
+  }
+}

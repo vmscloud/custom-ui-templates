@@ -5,6 +5,7 @@ SHELL       := powershell.exe
 
 FRONTEND_DIR := frontend
 BACKEND_DIR  := backend
+TOOLS_DIR    := tools
 
 # 프론트엔드 패키지 매니저 (기본 pnpm). npm 사용 시: make install-frontend PM=npm
 PM ?= pnpm
@@ -18,7 +19,7 @@ help: ## 사용 가능한 명령어 목록 출력
 ##@ Install
 
 .PHONY: install
-install: install-backend install-frontend ## 프론트엔드 + 백엔드 의존성 모두 설치
+install: install-backend install-frontend install-tools ## 프론트엔드 + 백엔드 + MCP 툴 의존성 모두 설치
 
 .PHONY: install-frontend
 install-frontend: ## 프론트엔드 의존성 설치 (기본 pnpm, PM=npm 으로 npm)
@@ -27,6 +28,10 @@ install-frontend: ## 프론트엔드 의존성 설치 (기본 pnpm, PM=npm 으�
 .PHONY: install-backend
 install-backend: ## 백엔드 의존성 설치 (uv, dev 그룹 포함)
 	Set-Location $(BACKEND_DIR); uv sync --dev
+
+.PHONY: install-tools
+install-tools: ## MCP 서버 의존성 설치 (.mcp.json 이 node 로 실행, lockfile 기반)
+	Set-Location $(TOOLS_DIR); npm ci
 
 ##@ Dev
 
