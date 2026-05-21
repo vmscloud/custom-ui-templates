@@ -56,7 +56,8 @@ frontend/
 │   ├── composables/useHostStores.ts ← useHostPlanCycle() 등
 │   └── views/templates/{category}/{kebab-case}/
 │       ├── {PascalCase}.vue         ← ★ 루트 뷰 컴포넌트
-│       └── {camelCase}.ts           ← ★ Composable (API 호출)
+│       ├── {camelCase}.ts           ← ★ Composable (API 호출)
+│       └── CLAUDE.md                ← ★ 페이지 전용 컨텍스트 (LLM 자동 로드)
 ```
 
 ---
@@ -611,6 +612,36 @@ routes 배열에 추가:
 },
 ```
 
+## 2-4. 페이지 전용 컨텍스트: `frontend/src/views/templates/{category}/{kebab-case}/CLAUDE.md`
+
+이 폴더를 작업할 때 LLM 에이전트가 자동으로 읽는(lazy load) 페이지 전용 컨텍스트입니다. 한 페이지의 백엔드 파일이 `schemas/services/repositories/endpoints`로 흩어져 있으므로, 흩어진 위치를 묶는 "지도" 역할을 합니다. **새 페이지마다 반드시 생성하세요.** `<TODO>` 는 실제 값으로 채우고, 모르면 그대로 두어 후속 작업의 단서로 남깁니다.
+
+```markdown
+# {displayName} ({PascalCase})
+> 이 폴더 작업 시 자동 로드되는 페이지 전용 컨텍스트.
+
+## 개요
+{description}
+
+## 데이터 소스
+- 종류: {dataSource}   # trino | postgres | both
+- 테이블/스키마: <TODO: 실제 테이블명>
+
+## API
+- Base: `/api/custom/backend/{project_id}/{kebab-case}`
+- 엔드포인트: <TODO: 실제 엔드포인트>
+
+## 관련 파일 (페이지가 걸쳐 있는 위치)
+- 뷰: `{PascalCase}.vue` / composable: `{camelCase}.ts`
+- 스키마: `backend/app/schemas/{snake_case}.py`
+- 서비스·쿼리: `backend/app/services/{snake_case}.py`, `{snake_case}_queries.py`   # trino/both
+- 레포지토리: `backend/app/repositories/{snake_case}.py`   # postgres/both
+- 엔드포인트: `backend/app/api/v1/endpoints/{snake_case}.py` / 등록: `api/v1/api.py`
+
+## 메모
+- <TODO: 이 페이지 특유의 규칙·주의 (그리드 컬럼, 필터, 정밀도 등)>
+```
+
 ---
 
 # 실행 순서
@@ -620,8 +651,9 @@ routes 배열에 추가:
 3. **백엔드** — `api/v1/api.py`에 import 및 라우터 등록 (proxy 위에)
 4. **프론트엔드** — 뷰 폴더 생성, composable + vue 파일 생성
 5. **프론트엔드** — `expose.ts`, `router/index.ts` 수정
-6. 가능하면 `cd backend && python -c "from app.main import app; print('OK')"` 실행
-7. 생성된 파일 목록, API 경로, 프론트 접근 경로를 사용자에게 안내
+6. **프론트엔드** — 페이지 폴더에 `CLAUDE.md` 생성 (2-4)
+7. 가능하면 `cd backend && python -c "from app.main import app; print('OK')"` 실행
+8. 생성된 파일 목록, API 경로, 프론트 접근 경로를 사용자에게 안내
 
 # 사용자 안내 포맷
 
@@ -643,6 +675,7 @@ routes 배열에 추가:
 |------|------|
 | `src/views/templates/{category}/{kebab-case}/{PascalCase}.vue` | 뷰 컴포넌트 |
 | `src/views/templates/{category}/{kebab-case}/{camelCase}.ts` | Composable |
+| `src/views/templates/{category}/{kebab-case}/CLAUDE.md` | 페이지 전용 컨텍스트 (LLM 자동 로드) |
 
 ### 수정된 파일
 - `backend/app/api/v1/api.py` — 라우터 등록

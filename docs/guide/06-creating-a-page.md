@@ -331,6 +331,35 @@ export const viewRegistry = {
 };
 ```
 
+### 2-6. 페이지 전용 컨텍스트 (CLAUDE.md)
+
+페이지 폴더에 `CLAUDE.md` 를 두면 LLM 에이전트가 그 폴더를 작업할 때만 자동으로 읽습니다(lazy context loading). 한 페이지의 백엔드 파일은 `schemas/services/endpoints` 등으로 흩어져 있으므로, 흩어진 위치를 묶는 "지도" 역할을 합니다. **새 페이지마다 추가하세요.**
+
+```markdown
+<!-- frontend/src/views/templates/pe/work-order/CLAUDE.md -->
+# 작업 지시 (WorkOrder)
+> 이 폴더 작업 시 자동 로드되는 페이지 전용 컨텍스트.
+
+## 개요
+작업 지시(rpt_work_order) 테이블을 날짜 범위·상태로 필터해 그리드로 표시.
+
+## 데이터 소스
+- 종류: trino
+- 테이블: `rpt_work_order` (plan_date 는 YYYYMMDD 문자열)
+
+## API
+- `POST /api/custom/backend/{project_id}/work-order/list`
+
+## 관련 파일 (페이지가 걸쳐 있는 위치)
+- 뷰: `WorkOrder.vue` / composable: `workOrder.ts`
+- 스키마: `backend/app/schemas/work_order.py`
+- 서비스·쿼리: `backend/app/services/work_order.py`, `work_order_queries.py`
+- 엔드포인트: `backend/app/api/v1/endpoints/work_order.py` / 등록: `api/v1/api.py`
+
+## 메모
+- 상태 필터는 `_build_filter` 로 IN 절 생성. planVer 가드 필수.
+```
+
 ## 3. 검증
 
 1. 브라우저에서 `http://localhost:5300/ext/work-order` 오픈.
@@ -343,6 +372,7 @@ export const viewRegistry = {
 ```bash
 git add backend/app/... frontend/src/views/.../work-order/ frontend/src/lang/*.json \
         frontend/src/router/index.ts frontend/src/expose.ts
+# work-order/ 폴더에는 CLAUDE.md(페이지 전용 컨텍스트)도 함께 커밋됩니다.
 git commit -m "feat: Work Order 화면 및 /work-order/list 엔드포인트 추가"
 ```
 
