@@ -1,0 +1,6 @@
+# pnpm 11+: dependency build scripts are blocked by default (strictDepBuilds=true).
+# Allow only the packages that genuinely need to run install/build scripts.
+allowBuilds:
+  esbuild: true
+  "@parcel/watcher": true
+  vue-demi: true
