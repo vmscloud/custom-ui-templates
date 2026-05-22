@@ -116,22 +116,29 @@ export interface ViewMeta {
   name: string;
   /** Admin에서 보여줄 기본 메뉴명 */
   defaultMenuName: string;
+  /**
+   * 이 뷰가 Host(APS)의 planCycle 정보(planVer/planCycleID/fromDate/toDate)를
+   * 필요로 하는지 선언한다. Host(RemoteLoader)가 이 플래그를 읽어 hostData.planCycle
+   * 주입 범위를 결정할 수 있다 — true 인 뷰에만 planCycleID 등 전체를 제공.
+   * (false 인 데모/마스터성 화면은 planCycle 불필요.)
+   */
+  usePlanCycle: boolean;
 }
 
 /** 뷰 메타데이터 레지스트리 */
 export const viewMeta: Record<ViewName, ViewMeta> = {
-  ShowCase: { name: "ShowCase", defaultMenuName: "컴포넌트 쇼케이스" },
-  ItemMaster: { name: "ItemMaster", defaultMenuName: "ItemMaster" },
-  HostInfo: { name: "HostInfo", defaultMenuName: "호스트 정보" },
-  SalesChart: { name: "SalesChart", defaultMenuName: "매출 차트" },
-  ProductGrid: { name: "ProductGrid", defaultMenuName: "제품 그리드" },
-  DemandDistribution: { name: "DemandDistribution", defaultMenuName: "수요 배분" },
-  RtfReport: { name: "RtfReport", defaultMenuName: "RTF 리포트" },
-  PlanDashboard: { name: "PlanDashboard", defaultMenuName: "계획 대시보드" },
-  OnTimeRescheduledPlanResult: { name: "OnTimeRescheduledPlanResult", defaultMenuName: "재수립계획 RTF 현황" },
-  LoadFactorByOperGroup: { name: "LoadFactorByOperGroup", defaultMenuName: "공정그룹별 부하율" },
-  ReExecutePlan: { name: "ReExecutePlan", defaultMenuName: "계획 재실행" },
-  NewRtfReport: { name: "NewRtfReport", defaultMenuName: "RTF 리포트 (이수페타시스)" },
+  ShowCase: { name: "ShowCase", defaultMenuName: "컴포넌트 쇼케이스", usePlanCycle: false },
+  ItemMaster: { name: "ItemMaster", defaultMenuName: "ItemMaster", usePlanCycle: false },
+  HostInfo: { name: "HostInfo", defaultMenuName: "호스트 정보", usePlanCycle: true },
+  SalesChart: { name: "SalesChart", defaultMenuName: "매출 차트", usePlanCycle: false },
+  ProductGrid: { name: "ProductGrid", defaultMenuName: "제품 그리드", usePlanCycle: false },
+  DemandDistribution: { name: "DemandDistribution", defaultMenuName: "수요 배분", usePlanCycle: false },
+  RtfReport: { name: "RtfReport", defaultMenuName: "RTF 리포트", usePlanCycle: true },
+  PlanDashboard: { name: "PlanDashboard", defaultMenuName: "계획 대시보드", usePlanCycle: true },
+  OnTimeRescheduledPlanResult: { name: "OnTimeRescheduledPlanResult", defaultMenuName: "재수립계획 RTF 현황", usePlanCycle: true },
+  LoadFactorByOperGroup: { name: "LoadFactorByOperGroup", defaultMenuName: "공정그룹별 부하율", usePlanCycle: true },
+  ReExecutePlan: { name: "ReExecutePlan", defaultMenuName: "계획 재실행", usePlanCycle: true },
+  NewRtfReport: { name: "NewRtfReport", defaultMenuName: "RTF 리포트 (이수페타시스)", usePlanCycle: true },
 };
 
 /** 전체 뷰 메타데이터 목록 반환 */
