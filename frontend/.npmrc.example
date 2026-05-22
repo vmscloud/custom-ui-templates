@@ -1,2 +1,6 @@
 @vmscloud:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=<SET_PAT_TOKEN>
+
+# npm 전용: pinia 의 optional peer(@vue/composition-api, Vue2용) 충돌 회피.
+# pnpm 은 이 설정을 무시하므로 npm/pnpm 양쪽 모두 안전.
+legacy-peer-deps=true

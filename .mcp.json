@@ -2,31 +2,41 @@
   "mcpServers": {
     "chrome-devtools": {
       "type": "stdio",
-      "command": "npx",
+      "command": "node",
       "args": [
-        "-y",
-        "chrome-devtools-mcp@latest",
+        "${CLAUDE_PROJECT_DIR:-.}/tools/node_modules/chrome-devtools-mcp/build/src/bin/chrome-devtools-mcp.js",
         "--browserUrl=http://127.0.0.1:9222"
       ],
       "env": {}
     },
     "sequential-thinking": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PROJECT_DIR:-.}/tools/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js"
+      ]
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PROJECT_DIR:-.}/tools/node_modules/@playwright/mcp/cli.js"
+      ]
     },
     "serena": {
-      "command": "C:/Users/jook1356/.local/bin/uvx.exe",
+      "type": "stdio",
+      "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/oraios/serena",
+        "git+https://github.com/oraios/serena@v1.5.1",
         "serena",
         "start-mcp-server",
         "--project",
-        "C:/repository/custom-ui-templates/frontend",
-        "--project",
-        "C:/repository/custom-ui-templates/backend",
+        "${CLAUDE_PROJECT_DIR:-.}",
         "--context",
-        "ide-assistant"
+        "ide-assistant",
+        "--open-web-dashboard",
+        "False"
       ]
     }
   }

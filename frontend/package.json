@@ -13,9 +13,9 @@
   "dependencies": {
     "@tanstack/vue-query": "^5.92.9",
     "@tanstack/vue-virtual": "^3.13.18",
-    "@vmscloud/moz-ui-chart": "^1.0.12",
-    "@vmscloud/moz-ui-components": "^1.2.10",
-    "@vmscloud/moz-wijmo-grid": "^1.0.30",
+    "@vmscloud/moz-ui-chart": "^1.0.14",
+    "@vmscloud/moz-ui-components": "^1.2.21",
+    "@vmscloud/moz-wijmo-grid": "^1.0.32",
     "axios": "^1.13.5",
     "dayjs": "^1.11.19",
     "es-toolkit": "^1.44.0",
@@ -29,6 +29,14 @@
     "vue": "~3.4.14",
     "vue-echarts": "^7.0.3",
     "vue-router": "~4.2.5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "esbuild",
+      "less",
+      "vue-demi"
+    ]
   },
   "devDependencies": {
     "@module-federation/vite": "^1.11.0",
