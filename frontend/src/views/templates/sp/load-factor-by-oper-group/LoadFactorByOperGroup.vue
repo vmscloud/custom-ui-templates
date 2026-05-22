@@ -1,10 +1,7 @@
 <template>
   <div class="load-factor-by-oper-group-page">
     <Controller
-      :navigations="[
-        t('text-menu-production_planning'),
-        t('text-isu_entire_oper_group_avg_load_factor'),
-      ]"
+      :navigations="navigations"
       :show-filter-button="true"
       :actions="[
         {
@@ -181,7 +178,7 @@ import {
 } from "@vmscloud/moz-ui-components";
 import { useTranslation } from "i18next-vue";
 import { computed, nextTick, onMounted, ref, toRaw, watch } from "vue";
-import { useHostPlanCycle } from "@/composables/useHostStores";
+import { useHostPlanCycle, useHostNavigations } from "@/composables/useHostStores";
 import {
   fetchMain,
   fetchGroup,
@@ -196,7 +193,7 @@ import { downloadBigData } from "@vmscloud/moz-wijmo-grid/excel";
 import { getProjectId } from "@/api/client";
 
 const { t } = useTranslation(); // 다국어
-
+const navigations = useHostNavigations(() => [t("text-menu-production_planning"), t("text-isu_entire_oper_group_avg_load_factor")]);
 const { planVer, fromDate: planStartDate } = useHostPlanCycle();
 
 // ===== Oper Group State =====

@@ -2,7 +2,7 @@
   <div class="ontime-rescheduled-plan-result-page">
     <!-- Controller -->
     <Controller
-      :navigations="['생산 계획', 'Replan RTF 납기준수율']"
+      :navigations="navigations"
       showFilterButton
       :actions="[
         {
@@ -276,6 +276,7 @@ import {
   useHostPlanCycle,
   useHostUser,
   useHostProjectInfo,
+  useHostNavigations,
 } from "@/composables/useHostStores";
 import { useOnTimeRescheduledPlanResult } from "./onTimeRescheduledPlanResult";
 import OnTimeRescheduledPlanResultSub1 from "./OnTimeRescheduledPlanResultSub1.vue";
@@ -284,6 +285,7 @@ import OnTimeRescheduledPlanResultDetail from "./OnTimeRescheduledPlanResultDeta
 import type { ReplanRtfSummary } from "./onTimeRescheduledPlanResult";
 
 const { t } = useTranslation();
+const navigations = useHostNavigations(() => ["생산 계획", "Replan RTF 납기준수율"]);
 
 // === Host Data ===
 const { planVer } = useHostPlanCycle();

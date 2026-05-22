@@ -1,7 +1,7 @@
 <template>
   <div class="plan-dashboard-page">
     <Controller
-      :navigations="[t('menu-ProductionPlanning'), t('menu-PlanDashboard2')]"
+      :navigations="navigations"
     >
       <template #action>
         <div v-if="frozenVer" class="frozen-plan-badge">
@@ -148,9 +148,11 @@ import {
   useHostPlanCycle,
   useHostUser,
   useHostNavigation,
+  useHostNavigations,
 } from "@/composables/useHostStores";
 
 const { t } = useTranslation();
+const navigations = useHostNavigations(() => [t("menu-ProductionPlanning"), t("menu-PlanDashboard2")]);
 import { usePlanDashboard } from "./planDashboard";
 import PlanDashboardSub1 from "./components/PlanDashboardSub1.vue";
 import PlanDashboardSub2 from "./components/PlanDashboardSub2.vue";

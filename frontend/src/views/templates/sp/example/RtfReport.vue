@@ -2,7 +2,7 @@
   <div class="rtf-report-page">
     <!-- Filter Section -->
     <Controller
-      :navigations="['생산 계획', 'RTF 현황 (이수페타시스)']"
+      :navigations="navigations"
       showFilterButton
       :actions="[
         {
@@ -183,7 +183,7 @@ import {
   EmptyState,
 } from "@vmscloud/moz-ui-components";
 import { SplitPane, Pane } from "@vmscloud/moz-ui-components";
-import { useHostPlanCycle } from "@/composables/useHostStores";
+import { useHostPlanCycle, useHostNavigations } from "@/composables/useHostStores";
 import { useRtfReport } from "./rtfReport";
 import RtfReportSummary from "./RtfReportSummary.vue";
 import RtfReportDetail from "./RtfReportDetail.vue";
@@ -191,6 +191,7 @@ import RtfReportProdDetail from "./RtfReportProdDetail.vue";
 import type { RtfSummaryData } from "./rtfReport";
 
 // Host 데이터
+const navigations = useHostNavigations(() => ["생산 계획", "RTF 현황 (이수페타시스)"]);
 const { planVer } = useHostPlanCycle();
 
 // Composable

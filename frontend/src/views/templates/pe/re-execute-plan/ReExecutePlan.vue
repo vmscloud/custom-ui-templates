@@ -1,7 +1,7 @@
 <template>
   <div class="re-execute-plan-page">
   <Controller
-    :navigations="[t('text-menu-production_planning'), t('text-re_plan_excute')]"
+    :navigations="navigations"
     :show-filter-button="true"
     :actions="[
       {
@@ -398,12 +398,13 @@ import {
   ref,
   watch,
 } from "vue";
-import { useHostPlanCycle } from "@/composables/useHostStores";
+import { useHostPlanCycle, useHostNavigations } from "@/composables/useHostStores";
 import { IconLineEdit, IconReExecute } from "@moz-shared/icons";
 import { useReExecutePlanQuery } from "./reExecutePlan";
 import ReExecutePlanPop from "./ReExecutePlanPop.vue";
 
 const { t } = useTranslation(); // 다국어
+const navigations = useHostNavigations(() => [t("text-menu-production_planning"), t("text-re_plan_excute")]);
 const { planVer, fromDate, toDate } = useHostPlanCycle();
 
 // planCycleID - derived from planVer (no separate store in custom-ui-templates)

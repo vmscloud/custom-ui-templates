@@ -2,7 +2,7 @@
   <div class="demand-distribution-page">
     <!-- Filter Section -->
     <Controller
-      :navigations="['수요 관리', '수요 분포 현황']"
+      :navigations="navigations"
       showFilterButton
       :actions="[
         {
@@ -91,9 +91,12 @@ import {
   EmptyState,
   Controller,
 } from "@vmscloud/moz-ui-components";
+import { useHostNavigations } from "@/composables/useHostStores";
 import { useDemandDistribution } from "./demandDistribution";
 import type { DemandDistributionData } from "./demandDistribution";
 import DemandDistributionSub from "./DemandDistributionSub.vue";
+
+const navigations = useHostNavigations(() => ["수요 관리", "수요 분포 현황"]);
 
 // Demand Distribution composable
 const {
