@@ -1,13 +1,15 @@
-# Custom UI Templates 강의 자료
+# Custom UI Templates
 
 ## 1. 프로젝트 개요
 
 이 프로젝트는 **Mozart Cloud APS**의 커스텀 화면을 개발하기 위한 **풀스택 템플릿**입니다.
 
-| 구성 | 기술 스택 | 역할 |
-|------|-----------|------|
+
+| 구성           | 기술 스택                            | 역할               |
+| ------------ | -------------------------------- | ---------------- |
 | **Frontend** | Vue 3 + Vite + Module Federation | 호스트 앱에 뷰 플러그인 제공 |
-| **Backend** | FastAPI + Trino + PostgreSQL | 데이터 조회/처리 API 제공 |
+| **Backend**  | FastAPI + Trino + PostgreSQL     | 데이터 조회/처리 API 제공 |
+
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -100,15 +102,17 @@ custom-ui-templates/
 
 ### 3-1. 기술 스택
 
-| 기술 | 버전 | 역할 |
-|------|------|------|
-| Python | 3.12+ | 런타임 |
-| FastAPI | 0.123+ | 웹 프레임워크 |
-| Trino | 0.328+ | 분석 쿼리 엔진 (Iceberg + PostgreSQL) |
-| pydantic-settings | 2.12+ | 환경변수 설정 관리 |
-| httpx | 0.27+ | 비동기 HTTP 클라이언트 |
-| uv | - | 패키지 매니저 |
-| uvicorn | - | ASGI 서버 (포트 18020) |
+
+| 기술                | 버전     | 역할                              |
+| ----------------- | ------ | ------------------------------- |
+| Python            | 3.12+  | 런타임                             |
+| FastAPI           | 0.123+ | 웹 프레임워크                         |
+| Trino             | 0.328+ | 분석 쿼리 엔진 (Iceberg + PostgreSQL) |
+| pydantic-settings | 2.12+  | 환경변수 설정 관리                      |
+| httpx             | 0.27+  | 비동기 HTTP 클라이언트                  |
+| uv                | -      | 패키지 매니저                         |
+| uvicorn           | -      | ASGI 서버 (포트 18020)              |
+
 
 ### 3-2. 레이어 구조
 
@@ -264,16 +268,18 @@ OS 환경변수        ← 최우선 (Docker, CI)
 
 주요 설정:
 
-| 변수 | 기본값 | 설명 |
-|------|--------|------|
-| `TRINO_HOST` | - | Trino 서버 호스트 |
-| `TRINO_PORT` | 18080 | Trino 서버 포트 |
-| `TRINO_CATALOG_ICEBERG` | iceberg | Iceberg 카탈로그명 |
-| `TRINO_SCHEMA_APS` | mzc_aps | APS 스키마명 |
-| `QUERY_EXECUTOR_BASE_URL` | - | Query Executor 서비스 URL |
-| `APS_BACKEND_BASE_URL` | localhost:8080 | APS C# 백엔드 (프록시용) |
-| `USE_MOCK` | false | Mock 모드 활성화 |
-| `DEBUG` | false | 디버그 모드 (에러 상세 노출) |
+
+| 변수                        | 기본값            | 설명                     |
+| ------------------------- | -------------- | ---------------------- |
+| `TRINO_HOST`              | -              | Trino 서버 호스트           |
+| `TRINO_PORT`              | 18080          | Trino 서버 포트            |
+| `TRINO_CATALOG_ICEBERG`   | iceberg        | Iceberg 카탈로그명          |
+| `TRINO_SCHEMA_APS`        | mzc_aps        | APS 스키마명               |
+| `QUERY_EXECUTOR_BASE_URL` | -              | Query Executor 서비스 URL |
+| `APS_BACKEND_BASE_URL`    | localhost:8080 | APS C# 백엔드 (프록시용)      |
+| `USE_MOCK`                | false          | Mock 모드 활성화            |
+| `DEBUG`                   | false          | 디버그 모드 (에러 상세 노출)      |
+
 
 ### 3-8. Mock 모드
 
@@ -297,12 +303,14 @@ backend/mock_data/responses/
 
 ### 4-1. Module Federation
 
-| 항목 | 값 |
-|------|-----|
-| 리모트 이름 | `external_app` |
-| 진입 파일 | `remoteEntry.js` |
-| 노출 모듈 | `./expose` → `src/expose.ts` |
+
+| 항목     | 값                             |
+| ------ | ----------------------------- |
+| 리모트 이름 | `external_app`                |
+| 진입 파일  | `remoteEntry.js`              |
+| 노출 모듈  | `./expose` → `src/expose.ts`  |
 | 공유 싱글톤 | `vue`, `pinia` (호스트와 인스턴스 공유) |
+
 
 ```ts
 // vite.config.ts 내 Module Federation 설정
@@ -314,7 +322,7 @@ federation({
     vue: { singleton: true, requiredVersion: "^3.4.14" },
     pinia: { singleton: true, requiredVersion: "^2.1.7" },
   },
-})
+});
 ```
 
 > **왜 singleton인가?**
@@ -357,8 +365,12 @@ interface HostData {
 ```ts
 // viewRegistry: 뷰 이름 → lazy import
 export const viewRegistry = {
-  RtfReport: withHostInit(() => import("./views/templates/sp/rtf-report/RtfReport.vue")),
-  PlanDashboard: withHostInit(() => import("./views/templates/sp/plan-dashboard/PlanDashboard.vue")),
+  RtfReport: withHostInit(
+    () => import("./views/templates/sp/rtf-report/RtfReport.vue"),
+  ),
+  PlanDashboard: withHostInit(
+    () => import("./views/templates/sp/plan-dashboard/PlanDashboard.vue"),
+  ),
   // ...
 };
 
@@ -381,15 +393,17 @@ views/templates/sp/rtf-report/
 
 ### 4-6. 라이브러리
 
-| 패키지 | 역할 |
-|--------|------|
+
+| 패키지                           | 역할                                        |
+| ----------------------------- | ----------------------------------------- |
 | `@vmscloud/moz-ui-components` | UI 컴포넌트 (Controller, Popup, EmptyState 등) |
-| `@vmscloud/moz-wijmo-grid` | Wijmo 기반 ExtendFlexGrid |
-| `@vmscloud/moz-ui-chart` | ECharts 차트 래퍼 |
-| `@tanstack/vue-query` | 서버 상태 관리 |
-| `gojs` | BomMap 다이어그램 |
-| `dayjs` | 날짜 처리 |
-| `i18next-vue` | 다국어 |
+| `@vmscloud/moz-wijmo-grid`    | Wijmo 기반 ExtendFlexGrid                   |
+| `@vmscloud/moz-ui-chart`      | ECharts 차트 래퍼                             |
+| `@tanstack/vue-query`         | 서버 상태 관리                                  |
+| `gojs`                        | BomMap 다이어그램                              |
+| `dayjs`                       | 날짜 처리                                     |
+| `i18next-vue`                 | 다국어                                       |
+
 
 ### 4-7. Shim 시스템
 
@@ -436,12 +450,14 @@ APS 호스트 코드의 내부 경로를 리모트에서도 사용할 수 있도
 
 `my-feature`라는 기능을 만든다면:
 
-| 형태 | 예시 | 용도 |
-|------|------|------|
-| kebab-case | `my-feature` | URL, 폴더명, 태그 |
-| snake_case | `my_feature` | Python 파일명, 모듈명 |
-| PascalCase | `MyFeature` | 클래스명, Vue 컴포넌트명 |
-| camelCase | `myFeature` | Composable 파일명, JS 변수 |
+
+| 형태         | 예시           | 용도                    |
+| ---------- | ------------ | --------------------- |
+| kebab-case | `my-feature` | URL, 폴더명, 태그          |
+| snake_case | `my_feature` | Python 파일명, 모듈명       |
+| PascalCase | `MyFeature`  | 클래스명, Vue 컴포넌트명       |
+| camelCase  | `myFeature`  | Composable 파일명, JS 변수 |
+
 
 ### Step 1: 백엔드 — 스키마
 
@@ -545,12 +561,26 @@ export function useMyFeature() {
 <!-- frontend/src/views/templates/sp/my-feature/MyFeature.vue -->
 <template>
   <div class="my-feature-page">
-    <Controller :navigations="['내 기능']" showFilterButton
-      :actions="[{ action: 'Search', click: handleSearch, disabled: loading || !planVer }]">
+    <Controller
+      :navigations="['내 기능']"
+      showFilterButton
+      :actions="[
+        {
+          action: 'Search',
+          click: handleSearch,
+          disabled: loading || !planVer,
+        },
+      ]"
+    >
     </Controller>
     <section class="content-section">
-      <ExtendFlexGrid name="myFeatureMain" :itemsSource="data"
-        height="100%" :isReadOnly="true" :loading="loading" />
+      <ExtendFlexGrid
+        name="myFeatureMain"
+        :itemsSource="data"
+        height="100%"
+        :isReadOnly="true"
+        :loading="loading"
+      />
     </section>
   </div>
 </template>
@@ -619,15 +649,17 @@ pnpm dev:watch                   # 빌드 + watch (정적 리모트)
 
 ## 8. 자주 하는 실수
 
-| 실수 | 해결 |
-|------|------|
-| `inject` 실패 (undefined) | `shared`에 `singleton: true` 빠졌는지 확인 |
-| API 호출 시 projectId 빈 값 | `withHostInit` 래퍼 빠졌거나, DeveloperTool에서 projectID 미입력 |
-| shim 경로 import 에러 | `vite.config.ts`의 `resolve.alias`에 해당 경로 추가 필요 |
-| proxy.router가 다른 라우터보다 먼저 매칭 | `api.py`에서 proxy를 반드시 마지막에 등록 |
-| Trino 쿼리에서 SQL injection | `str.format()` 사용 시 사용자 입력 검증 필수 |
-| `_error_response`에서 상세 에러 노출 | `DEBUG=false`인 프로덕션에서는 자동으로 숨겨짐 |
-| Mock 모드에서 새 엔드포인트 안 됨 | `mock_store.py`의 `_ROUTE_MAP`에 매핑 추가 필요 |
+
+| 실수                           | 해결                                                    |
+| ---------------------------- | ----------------------------------------------------- |
+| `inject` 실패 (undefined)      | `shared`에 `singleton: true` 빠졌는지 확인                   |
+| API 호출 시 projectId 빈 값       | `withHostInit` 래퍼 빠졌거나, DeveloperTool에서 projectID 미입력 |
+| shim 경로 import 에러            | `vite.config.ts`의 `resolve.alias`에 해당 경로 추가 필요        |
+| proxy.router가 다른 라우터보다 먼저 매칭 | `api.py`에서 proxy를 반드시 마지막에 등록                         |
+| Trino 쿼리에서 SQL injection     | `str.format()` 사용 시 사용자 입력 검증 필수                      |
+| `_error_response`에서 상세 에러 노출 | `DEBUG=false`인 프로덕션에서는 자동으로 숨겨짐                       |
+| Mock 모드에서 새 엔드포인트 안 됨        | `mock_store.py`의 `_ROUTE_MAP`에 매핑 추가 필요               |
+
 
 ---
 
@@ -642,12 +674,3 @@ pnpm dev:watch                   # 빌드 + watch (정적 리모트)
 7. **SQL 분리** = Trino 쿼리는 `_queries.py` 파일에 상수로 관리
 8. **Mock 모드** = DB 없이 JSON 파일로 프론트엔드 개발 가능
 
-### 강의 순서 추천
-
-1. 전체 구조 개요 (프론트 + 백 + APS 호스트 관계)
-2. Module Federation 개념 (호스트/리모트)
-3. `expose.ts` → `withHostInit` → `hostData` 흐름
-4. 백엔드 레이어 구조 (endpoint → service/repository → database/adapter)
-5. 실제 화면 하나 같이 만들어보기 (풀스택)
-6. API 연동 (`client.ts` → FastAPI → Trino/PostgreSQL)
-7. 빌드 & 배포 (`deploy-custom-ui.ps1`)

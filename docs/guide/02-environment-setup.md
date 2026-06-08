@@ -2,14 +2,16 @@
 
 ## 필수 도구
 
-| 도구 | 버전 | 용도 |
-|------|------|------|
-| Node.js | 18+ | 프론트 빌드/개발 서버 |
-| pnpm 또는 npm | 최신 | 패키지 매니저. 저장소엔 둘 다의 lockfile 존재 |
-| Python | 3.11+ | FastAPI 실행 |
-| uv | 최신 | 파이썬 가상환경·의존성. `backend/.venv` 자동 |
-| PowerShell | Win 전용 | `run-dev.ps1`, `deploy-custom-ui.ps1` |
-| Chrome | 최신 | 개발/디버깅 |
+
+| 도구          | 버전              | 용도                                    |
+| ----------- | --------------- | ------------------------------------- |
+| Node.js     | 20+ (최신 LTS 추천) | 프론트 빌드/개발 서버                          |
+| pnpm 또는 npm | 최신              | 패키지 매니저. 저장소엔 둘 다의 lockfile 존재        |
+| Python      | 3.11+           | FastAPI 실행                            |
+| uv          | 최신              | 파이썬 가상환경·의존성. `backend/.venv` 자동      |
+| PowerShell  | Win 전용          | `run-dev.ps1`, `deploy-custom-ui.ps1` |
+| Chrome      | 최신              | 개발/디버깅                                |
+
 
 ## 첫 세팅
 
@@ -19,7 +21,7 @@
 
 1. GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
 2. `read:packages` 권한으로 발급.
-3. 아래 중 한 가지 방식으로 주입.
+3. 아래 방식으로 주입.
 
 ```bash
 cd frontend
@@ -34,13 +36,7 @@ cp .npmrc.example .npmrc
 //npm.pkg.github.com/:_authToken=ghp_xxxxxxxxxxxxxxxxxxxxx
 ```
 
-환경 변수 방식도 허용합니다.
 
-```powershell
-$env:NPM_TOKEN="ghp_..."
-```
-
-> ⚠️ **`frontend/.npmrc` 는 `.gitignore` 에 포함돼 있어 절대 저장소에 커밋되지 않습니다.** 저장소에 올라가는 건 placeholder 가 들어간 `frontend/.npmrc.example` 뿐입니다. 실수로 토큰이 커밋됐다면 즉시 GitHub 토큰 설정에서 revoke + 새 토큰 발급하세요.
 
 ### 2) 의존성 설치
 
@@ -69,7 +65,6 @@ cd backend
 ```
 
 - Swagger UI: `http://localhost:8000/docs`
-- 헬스 체크: `http://localhost:8000/health` 또는 `/api/v1/health`
 
 ### 프론트엔드 (포트 5300)
 
@@ -102,14 +97,16 @@ proxy: {
 
 `backend/.env` 에 덮어쓸 수 있는 것들(기본값은 `app/core/config.py` 참고).
 
-| 키 | 설명 |
-|----|------|
-| `TRINO_CATALOG_ICEBERG` | Trino 카탈로그 이름(예: `iceberg`) |
-| `TRINO_SCHEMA_APS` | Trino 스키마/테넌트(예: `mzc_aps`) |
-| `APS_BACKEND_BASE_URL` | proxy 중계 시 C# BE 주소 |
-| `QUERY_TIMEOUT_SECONDS` | httpx 타임아웃 |
-| `DEBUG` | `true` 로 두면 FastAPI 에러 응답에 `detail` 포함 |
-| (PG 관련) | `PG_HOST`, `PG_PORT`, `PG_DB`, `PG_USER`, `PG_PASSWORD` 등 |
+
+| 키                       | 설명                                                        |
+| ----------------------- | --------------------------------------------------------- |
+| `TRINO_CATALOG_ICEBERG` | Trino 카탈로그 이름(예: `iceberg`)                               |
+| `TRINO_SCHEMA_APS`      | Trino 스키마/테넌트(예: `mzc_aps`)                               |
+| `APS_BACKEND_BASE_URL`  | proxy 중계 시 C# BE 주소                                       |
+| `QUERY_TIMEOUT_SECONDS` | httpx 타임아웃                                                |
+| `DEBUG`                 | `true` 로 두면 FastAPI 에러 응답에 `detail` 포함                    |
+| (PG 관련)                 | `PG_HOST`, `PG_PORT`, `PG_DB`, `PG_USER`, `PG_PASSWORD` 등 |
+
 
 ## Mock 모드 (DB 없이 UI 작업)
 
@@ -121,6 +118,7 @@ cd backend
 ```
 
 관련 코드:
+
 - 미들웨어: `backend/app/core/mock_middleware.py`
 - 저장소: `backend/mock_data/responses/<domain>/...`
 - 캡처 스크립트: `backend/mock_data/capture.py` (실제 DB로 한 번 돌려 응답을 저장)
@@ -137,13 +135,15 @@ cd backend
 
 ## 빠른 점검 체크리스트
 
-| 체크 | 명령/URL |
-|------|---------|
-| BE 떴나 | `curl http://localhost:8000/docs` |
-| FE 떴나 | `curl http://localhost:5300/ext/` |
-| BE→PG 접속 | Swagger 에서 간단한 `/cfg-*` 엔드포인트 호출 |
-| BE→Trino 접속 | 어떤 커스텀 엔드포인트든 `/main` 호출 후 200·row 존재 |
-| 프록시 (dev) | `/api/aps/backend/...` 호출 → 401 (정상, 세션 없음) |
+
+| 체크          | 명령/URL                                      |
+| ----------- | ------------------------------------------- |
+| BE 떴나       | `curl http://localhost:8000/docs`           |
+| FE 떴나       | `curl http://localhost:5300/ext/`           |
+| BE→PG 접속    | Swagger 에서 간단한 `/cfg-*` 엔드포인트 호출            |
+| BE→Trino 접속 | 어떤 커스텀 엔드포인트든 `/main` 호출 후 200·row 존재       |
+| 프록시 (dev)   | `/api/aps/backend/...` 호출 → 401 (정상, 세션 없음) |
+
 
 ## 개발 편의 팁
 

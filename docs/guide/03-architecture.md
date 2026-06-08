@@ -36,7 +36,7 @@
 
 ## Module Federation 한 눈에
 
-- 프론트 빌드 시 `frontend/vite.config.ts` 의 `@module-federation/vite` 플러그인이 **`remoteEntry.js`** 를 만든다.
+- 프론트 빌드 시 `frontend/vite.config.ts` 의 `@module-federation/vite` 플러그인이 `**remoteEntry.js**` 를 만든다.
 - 공개 모듈 = `src/expose.ts` 하나. 내부의 `viewRegistry: Record<string, () => Promise<VueComponent>>` 가 핵심 자료구조.
 - Host 앱은 `import('external_app/expose')` 로 viewRegistry를 받고, 원하는 키를 호출해 비동기로 Vue 컴포넌트를 얻음.
 - **dev 단독 실행** 시에는 Host 가 없으므로 `src/router/index.ts` + `src/main.ts` 가 직접 라우팅/마운트.
@@ -67,12 +67,14 @@ const { userInfo, isAdmin } = useHostUser();
 
 이 저장소에서 "서버" 라고 하면 FastAPI 를 말합니다. 하지만 프론트가 호출하는 목적지는 두 곳.
 
-| 경로 | 대상 | 인증 | 쓰는 경우 |
-|------|------|------|-----------|
-| `/api/custom/backend/{pid}/...` | **FastAPI** (이 저장소) | 프로젝트 토큰 | 기본값. 신규 화면의 데이터 조회·집계·편집 |
-| `/api/aps/backend/{pid}/...` | **APS C# 호스트** | fusionauth 세션 쿠키 | APS 표준 API (`PlmScenarioMaster`, `OdlReport`, `ComUserLayout` 등) |
 
-**규칙**: 우리가 직접 제어할 수 있는 로직은 **모두 FastAPI 쪽**에 쌓습니다. 세션 기반 표준 기능만 `/api/aps/` 를 씁니다. 이렇게 해야 Mock · Dev 단독 실행에서도 같은 코드를 재현할 수 있습니다.
+| 경로                              | 대상                  | 인증               | 쓰는 경우                                                            |
+| ------------------------------- | ------------------- | ---------------- | ---------------------------------------------------------------- |
+| `/api/custom/backend/{pid}/...` | **FastAPI** (이 저장소) | 프로젝트 토큰          | 기본값. 신규 화면의 데이터 조회·집계·편집                                         |
+| `/api/aps/backend/{pid}/...`    | **APS C# 호스트**      | fusionauth 세션 쿠키 | APS 표준 API (`PlmScenarioMaster`, `OdlReport`, `ComUserLayout` 등) |
+
+
+**규칙**: 우리가 직접 제어할 수 있는 로직은 **모두 FastAPI 쪽**에 개발해야 합니다. 세션 기반 표준 기능만 `/api/aps/` 를 씁니다. 이렇게 해야 Mock · Dev 단독 실행에서도 같은 코드를 재현할 수 있습니다.
 
 ## 데이터 저장소 두 가지
 
