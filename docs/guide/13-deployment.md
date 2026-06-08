@@ -42,6 +42,8 @@ frontend/dist/
 
 저장소 루트에서 실행합니다. 빌드 → 사내 레지스트리 푸시까지 한 번에 처리합니다.
 
+> 📍 **실제 배포는 `omn` 환경에서 수행하세요.** 아래의 사전 조건(GitHub Packages 토큰, insecure registry 등록)이 갖춰지고 사내 레지스트리(`203.231.40.243:6007`)로의 네트워크 경로가 열려 있는 환경이 `omn` 입니다. 로컬에서 빌드 검증(`make build-frontend`)까지 마친 뒤, 푸시는 `omn` 에서 진행합니다.
+
 ```powershell
 # 둘 다 빌드/푸시
 .\deploy-custom-ui.ps1
@@ -73,15 +75,59 @@ frontend/dist/
    - `frontend/.npmrc` 의 `_authToken=` 값
    토큰은 `docker build --secret` 로 주입되어 이미지 레이어에 남지 않습니다.
 
-2. **insecure registry 등록** — 사내 레지스트리는 HTTP 이므로 Docker 가 push 를 거부할 수 있습니다. Docker Desktop > Settings > Docker Engine 에 추가 후 재시작:
-
-   ```json
-   { "insecure-registries": ["203.231.40.243:6007"] }
-   ```
-
-   (변경 후 Docker Desktop 을 반드시 재시작해야 데몬이 값을 다시 읽습니다.)
+2. **insecure registry 등록** (Docker Desktop) — 아래 "레지스트리 IP 설정" 참고.
 
 스크립트는 토큰 누락·빌드 실패·푸시 거부 시 원인과 해결 방법을 콘솔에 자세히 출력합니다. 막히면 그 메시지를 먼저 읽으세요.
+
+### 레지스트리 IP 설정: 두 곳을 맞춰야 하는 이유
+
+레지스트리 주소는 **서로 다른 역할의 두 곳**에 들어갑니다. 둘이 가리키는 엔드포인트가 **반드시 같아야** push 가 성공합니다.
+
+| 위치 | 역할 | 비유 |
+|------|------|------|
+| Docker Desktop `daemon.json` 의 `insecure-registries` | "이 주소로는 HTTPS 없이 HTTP push 를 허용한다"는 **허용 목록(allowlist)** | 통과시킬 주소를 적어 둔 *출입 명단* |
+| `deploy-custom-ui.ps1` 의 `-HostIP` / `-RegistryPort` | 이미지를 **실제로 밀어 넣는 목적지 경로** (`HostIP:Port/이미지:태그`) | 실제로 짐을 보내는 *배송 주소* |
+
+> Docker 는 기본적으로 모든 레지스트리에 HTTPS 를 요구합니다. 사내 레지스트리는 HTTP(평문) 이라, 허용 목록에 등록하지 않으면 데몬이 push 를 **거부**합니다. 반대로 허용 목록에만 넣고 스크립트의 목적지가 다르면, 등록되지 않은 주소로 보내려다 다시 거부됩니다. **두 주소가 정확히 일치**해야 합니다.
+
+#### ① Docker Desktop — 허용 목록 등록
+
+Docker Desktop > **Settings** > **Docker Engine** 의 JSON 에 다음을 추가하고 **Apply & Restart**:
+
+```json
+{
+  "insecure-registries": ["203.231.40.243:6007"]
+}
+```
+
+- 기존에 다른 키가 있으면 `insecure-registries` 항목만 병합해 추가하세요(전체를 덮어쓰지 말 것).
+- 직접 파일을 고치려면 `%USERPROFILE%\.docker\daemon.json` 을 수정합니다.
+- **변경 후 Docker Desktop 을 반드시 재시작**해야 합니다. 데몬은 시작 시점에만 이 값을 읽기 때문에, 재시작 전에는 등록이 적용되지 않습니다.
+- 적용 확인: `docker info` 출력의 `Insecure Registries` 목록에 `203.231.40.243:6007` 이 보이면 정상.
+
+#### ② 스크립트 — 실제 푸시 경로
+
+기본값은 스크립트 상단 `param` 블록에 박혀 있습니다.
+
+```powershell
+# deploy-custom-ui.ps1
+param(
+    ...
+    [string]$HostIP = "203.231.40.243",
+    [int]$RegistryPort = 6007,
+    ...
+)
+```
+
+이 값을 바꾸는 방법은 두 가지입니다.
+
+- **일회성** — 실행할 때 파라미터로 override (권장, 스크립트 수정 불필요):
+  ```powershell
+  .\deploy-custom-ui.ps1 -HostIP 192.168.x.x -RegistryPort 6007
+  ```
+- **영구** — 레지스트리 주소 자체가 바뀐 경우에만 `param` 블록의 기본값을 직접 수정.
+
+> 레지스트리 주소를 바꿨다면 **①의 허용 목록도 같은 주소로 갱신**해야 합니다. 한쪽만 바꾸면 push 가 거부됩니다. push 실패 시 스크립트가 현재 `daemon.json` 의 등록 상태와 불일치 여부를 진단해 출력하므로, 그 메시지를 먼저 확인하세요.
 
 ## 3. 이미지 내부 동작
 
