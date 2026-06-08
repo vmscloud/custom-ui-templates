@@ -131,7 +131,7 @@ cd backend
 
 ### Host에 올려 검증
 
-완성된 프론트 빌드 산출물을 APS 호스트 쪽 static 경로에 배포하면 `window.__POWERED_BY_APS_HOST__=true` 환경에서 `viewRegistry["MyPage"]()` 가 호출됩니다. 배포 절차는 기존 `docs/EXTERNAL_DEVELOPER_GUIDE.md` 를 참고하세요.
+완성된 프론트 빌드 산출물을 APS 호스트 쪽 static 경로에 배포하면 `window.__POWERED_BY_APS_HOST__=true` 환경에서 `viewRegistry["MyPage"]()` 가 호출됩니다. 배포 절차는 [13-deployment](./13-deployment.md) 를 참고하세요.
 
 ## 빠른 점검 체크리스트
 

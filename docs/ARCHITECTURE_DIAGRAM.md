@@ -242,7 +242,7 @@ graph TB
             BE_DOCK["Dockerfile (python:slim)"]
         end
 
-        DOCS["docs/<br/>EXTERNAL_DEVELOPER_GUIDE.md"]
+        DOCS["docs/guide/<br/>개발자 가이드"]
     end
 
     style FE fill:#e0f2f1,stroke:#00695c

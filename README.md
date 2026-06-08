@@ -46,6 +46,6 @@ custom-ui-templates/
 
 ## 그 외 문서
 
-- [`docs/EXTERNAL_DEVELOPER_GUIDE.md`](./docs/EXTERNAL_DEVELOPER_GUIDE.md) — 배포 절차
+- [`docs/guide/13-deployment.md`](./docs/guide/13-deployment.md) — 배포 절차 · [`14-troubleshooting.md`](./docs/guide/14-troubleshooting.md) — 문제 해결
 - [`docs/decisions/`](./docs/decisions/README.md) — 아키텍처 결정 기록(ADR)
 - [`CLAUDE.md`](./CLAUDE.md) · [`AGENTS.md`](./AGENTS.md) — LLM 코딩 행동 지침
