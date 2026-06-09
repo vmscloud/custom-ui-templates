@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>mozart-cloud 커스텀 UI — 홍보 애니메틱</title>
+<style>
+  :root {
+    --accent: #4568e0;
+    --accent-soft: #eef1fc;
+    --ink: #1f2937;
+    --ink-soft: #6b7280;
+    --line: #e3e8f0;
+    --plan: #9aa7c7;
+    --term-bg: #0f1117;
+    --term-green: #6ee787;
+    --term-blue: #6cb6ff;
+    --term-dim: #768390;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    background: #0b0d12;
+    font-family: -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+
+  .stage {
+    position: relative;
+    width: min(96vw, 1280px);
+    aspect-ratio: 16 / 9;
+    background: #f4f6fb;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,.5);
+    display: grid;
+    grid-template-columns: 30% 70%;
+  }
+
+  /* ── LEFT: Claude CLI terminal ── */
+  .terminal {
+    background: var(--term-bg);
+    color: #d6deeb;
+    font-family: "Cascadia Code", "Consolas", "D2Coding", monospace;
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 18px 20px;
+    display: flex; flex-direction: column;
+    border-right: 1px solid #000;
+  }
+  .term-bar { display: flex; align-items: center; gap: 7px; margin: -4px -4px 14px; }
+  .term-dot { width: 11px; height: 11px; border-radius: 50%; }
+  .term-dot.r { background: #ff5f57; } .term-dot.y { background: #febc2e; } .term-dot.g { background: #28c840; }
+  .term-title { margin-left: 10px; color: var(--term-dim); font-size: 12px; letter-spacing: .3px; }
+  .term-body { flex: 1; }
+  .term-line { white-space: pre-wrap; word-break: break-word; text-align: left; }
+  .term-dim { color: var(--term-dim); }
+  .term-green { color: var(--term-green); }
+  .prompt-sym { color: var(--accent); font-weight: 700; }
+  .cmd { color: #fff; }
+  .key-noun { color: #ffd866; font-weight: 700; }
+  .caret { display: inline-block; width: 9px; height: 18px; background: var(--term-green); vertical-align: -3px; margin-left: 1px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .term-gen { color: var(--term-blue); opacity: 0; }
+  .term-gen.show { opacity: 1; transition: opacity .25s; }
+
+  /* ── RIGHT: app (dev shell ↔ host shell) ── */
+  .app { position: relative; background: #fff; display: flex; flex-direction: column; overflow: hidden; }
+  .app-top { flex: 0 0 50px; display: flex; align-items: center; padding: 0 10px; border-bottom: 1px solid var(--line); background: #fff; }
+  .app-main { flex: 1; display: flex; min-height: 0; }
+  .moz-logo { height: 14px; display: block; flex: 0 0 auto; }
+
+  /* header variants */
+  .hdr { display: none; align-items: center; gap: 10px; width: 100%; }
+  .stage.mode-dev  #hdrDev  { display: flex; }
+  .stage.mode-host #hdrHost { display: flex; }
+  .top-spacer { flex: 1; }
+
+  /* dev header */
+  .dev-badge { font-size: 11px; color: #8a93a6; border: 1px dashed #cfd6e4; border-radius: 6px; padding: 3px 8px; }
+  .dev-ctl { font-size: 12px; color: var(--ink-soft); border: 1px solid var(--line); border-radius: 7px; padding: 5px 9px; }
+  .dev-ctl.solid { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+
+  /* host header — real APS GNB */
+  .gnb { display: flex; align-items: center; gap: 0; overflow: hidden; flex: 0 0 auto; }
+  .gnb-i { font-size: 10.5px; color: #5b657a; padding: 4px 5px; border-radius: 6px; white-space: nowrap; }
+  .gnb-i.active { background: #e9efff; color: var(--accent); font-weight: 700; }
+  .host-plan { font-size: 10px; color: var(--ink); display: flex; align-items: center; gap: 5px; padding: 4px 7px; border: 1px solid var(--line); border-radius: 7px; white-space: nowrap; }
+  .host-plan .pv-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--accent); display: inline-block; }
+  .host-plan b { font-weight: 600; }
+  .host-plan .pv-caret { color: var(--ink-soft); }
+
+  /* left rail — dark navy (#191727), matches custom-ui-templates aside & APS GlobalToolbar */
+  .app-rail { flex: 0 0 54px; background: #191727; display: flex; flex-direction: column; }
+  .rail-set { display: none; flex: 1; flex-direction: column; }
+  .stage.mode-dev  #railDev  { display: flex; }            /* dev: empty dark bar (DeveloperTool aside) */
+  .stage.mode-host #railHost { display: flex; justify-content: space-between; padding: 13px 0; }
+  .rail-grp { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .ric { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; color: #c4ccdc; position: relative; }
+  .ric svg { width: 20px; height: 20px; }
+  .ric.user { background: var(--accent); border-radius: 50%; color: #fff; }
+  .ric.bell::after { content: ""; position: absolute; top: 3px; right: 6px; width: 6px; height: 6px; background: #ff5f57; border-radius: 50%; }
+
+  /* content */
+  .app-content { flex: 1; min-height: 0; position: relative; padding: 20px 24px; overflow: hidden; display: flex; flex-direction: column; }
+  .empty-hint { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #c2cad8; font-size: 14px; }
+  .crumb { display: none; font-size: 12px; color: var(--ink-soft); margin-bottom: 10px; }
+  .crumb b { color: #c2cad8; font-weight: 400; margin: 0 5px; }
+  .stage.mode-host .crumb { display: block; }
+
+  .view { opacity: 0; transform: translateY(8px); flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .view.show { opacity: 1; transform: none; transition: opacity .4s ease, transform .4s ease; }
+  .v-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .v-title { font-size: 21px; font-weight: 700; color: var(--ink); }
+  .v-badge { font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-soft); padding: 3px 10px; border-radius: 999px; transition: transform .3s ease, box-shadow .3s ease; }
+  .v-badge.pulse { transform: scale(1.12); box-shadow: 0 0 0 4px rgba(69,104,224,.15); }
+  .v-desc { color: var(--ink-soft); font-size: 13px; margin-bottom: 16px; }
+
+  .chart { flex: 1; min-height: 0; margin-bottom: 26px; display: flex; align-items: flex-end; gap: 16px; padding: 0 6px 0 28px; border-left: 1px solid var(--line); border-bottom: 1px solid var(--line); position: relative; }
+  .y-label { position: absolute; left: -28px; top: -6px; font-size: 10px; color: #aab3c5; }
+  .grp { flex: 1; display: flex; align-items: flex-end; justify-content: center; gap: 6px; height: 100%; position: relative; }
+  .bar { width: 22px; border-radius: 5px 5px 0 0; height: 0; transition: height .9s cubic-bezier(.2,.7,.2,1); position: relative; }
+  .bar.plan { background: #c7d0e6; } .bar.act { background: var(--accent); }
+  .bar .val { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--ink-soft); opacity: 0; transition: opacity .4s .5s; }
+  .view.show .bar .val { opacity: 1; }
+  .grp .name { position: absolute; bottom: -22px; font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
+  .legend { display: flex; gap: 16px; font-size: 12px; color: var(--ink-soft); }
+  .legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
+  .legend .pl i { background: #c7d0e6; } .legend .ac i { background: var(--accent); }
+
+  /* GNB dropdown (생산 계획) */
+  .gnb-drop { position: absolute; top: 50px; left: 150px; display: none; gap: 4px; background: #fff; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 14px 34px rgba(20,40,90,.18); padding: 10px; z-index: 45; }
+  .gnb-drop.open { display: flex; }
+  .gd-col { display: flex; flex-direction: column; min-width: 158px; }
+  .gd-i { font-size: 12.5px; color: #434c60; padding: 7px 10px; border-radius: 6px; white-space: nowrap; }
+  .gd-i.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .gd-new { max-height: 0; opacity: 0; padding-top: 0; padding-bottom: 0; overflow: hidden; transition: max-height .35s ease, opacity .3s ease, padding .35s ease; }
+  .gd-new.in { max-height: 38px; opacity: 1; padding-top: 7px; padding-bottom: 7px; }
+  .hm-tag { font-size: 10px; font-weight: 700; color: #fff; background: #34c759; border-radius: 5px; padding: 1px 5px; margin-left: 6px; vertical-align: 1px; }
+
+  /* cursor + ripple */
+  .cursor { position: absolute; width: 20px; height: 20px; z-index: 48; opacity: 0; pointer-events: none; transition: opacity .3s, left .55s ease, top .55s ease; }
+  .cursor svg { filter: drop-shadow(0 1px 2px rgba(0,0,0,.4)); }
+  .ripple { position: absolute; border: 2px solid var(--accent); border-radius: 50%; width: 12px; height: 12px; opacity: 0; left: 0; top: 0; }
+  .ripple.go { animation: rip .5s ease-out; }
+  @keyframes rip { from { opacity:.7; transform: scale(1);} to { opacity:0; transform: scale(4.2);} }
+
+  /* magic-jump flash */
+  .flash { position: absolute; inset: 0; background: #fff; opacity: 0; z-index: 60; pointer-events: none; }
+  .flash.go { animation: flash .6s ease; }
+  @keyframes flash { 0%{opacity:0;} 22%{opacity:1;} 100%{opacity:0;} }
+
+  /* subtitle — centered at the bottom of the Claude CLI (left 30%) area */
+  .sub { position: absolute; left: 0; width: 30%; bottom: 24px; text-align: center; z-index: 50; pointer-events: none; }
+  .sub span { display: inline-block; max-width: 90%; background: rgba(40,44,58,.92); color: #fff; font-size: 14px; font-weight: 600; letter-spacing: .2px; line-height: 1.4; padding: 8px 14px; border-radius: 9px; opacity: 0; transform: translateY(6px); }
+  .sub span.show { opacity: 1; transform: none; transition: all .35s ease; }
+
+  /* end card */
+  .endcard { position: absolute; inset: 0; z-index: 70; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: rgba(244,246,251,0); backdrop-filter: blur(0px); opacity: 0; transition: opacity .6s ease, backdrop-filter .6s ease; }
+  .endcard.show { opacity: 1; background: rgba(244,246,251,.86); backdrop-filter: blur(7px); }
+  .ec-logo .moz-logo { height: 26px; }
+  .ec-main { font-size: 38px; font-weight: 800; color: var(--ink); letter-spacing: -.5px; transform: translateY(10px); opacity: 0; }
+  .ec-sub  { font-size: 16px; color: var(--ink-soft); transform: translateY(10px); opacity: 0; }
+  .ec-eng  { font-size: 12.5px; color: var(--plan); letter-spacing: .4px; transform: translateY(10px); opacity: 0; }
+  .endcard.show .ec-main { opacity: 1; transform: none; transition: all .5s .15s ease; }
+  .endcard.show .ec-sub  { opacity: 1; transform: none; transition: all .5s .30s ease; }
+  .endcard.show .ec-eng  { opacity: 1; transform: none; transition: all .5s .45s ease; }
+
+  .replay { position: fixed; bottom: 18px; right: 18px; z-index: 100; background: #fff; color: var(--ink); border: 1px solid var(--line); font-size: 13px; font-weight: 600; padding: 9px 15px; border-radius: 9px; cursor: pointer; opacity: 0; transition: opacity .3s; box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+  .replay.show { opacity: 1; }
+</style>
+</head>
+<body>
+  <div class="stage mode-dev" id="stage">
+    <!-- LEFT terminal -->
+    <div class="terminal">
+      <div class="term-bar">
+        <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+        <span class="term-title">claude — custom-ui-templates</span>
+      </div>
+      <div class="term-body">
+<div class="term-line term-dim">$ claude</div>
+<div class="term-line term-green">✻ Claude Code · custom-ui-templates</div>
+<div class="term-line">&nbsp;</div>
+<div class="term-line"><span class="prompt-sym">&gt;</span> <span class="cmd" id="typed"></span><span class="caret" id="caret"></span></div>
+<div class="term-line term-gen" id="gen1">⏺ 공정별 생산량 뷰를 생성합니다…</div>
+<div class="term-line term-gen" id="gen2">&nbsp;&nbsp;+ ProductionByProcess.vue</div>
+<div class="term-line term-gen" id="gen3">&nbsp;&nbsp;+ expose.ts (viewRegistry 등록)</div>
+<div class="term-line term-gen term-green" id="gen4">✓ 생산 계획 메뉴에 장착 완료</div>
+      </div>
+    </div>
+
+    <!-- RIGHT app -->
+    <div class="app">
+      <div class="app-top">
+        <!-- dev shell header (custom-ui-templates) -->
+        <div class="hdr" id="hdrDev">
+          <img class="moz-logo" src="logo_mozart_cloud.svg" alt="MOZART Cloud" />
+          <span class="dev-badge">custom-ui-templates · localhost:5300</span>
+          <span class="top-spacer"></span>
+          <span class="dev-ctl">메뉴 ▾</span>
+          <span class="dev-ctl">플랜 버전 ▾</span>
+          <span class="dev-ctl solid">설정</span>
+        </div>
+        <!-- host shell header (mozart-cloud APS GNB) -->
+        <div class="hdr" id="hdrHost">
+          <img class="moz-logo" src="logo_mozart_cloud.svg" alt="MOZART Cloud" />
+          <nav class="gnb">
+            <span class="gnb-i">수요 관리</span>
+            <span class="gnb-i active" id="gnbProd">생산 계획</span>
+            <span class="gnb-i">작업 계획</span>
+            <span class="gnb-i">공급/발주 계획</span>
+            <span class="gnb-i">계획 분석</span>
+            <span class="gnb-i">계획 수립</span>
+            <span class="gnb-i">기준 정보 관리</span>
+            <span class="gnb-i">실험실</span>
+          </nav>
+          <span class="top-spacer"></span>
+          <span class="host-plan"><span class="pv-dot"></span><b id="topPlan">20260609-P-TARGET</b><span class="pv-caret">▾</span></span>
+        </div>
+      </div>
+
+      <div class="app-main">
+        <div class="app-rail">
+          <!-- dev: empty dark bar (custom-ui-templates DeveloperTool aside) -->
+          <div class="rail-set" id="railDev"></div>
+          <!-- host: APS GlobalToolbar icon set -->
+          <div class="rail-set" id="railHost">
+            <div class="rail-grp">
+              <span class="ric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.7l5.9-.9z"/></svg></span>
+              <span class="ric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3.5" width="11" height="13" rx="2"/><path d="M7 8h5M7 11h3"/><path d="M17 14v6M14 17h6"/></svg></span>
+              <span class="ric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20l1-4L16 5a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></span>
+              <span class="ric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="7.5" width="16" height="11" rx="3"/><circle cx="9.3" cy="13" r="1.2" fill="currentColor" stroke="none"/><circle cx="14.7" cy="13" r="1.2" fill="currentColor" stroke="none"/><path d="M12 4.5v3"/></svg></span>
+              <span class="ric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 4h14v11l-4 4H5z"/><path d="M15 19v-4h4"/></svg></span>
+              <span class="ric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.6a2.5 2.5 0 1 1 3.4 2.3c-.7.4-1 .9-1 1.7"/><circle cx="12" cy="16.5" r="0.7" fill="currentColor" stroke="none"/></svg></span>
+            </div>
+            <div class="rail-grp">
+              <span class="ric bell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6.5 16v-5a5.5 5.5 0 0 1 11 0v5l1.8 2H4.7z"/><path d="M10 19.5a2 2 0 0 0 4 0"/></svg></span>
+              <span class="ric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.6a2.5 2.5 0 1 1 3.4 2.3c-.7.4-1 .9-1 1.7"/><circle cx="12" cy="16.5" r="0.7" fill="currentColor" stroke="none"/></svg></span>
+              <span class="ric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 13v-1a7 7 0 0 1 14 0v1"/><rect x="3.4" y="13" width="3.6" height="6" rx="1.6"/><rect x="17" y="13" width="3.6" height="6" rx="1.6"/></svg></span>
+              <span class="ric user"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="9" r="3.1"/><path d="M5.8 19a6.2 6.2 0 0 1 12.4 0z"/></svg></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-content" id="content">
+          <div class="empty-hint" id="emptyHint">화면을 개발해 보세요</div>
+          <div class="view" id="view">
+            <div class="crumb">생산 계획 <b>›</b> 공정별 생산량</div>
+            <div class="v-head">
+              <span class="v-title">공정별 생산량</span>
+              <span class="v-badge" id="vBadge">계획 버전 · 20260609-P-TARGET</span>
+            </div>
+            <div class="v-desc">선택한 계획 버전 기준, 공정별 계획 대비 실적 생산량을 비교합니다.</div>
+            <div class="chart" id="chart"><span class="y-label">수량</span></div>
+            <div class="legend">
+              <span class="pl"><i></i>계획수량</span>
+              <span class="ac"><i></i>실적수량</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GNB dropdown for 생산 계획 (host attach moment) -->
+      <div class="gnb-drop" id="gnbDrop">
+        <div class="gd-col">
+          <div class="gd-i">계획 대시보드</div>
+          <div class="gd-i">RTF 현황</div>
+          <div class="gd-i">완제품 생산 계획</div>
+          <div class="gd-i">공정그룹별 생산 계획</div>
+        </div>
+        <div class="gd-col">
+          <div class="gd-i">공정별 생산 계획</div>
+          <div class="gd-i gd-new" id="gdNew">공정별 생산량<span class="hm-tag">NEW</span></div>
+          <div class="gd-i">제품별 생산 계획</div>
+          <div class="gd-i">생산 차질 현황</div>
+        </div>
+      </div>
+
+      <!-- cursor -->
+      <div class="cursor" id="cursor">
+        <svg width="20" height="20" viewBox="0 0 20 20"><path d="M2 2 L2 16 L6 12 L9 18 L11 17 L8 11 L14 11 Z" fill="#fff" stroke="#222" stroke-width="1.2"/></svg>
+        <span class="ripple" id="ripple"></span>
+      </div>
+    </div>
+
+    <!-- overlays -->
+    <div class="flash" id="flash"></div>
+    <div class="sub"><span id="sub"></span></div>
+    <div class="endcard" id="endcard">
+      <div class="ec-logo"><img class="moz-logo" src="logo_mozart_cloud.svg" alt="MOZART Cloud" /></div>
+      <div class="ec-main">말하면, 화면이 됩니다</div>
+      <div class="ec-sub">코딩 없이 만드는 mozart-cloud 커스텀 UI</div>
+    </div>
+  </div>
+
+  <button class="replay" id="replay">↻ 다시 재생</button>
+
+<script>
+(function () {
+  const DATA = [
+    { name: "절삭", plan: 1200, act: 1150 },
+    { name: "용접", plan: 980,  act: 1020 },
+    { name: "조립", plan: 1500, act: 1410 },
+    { name: "도장", plan: 760,  act: 730  },
+    { name: "검사", plan: 1340, act: 1360 },
+    { name: "포장", plan: 1100, act: 1080 },
+  ];
+  const DATA2 = [
+    { name: "절삭", plan: 1260, act: 1240 },
+    { name: "용접", plan: 1010, act: 990  },
+    { name: "조립", plan: 1460, act: 1470 },
+    { name: "도장", plan: 820,  act: 800  },
+    { name: "검사", plan: 1290, act: 1310 },
+    { name: "포장", plan: 1150, act: 1120 },
+  ];
+  const MAX = 1600;
+  const PLAN_A = "20260609-P-TARGET";
+  const PLAN_B = "20260609-P-SIM";
+  const SENTENCE = "이번 계획 버전 기준으로 공정별 계획 대비 실적 생산량 비교 화면이 필요해";
+
+  const $ = (id) => document.getElementById(id);
+  const stage = $("stage");
+  const chart = $("chart");
+  const timers = [];
+  const at = (t, fn) => timers.push(setTimeout(fn, t));
+  const clearAll = () => { timers.forEach(clearTimeout); timers.length = 0; };
+
+  function buildBars(data) {
+    chart.querySelectorAll(".grp").forEach((n) => n.remove());
+    data.forEach((d) => {
+      const g = document.createElement("div");
+      g.className = "grp";
+      g.innerHTML =
+        '<div class="bar plan" data-h="' + (d.plan / MAX * 100) + '"><span class="val">' + d.plan + '</span></div>' +
+        '<div class="bar act" data-h="' + (d.act / MAX * 100) + '"><span class="val">' + d.act + '</span></div>' +
+        '<span class="name">' + d.name + '</span>';
+      chart.appendChild(g);
+    });
+  }
+  function growBars() { chart.querySelectorAll(".bar").forEach((b) => { b.style.height = b.dataset.h + "%"; }); }
+  function resetBars() { chart.querySelectorAll(".bar").forEach((b) => { b.style.height = "0%"; }); }
+  function updateBars(data) {
+    const bars = chart.querySelectorAll(".grp");
+    data.forEach((d, i) => {
+      const g = bars[i]; if (!g) return;
+      const pl = g.querySelector(".bar.plan"), ac = g.querySelector(".bar.act");
+      pl.style.height = (d.plan / MAX * 100) + "%"; pl.querySelector(".val").textContent = d.plan;
+      ac.style.height = (d.act / MAX * 100) + "%";  ac.querySelector(".val").textContent = d.act;
+    });
+  }
+
+  function setSub(text) {
+    const s = $("sub");
+    s.classList.remove("show");
+    at(0, () => { s.textContent = text; });
+    at(120, () => s.classList.add("show"));
+  }
+  function hideSub() { $("sub").classList.remove("show"); }
+
+  function typeSentence(el, text, perChar, done) {
+    let i = 0;
+    (function step() {
+      if (i > text.length) { done && done(); return; }
+      const shown = text.slice(0, i);
+      el.innerHTML = shown
+        .replace("공정별", '<span class="key-noun">공정별</span>')
+        .replace("계획 대비 실적", '<span class="key-noun">계획 대비 실적</span>');
+      i++;
+      at(perChar, step);
+    })();
+  }
+
+  function reset() {
+    clearAll();
+    stage.classList.remove("mode-host"); stage.classList.add("mode-dev");
+    $("typed").innerHTML = "";
+    $("caret").style.display = "inline-block";
+    ["gen1","gen2","gen3","gen4"].forEach((id) => $(id).classList.remove("show"));
+    $("view").classList.remove("show");
+    $("emptyHint").textContent = "화면을 개발해 보세요";
+    $("emptyHint").style.opacity = "1";
+    $("gnbDrop").classList.remove("open");
+    $("gdNew").classList.remove("in"); $("gdNew").classList.remove("active");
+    $("cursor").style.opacity = "0";
+    $("endcard").classList.remove("show");
+    $("replay").classList.remove("show");
+    $("vBadge").classList.remove("pulse");
+    $("topPlan").textContent = PLAN_A;
+    $("vBadge").textContent = "계획 버전 · " + PLAN_A;
+    hideSub();
+    buildBars(DATA);
+  }
+
+  // Chained off typing completion so the sequence never desyncs from the typed text.
+  function afterTyped() {
+    $("caret").style.display = "none";
+
+    // generation log
+    at(350, () => ["gen1","gen2","gen3"].forEach((id, k) => at(k * 90, () => $(id).classList.add("show"))));
+
+    // chart appears IN THE DEV SHELL (custom-ui-templates) — developed standalone
+    at(750, () => { hideSub(); $("emptyHint").style.opacity = "0"; });
+    at(900, () => setSub("custom-ui-templates에서 바로 개발"));
+    at(950, () => { $("view").classList.add("show"); });
+    at(1250, () => growBars());
+
+    // MAGIC JUMP — attach into mozart-cloud APS host
+    at(2900, () => { const f = $("flash"); f.classList.remove("go"); void f.offsetWidth; f.classList.add("go"); });
+    at(3030, () => {                       // switch to host shell at flash peak
+      stage.classList.remove("mode-dev"); stage.classList.add("mode-host");
+      $("gen4").classList.add("show");
+      $("view").classList.remove("show");          // page closes; choose from menu
+      $("emptyHint").textContent = "메뉴를 선택하세요";
+      $("emptyHint").style.opacity = "1";
+    });
+    at(3150, () => { hideSub(); });
+    at(3300, () => setSub("mozart-cloud에 붙어 메뉴가 됩니다"));
+
+    // open 생산 계획 dropdown; new menu item slides in; cursor clicks it
+    at(3450, () => { $("gnbDrop").classList.add("open"); });
+    at(3650, () => { $("gdNew").classList.add("in"); });
+    at(3750, () => {
+      const cur = $("cursor"); cur.style.opacity = "1";
+      cur.style.left = "180px"; cur.style.top = "70px";
+      at(60, () => { cur.style.left = "330px"; cur.style.top = "150px"; });
+    });
+    at(4450, () => { const r = $("ripple"); r.style.left = "330px"; r.style.top = "150px"; r.classList.remove("go"); void r.offsetWidth; r.classList.add("go"); });
+    at(4500, () => { $("gdNew").classList.add("active"); });
+    // selecting the menu opens the page in the host
+    at(4750, () => { $("gnbDrop").classList.remove("open"); $("emptyHint").style.opacity = "0"; $("view").classList.add("show"); });
+    at(4800, () => resetBars());
+    at(4950, () => growBars());
+    at(5050, () => { $("cursor").style.opacity = "0"; });
+
+    // host-data evidence
+    at(6000, () => $("vBadge").classList.add("pulse"));
+    at(6500, () => $("vBadge").classList.remove("pulse"));
+
+    // CUT 5 — plan version change -> chart updates
+    at(7100, () => hideSub());
+    at(7250, () => setSub("현재 계획 버전 데이터와 완전 연동"));
+    at(7300, () => {
+      $("topPlan").textContent = PLAN_B;
+      $("vBadge").textContent = "계획 버전 · " + PLAN_B;
+      $("vBadge").classList.add("pulse");
+      updateBars(DATA2);
+    });
+    at(7900, () => $("vBadge").classList.remove("pulse"));
+
+    // END CARD
+    at(9200, () => { hideSub(); $("endcard").classList.add("show"); });
+    at(11400, () => $("replay").classList.add("show"));
+  }
+
+  function play() {
+    reset();
+    at(700,  () => setSub("새 화면이 필요할 때"));
+    at(2000, () => { hideSub(); });
+    at(2150, () => setSub("원하는 화면을, 말로 요청하세요"));
+    at(2200, () => typeSentence($("typed"), SENTENCE, 55, afterTyped));
+  }
+
+  $("replay").addEventListener("click", play);
+  window.addEventListener("load", () => at(400, play));
+})();
+</script>
+</body>
+</html>

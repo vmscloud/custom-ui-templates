@@ -30,6 +30,11 @@ export const routes: RouteRecordRaw[] = [
     component: () => import("@/views/templates/chart/SalesChart.vue"),
   },
   {
+    path: "/production-by-process",
+    name: "ProductionByProcess",
+    component: () => import("@/views/templates/chart/ProductionByProcess.vue"),
+  },
+  {
     path: "/product-grid",
     name: "ProductGrid",
     component: () => import("@/views/templates/grid/ProductGrid.vue"),
