@@ -72,8 +72,6 @@ const chartDef = ref({});
 
 // 차트 초기화 핸들러
 const handleInitialized = (mozEChart: MozEChart) => {
-  mozEChart.chartCategoryComputedProperty().set("series", true);
-  mozEChart.chartTypeComputedProperty().set("bar");
   console.log("차트 초기화 완료");
 };
 

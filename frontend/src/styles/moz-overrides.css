@@ -1,0 +1,11 @@
+/*
+ * moz-ui 신규 트랙 보정 스타일
+ *
+ * moz-ui-components-vue 는 Vue 슬롯 내용을 <span data-moz-slot> 래퍼 안에 마운트한다.
+ * 슬롯이 flex 컨테이너(예: Controller 의 #action) 안에 들어가면 래퍼가 flex 항목이 되어
+ * 슬롯 안의 여러 요소가 가로로 놓이지 않고 세로로 쌓인다.
+ * 레거시처럼 슬롯 내용이 부모 레이아웃에 바로 참여하도록 래퍼 상자를 없앤다.
+ */
+[data-moz-slot] {
+  display: contents;
+}

@@ -3,6 +3,9 @@
  * Module Federation의 비동기 로딩을 위한 분리
  */
 
+// CSS 레이어 순서 선언 (reset < moz). 어떤 스타일보다 먼저 import 해야 한다.
+import "./styles/layer-order.css";
+
 // ECharts 초기화 (가장 먼저 실행되어야 함)
 // 단독 개발 환경에서 CanvasRenderer가 등록되지 않는 문제 해결
 import { use } from "@vmscloud/moz-ui-chart-vue/echarts/core";
@@ -44,6 +47,7 @@ import "@vmscloud/moz-ui-components-core/styles/default";
 import "@vmscloud/moz-ui-grid-wrapper/style.css";
 import "@vmscloud/moz-ui-grid-vue/style.css";
 import "@vmscloud/moz-ui-chart-vue/style.css";
+import "./styles/moz-overrides.css";
 
 // 커스텀 디렉티브 스타일
 import "./directives/tooltip/_index.scss";
