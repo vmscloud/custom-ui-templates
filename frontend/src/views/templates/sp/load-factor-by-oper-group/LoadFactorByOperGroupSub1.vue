@@ -20,17 +20,17 @@
 </template>
 <script setup lang="ts">
 import VChart from "vue-echarts";
-import { use } from "@vmscloud/moz-ui-chart/echarts/core";
-import { CanvasRenderer } from "@vmscloud/moz-ui-chart/echarts/renderers";
-import { BarChart, LineChart } from "@vmscloud/moz-ui-chart/echarts/charts";
+import { use } from "@vmscloud/moz-ui-chart-vue/echarts/core";
+import { CanvasRenderer } from "@vmscloud/moz-ui-chart-vue/echarts/renderers";
+import { BarChart, LineChart } from "@vmscloud/moz-ui-chart-vue/echarts/charts";
 import {
   GridComponent,
   TitleComponent,
   TooltipComponent,
   LegendComponent,
   DataZoomComponent,
-} from "@vmscloud/moz-ui-chart/echarts/components";
-import { EmptyState } from "@vmscloud/moz-ui-components";
+} from "@vmscloud/moz-ui-chart-vue/echarts/components";
+import { EmptyState } from "@vmscloud/moz-ui-components-vue";
 import { useTranslation } from "i18next-vue";
 import { computed, nextTick, onMounted, onUnmounted, ref } from "vue";
 

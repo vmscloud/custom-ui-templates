@@ -85,132 +85,18 @@
       <div class="content-wrapper">
         <!-- ========== STEP 1: Data Check Grid ========== -->
         <div v-show="currentStep === 1" class="re-execute-popup-grid-wrapper">
-          <ExtendFlexGrid
-            key="popup-grid-stable"
-            style="width: 100%; height: 100%"
+          <MozGrid
             :name="menuName + 're-execute-plan-pop-grid'"
-            :id="menuName + 're-execute-plan-pop-grid-id'"
-            :use-preset="true"
-            :autoGenerateColumns="false"
-            :alternatingRowStep="0"
-            :itemsSource="popupDataSource"
-            :initialized="onInitialized"
-            :updatedView="onPopupUpdatedView"
-            :emptyState="{
-              isLoading: false,
-            }"
-            :validateKey="'none'"
-            :dataKey="gridKeys"
-            :setContextMenuProps="{
-              useGroupColumn: false,
-              useViewSelectColumn: true,
-              useBulkEditColumn: {
-                max_lateness_day: {
-                  min: 0,
-                  step: 1,
-                },
-                max_earliness_day: {
-                  min: 0,
-                  step: 1,
-                },
-              },
-            }"
-            :onInitializeRowData="
-              () => {
-                return { isAdded: true };
-              }
-            "
+            :coreConfig="popupGridConfig"
+            height="100%"
             :loading="false"
-            :cellEditEnded="onPopupCellEditEnded"
-          >
-            <WjFlexGridColumn
-              :width="getWidthByKey('S2')"
-              binding="demand_id"
-              :header="t('text-demand_id')"
-              :isRequired="true"
-            />
-            <WjFlexGridColumn
-              :width="getWidthByKey('DF')"
-              binding="item_id"
-              :header="t('text-item_id')"
-              :isRequired="true"
-            />
-            <WjFlexGridColumn
-              :width="getWidthByKey('S2')"
-              binding="site_id"
-              :header="t('text-site_id')"
-              :isRequired="true"
-            />
-            <WjFlexGridColumn
-              :width="getWidthByKey('S2')"
-              binding="buffer_id"
-              :header="t('text-buffer_id')"
-              :isRequired="true"
-            />
-            <WjFlexGridColumn
-              :width="getWidthByKey('D2')"
-              binding="due_date"
-              :header="t('text-due_date')"
-              dataType="Date"
-              format="yyyy-MM-dd"
-              align="center"
-              :isRequired="true"
-            />
-            <WjFlexGridColumn
-              :width="getWidthByKey('D1')"
-              binding="due_datetime"
-              :header="t('text-due_datetime')"
-              dataType="Date"
-              format="yyyy-MM-dd HH:mm:ss"
-              align="center"
-            />
-            <WjFlexGridColumn
-              :width="getWidthByKey('N2')"
-              binding="demand_qty"
-              :header="t('text-demand_qty')"
-              dataType="Number"
-              align="right"
-            />
-            <WjFlexGridColumn
-              :width="getWidthByKey('N2')"
-              binding="demand_priority"
-              :header="t('text-demand_priority')"
-              dataType="Number"
-              align="right"
-            />
-            <WjFlexGridColumn :width="getWidthByKey('S2')" binding="cust_id" :header="t('text-cust_id')" />
-            <WjFlexGridColumn :width="getWidthByKey('S3')" binding="demand_type" :header="t('text-demand_type')" />
-            <WjFlexGridColumn
-              :width="getWidthByKey('N2')"
-              binding="max_lateness_day"
-              :header="t('text-max_lateness_day')"
-              dataType="Number"
-              align="right"
-            />
-            <WjFlexGridColumn
-              :width="getWidthByKey('N2')"
-              binding="max_earliness_day"
-              :header="t('text-max_earliness_day')"
-              dataType="Number"
-              align="right"
-            />
-            <WjFlexGridColumn :width="getWidthByKey('S2')" binding="demand_group" :header="t('text-demand_group')" />
-            <WjFlexGridColumn
-              :width="getWidthByKey('S2')"
-              binding="final_item_buffer_id"
-              :header="t('text-final_item_buffer_id')"
-            />
-            <WjFlexGridColumn :width="getWidthByKey('S1')" binding="description" :header="t('text-description')" />
-            <WjFlexGridColumn
-              v-for="col in propColumns"
-              :key="col.binding"
-              :binding="col.binding"
-              :header="col.header"
-              :dataType="col.dataType"
-              :width="col.width"
-              :align="col.align"
-            ></WjFlexGridColumn>
-          </ExtendFlexGrid>
+            :useRowGroupSettings="false"
+            :contextMenuConfig="{
+              useViewSelectColumn: true,
+              useBulkEditColumn: true,
+            }"
+            @ready="onPopupGridReady"
+          />
         </div>
 
         <!-- ========== STEP 2: Engine Re-Execute Settings ========== -->
@@ -366,156 +252,17 @@
                         <Toggle v-model="reExecuteState.viewDemandDetail" />
                       </div>
                     </div>
-                    <div v-show="reExecuteState.viewDemandDetail" class="sub-edited-demand-grid-wrapper">
-                      <ExtendFlexGrid
-                        style="width: 100%; height: 100%"
+                    <!-- 숨겨진 채로 그리드를 만들면 크기가 0 으로 잡히므로 펼칠 때 만든다. -->
+                    <div v-if="reExecuteState.viewDemandDetail" class="sub-edited-demand-grid-wrapper">
+                      <MozGrid
                         :name="menuName + 'sub-edited-demand-grid'"
-                        :autoGenerateColumns="false"
-                        :alternatingRowStep="0"
-                        :itemsSource="alwaysEditedData"
-                        :initialized="subEditedDemandGridInitialized"
-                        :emptyState="{
-                          isLoading: false,
-                        }"
-                        :validateKey="'none'"
-                        :dataKey="gridKeys"
-                        :setContextMenuProps="{
-                          useGroupColumn: false,
-                          useViewSelectColumn: true,
-                          useBulkEditColumn: {
-                            max_lateness_day: {
-                              min: 0,
-                              step: 1,
-                            },
-                            max_earliness_day: {
-                              min: 0,
-                              step: 1,
-                            },
-                          },
-                        }"
-                        :onInitializeRowData="
-                          () => {
-                            return { isAdded: true };
-                          }
-                        "
+                        :coreConfig="subEditedGridConfig"
+                        height="100%"
                         :loading="false"
-                        :is-read-only="true"
-                        :use-tool-box="false"
-                      >
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('S2')"
-                          binding="demand_id"
-                          :header="t('text-demand_id')"
-                          :isRequired="true"
-                        />
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('DF')"
-                          binding="item_id"
-                          :header="t('text-item_id')"
-                          :isRequired="true"
-                        />
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('S2')"
-                          binding="site_id"
-                          :header="t('text-site_id')"
-                          :isRequired="true"
-                        />
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('S2')"
-                          binding="buffer_id"
-                          :header="t('text-buffer_id')"
-                          :isRequired="true"
-                        />
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('D2')"
-                          binding="due_date"
-                          :header="t('text-due_date')"
-                          dataType="Date"
-                          format="yyyy-MM-dd"
-                          align="center"
-                          :isRequired="true"
-                        />
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('D1')"
-                          binding="due_datetime"
-                          :header="t('text-due_datetime')"
-                          dataType="Date"
-                          format="yyyy-MM-dd HH:mm:ss"
-                          align="center"
-                        />
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('N2')"
-                          binding="demand_qty"
-                          :header="t('text-demand_qty')"
-                          dataType="Number"
-                          align="right"
-                        />
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('N2')"
-                          binding="demand_priority"
-                          :header="t('text-demand_priority')"
-                          dataType="Number"
-                          align="right"
-                        />
-                        <WjFlexGridColumn :width="getWidthByKey('S2')" binding="cust_id" :header="t('text-cust_id')" />
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('S3')"
-                          binding="demand_type"
-                          :header="t('text-demand_type')"
-                        />
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('N2')"
-                          binding="max_lateness_day"
-                          :header="t('text-max_lateness_day')"
-                          dataType="Number"
-                          align="right"
-                        />
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('N2')"
-                          binding="max_earliness_day"
-                          :header="t('text-max_earliness_day')"
-                          dataType="Number"
-                          align="right"
-                        />
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('S2')"
-                          binding="demand_group"
-                          :header="t('text-demand_group')"
-                        />
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('S2')"
-                          binding="final_item_buffer_id"
-                          :header="t('text-final_item_buffer_id')"
-                        />
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('S1')"
-                          binding="description"
-                          :header="t('text-description')"
-                        />
-                        <WjFlexGridColumn
-                          v-for="col in propColumns"
-                          :key="col.binding"
-                          :binding="col.binding"
-                          :header="col.header"
-                          :dataType="col.dataType"
-                          :width="col.width"
-                          :align="col.align"
-                        ></WjFlexGridColumn>
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('S2')"
-                          binding="legacy_data_version"
-                          :header="t('text-legacy_data_version')"
-                          :isReadOnly="true"
-                          :visible="false"
-                        />
-                        <WjFlexGridColumn
-                          :width="getWidthByKey('S2')"
-                          binding="interfaced_from"
-                          :header="t('text-interfaced_from')"
-                          :isReadOnly="true"
-                          :visible="false"
-                        />
-                      </ExtendFlexGrid>
+                        :useToolBox="false"
+                        :useRowGroupSettings="false"
+                        :contextMenuConfig="{ useViewSelectColumn: true }"
+                      />
                     </div>
                   </div>
                 </div>
@@ -653,57 +400,27 @@
                                 class="plan-execute-desc-grid-item-wrapper single-row-grid"
                                 :style="executionFlowDataResult.inboundID ? {} : { flex: 1 }"
                               >
-                                <ExtendFlexGrid
-                                  :items-source="[executionFlowDataResult]"
-                                  :is-read-only="true"
-                                  :use-tool-box="false"
-                                  :use-extend-footer="false"
-                                  :use-context-menu="false"
-                                  :use-sort="false"
-                                  :allow-sorting="'None'"
-                                  :use-filter="false"
-                                  :style="{ height: '100%' }"
+                                <MozGrid
+                                  v-bind="INFO_GRID_UI"
+                                  :coreConfig="inboundStepGridConfig"
                                   :name="'re-execute-plan-flow-inbound'"
-                                  :id="'re-execute-plan-flow-inbound-id'"
                                 >
-                                  <WjFlexGridColumn
-                                    width="*"
-                                    binding="_step"
-                                    :header="t('text-execution_flow_step')"
-                                  >
-                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
-                                      <span class="wj-cell-text">{{
-                                        t('text-execution_flow_inbound')
-                                      }}</span>
-                                      <span style="display: none">{{ cell.row.index }}</span>
-                                    </WjFlexGridCellTemplate>
-                                  </WjFlexGridColumn>
-                                  <WjFlexGridColumn
-                                    :width="160"
-                                    binding="inboundID"
-                                    :header="t('text-option_value')"
-                                    align="center"
-                                  >
-                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
-                                      <span
-                                        class="wj-cell-text"
-                                        v-if="cell.item.inboundID === 'use_aps_data'"
-                                        >{{ t('text-use_aps_data') }}</span
-                                      >
-                                      <span
-                                        class="wj-cell-text"
-                                        v-else-if="cell.item.inboundID === 'use_ver_data'"
-                                        >{{ t('text-use_ver_data') }}</span
-                                      >
-                                      <span class="wj-cell-text" v-else-if="!cell.item.inboundID">
-                                        <IconClose color="#dc5a5a" size="12" />
-                                      </span>
-                                      <span class="wj-cell-text" v-else>{{
-                                        cell.item.inboundName
-                                      }}</span>
-                                    </WjFlexGridCellTemplate>
-                                  </WjFlexGridColumn>
-                                </ExtendFlexGrid>
+                                  <CellTemplate field="_step">
+                                    <span class="cell-text">{{ t('text-execution_flow_inbound') }}</span>
+                                  </CellTemplate>
+                                  <CellTemplate field="inboundID" #default="{ rowData }">
+                                    <span class="cell-text" v-if="rowData.inboundID === 'use_aps_data'">{{
+                                      t('text-use_aps_data')
+                                    }}</span>
+                                    <span class="cell-text" v-else-if="rowData.inboundID === 'use_ver_data'">{{
+                                      t('text-use_ver_data')
+                                    }}</span>
+                                    <span class="cell-text" v-else-if="!rowData.inboundID">
+                                      <IconClose color="#dc5a5a" size="12" />
+                                    </span>
+                                    <span class="cell-text" v-else>{{ rowData.inboundName }}</span>
+                                  </CellTemplate>
+                                </MozGrid>
                               </div>
 
                               <!-- 2) 참조 데이터 설정 (tableFilterList / tableFilterType) -->
@@ -711,39 +428,19 @@
                                 class="plan-execute-desc-grid-item-wrapper single-row-grid"
                                 v-if="executionFlowDataResult.inboundID && inboundItemOptions?.tableFilterList"
                               >
-                                <ExtendFlexGrid
-                                  :items-source="[inboundItemOptions]"
-                                  :is-read-only="true"
-                                  :use-tool-box="false"
-                                  :use-extend-footer="false"
-                                  :use-context-menu="false"
-                                  :use-sort="false"
-                                  :allow-sorting="'None'"
-                                  :use-filter="false"
-                                  :style="{ height: '100%' }"
+                                <MozGrid
+                                  v-bind="INFO_GRID_UI"
+                                  :coreConfig="inboundRefGridConfig"
                                   :name="'re-execute-plan-flow-inbound-ref'"
-                                  :id="'re-execute-plan-flow-inbound-ref-id'"
                                 >
-                                  <WjFlexGridColumn
-                                    width="*"
-                                    binding="tableFilterList"
-                                    :header="t('text-ref_data_setting')"
-                                  />
-                                  <WjFlexGridColumn
-                                    :width="160"
-                                    binding="tableFilterType"
-                                    :header="t('text-option_value')"
-                                    align="center"
-                                  >
-                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
-                                      <span class="wj-cell-text">{{
-                                        cell.item.tableFilterType === 'Include'
-                                          ? t('text-include_table')
-                                          : t('text-exclude_table')
-                                      }}</span>
-                                    </WjFlexGridCellTemplate>
-                                  </WjFlexGridColumn>
-                                </ExtendFlexGrid>
+                                  <CellTemplate field="tableFilterType" #default="{ rowData }">
+                                    <span class="cell-text">{{
+                                      rowData.tableFilterType === 'Include'
+                                        ? t('text-include_table')
+                                        : t('text-exclude_table')
+                                    }}</span>
+                                  </CellTemplate>
+                                </MozGrid>
                               </div>
 
                               <!-- 3) Inbound config tree (OPER RES PROP VALUE / CALENDAR / SYSTEM 등) -->
@@ -757,53 +454,20 @@
                                   inboundItemOptions?.list?.length
                                 "
                               >
-                                <ExtendFlexGrid
+                                <MozGrid
                                   class="inbound-treegrid"
-                                  :items-source="inboundItemOptions.list"
-                                  child-items-path="children"
-                                  :format-item="onInboundDataProcessingGridFormatItem"
-                                  :is-read-only="true"
-                                  :use-tool-box="false"
-                                  :use-extend-footer="false"
-                                  :use-context-menu="false"
-                                  :use-sort="false"
-                                  :allow-sorting="'None'"
-                                  :use-filter="false"
-                                  :style="inboundTreeHeightStyle"
+                                  v-bind="INFO_GRID_UI"
+                                  :coreConfig="inboundTreeGridConfig"
+                                  :height="inboundTreeHeight"
                                   :name="'re-execute-plan-flow-inbound-tree'"
-                                  :id="'re-execute-plan-flow-inbound-tree-id'"
                                 >
-                                  <WjFlexGridColumn
-                                    binding="menuID"
-                                    :header="t('text-menu_id')"
-                                    :visible="false"
-                                  />
-                                  <WjFlexGridColumn
-                                    width="*"
-                                    binding="multilingual"
-                                    :header="t('text-data_processing_list')"
-                                  />
-                                  <WjFlexGridColumn
-                                    :width="152"
-                                    binding="optionValue"
-                                    :header="t('text-option_value')"
-                                  >
-                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
-                                      <span class="wj-cell-text">
-                                        <IconCheck
-                                          v-if="cell.item.optionValue === true"
-                                          color="#4568e0"
-                                          size="14"
-                                        />
-                                        <IconClose
-                                          v-if="cell.item.optionValue === false"
-                                          color="#dc5a5a"
-                                          size="12"
-                                        />
-                                      </span>
-                                    </WjFlexGridCellTemplate>
-                                  </WjFlexGridColumn>
-                                </ExtendFlexGrid>
+                                  <CellTemplate field="optionValue" #default="{ rowData }">
+                                    <span class="cell-text">
+                                      <IconCheck v-if="rowData.optionValue === true" color="#4568e0" size="14" />
+                                      <IconClose v-if="rowData.optionValue === false" color="#dc5a5a" size="12" />
+                                    </span>
+                                  </CellTemplate>
+                                </MozGrid>
                               </div>
 
                               <!-- 4) 데이터 저장 여부 -->
@@ -816,55 +480,24 @@
                                   typeof inboundItemOptions?.saveCfgValue === 'boolean'
                                 "
                               >
-                                <ExtendFlexGrid
+                                <MozGrid
                                   class="inbound-treegrid"
-                                  :items-source="[inboundItemOptions]"
-                                  :is-read-only="true"
-                                  :use-tool-box="false"
-                                  :use-extend-footer="false"
-                                  :use-context-menu="false"
-                                  :use-sort="false"
-                                  :allow-sorting="'None'"
-                                  :use-filter="false"
-                                  :style="{ height: '100%' }"
+                                  v-bind="INFO_GRID_UI"
+                                  :coreConfig="inboundSaveGridConfig"
                                   :name="'re-execute-plan-flow-inbound-save'"
-                                  :id="'re-execute-plan-flow-inbound-save-id'"
                                 >
-                                  <WjFlexGridColumn
-                                    width="*"
-                                    binding=""
-                                    :header="t('text-data_storage')"
-                                  >
-                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
-                                      <span
-                                        class="wj-cell-text"
-                                        v-if="typeof cell.item.saveCfgValue === 'boolean'"
-                                        >{{ t('desc-data_storage') }}</span
-                                      >
-                                    </WjFlexGridCellTemplate>
-                                  </WjFlexGridColumn>
-                                  <WjFlexGridColumn
-                                    :width="160"
-                                    binding="saveCfgValue"
-                                    :header="t('text-option_value')"
-                                    align="center"
-                                  >
-                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
-                                      <span class="wj-cell-text">
-                                        <IconCheck
-                                          v-if="cell.item.saveCfgValue"
-                                          color="#4568e0"
-                                          size="14"
-                                        />
-                                        <IconClose
-                                          v-else-if="cell.item.saveCfgValue === false"
-                                          color="#dc5a5a"
-                                          size="12"
-                                        />
-                                      </span>
-                                    </WjFlexGridCellTemplate>
-                                  </WjFlexGridColumn>
-                                </ExtendFlexGrid>
+                                  <CellTemplate field="_storage" #default="{ rowData }">
+                                    <span class="cell-text" v-if="typeof rowData.saveCfgValue === 'boolean'">{{
+                                      t('desc-data_storage')
+                                    }}</span>
+                                  </CellTemplate>
+                                  <CellTemplate field="saveCfgValue" #default="{ rowData }">
+                                    <span class="cell-text">
+                                      <IconCheck v-if="rowData.saveCfgValue" color="#4568e0" size="14" />
+                                      <IconClose v-else-if="rowData.saveCfgValue === false" color="#dc5a5a" size="12" />
+                                    </span>
+                                  </CellTemplate>
+                                </MozGrid>
                               </div>
                             </div>
                           </div>
@@ -892,45 +525,21 @@
                                 class="plan-execute-desc-grid-item-wrapper single-row-grid"
                                 :style="executionFlowDataResult.scenarioID ? {} : { flex: 1 }"
                               >
-                                <ExtendFlexGrid
-                                  :items-source="[executionFlowDataResult]"
-                                  :is-read-only="true"
-                                  :use-tool-box="false"
-                                  :use-extend-footer="false"
-                                  :use-context-menu="false"
-                                  :use-sort="false"
-                                  :allow-sorting="'None'"
-                                  :use-filter="false"
-                                  :style="{ height: '100%' }"
+                                <MozGrid
+                                  v-bind="INFO_GRID_UI"
+                                  :coreConfig="engineStepGridConfig"
                                   :name="'re-execute-plan-flow-engine'"
-                                  :id="'re-execute-plan-flow-engine-id'"
                                 >
-                                  <WjFlexGridColumn
-                                    width="*"
-                                    binding="_step"
-                                    :header="t('text-execution_flow_step')"
-                                  >
-                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
-                                      <span class="wj-cell-text">{{ t('text-engine') }}</span>
-                                      <span style="display: none">{{ cell.row.index }}</span>
-                                    </WjFlexGridCellTemplate>
-                                  </WjFlexGridColumn>
-                                  <WjFlexGridColumn
-                                    :width="160"
-                                    binding="scenarioID"
-                                    :header="t('text-option_value')"
-                                    align="center"
-                                  >
-                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
-                                      <span class="wj-cell-text" v-if="cell.item.scenarioID">{{
-                                        cell.item.scenarioName
-                                      }}</span>
-                                      <span class="wj-cell-text" v-else>
-                                        <IconClose color="#dc5a5a" size="12" />
-                                      </span>
-                                    </WjFlexGridCellTemplate>
-                                  </WjFlexGridColumn>
-                                </ExtendFlexGrid>
+                                  <CellTemplate field="_step">
+                                    <span class="cell-text">{{ t('text-engine') }}</span>
+                                  </CellTemplate>
+                                  <CellTemplate field="scenarioID" #default="{ rowData }">
+                                    <span class="cell-text" v-if="rowData.scenarioID">{{ rowData.scenarioName }}</span>
+                                    <span class="cell-text" v-else>
+                                      <IconClose color="#dc5a5a" size="12" />
+                                    </span>
+                                  </CellTemplate>
+                                </MozGrid>
                               </div>
                               <!-- 글로벌 옵션 (scenarioConfigSource) -->
                               <div
@@ -938,54 +547,22 @@
                                 style="flex: 1"
                                 v-if="executionFlowDataResult.scenarioID && scenarioConfigSource.length"
                               >
-                                <ExtendFlexGrid
-                                  :items-source="scenarioConfigSource"
-                                  :is-read-only="true"
-                                  :use-tool-box="false"
-                                  :use-extend-footer="false"
-                                  :use-context-menu="false"
-                                  :use-sort="false"
-                                  :allow-sorting="'None'"
-                                  :use-filter="false"
-                                  :allow-pinning="false"
-                                  :allow-resizing="false"
-                                  :format-item="engineFormatItem"
-                                  :style="engineGlobalHeightStyle"
+                                <MozGrid
+                                  v-bind="INFO_GRID_UI"
+                                  :coreConfig="engineGlobalGridConfig"
+                                  :height="engineGlobalHeight"
                                   :name="'re-execute-plan-flow-engine-global'"
-                                  :id="'re-execute-plan-flow-engine-global-id'"
                                 >
-                                  <WjFlexGridColumn
-                                    binding="description"
-                                    :header="t('text-option')"
-                                    width="*"
-                                  />
-                                  <WjFlexGridColumn
-                                    binding="optionValue"
-                                    :header="t('text-option_value')"
-                                    :width="152"
-                                    align="center"
-                                  >
-                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
-                                      <span
-                                        class="wj-cell-text"
-                                        v-if="cell.item.uiType !== 'TOGGLE'"
-                                        >{{ cell.item.optionValue }}</span
-                                      >
-                                      <span class="wj-cell-text" v-else>
-                                        <IconCheck
-                                          v-if="cell.item.optionValue === 'Y'"
-                                          color="#4568e0"
-                                          size="14"
-                                        />
-                                        <IconClose
-                                          v-if="cell.item.optionValue === 'N'"
-                                          color="#dc5a5a"
-                                          size="12"
-                                        />
-                                      </span>
-                                    </WjFlexGridCellTemplate>
-                                  </WjFlexGridColumn>
-                                </ExtendFlexGrid>
+                                  <CellTemplate field="optionValue" #default="{ rowData }">
+                                    <span class="cell-text" v-if="rowData.uiType !== 'TOGGLE'">{{
+                                      rowData.optionValue
+                                    }}</span>
+                                    <span class="cell-text" v-else>
+                                      <IconCheck v-if="rowData.optionValue === 'Y'" color="#4568e0" size="14" />
+                                      <IconClose v-if="rowData.optionValue === 'N'" color="#dc5a5a" size="12" />
+                                    </span>
+                                  </CellTemplate>
+                                </MozGrid>
                               </div>
                               <!-- 시나리오 모듈 리스트 (phaseColumns 동적) -->
                               <div
@@ -993,61 +570,36 @@
                                 style="flex: 1"
                                 v-if="executionFlowDataResult.scenarioID && scenarioModuleDataSource.length"
                               >
-                                <ExtendFlexGrid
-                                  :items-source="scenarioModuleDataSource"
-                                  :initialized="onInitializedScenarioModule"
-                                  :format-item="engineFormatItem"
-                                  :is-read-only="true"
-                                  :use-tool-box="false"
-                                  :use-extend-footer="false"
-                                  :use-context-menu="false"
-                                  :use-sort="false"
-                                  :allow-sorting="'None'"
-                                  :use-filter="false"
-                                  :allow-pinning="false"
-                                  :style="engineModuleHeightStyle"
+                                <MozGrid
+                                  v-bind="INFO_GRID_UI"
+                                  :coreConfig="engineModuleGridConfig"
+                                  :height="engineModuleHeight"
                                   :name="'re-execute-plan-flow-engine-modules'"
-                                  :id="'re-execute-plan-flow-engine-modules-id'"
+                                  @ready="onScenarioModuleReady"
                                 >
-                                  <WjFlexGridColumn
-                                    binding="module_id"
-                                    :header="t('text-module_id')"
-                                    :width="getWidthByKey('S3')"
-                                  />
-                                  <WjFlexGridColumn
-                                    binding="description"
-                                    :header="t('text-option')"
-                                    width="*"
-                                  />
-                                  <WjFlexGridColumn
+                                  <CellTemplate
                                     v-for="col in phaseColumns"
                                     :key="`phase-${String(col.binding)}-${scenarioModuleDataSource.length}`"
-                                    :binding="String(col.binding)"
-                                    :header="t(col.header)"
-                                    :width="152"
-                                    align="center"
+                                    :field="String(col.binding)"
+                                    #default="{ rowData }"
                                   >
-                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
-                                      <span
-                                        class="wj-cell-text"
-                                        v-if="cell.item.ui_type !== 'TOGGLE'"
-                                        >{{ cell.item[String(col.binding)] }}</span
-                                      >
-                                      <span class="wj-cell-text" v-else>
-                                        <IconCheck
-                                          v-if="cell.item[String(col.binding)] === 'Y'"
-                                          color="#4568e0"
-                                          size="14"
-                                        />
-                                        <IconClose
-                                          v-if="cell.item[String(col.binding)] === 'N'"
-                                          color="#dc5a5a"
-                                          size="12"
-                                        />
-                                      </span>
-                                    </WjFlexGridCellTemplate>
-                                  </WjFlexGridColumn>
-                                </ExtendFlexGrid>
+                                    <span class="cell-text" v-if="rowData.ui_type !== 'TOGGLE'">{{
+                                      rowData[String(col.binding)]
+                                    }}</span>
+                                    <span class="cell-text" v-else>
+                                      <IconCheck
+                                        v-if="rowData[String(col.binding)] === 'Y'"
+                                        color="#4568e0"
+                                        size="14"
+                                      />
+                                      <IconClose
+                                        v-if="rowData[String(col.binding)] === 'N'"
+                                        color="#dc5a5a"
+                                        size="12"
+                                      />
+                                    </span>
+                                  </CellTemplate>
+                                </MozGrid>
                               </div>
                             </div>
                           </div>
@@ -1060,47 +612,21 @@
                           <div class="plan-execute-desc-grid-outer-wrapper">
                             <div class="plan-execute-desc-grid-wrapper">
                               <div class="plan-execute-desc-grid-item-wrapper single-row-grid">
-                                <ExtendFlexGrid
-                                  :items-source="[executionFlowDataResult]"
-                                  :is-read-only="true"
-                                  :use-tool-box="false"
-                                  :use-extend-footer="false"
-                                  :use-context-menu="false"
-                                  :use-sort="false"
-                                  :allow-sorting="'None'"
-                                  :use-filter="false"
-                                  :style="{ height: '100%' }"
+                                <MozGrid
+                                  v-bind="INFO_GRID_UI"
+                                  :coreConfig="outboundStepGridConfig"
                                   :name="'re-execute-plan-flow-outbound'"
-                                  :id="'re-execute-plan-flow-outbound-id'"
                                 >
-                                  <WjFlexGridColumn
-                                    width="*"
-                                    binding="_step"
-                                    :header="t('text-execution_flow_step')"
-                                  >
-                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
-                                      <span class="wj-cell-text">{{ t('text-outbound') }}</span>
-                                      <span style="display: none">{{ cell.row.index }}</span>
-                                    </WjFlexGridCellTemplate>
-                                  </WjFlexGridColumn>
-                                  <WjFlexGridColumn
-                                    :width="160"
-                                    binding="outboundID"
-                                    :header="t('text-option_value')"
-                                    align="center"
-                                  >
-                                    <WjFlexGridCellTemplate v-slot="cell" cellType="Cell">
-                                      <span class="wj-cell-text">
-                                        <IconCheck
-                                          v-if="cell.item.outboundID"
-                                          color="#4568e0"
-                                          size="14"
-                                        />
-                                        <IconClose v-else color="#dc5a5a" size="12" />
-                                      </span>
-                                    </WjFlexGridCellTemplate>
-                                  </WjFlexGridColumn>
-                                </ExtendFlexGrid>
+                                  <CellTemplate field="_step">
+                                    <span class="cell-text">{{ t('text-outbound') }}</span>
+                                  </CellTemplate>
+                                  <CellTemplate field="outboundID" #default="{ rowData }">
+                                    <span class="cell-text">
+                                      <IconCheck v-if="rowData.outboundID" color="#4568e0" size="14" />
+                                      <IconClose v-else color="#dc5a5a" size="12" />
+                                    </span>
+                                  </CellTemplate>
+                                </MozGrid>
                               </div>
                             </div>
                           </div>
@@ -1191,11 +717,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, toRaw, watch } from "vue";
+import { computed, ref, shallowRef, toRaw, watch } from "vue";
 import { useTranslation } from "i18next-vue";
-import { ExtendFlexGrid, type ExtendGrid } from "@vmscloud/moz-wijmo-grid";
-import { WjFlexGridCellTemplate, WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
-import { AllowMerging, type FlexGrid } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
+import { CellTemplate, MozGrid } from "@vmscloud/moz-ui-grid-vue";
+import type { FieldDef, GridChrome, MozGridCoreProps, PureSheet } from "@vmscloud/moz-ui-grid-vue";
 import { IconCheck, IconClose, IconDataCheck, IconResultCheck } from "@moz-shared/icons";
 import {
   Button,
@@ -1208,9 +733,10 @@ import {
   TextArea,
   TimePicker,
   Toggle,
-} from "@vmscloud/moz-ui-components";
+} from "@vmscloud/moz-ui-components-vue";
 import dayjs from "dayjs";
 import {
+  buildDemandFields,
   postReExecutePlan,
   fetchDemandSource,
   fetchDemandVerValidCheck,
@@ -1219,7 +745,7 @@ import {
   type InboundItemType,
 } from "./reExecutePlan";
 
-// ===== Width helper (replaces @vmscloud/moz-wijmo-grid/utils getWidthByKey) =====
+// ===== Width helper (원본 getWidthByKey 대체) =====
 const WIDTH_MAP: Record<string, number> = {
   S1: 80, S2: 100, S3: 120,
   D1: 130, D2: 110, D3: 100,
@@ -1280,6 +806,8 @@ interface Props {
   popupDataSource: any[];
   demandSource: any[];
   alwaysEditedData: any[];
+  // demand_id → 메인 그리드에서 수정된 필드 목록 (수정 데이터 상세 그리드 강조용)
+  editedDemandFields?: Record<string, string[]>;
   propColumns?: any[];
   // Execution flow & scenario sources
   executionFlowSource?: ExecutionFlowType[];
@@ -1314,6 +842,7 @@ const props = withDefaults(defineProps<Props>(), {
   tenantNM: "",
   projectNM: "",
   tenantID: "",
+  editedDemandFields: () => ({}),
   propColumns: () => [],
   executionFlowSource: () => [],
   scenarioList: () => [],
@@ -1328,7 +857,8 @@ const emit = defineEmits<{
   (e: "update:visible", value: boolean): void;
   (e: "close"): void;
   (e: "executed", param: any): void;
-  (e: "cell-edit-ended", sender: any, event: any): void;
+  // 팝업 그리드에서 값이 바뀐 수요 행(현재 값 전체). 수정을 되돌린 행은 원래 값으로 보낸다.
+  (e: "demand-edited", rows: Record<string, any>[]): void;
   (e: "data-refreshed"): void;
 }>();
 
@@ -1519,14 +1049,14 @@ const executionFlowDataResult = computed(() => {
 
 // 각 multi-row 그리드 높이 계산: 헤더 1 + 데이터 행 수만큼 확장.
 //   그리드 내부에 scroll 이 생기지 않도록 전체 행을 다 펼친 높이를 준다.
-//   Wijmo FlexGrid 기본 rowHeight ≒ 28px, header padding 포함 여유 40px.
+//   행 높이 ≒ 28px, header padding 포함 여유 40px.
 const ROW_H = 28;
 const HEADER_H = 40;
 const computeAutoHeight = (rowCount: number) =>
   `${HEADER_H + Math.max(1, rowCount) * ROW_H}px`;
 
 // Inbound tree grid: Category + 확장된 Menu 자식까지 합친 총 가시 row 수.
-const inboundTreeHeightStyle = computed(() => {
+const inboundTreeHeight = computed(() => {
   const list = props.inboundItemOptions?.list ?? [];
   let count = 0;
   for (const item of list) {
@@ -1535,170 +1065,302 @@ const inboundTreeHeightStyle = computed(() => {
       count += item.children.length;
     }
   }
-  return { height: computeAutoHeight(count) };
+  return computeAutoHeight(count);
 });
 
 // Engine global options & module 그리드: items length 기반.
-const engineGlobalHeightStyle = computed(() => ({
-  height: computeAutoHeight(props.scenarioConfigSource?.length ?? 0),
-}));
-const engineModuleHeightStyle = computed(() => ({
-  height: computeAutoHeight(props.scenarioModuleDataSource?.length ?? 0),
-}));
+const engineGlobalHeight = computed(() =>
+  computeAutoHeight(props.scenarioConfigSource?.length ?? 0),
+);
+const engineModuleHeight = computed(() =>
+  computeAutoHeight(props.scenarioModuleDataSource?.length ?? 0),
+);
 
 // ===== Execution Flow Summary grid helpers (원본 ExecutionFlowMasterDetailSummary 이식) =====
-// Engine global/module 그리드 공통 formatItem.
-//   1) description 컬럼은 raw 문자열이 i18n key일 수 있어 t() 로 번역해 치환한다.
-//   2) scenarioModule 그리드에서 max_phase 를 초과한 phase_N 컬럼은 'union-null' 클래스로 음영 처리
-//      (module A는 phase_2까지인데 module B가 phase_1까지인 경우, 테이블 합집합 union 이므로 B의 phase_2 셀을 빈 셀로 마킹).
-//   3) option_id === 'DefaultRuleSet' + max_phase 내 phase 인데 값 없음 → 'error-mark' 로 표시.
-const engineFormatItem = (_s: any, e: any) => {
-  if (!e.panel || e.panel.cellType !== 1) return;
-  const item = e.getRow?.()?.dataItem;
-  if (!item) return;
-  const col: string | undefined = e.getColumn?.()?.binding;
-  if (!col) return;
-  const cellSpan = e.cell.querySelector("span") ?? e.cell;
-
-  if (col === "description") {
-    const rawDesc = item[col];
-    const translated = rawDesc != null ? t(String(rawDesc)) : "";
-    cellSpan.textContent = translated;
-  }
-
-  const phaseMatch = col.match(/^phase_(\d+)$/);
-  if (phaseMatch && item.max_phase != null) {
-    const phaseN = parseInt(phaseMatch[1], 10);
-    if (phaseN > item.max_phase) {
-      e.cell.classList.add("union-null");
-    }
-    if (
-      phaseN <= item.max_phase &&
-      !item[col] &&
-      item.option_id === "DefaultRuleSet"
-    ) {
-      e.cell.classList.add("error-mark");
-      e.cell.classList.add("error-cell");
-    }
-  }
+// 읽기 전용 요약 그리드 공통 UI: 툴박스·푸터·컨텍스트 메뉴·정렬 없음.
+const INFO_GRID_UI = {
+  height: "100%",
+  loading: false,
+  useToolBox: false,
+  useToolBoxSetting: false,
+  useExtendFooter: false,
+  useContextMenu: false,
+  useSort: false,
 };
 
-// Inbound tree grid 의 data cell span 색을 진하게. (원본 onInboundDataProcessingGridFormatItem)
-const onInboundDataProcessingGridFormatItem = (_s: any, e: any) => {
-  if (!e.panel) return;
-  if (e.panel.cellType !== 1) {
-    e.cell.classList.add("wj-align-center");
-    return;
-  }
-  if (e.cell?.children) {
-    for (const node of Array.from(e.cell.children) as HTMLElement[]) {
-      if (node.tagName === "SPAN") node.style.color = "#28364e";
-    }
-  }
-};
+// 요약 데이터에는 행 식별 필드가 없어 순번 키를 붙인다.
+const withRowKey = (rows: any[]) => rows.map((row, index) => ({ ...row, _rowKey: index }));
 
-// Module 그리드 초기화 시 첫 컬럼(module_id) merge 허용. 원본과 동일한 처리.
-const onInitializedScenarioModule = (flexGrid: FlexGrid) => {
-  flexGrid.allowMerging = AllowMerging.All;
-  if (flexGrid.columns.length > 0) {
-    flexGrid.columns[0].allowMerging = true;
-  }
-};
+const infoGridConfig = (
+  data: any[],
+  fields: FieldDef[],
+  extra: Partial<MozGridCoreProps> = {},
+): MozGridCoreProps => ({
+  mode: "flat",
+  keyFields: ["_rowKey"],
+  data: withRowKey(data),
+  fields: fields.map((field) => ({ sortable: false, showFilterIcon: false, ...field })),
+  ...extra,
+});
 
-// ===== Grid State =====
-const grid = ref<FlexGrid | null>(null);
-const extendGrid = ref<ExtendGrid>();
-const gridKeys: string[] = ["demand_id"];
+// 실행 플로우 단계 컬럼(_step)은 데이터 없이 템플릿으로 단계명을 그린다.
+const stepField = (): FieldDef => ({
+  id: "_step",
+  header: t("text-execution_flow_step"),
+  dataType: "string",
+  flex: 1,
+});
+const optionValueField = (id: string, width = 160): FieldDef => ({
+  id,
+  header: t("text-option_value"),
+  dataType: "string",
+  width,
+  align: "center",
+});
 
-const subGrid = ref<FlexGrid | null>(null);
-const subExtendGrid = ref<ExtendGrid>();
+const inboundStepGridConfig = computed(() =>
+  infoGridConfig([executionFlowDataResult.value], [stepField(), optionValueField("inboundID")]),
+);
 
-// ===== Grid Initialization =====
-const onInitialized = (flexGrid: FlexGrid, _extendGrid: ExtendGrid) => {
-  grid.value = flexGrid;
-  extendGrid.value = _extendGrid;
-};
+const inboundRefGridConfig = computed(() =>
+  infoGridConfig(
+    [props.inboundItemOptions],
+    [
+      {
+        id: "tableFilterList",
+        header: t("text-ref_data_setting"),
+        dataType: "string",
+        flex: 1,
+        mask: {
+          type: "function",
+          formatter: (value: unknown) =>
+            Array.isArray(value) ? value.join(",") : String(value ?? ""),
+        },
+      },
+      optionValueField("tableFilterType"),
+    ],
+  ),
+);
 
-const subEditedDemandGridInitialized = (flexGrid: FlexGrid, _extendGrid: ExtendGrid) => {
-  subGrid.value = flexGrid;
-  subExtendGrid.value = _extendGrid;
-
-  // Sync extend grid states from main grid
-  if (extendGrid.value) {
-    nextTick(() => {
-      setTimeout(() => {
-        try {
-          syncExtendGridStates(extendGrid.value, _extendGrid);
-          flexGrid.invalidate();
-          flexGrid.refresh();
-        } catch (error) {
-          console.error("[Sub grid init] State sync error:", error);
-        }
-      }, 50);
+// Inbound tree grid: Category 아래 Menu 자식을 부모 키로 펼친 평탄 데이터.
+const inboundTreeRows = computed(() => {
+  const rows: any[] = [];
+  (props.inboundItemOptions?.list ?? []).forEach((item: any, index: number) => {
+    const { children, ...parent } = item;
+    const parentKey = String(index);
+    rows.push({ ...parent, _treeKey: parentKey, _parentKey: null });
+    (Array.isArray(children) ? children : []).forEach((child: any, childIndex: number) => {
+      rows.push({ ...child, _treeKey: `${parentKey}-${childIndex}`, _parentKey: parentKey });
     });
-  }
-};
-
-// ===== ExtendFlexGrid State Sync =====
-const syncExtendGridStates = (sourceExtendGrid: any, targetExtendGrid: any) => {
-  try {
-    // originalDataMap sync
-    sourceExtendGrid.originalDataMap?.forEach((value: any, key: string) => {
-      if (!targetExtendGrid.originalDataMap.has(key)) {
-        targetExtendGrid.originalDataMap.set(key, new Map(value));
-      } else {
-        const targetMap = targetExtendGrid.originalDataMap.get(key);
-        value.forEach((colValue: any, colKey: string) => {
-          targetMap.set(colKey, colValue);
-        });
-      }
-    });
-
-    // updated Set sync
-    sourceExtendGrid.updated?.forEach((value: any, key: string) => {
-      targetExtendGrid.updated.set(key, value);
-    });
-
-    // added Set sync
-    sourceExtendGrid.added?.forEach((value: any, key: string) => {
-      targetExtendGrid.added.set(key, value);
-    });
-
-    // removed Set sync
-    sourceExtendGrid.removed?.forEach((value: any, key: string) => {
-      targetExtendGrid.removed.set(key, value);
-    });
-  } catch (error) {
-    console.error("[Popup] ExtendFlexGrid state sync error:", error);
-  }
-};
-
-// ===== Cell Edit Handler =====
-const onPopupCellEditEnded = (_sender: any, _e: any) => {
-  emit("cell-edit-ended", _sender, _e);
-
-  nextTick(() => {
-    if (grid.value) {
-      grid.value.invalidate();
-      grid.value.refresh();
-    }
   });
+  return rows;
+});
+
+// 원본 onInboundDataProcessingGridFormatItem: 헤더 가운데 정렬, 데이터 셀 글자색 진하게.
+const INBOUND_TREE_HEADER = { style: "justify-content: center; text-align: center" };
+const INBOUND_TREE_CELL = { style: "color: #28364e" };
+
+const inboundTreeGridConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: ["_treeKey"],
+  data: inboundTreeRows.value,
+  treeConfig: {
+    idField: "_treeKey",
+    parentField: "_parentKey",
+    treeColumn: "multilingual",
+    defaultExpandLevel: Infinity,
+  },
+  fields: [
+    { id: "menuID", header: t("text-menu_id"), dataType: "string", hidden: true },
+    {
+      id: "multilingual",
+      header: t("text-data_processing_list"),
+      dataType: "string",
+      flex: 1,
+      headerAttributes: INBOUND_TREE_HEADER,
+      cellAttributes: INBOUND_TREE_CELL,
+    },
+    {
+      ...optionValueField("optionValue", 152),
+      align: undefined,
+      headerAttributes: INBOUND_TREE_HEADER,
+      cellAttributes: INBOUND_TREE_CELL,
+    },
+  ].map((field): FieldDef => ({ sortable: false, showFilterIcon: false, ...field }) as FieldDef),
+}));
+
+const inboundSaveGridConfig = computed(() =>
+  infoGridConfig(
+    [props.inboundItemOptions],
+    [
+      { id: "_storage", header: t("text-data_storage"), dataType: "string", flex: 1 },
+      optionValueField("saveCfgValue"),
+    ],
+  ),
+);
+
+const engineStepGridConfig = computed(() =>
+  infoGridConfig([executionFlowDataResult.value], [stepField(), optionValueField("scenarioID")]),
+);
+
+const outboundStepGridConfig = computed(() =>
+  infoGridConfig([executionFlowDataResult.value], [stepField(), optionValueField("outboundID")]),
+);
+
+// description 은 raw 문자열이 i18n key일 수 있어 t() 로 번역해 표시한다.
+const descriptionField = (): FieldDef => ({
+  id: "description",
+  header: t("text-option"),
+  dataType: "string",
+  flex: 1,
+  mask: {
+    type: "function",
+    formatter: (value: unknown) => (value != null ? t(String(value)) : ""),
+  },
+});
+
+// scenarioModule 그리드 phase_N 셀 표시.
+//   1) max_phase 를 초과한 phase_N 컬럼은 'union-null' 클래스로 음영 처리
+//      (module A는 phase_2까지인데 module B가 phase_1까지인 경우, 테이블 합집합 union 이므로 B의 phase_2 셀을 빈 셀로 마킹).
+//   2) option_id === 'DefaultRuleSet' + max_phase 내 phase 인데 값 없음 → 'error-mark' 로 표시.
+const phaseCellAttributes = ({ rowData, columnId }: { rowData: Record<string, any>; columnId: string }) => {
+  const phaseMatch = columnId.match(/^phase_(\d+)$/);
+  if (!phaseMatch || rowData.max_phase == null) return undefined;
+  const phaseN = parseInt(phaseMatch[1], 10);
+  if (phaseN > rowData.max_phase) {
+    return { class: "union-null" };
+  }
+  if (!rowData[columnId] && rowData.option_id === "DefaultRuleSet") {
+    return { class: "error-mark error-cell" };
+  }
+  return undefined;
 };
 
-// ===== Grid View Update Handler =====
-const onPopupUpdatedView = (_sender: any) => {
-  if (extendGrid.value) {
-    setTimeout(() => {
-      try {
-        if (grid.value) {
-          grid.value.invalidate();
-          grid.value.refresh();
-        }
-      } catch (error) {
-        console.error("[Grid update] State restore error:", error);
-      }
-    }, 10);
+const engineGlobalGridConfig = computed(() =>
+  infoGridConfig(
+    props.scenarioConfigSource ?? [],
+    [descriptionField(), optionValueField("optionValue", 152)],
+    { resizableColumns: false },
+  ),
+);
+
+const engineModuleGridConfig = computed(() =>
+  infoGridConfig(props.scenarioModuleDataSource ?? [], [
+    { id: "module_id", header: t("text-module_id"), dataType: "string", width: getWidthByKey("S3") },
+    descriptionField(),
+    ...props.phaseColumns.map(
+      (col): FieldDef => ({
+        ...optionValueField(String(col.binding), 152),
+        header: t(col.header),
+        cellAttributes: phaseCellAttributes,
+      }),
+    ),
+  ]),
+);
+
+// Module 그리드는 첫 컬럼(module_id)의 같은 값을 병합한다. 원본과 동일한 처리.
+const onScenarioModuleReady = (grid: PureSheet) => {
+  grid.setMergeConfig({ type: "content", columns: ["module_id"] });
+};
+
+// ===== Demand Grid =====
+// 팝업이 열릴 때의 수요 목록(메인 그리드 수정값 반영)으로 고정한다.
+//   팝업에서 고친 값은 메인 그리드로 넘어가 다시 이 목록에 반영되는데, 그때마다 다시 로드하면
+//   팝업 그리드의 변경 표시와 스크롤이 초기화되므로 열린 동안에는 다시 읽지 않는다.
+const popupGridData = shallowRef<any[]>(props.popupDataSource);
+const popupGridRows = computed(
+  () => new Map<string, any>(popupGridData.value.map((row) => [String(row?.demand_id), row])),
+);
+
+const popupGridConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: ["demand_id"],
+  editable: true,
+  data: popupGridData.value,
+  fields: buildDemandFields(t, props.propColumns, "popup"),
+}));
+
+// 수정 데이터 상세 그리드: 메인 그리드에서 수정된 셀을 강조한다.
+const subEditedGridConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: ["demand_id"],
+  data: props.alwaysEditedData,
+  fields: [
+    ...buildDemandFields(t, props.propColumns, "popup").map(
+      (field): FieldDef => ({
+        ...field,
+        cellAttributes: ({ rowData, columnId }: { rowData: Record<string, any>; columnId: string }) =>
+          props.editedDemandFields[String(rowData?.demand_id)]?.includes(columnId)
+            ? { class: "edited-cell" }
+            : undefined,
+      }),
+    ),
+    { id: "legacy_data_version", header: t("text-legacy_data_version"), dataType: "string", width: getWidthByKey("S2"), readonly: true, hidden: true },
+    { id: "interfaced_from", header: t("text-interfaced_from"), dataType: "string", width: getWidthByKey("S2"), readonly: true, hidden: true },
+  ],
+}));
+
+const popupGrid = shallowRef<PureSheet | null>(null);
+// 팝업에서 한 번이라도 수정된 행. 수정을 되돌리면 원래 값을 메인 그리드에 다시 보낸다.
+const touchedDemandIds = new Set<string>();
+
+const onPopupChanges = () => {
+  const grid = popupGrid.value;
+  if (!grid) return;
+
+  const rows: Record<string, any>[] = [];
+  const modifiedIds = new Set<string>();
+  grid.changes.getAll().modified.forEach((row: { rowId: unknown; currentData: Record<string, any> }) => {
+    const id = String(row.rowId);
+    modifiedIds.add(id);
+    touchedDemandIds.add(id);
+    rows.push(row.currentData);
+  });
+  touchedDemandIds.forEach((id) => {
+    if (modifiedIds.has(id)) return;
+    const original = popupGridRows.value.get(id);
+    if (original) rows.push(original);
+    touchedDemandIds.delete(id);
+  });
+
+  if (rows.length) {
+    emit("demand-edited", rows);
   }
+};
+
+// '수정 데이터 보기' — 수정된 수요(demand_id)만 남긴다. 사용자가 건 컬럼 필터와 별도 그룹이다.
+const EDITED_FILTER_KEY = "editedOnly";
+const NO_EDITED_DEMAND = "__no_edited_demand__";
+
+const applyEditedFilter = async () => {
+  const grid = popupGrid.value;
+  if (!grid) return;
+
+  const editedIDs = props.alwaysEditedData.map((row) => row?.demand_id);
+  await grid.setFilterGroup(
+    EDITED_FILTER_KEY,
+    showEditedData.value
+      ? {
+          type: "values",
+          priority: 0,
+          applied: true,
+          states: [
+            {
+              id: "demand_id",
+              operator: "in",
+              filterValue: editedIDs.length ? editedIDs : [NO_EDITED_DEMAND],
+              sequence: 0,
+            },
+          ],
+        }
+      : null,
+  );
+};
+
+const onPopupGridReady = (grid: PureSheet, chrome: GridChrome) => {
+  popupGrid.value = grid;
+  chrome.on("changes:changed", onPopupChanges);
+  applyEditedFilter();
 };
 
 // ===== Close =====
@@ -1792,15 +1454,8 @@ const onClickConfirm = async () => {
 
 // ===== Watchers =====
 
-// showEditedData filter watcher
-watch(showEditedData, () => {
-  if (grid.value) {
-    setTimeout(() => {
-      grid.value?.invalidate();
-      grid.value?.refresh();
-    }, 50);
-  }
-});
+// showEditedData filter watcher — 켜진 동안 수정 건이 바뀌면 필터도 다시 건다.
+watch([showEditedData, () => props.alwaysEditedData], applyEditedFilter);
 
 // Popup open watcher
 watch(
@@ -2132,6 +1787,11 @@ watch(
 .sub-edited-demand-grid-wrapper {
   width: 100%;
   height: 200px;
+
+  // 메인 그리드에서 수정된 셀
+  :deep(.ps-cell.edited-cell) {
+    background-color: var(--ps-dirty-modified-cell-bg);
+  }
 }
 
 .execute-button-wrapper {
@@ -2234,11 +1894,11 @@ watch(
           }
 
           // 원본 ExecutionFlowMasterDetailSummary 와 동일.
-          :deep(.wj-cell.union-null) {
+          :deep(.ps-cell.union-null) {
             background-color: #f0f2f5;
           }
-          :deep(.wj-cell.error-mark),
-          :deep(.wj-cell.error-cell) {
+          :deep(.ps-cell.error-mark),
+          :deep(.ps-cell.error-cell) {
             background-color: #fdecec;
           }
         }

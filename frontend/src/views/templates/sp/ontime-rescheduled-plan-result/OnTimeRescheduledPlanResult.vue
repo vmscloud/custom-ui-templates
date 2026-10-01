@@ -270,8 +270,8 @@ import {
   Popup,
   EmptyState,
   TextArea,
-} from "@vmscloud/moz-ui-components";
-import { SplitPane, Pane } from "@vmscloud/moz-ui-components";
+} from "@vmscloud/moz-ui-components-vue";
+import { SplitPane, Pane } from "@vmscloud/moz-ui-components-vue";
 import {
   useHostPlanCycle,
   useHostUser,
@@ -528,7 +528,7 @@ watch(planVer, async (newVer) => {
   min-height: 300px;
 }
 
-.hide-splitter :deep(.splitpanes__splitter) {
+.hide-splitter :deep(.resizer) {
   display: none;
 }
 

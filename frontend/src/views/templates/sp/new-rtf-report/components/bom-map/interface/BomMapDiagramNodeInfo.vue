@@ -130,32 +130,18 @@
             </div>
           </template>
           <template #[tab.id] v-for="tab in isbTabs">
-            <ExtendFlexGrid
+            <MozGrid
               :key="tab.id"
               v-if="tab.id in isbDataSource && isbDataSource[tab.id]?.length"
               class="bom-map-isb-info-grid"
-              style="display: grid; max-width: 100%; overflow: hidden; height: 230px"
-              :alternatingRowStep="0"
-              :itemsSource="tab.id in isbDataSource ? isbDataSource[tab.id] : []"
-              :isReadOnly="true"
+              style="display: grid; max-width: 100%; overflow: hidden"
+              :height="230"
+              :coreConfig="isbPropCoreConfigs[tab.id]"
               :use-tool-box="false"
               :use-extend-footer="false"
-              :initialized="onIsbGridInitialized"
-              :formatItem="formatItem"
-              :autoGenerateColumns="false"
               :useContextMenu="false"
               :name="'bom-map-diagram-node-info-grid1'"
-            >
-              <WjFlexGridColumn
-                v-if="isbDataSource && isbDataSource[tab.id]?.length"
-                v-for="({ binding, header, width }, idx) in generateColumn(
-                  tab.id in isbDataSource ? isbDataSource[tab.id] : [],
-                )"
-                :width="width"
-                :binding="binding"
-                :header="header"
-              />
-            </ExtendFlexGrid>
+            />
             <div v-else class="bom-map-info-empty" data-border="true" style="width: 100%; height: 115px">
               <span style="width: 150px; word-break: keep-all; white-space: pre-wrap; text-align: center">
                 {{ t('msg-data_empty') }}
@@ -186,7 +172,7 @@
       <div class="bom-map-window-inner-wrapper" style="display: grid">
         <div class="bom-map-window-sub-title">{{ t('text-bom_map-prod_plan_info') }}</div>
         <div
-          v-if="bomDataSource?.bomMapRouteInfos?.itemCount"
+          v-if="bomDataSource?.bomMapRouteInfos?.length"
           :style="{
             minHeight: '231px',
             maxWidth: '100%',
@@ -196,89 +182,39 @@
             borderBottom: '1px solid #c1c1d8',
           }"
         >
-          <WjMultiRow
+          <MozGrid
             class="bom-map-bom-information-multirow"
             :style="{ width: 'calc(100% + 2px)', height: 'calc(100% + 2px)' }"
-            :headersVisibility="'Column'"
-            :formatItem="formatBomMapRouteItem"
-            :itemsSource="bomDataSource?.bomMapRouteInfos"
-            :allow-sorting="0"
-            :autoRowHeights="true"
-            :isReadOnly="true"
+            :height="routeGridHeight"
+            :coreConfig="routeCoreConfig"
+            :use-tool-box="false"
+            :use-extend-footer="false"
+            :useContextMenu="false"
+            :useSort="false"
           >
-            <!--          :layoutDefinition="bomGridLayout"-->
-
-            <WjMultiRowCellGroup header="oper">
-              <WjMultiRowCell
-                :header="t('text-bom_map-oper_id')"
-                :binding="'oper_id'"
-                :width="69"
-                :allowMerging="true"
-              />
-              <WjMultiRowCell :header="t('text-bom_map-oper_type')" :binding="'oper_type'" :width="69" />
-            </WjMultiRowCellGroup>
-
-            <WjMultiRowCellGroup header="qty">
-              <WjMultiRowCell :header="t('text-bom_map-target_qty')" :binding="'target_qty'" :width="66" />
-              <WjMultiRowCell :header="t('text-bom_map-plan_qty')" :binding="'plan_qty'" :width="66" />
-            </WjMultiRowCellGroup>
-
-            <WjMultiRowCellGroup header="time">
-              <WjMultiRowCell :header="t('text-bom_map-total_tat')" :binding="'total_tat'" :width="80">
-                <!--              <WjMultiRowCellTemplate :cellType="'ColumnHeader'" v-slot="cell">-->
-                <!--                <div>헤더에 템플릿 지정이 가능함</div>-->
-                <!--              </WjMultiRowCellTemplate>-->
-                <WjMultiRowCellTemplate cellType="Cell" v-slot="cell">
-                  <div
-                    class="bom-map-node-info-column-template-wrapper"
-                    v-tooltip="{
-                      text:
-                        Math.floor(cell.item.total_tat / (60 * 60 * 24)) +
-                        dayjs
-                          .duration(Math.floor(Math.abs(cell.item.total_tat) % (60 * 60 * 24)), 'seconds')
-                          .format(' [Day] HH:mm'),
-
-                      onlyEllipsis: true,
-                    }"
-                  >
-                    {{
-                      Math.floor(cell.item.total_tat / (60 * 60 * 24)) +
-                      dayjs
-                        .duration(Math.floor(Math.abs(cell.item.total_tat) % (60 * 60 * 24)), 'seconds')
-                        .format(' [Day] HH:mm')
-                    }}
-                  </div>
-                </WjMultiRowCellTemplate>
-              </WjMultiRowCell>
-              <WjMultiRowCell :header="t('text-elapse_time')" :binding="'elapse_sec'" :width="80">
-                <WjMultiRowCellTemplate cellType="Cell" v-slot="cell">
-                  <div
-                    class="bom-map-node-info-column-template-wrapper"
-                    v-tooltip="{
-                      text:
-                        Math.floor(cell.item.elapse_sec / (60 * 60 * 24)) +
-                        dayjs
-                          .duration(Math.floor(Math.abs(cell.item.elapse_sec) % (60 * 60 * 24)), 'seconds')
-                          .format(' [Day] HH:mm'),
-                      onlyEllipsis: true,
-                    }"
-                  >
-                    {{
-                      Math.floor(cell.item.elapse_sec / (60 * 60 * 24)) +
-                      dayjs
-                        .duration(Math.floor(Math.abs(cell.item.elapse_sec) % (60 * 60 * 24)), 'seconds')
-                        .format(' [Day] HH:mm')
-                    }}
-                  </div>
-                </WjMultiRowCellTemplate>
-              </WjMultiRowCell>
-            </WjMultiRowCellGroup>
-
-            <WjMultiRowCellGroup header="res">
-              <WjMultiRowCell :header="t('text-available_res_id')" :binding="'all_res_list'" width="*" />
-              <WjMultiRowCell :header="t('text-used_res_id')" :binding="'res_list'" width="*" />
-            </WjMultiRowCellGroup>
-          </WjMultiRow>
+            <CellTemplate field="total_tat" #default="{ value }">
+              <div
+                class="bom-map-node-info-column-template-wrapper"
+                v-tooltip="{
+                  text: formatDuration(Number(value)),
+                  onlyEllipsis: true,
+                }"
+              >
+                {{ formatDuration(Number(value)) }}
+              </div>
+            </CellTemplate>
+            <CellTemplate field="elapse_sec" #default="{ value }">
+              <div
+                class="bom-map-node-info-column-template-wrapper"
+                v-tooltip="{
+                  text: formatDuration(Number(value)),
+                  onlyEllipsis: true,
+                }"
+              >
+                {{ formatDuration(Number(value)) }}
+              </div>
+            </CellTemplate>
+          </MozGrid>
         </div>
 
         <div v-else class="bom-map-info-empty" data-border="true" style="width: 100%; height: 231px">
@@ -315,33 +251,19 @@
             </div>
           </template>
           <template #[tab.id] v-for="tab in bomTabs">
-            <ExtendFlexGrid
+            <MozGrid
               v-if="tab.id in bomDataSource && bomDataSource[tab.id]?.length"
-              :height="1200"
               :key="tab.id"
               class="bom-map-isb-info-grid"
-              style="display: grid; max-width: 100%; overflow: hidden; height: 230px"
-              :alternatingRowStep="0"
-              :itemsSource="tab.id in bomDataSource ? bomDataSource[tab.id] : []"
-              :isReadOnly="true"
+              style="display: grid; max-width: 100%; overflow: hidden"
+              :height="230"
+              :coreConfig="bomPropCoreConfigs[tab.id]"
               :use-tool-box="false"
               :use-extend-footer="false"
-              :initialized="onBomGridInitialized"
-              :formatItem="formatItem"
-              :autoGenerateColumns="false"
               :useContextMenu="false"
               :name="'bom-map-diagram-node-info-grid2'"
-            >
-              <WjFlexGridColumn
-                v-if="bomDataSource && bomDataSource[tab.id]?.length"
-                v-for="({ binding, header, width }, idx) in generateColumn(
-                  tab.id in bomDataSource ? bomDataSource[tab.id] : [],
-                )"
-                :width="width"
-                :binding="binding"
-                :header="header"
-              />
-            </ExtendFlexGrid>
+              @ready="onBomGridReady"
+            />
             <div v-else class="bom-map-info-empty" data-border="true" style="width: 100%; height: 115px">
               <span style="width: 150px; word-break: keep-all; white-space: pre-wrap; text-align: center">
                 {{ t('msg-data_empty') }}
@@ -373,20 +295,11 @@
 <script setup lang="ts">
 import { apiCall } from '../../../adapters/stores';
 import { useProjectInfoStore } from '../../../adapters/stores';
-import { CollectionView } from '@vmscloud/moz-wijmo-grid/wijmo';
-import { AllowMerging, CellRange, CellType, FlexGrid, GridPanel, MergeManager } from '@vmscloud/moz-wijmo-grid/wijmo.grid';
-import { WjFlexGridColumn } from '@vmscloud/moz-wijmo-grid/wijmo.vue2.grid';
-import {
-  WjMultiRow,
-  WjMultiRowCell,
-  WjMultiRowCellGroup,
-  WjMultiRowCellTemplate,
-} from '@vmscloud/moz-wijmo-grid/wijmo.vue2.grid.multirow';
-import { Tab } from '@vmscloud/moz-ui-components';
-import { ExtendFlexGrid } from '@vmscloud/moz-wijmo-grid';
-import { ExtendGrid } from '@vmscloud/moz-wijmo-grid';
-import { isDataCell } from '@vmscloud/moz-wijmo-grid/utils';
-import { addTooltipEvent, formatCompactNumber, showMessage, dayjs } from '@moz-shared/utils';
+import { ROW_KEY, withRowKey } from '../../../adapters/utils';
+import { CellTemplate, MozGrid } from '@vmscloud/moz-ui-grid-vue';
+import type { GridChrome, MozGridCoreProps, PureSheet } from '@vmscloud/moz-ui-grid-vue';
+import { Tab } from '@vmscloud/moz-ui-components-vue';
+import { formatCompactNumber, showMessage, dayjs } from '@moz-shared/utils';
 import { useMutation } from '@tanstack/vue-query';
 import { useTranslation } from 'i18next-vue';
 import { computed, inject, ref, watch } from 'vue';
@@ -558,14 +471,6 @@ const isbTabs = [
   { id: 'bomMapIsbProp', text: t('text-global-isb') },
 ];
 
-const isbGrid = ref<FlexGrid | null>(null); // Wijmo grid
-const isbExtendGrid = ref<ExtendGrid | null>(null); // Wijmo grid 확장 기능
-
-const onIsbGridInitialized = (flexGrid: FlexGrid, _extendGrid: ExtendGrid) => {
-  isbGrid.value = flexGrid;
-  isbExtendGrid.value = _extendGrid;
-};
-
 const getIsbInfo = useMutation({
   mutationFn: async (param: any) => await apiCall({ url: `RarBomMapViewNew/GetBomMapIsbInfo`, param, method: 'POST' }),
 
@@ -584,9 +489,6 @@ const getIsbInfo = useMutation({
 // ---------------------------------------------------------------------------------------------------------------------
 
 const bomDataSource = ref<any>([]);
-const bomGrid = ref<FlexGrid | null>(null); // Wijmo grid
-const bomExtendGrid = ref<ExtendGrid | null>(null); // Wijmo grid 확장 기능
-
 const currentBomTab = ref('bomMapBomProp'); // 초기 BOM 탭 ID
 const bomTabs = [
   { id: 'bomMapBomProp', text: t('text-global-bom') },
@@ -614,7 +516,7 @@ const getBomInfo = useMutation({
       bomDataSource.value = {
         ...result.data,
         bomMapBomProp: [...result.data.bomMapBomProp],
-        bomMapRouteInfos: new CollectionView(result.data.bomMapRouteInfos),
+        bomMapRouteInfos: withRowKey(result.data.bomMapRouteInfos),
       };
     } else {
       bomDataSource.value = {};
@@ -627,143 +529,151 @@ const getBomInfo = useMutation({
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-const generateColumn = (newData: any): { binding: string; header: string; width: number | string }[] => {
-  const result: { binding: string; header: string; width: number | string }[] = [];
+const generateColumn = (newData: any): { binding: string; header: string }[] => {
+  const result: { binding: string; header: string }[] = [];
   Object.keys(newData[0]).forEach((key) => {
     if (key !== 'descending' && key !== 'ascending') {
       result.push({
         binding: key,
         header: t(`text-bom_map-${key}`),
-        width: '*',
       });
     }
   });
   return result;
 };
 
-class CustomMergeManager extends MergeManager {
-  getMergedRange(panel: GridPanel, r: number, c: number): CellRange | null {
-    if (panel.cellType !== CellType.Cell) return null;
-    // 0, 1번 컬럼만 병합
-    if (c !== 0 && c !== 1) return null;
+const emptyCellAttributes = ({ value }: { value: unknown }) =>
+  String(value ?? '').trim() === '' ? { class: 'bom-map-empty' } : undefined;
 
-    const rng = new CellRange(r, c);
+/**
+ * 속성(prop) 탭 그리드 설정 — 데이터의 키로 컬럼을 만든다
+ */
+const buildPropCoreConfig = (rows: any[] | undefined): MozGridCoreProps => {
+  if (!rows?.length) return { mode: 'flat', keyFields: [ROW_KEY], data: [], fields: [] };
+  return {
+    mode: 'flat',
+    keyFields: [ROW_KEY],
+    data: withRowKey(rows),
+    fields: generateColumn(rows).map(({ binding, header }) => ({
+      id: binding,
+      header,
+      dataType: 'string',
+      flex: 1,
+      minWidth: 60,
+      cellAttributes: emptyCellAttributes,
+    })),
+  };
+};
 
-    // 가로 병합 (0, 1번 컬럼만)
-    for (let i = rng.col; i < Math.min(panel.columns.length - 1, 1); i++) {
-      if (
-        String(panel.getCellData(rng.row, i, true)).trim() !== String(panel.getCellData(rng.row, i + 1, true)).trim()
-      ) {
-        break;
-      }
-      rng.col2 = i + 1;
-    }
-    for (let i = rng.col; i > 0; i--) {
-      if (
-        String(panel.getCellData(rng.row, i, true)).trim() !== String(panel.getCellData(rng.row, i - 1, true)).trim()
-      ) {
-        break;
-      }
-      rng.col = i - 1;
-    }
+const isbPropCoreConfigs = computed<Record<string, MozGridCoreProps>>(() =>
+  Object.fromEntries(isbTabs.map((tab) => [tab.id, buildPropCoreConfig(isbDataSource.value?.[tab.id])])),
+);
 
-    // 세로 병합 (0, 1번 컬럼만)
-    for (let i = rng.row; i < panel.rows.length - 1; i++) {
-      if (
-        String(panel.getCellData(i, rng.col, true)).trim() !== String(panel.getCellData(i + 1, rng.col, true)).trim()
-      ) {
-        break;
-      }
-      rng.row2 = i + 1;
-    }
-    for (let i = rng.row; i > 0; i--) {
-      if (
-        String(panel.getCellData(i, rng.col, true)).trim() !== String(panel.getCellData(i - 1, rng.col, true)).trim()
-      ) {
-        break;
-      }
-      rng.row = i - 1;
-    }
+const bomPropCoreConfigs = computed<Record<string, MozGridCoreProps>>(() =>
+  Object.fromEntries(bomTabs.map((tab) => [tab.id, buildPropCoreConfig(bomDataSource.value?.[tab.id])])),
+);
 
-    return rng;
-  }
-}
+/**
+ * BOM 속성 그리드 병합 — 0, 1번 컬럼만 병합한다.
+ * 두 컬럼 값이 같으면 가로로 묶고, 위아래 행이 같은 모양이면 세로로 이어 붙인다.
+ */
+const onBomGridReady = (grid: PureSheet, _chrome: GridChrome) => {
+  const mergeColumns = grid.columns.getVisibleColumns().slice(0, 2).map((column: any) => column.id);
 
-const onBomGridInitialized = (flexGrid: FlexGrid, _extendGrid: ExtendGrid) => {
-  bomGrid.value = flexGrid;
-  bomExtendGrid.value = _extendGrid;
+  grid.setMergeConfig({
+    type: 'custom',
+    columns: mergeColumns,
+    getMergedRange: ({ rowIndex, colIndex, columnsInOrder, getCellValue, totalRowCount }: any) => {
+      if (colIndex !== 0 && colIndex !== 1) return null;
 
-  bomGrid.value.allowMerging = AllowMerging.Cells;
-  bomGrid.value.mergeManager = new CustomMergeManager();
-  bomGrid.value.columns.forEach((col) => {
-    col.allowMerging = true;
+      const [firstCol, secondCol] = columnsInOrder;
+      const text = (row: number, columnId: string) => String(getCellValue(row, columnId) ?? '').trim();
+      const isRowMerged = (row: number) => !!secondCol && text(row, firstCol) === text(row, secondCol);
+
+      const rowMerged = isRowMerged(rowIndex);
+      const startCol = rowMerged ? 0 : colIndex;
+      const endCol = rowMerged ? 1 : colIndex;
+      const columnId = columnsInOrder[startCol];
+      const value = text(rowIndex, columnId);
+      const sameShape = (row: number) => isRowMerged(row) === rowMerged && text(row, columnId) === value;
+
+      let startRow = rowIndex;
+      let endRow = rowIndex;
+      while (startRow > 0 && sameShape(startRow - 1)) startRow--;
+      while (endRow < totalRowCount - 1 && sameShape(endRow + 1)) endRow++;
+
+      if (startRow === endRow && startCol === endCol) return null;
+      return { startRow, endRow, startCol, endCol };
+    },
   });
 };
 
-const formatBomMapRouteItem = (s: FlexGrid, e: any) => {
-  if (!isDataCell(s, e)) {
-    if (e.col === 0 && e.row % 2 === 1) {
-      e.cell.classList.add('bom-map-multirow-oper');
-    }
+/**
+ * 생산계획 정보 (옛 MultiRow) — 한 데이터 행을 두 줄로 보여준다
+ */
+const ROUTE_ROW_HEIGHT = 28;
+const routeGridHeight = computed(() =>
+  Math.max(231, ROUTE_ROW_HEIGHT * 2 * ((bomDataSource.value?.bomMapRouteInfos?.length ?? 0) + 1) + 2),
+);
 
-    addTooltipEvent(e.cell, e.cell.innerText, true);
-    return;
-  }
-  if (e.col === 0 && e.row % 2 === 0) {
-    e.cell.classList.add('bom-map-multirow-oper');
-  }
-
-  if (e.cell.innerText.trim() === 'TOTAL') {
-    if (e.row % 2 === 1) {
-      e.cell.classList.add('bom-map-multirow-total');
-    }
-    if (e.row % 2 === 0) {
-      e.cell.classList.add('bom-map-multirow-total-hide');
-    }
-  }
-
-  if (!Number.isNaN(e.cell.innerText.trim())) {
-    e.cell.classList.add('bom-map-multirow-number-cell');
-  }
-
-  if (e.cell.innerText.trim() === '') {
-    e.cell.classList.add('bom-map-empty-status');
-  }
-
-  addTooltipEvent(e.cell, e.cell.innerText, true);
+const routeCellAttributes = ({ value, columnId }: { value: unknown; columnId: string }) => {
+  const text = String(value ?? '').trim();
+  const classes: string[] = [];
+  if (columnId === 'oper_id') classes.push('bom-map-multirow-oper');
+  if (text === 'TOTAL') classes.push('bom-map-multirow-total');
+  if (text === '') classes.push('bom-map-empty-status');
+  return classes.length ? { class: classes.join(' ') } : undefined;
 };
 
-const formatItem = (s: FlexGrid, e: any) => {
-  if (!isDataCell(s, e)) return;
+const routeCoreConfig = computed<MozGridCoreProps>(() => {
+  const numberField = { dataType: 'number', align: 'right' };
+  return {
+    mode: 'flat',
+    keyFields: [ROW_KEY],
+    data: bomDataSource.value?.bomMapRouteInfos ?? [],
+    rowHeight: ROUTE_ROW_HEIGHT,
+    tooltipMode: 'overflow',
+    rowSelection: { mode: 'single' },
+    rowTemplate: {
+      rowCount: 2,
+      layout: [
+        [
+          { id: 'oper_id', width: 69 },
+          { id: 'target_qty', width: 66 },
+          { id: 'total_tat', width: 80 },
+          { id: 'all_res_list' },
+        ],
+        [
+          { id: 'oper_type', width: 69 },
+          { id: 'plan_qty', width: 66 },
+          { id: 'elapse_sec', width: 80 },
+          { id: 'res_list' },
+        ],
+      ],
+    },
+    fields: [
+      { id: 'oper_id', header: t('text-bom_map-oper_id'), dataType: 'string', width: 69 },
+      // TOTAL 행은 공정 유형 자리를 비운다 (옛 MultiRow 는 TOTAL 을 두 줄에 걸쳐 표시)
+      {
+        id: 'oper_type',
+        header: t('text-bom_map-oper_type'),
+        dataType: 'string',
+        width: 69,
+        mask: { type: 'function', formatter: (value: unknown) => (value === 'TOTAL' ? '' : String(value ?? '')) },
+      },
+      { id: 'target_qty', header: t('text-bom_map-target_qty'), width: 66, ...numberField },
+      { id: 'plan_qty', header: t('text-bom_map-plan_qty'), width: 66, ...numberField },
+      { id: 'total_tat', header: t('text-bom_map-total_tat'), width: 80, ...numberField },
+      { id: 'elapse_sec', header: t('text-elapse_time'), width: 80, ...numberField },
+      { id: 'all_res_list', header: t('text-available_res_id'), dataType: 'string', flex: 1 },
+      { id: 'res_list', header: t('text-used_res_id'), dataType: 'string', flex: 1 },
+    ].map((field) => ({ ...field, sortable: false, cellAttributes: routeCellAttributes })),
+  };
+});
 
-  // 병합된 셀의 왼쪽 위 셀만 값 표시
-  const range = s.mergeManager?.getMergedRange(s.cells, e.row, e.col);
-  if (range && (e.row !== range.topRow || e.col !== range.leftCol)) {
-    e.cell.innerHTML = '';
-    return;
-  }
-
-  // node 정보 grid의 모든 type은 string으로 처리하도록 요청 받아 주석 처리 2025-11-03 danny
-  // if (!Number.isNaN(Number(e.cell.innerText)) && !!e.cell.innerText) {
-  //   e.cell.innerText = formatCompactNumber(Number(e.cell.innerText.trim()), { returnWhenInvalid: '-' });
-  // }
-
-  if (e.cell.innerText.trim() === '') {
-    e.cell.classList.add('bom-map-empty');
-  }
-  const item = e.getRow()?.dataItem;
-  if (!item) return;
-  const col = e.getColumn().binding;
-  const colIndex = e.col; // 현재 컬럼의 인덱스
-
-  // more_info가 null이고 이전 컬럼이 prop_id인 경우
-  if (col === 'more_info' && colIndex > 0) {
-    const prevCol = s.columns[colIndex - 1].binding; // 이전 컬럼의 binding
-    if (prevCol === 'prop_id' && item?.more_info === null) {
-      // 병합 로직은 CustomMergeManager가 처리
-    }
-  }
-};
+const formatDuration = (sec: number) =>
+  Math.floor(sec / (60 * 60 * 24)) +
+  dayjs.duration(Math.floor(Math.abs(sec) % (60 * 60 * 24)), 'seconds').format(' [Day] HH:mm');
 
 watch(
   () => userAction.value.click.current.node,
@@ -849,73 +759,31 @@ watch(
   border-bottom: none !important;
 }
 
-.bom-map-multirow-number-cell {
-  text-align: right;
-}
-
 .bom-map-multirow-total {
-  height: 62px !important;
-  top: 0px !important;
-  padding-top: 22px !important;
-}
-
-.bom-map-multirow-total-hide {
-  display: none !important;
+  font-weight: 500;
 }
 
 .bom-map-bom-information-multirow {
-  & .wj-state-selected .bom-map-node-info-column-template-wrapper {
+  & .ps-row.ps-selected .bom-map-node-info-column-template-wrapper {
     color: #4568e0 !important;
-    //background-color: red;
   }
 
-  & .wj-state-multi-selected .bom-map-node-info-column-template-wrapper {
-    color: #4568e0 !important;
-    //background-color: red;
-  }
-
-  &.wj-multirow .wj-cell.wj-record-end:not(.wj-header) {
-    border-bottom-color: #bbc6d9 !important;
-  }
-
-  & .wj-cell.wj-alt {
-    background-color: unset !important;
-  }
-
-  & .wj-cell.wj-header.wj-group-start.wj-group-end {
-    display: block !important;
-    line-height: 100%;
-    padding-top: 8px;
-
+  & .ps-cell {
     overflow: hidden !important;
     white-space: nowrap !important;
     text-overflow: ellipsis !important;
     word-break: break-all !important;
-  }
 
-  & .wj-row {
-    & .wj-cell {
-      display: block !important;
-      line-height: 100%;
-      padding: 8px 8px 0px 8px;
+    &:hover {
+      background-color: #cacde3 !important;
+    }
 
+    & div {
+      width: 100%;
       overflow: hidden !important;
       white-space: nowrap !important;
       text-overflow: ellipsis !important;
       word-break: break-all !important;
-
-      &:hover {
-        background-color: #cacde3 !important;
-      }
-
-      & div {
-        width: 100%;
-        height: 100%;
-        overflow: hidden !important;
-        white-space: nowrap !important;
-        text-overflow: ellipsis !important;
-        word-break: break-all !important;
-      }
     }
   }
 }

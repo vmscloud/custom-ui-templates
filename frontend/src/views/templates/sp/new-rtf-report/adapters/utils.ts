@@ -27,6 +27,18 @@ export const useLoaderParams = <T extends Record<string, any>>(paramsCB: () => [
   return { loadParams, queryKey, saveParams };
 };
 
+// ── withRowKey ──
+
+/**
+ * withRowKey — MozGrid 행 식별 키(keyFields)를 붙인다.
+ * 서버 데이터에 고유 키가 없는 그리드에서 순번을 `_rowKey` 로 쓴다.
+ */
+export const ROW_KEY = "_rowKey";
+
+export function withRowKey<T extends object>(rows: T[] | null | undefined): (T & { _rowKey: number })[] {
+  return (Array.isArray(rows) ? rows : []).map((row, idx) => ({ ...row, _rowKey: idx }));
+}
+
 // ── useProp ──
 
 /**

@@ -23,30 +23,18 @@
     <div v-show="isOpen" class="group-body">
       <!-- Left Pane: Pivot Grid -->
       <div class="pane grid-pane">
-        <ExtendPivotGrid
-          ref="extendPivotGridRef"
-          :emptyState="{ isLoading: isLoading }"
+        <MozGrid
           :name="`demandDistribution_${displayName}_${idx + 1}`"
           height="100%"
-          :itemsSource="data"
-          :engine-option="{
-            fields: fields,
-            rowFields: [displayName],
-            columnFields: columnFieldNames,
-            valueFields: valueFieldNames,
-            showRowTotals: dataState.showRowTotals,
-            showColumnTotals: dataState.showColumnTotals,
-            showZeros: dataState.showZeros,
-            totalsBeforeData: dataState.totalsBeforeData,
-          }"
+          :coreConfig="coreConfig"
+          :sourceFields="sourceFields"
           :useContextMenu="false"
-          :initialized="onInitialized"
-          :formatItem="formatItem"
-          :use-pivot-chart="false"
-          :use-tool-box="false"
+          :useChart="false"
+          :useToolBox="false"
+          :useExtendFooter="true"
           :loading="isLoading"
-          :use-extend-footer="true"
-          :on-filter-restored="onFilterRestored"
+          @ready="onGridReady"
+          @filter:changed="onGridFilterChanged"
         />
       </div>
 
@@ -71,30 +59,34 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive, toRefs, watch } from "vue";
-import { ExtendPivotGrid, type ExtendGrid } from "@vmscloud/moz-wijmo-grid";
-import { Aggregate, DataType } from "@vmscloud/moz-wijmo-grid/wijmo";
-import { CellType, type FormatItemEventArgs } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
-import { type PivotGrid, ShowTotals } from "@vmscloud/moz-wijmo-grid/wijmo.olap";
+import { ref, computed, toRefs, watch } from "vue";
+import { MozGrid } from "@vmscloud/moz-ui-grid-vue";
+import type {
+  GridChrome,
+  MozGridCoreProps,
+  PureSheet,
+  FilterState,
+  IFilterDef,
+  ComparisonOperator,
+} from "@vmscloud/moz-ui-grid-vue";
 import {
   EChart,
+  DataType,
   type ViewDef,
   type ChartField,
-} from "@vmscloud/moz-ui-chart";
+} from "@vmscloud/moz-ui-chart-vue";
 import type { DemandDistributionData } from "./demandDistribution";
 
-// Total marker constants (unicode ordering for pivot grid sorting)
+// Total marker constants (server sends these values for total rows/columns)
 const TOTAL_FOR_GRID = "🚀-text-total";
+const DEMAND_TOTAL = "🚀-text-demand-total";
+// Grid total label (pivot field formulas map the markers to this label)
+const TOTAL_LABEL = "Total";
 // Chart total marker (zero-width space prefix prevents i18n auto-conversion)
 const TOTAL_FOR_CHART = "\u200BTotal";
-
-// PivotGrid filterModule type
-type PivotFilterModule = {
-  setGrid: (grid: PivotGrid, immediate?: boolean) => void;
-  applyFilter: (filters: any[]) => void;
-  setFilter: (filters: any[], immediate?: boolean) => void;
-  getFilter: () => any[];
-};
+// Total row/column cell style
+const TOTAL_CELL_STYLE =
+  "background-color: var(--color-grid-point); font-weight: bold;";
 
 // Props
 interface Props {
@@ -121,131 +113,179 @@ function toggleOpen() {
 
 // Filtered data for chart (exclude total rows)
 const filteredData = computed(() =>
-  data.value.filter((d) => d.due_date !== "🚀-text-demand-total"),
+  data.value.filter((d) => d.due_date !== DEMAND_TOTAL),
 );
 
 // ===== Pivot Grid Configuration =====
 
-interface FieldType {
-  binding: string;
-  header: string;
-  dataType: DataType;
-  aggregate?: Aggregate;
-  align: "left" | "center" | "right";
-  format?: string;
-  width?: number;
-}
+// Pivot field catalog (candidates in the pivot field panel)
+const sourceFields = computed(() => [
+  { field: "due_date", header: "Due Date", dataType: "string" as const, width: 76 },
+  { field: "item_cnt", header: "Item Count", dataType: "number" as const, aggregate: "sum" as const },
+  { field: "qty", header: "Demand Qty", dataType: "number" as const, width: 76, aggregate: "sum" as const },
+  { field: column.value, header: displayName.value, dataType: "string" as const },
+]);
 
-const fields = computed<FieldType[]>(() => {
-  const defaultFields: FieldType[] = [
+// Total row/column cells are highlighted
+const totalCellAttributes = (params: {
+  row: Record<string, unknown>;
+  pivotValues?: unknown[];
+}) =>
+  params.row[column.value] === TOTAL_LABEL ||
+  params.pivotValues?.[0] === TOTAL_LABEL
+    ? { style: TOTAL_CELL_STYLE }
+    : undefined;
+
+const coreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "pivot",
+  data: data.value,
+  rowFields: [
     {
-      binding: "due_date",
+      field: column.value,
+      header: displayName.value,
+      dataType: "string",
+      formula: (row: Record<string, unknown>) =>
+        row[column.value] === TOTAL_FOR_GRID ? TOTAL_LABEL : row[column.value],
+    },
+  ],
+  columnFields: [
+    {
+      field: "due_date",
       header: "Due Date",
-      dataType: DataType.String,
-      align: "right",
+      dataType: "string",
       width: 76,
+      formula: (row: Record<string, unknown>) =>
+        row.due_date === DEMAND_TOTAL ? TOTAL_LABEL : row.due_date,
     },
+  ],
+  valueFields: [
     {
-      binding: "item_cnt",
-      header: "Item Count",
-      dataType: DataType.Number,
-      align: "right",
-      aggregate: Aggregate.Sum,
-    },
-    {
-      binding: "qty",
+      field: "qty",
       header: "Demand Qty",
-      dataType: DataType.Number,
-      align: "right",
+      dataType: "number",
       width: 76,
-      aggregate: Aggregate.Sum,
+      aggregate: "sum",
+      cellAttributes: totalCellAttributes,
     },
-  ];
-
-  defaultFields.push({
-    binding: column.value,
-    header: displayName.value,
-    align: "left",
-    dataType: DataType.String,
-  });
-
-  return defaultFields;
-});
-
-// Engine option field name arrays (must match field headers exactly)
-const columnFieldNames = ["Due Date"];
-const valueFieldNames = ["Demand Qty"];
-
-const dataState = reactive<{
-  showRowTotals: ShowTotals;
-  showColumnTotals: ShowTotals;
-  showZeros: boolean;
-  totalsBeforeData: boolean;
-}>({
-  showRowTotals: ShowTotals.None,
-  showColumnTotals: ShowTotals.None,
+  ],
+  showRowGrandTotals: false,
+  showColumnGrandTotals: false,
+  showRowSubTotals: false,
+  showColumnSubTotals: false,
   showZeros: true,
-  totalsBeforeData: false,
-});
+}));
 
-// Pivot grid refs
-const extendGrid = ref<ExtendGrid>();
-const extendPivot = ref<PivotGrid>();
-const pivotFilterModule = ref<PivotFilterModule | null>(null);
-const extendPivotGridRef = ref<InstanceType<typeof ExtendPivotGrid> | null>(
-  null,
-);
+// Total label always sorts last (other labels keep ascending order)
+const totalLastSortKey = (value: unknown) =>
+  value === TOTAL_LABEL ? "1" : `0${String(value ?? "")}`;
 
-const onInitialized = (pivotGrid: PivotGrid, _extendGrid: ExtendGrid) => {
-  extendPivot.value = pivotGrid;
-  extendGrid.value = _extendGrid;
+// Pivot grid chrome (filter controller)
+const gridChrome = ref<GridChrome | null>(null);
 
-  if (extendPivotGridRef.value?.filterModule) {
-    pivotFilterModule.value = extendPivotGridRef.value.filterModule;
-    pivotFilterModule.value!.setGrid(pivotGrid);
-  }
+const onGridReady = (grid: PureSheet, chrome: GridChrome) => {
+  gridChrome.value = chrome;
+  grid.sort([
+    { id: column.value, direction: "asc", sequence: 1, sortKey: totalLastSortKey },
+    { id: "due_date", direction: "asc", sequence: 2, sortKey: totalLastSortKey },
+  ]);
+  // Re-apply chart filters after grid (re)initialization
+  lastSyncedFilterKey = filterKey([]);
+  applyChartFiltersToGrid(masterFilterDef.value);
 };
 
-const formatItem = (s: PivotGrid, e: FormatItemEventArgs) => {
-  let col = 0;
-  const row = s.rows.length - 1;
-  if (e.panel.cellType === CellType.RowHeader) {
-    if (e.cell.innerText === TOTAL_FOR_GRID) {
-      e.cell.innerText = "Total";
-      col = e.col;
-    }
-  } else if (col <= e.col && row === e.row) {
-    e.cell.classList.add("wj-aggregate");
-  }
+// ===== Grid <-> Chart filter sync =====
 
-  const lastCol = s.columns.length - 1;
-  if (e.panel.cellType === CellType.ColumnHeader) {
-    if (e.cell.innerText === "🚀-text-demand-total") {
-      e.cell.innerText = "Total";
-    }
-  } else if (lastCol === e.col) {
-    e.cell.classList.add("wj-aggregate");
-  }
+const MOZ_TO_COMPARISON: Record<string, ComparisonOperator> = {
+  eq: "=",
+  neq: "≠",
+  contains: "%",
+  notContains: "!%",
+  isNull: "∅",
+  isNotNull: "●",
+  gt: ">",
+  gte: "≥",
+  lt: "<",
+  lte: "≤",
+};
+
+// Filter identity key (skips echoes between grid and chart)
+const filterKey = (
+  filters: {
+    binding: string;
+    comparison: string;
+    variable: unknown;
+    logical?: string;
+  }[],
+) =>
+  JSON.stringify(
+    filters.map((f) => [
+      f.binding,
+      f.comparison,
+      f.variable ?? null,
+      (f.logical ?? "AND").toUpperCase(),
+    ]),
+  );
+
+let lastSyncedFilterKey = filterKey([]);
+
+/**
+ * Grid filter change (layout restore, grid filter UI) -> chart filters
+ */
+const onGridFilterChanged = (payload: unknown) => {
+  const { filters = [] } = (payload ?? {}) as { filters?: FilterState[] };
+  const headerOf = (id: string) =>
+    sourceFields.value.find((f) => f.field === id)?.header ?? id;
+
+  // Value-list filters (in/notIn) have no chart comparison and are skipped
+  const chartFilters = filters
+    .filter((f) => MOZ_TO_COMPARISON[f.operator])
+    .map((f, index) => {
+      const comparison = MOZ_TO_COMPARISON[f.operator];
+      return {
+        sequence: f.sequence ?? index,
+        header: headerOf(f.id),
+        binding: f.id,
+        logical: f.logical === "or" ? "OR" : "AND",
+        comparison,
+        comparisonObj: { symbol: comparison, label: comparison },
+        type: DataType.String,
+        variable: (f as { filterValue?: unknown }).filterValue,
+      };
+    });
+
+  const key = filterKey(chartFilters);
+  if (key === lastSyncedFilterKey) return;
+  lastSyncedFilterKey = key;
+  masterFilterDef.value = chartFilters;
 };
 
 /**
- * Layout restore: convert grid filters to chart filters
+ * Chart filters -> pivot grid
  */
-const onFilterRestored = (filters: any[]) => {
-  masterFilterDef.value = filters.map((filter: any, index: number) => ({
-    sequence: filter.sequence ?? index,
-    header: filter.header || "",
-    binding: filter.binding || "",
-    logical: filter.logical || "AND",
-    comparison: filter.comparison || "%",
-    comparisonObj: {
-      symbol: filter.comparison || "%",
-      label: filter.comparison || "%",
-    },
-    type: filter.type ?? DataType.String,
-    variable: filter.variable,
-  }));
-};
+function applyChartFiltersToGrid(newFilters: any[]) {
+  if (!gridChrome.value) return;
+
+  const pivotFilters: IFilterDef[] = newFilters.map(
+    (filter: any, filterIdx: number) => ({
+      sequence: filter.sequence ?? filterIdx,
+      header: filter.header || "",
+      binding: filter.binding || "",
+      logical: filter.logical || "AND",
+      comparison: filter.comparison || (filter.comparisonObj?.symbol ?? "%"),
+      type: "string",
+      variable: filter.variable,
+    }),
+  );
+
+  const validFilters = pivotFilters.filter(
+    (f) => f.variable != null || f.comparison === "∅" || f.comparison === "●",
+  );
+
+  const key = filterKey(validFilters);
+  if (key === lastSyncedFilterKey) return;
+  lastSyncedFilterKey = key;
+  gridChrome.value.filter.setFilter(validFilters);
+}
 
 // ===== Chart Configuration =====
 
@@ -337,30 +377,9 @@ const masterFilterDef = ref<any[]>([]);
 /**
  * Sync chart filters back to pivot grid
  */
-watch(
-  masterFilterDef,
-  (newFilters) => {
-    if (!pivotFilterModule.value || !extendPivot.value) return;
-
-    const pivotFilters = newFilters.map((filter: any, filterIdx: number) => ({
-      sequence: filter.sequence ?? filterIdx,
-      header: filter.header || "",
-      binding: filter.binding || "",
-      logical: filter.logical || "AND",
-      comparison: filter.comparison || (filter.comparisonObj?.symbol ?? "%"),
-      type: filter.type ?? DataType.String,
-      variable: filter.variable,
-    }));
-
-    const validFilters = pivotFilters.filter(
-      (f: any) =>
-        f.variable != null || f.comparison === "∅" || f.comparison === "●",
-    );
-
-    pivotFilterModule.value.setFilter(validFilters, true);
-  },
-  { deep: true },
-);
+watch(masterFilterDef, (newFilters) => applyChartFiltersToGrid(newFilters), {
+  deep: true,
+});
 </script>
 
 <style scoped lang="scss">

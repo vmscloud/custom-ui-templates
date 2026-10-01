@@ -67,82 +67,29 @@
               ></Radio>
             </div>
           </div>
-          <ExtendFlexGrid
+          <MozGrid
             style="flex: 1"
-            :alternatingRowStep="0"
             class="rtf-summary-grid"
-            :itemsSource="rtfSummarySource?.setting || []"
+            :coreConfig="rtfGridCoreConfig"
             :use-tool-box="false"
             :use-extend-footer="false"
             :useContextMenu="false"
             :loading="false"
-            :empty-state="{
-              isLoading: false,
-            }"
-            :initialized="onRtfGridInitialized"
-            :formatItem="rtfGridFormatItem"
             :name="`${currentMenu.menuID}_pop_grid10`"
+            @ready="onRtfGridReady"
           >
-            <WjFlexGridColumn
-              binding="category"
-              :header="t('text-category')"
-              :width="125"
-              :isReadOnly="true"
-              align="center"
-            />
-            <WjFlexGridColumn
-              binding="plan_type"
-              :header="t('text-plan_type')"
-              :width="130"
-              :isReadOnly="true"
-              align="center"
-            />
-            <WjFlexGridColumn binding="apply_early" :header="t('text-plan_dashboard-early')" :width="120">
-              <template #cell="{ item }">
+            <CellTemplate v-for="field in radioColumns" :key="field" :field="field" #default="{ rowData }">
+              <label class="custom-radio">
                 <input
                   type="radio"
-                  :name="'apply-radio-' + String(item.category) + '-' + String(item.plan_type)"
-                  :checked="item.apply_early"
+                  :name="'apply-radio-' + String(rowData.category) + '-' + String(rowData.plan_type)"
+                  :checked="!!rowData[field]"
+                  @change="(event: Event) => onChangeApplyRadio(event, rowData, field)"
                 />
-              </template>
-            </WjFlexGridColumn>
-            <WjFlexGridColumn binding="apply_on_time" :header="t('text-plan_dashboard-on_time')" :width="120">
-              <template #cell="{ item }">
-                <input
-                  type="radio"
-                  :name="'apply-radio-' + String(item.category) + '-' + String(item.plan_type)"
-                  :checked="item.apply_on_time"
-                />
-              </template>
-            </WjFlexGridColumn>
-            <WjFlexGridColumn binding="apply_late" :header="t('text-plan_dashboard-late')" :width="120">
-              <template #cell="{ item }">
-                <input
-                  type="radio"
-                  :name="'apply-radio-' + String(item.category) + '-' + String(item.plan_type)"
-                  :checked="item.apply_late"
-                />
-              </template>
-            </WjFlexGridColumn>
-            <WjFlexGridColumn binding="apply_short" :header="t('text-plan_dashboard-short')" :width="120">
-              <template #cell="{ item }">
-                <input
-                  type="radio"
-                  :name="'apply-radio-' + String(item.category) + '-' + String(item.plan_type)"
-                  :checked="item.apply_short"
-                />
-              </template>
-            </WjFlexGridColumn>
-            <WjFlexGridColumn binding="apply_excluded" :header="t('text-plan_dashboard-excluded')" :width="120">
-              <template #cell="{ item }">
-                <input
-                  type="radio"
-                  :name="'apply-radio-' + String(item.category) + '-' + String(item.plan_type)"
-                  :checked="item.apply_excluded"
-                />
-              </template>
-            </WjFlexGridColumn>
-          </ExtendFlexGrid>
+                <span></span>
+              </label>
+            </CellTemplate>
+          </MozGrid>
         </div>
       </template>
     </Tab>
@@ -153,13 +100,12 @@
 import { useMenuStore, usePlanCycleStore } from './adapters/stores';
 import { useProjectInfoStore } from './adapters/stores';
 import { usePlanDashboardSubQuery } from './adapters/types';
-import { AllowMerging, CellType, FlexGrid, FormatItemEventArgs, SelectionMode } from '@vmscloud/moz-wijmo-grid/wijmo.grid';
-import { WjFlexGridColumn } from '@vmscloud/moz-wijmo-grid/wijmo.vue2.grid';
-import { Popup, Radio, Tab } from '@vmscloud/moz-ui-components';
-import { ExtendFlexGrid } from '@vmscloud/moz-wijmo-grid';
+import { CellTemplate, MozGrid } from '@vmscloud/moz-ui-grid-vue';
+import type { GridChrome, MozGridCoreProps, PureSheet } from '@vmscloud/moz-ui-grid-vue';
+import { Popup, Radio, Tab } from '@vmscloud/moz-ui-components-vue';
 import { useTranslation } from 'i18next-vue';
 import { storeToRefs } from 'pinia';
-import { computed, inject, ref, toRaw, watch } from 'vue';
+import { computed, inject, ref, shallowRef, toRaw, watch } from 'vue';
 import { IRtfReportQuery } from './NewRtfReport';
 
 type PropsType = {
@@ -209,7 +155,7 @@ interface ISetting {
   apply_excluded: boolean;
 }
 
-const rtfGrid = ref<FlexGrid>();
+const rtfGrid = shallowRef<PureSheet>();
 
 const rtfSummaryWidget = ref<any[]>(['cust', 'itemGroup', 'due']);
 const planByProdDetailStandard = ref('BUFFER');
@@ -221,83 +167,95 @@ const rtfWidgetSettingTitle = computed(
   () => `${t(currentMenu.value.parentMenuName || '')} > ${t(currentMenu.value.menuName)} > ${t('text-menu-setting')}`,
 );
 
-const onRtfGridInitialized = (flexGrid: FlexGrid) => {
-  flexGrid.rowHeaders.columns.maxSize = 73;
-  flexGrid.rowHeaders.columns.minSize = 73;
-
-  // 셀 선택 비활성화
-  flexGrid.selectionMode = SelectionMode.None;
-
-  rtfGrid.value = flexGrid;
-
-  if (flexGrid) {
-    flexGrid.allowMerging = AllowMerging.Cells;
-    flexGrid.columns[0].allowMerging = true;
-  }
+const onRtfGridReady = (grid: PureSheet, _chrome: GridChrome) => {
+  rtfGrid.value = grid;
+  // 같은 구분(category) 셀을 세로로 병합한다
+  grid.setMergeConfig({ type: 'content', columns: ['category'] });
 };
 
 const radioColumns = ['apply_early', 'apply_on_time', 'apply_late', 'apply_short', 'apply_excluded'];
 
-const rtfGridFormatItem = (s: FlexGrid, e: FormatItemEventArgs) => {
-  if (e.panel.cellType === CellType.Cell) {
-    const col = s.columns[e.col];
-    if (radioColumns.includes(col?.binding || '')) {
-      const row = s.rows[e.row].dataItem;
-      const checked = row[col?.binding || ''];
-      e.cell.innerHTML = `
-        <label class="custom-radio">
-          <input type="radio" name="apply-radio-${String(row.category)}-${String(row.plan_type)}" ${checked ? 'checked' : ''} />
-          <span></span>
-        </label>
-      `;
-      e.cell.querySelector('input')?.addEventListener('change', (event) => {
-        const input = event.target as HTMLInputElement;
-        if (input.checked) {
-          radioColumns.forEach((field) => {
-            row[field] = field === col?.binding;
-          });
-          s.collectionView.refresh();
-        }
-      });
-    }
+const onChangeApplyRadio = (event: Event, rowData: any, field: string) => {
+  const input = event.target as HTMLInputElement;
+  if (!input.checked) return;
 
-    if (e.col === 0) {
-      if (e.cell.innerText === 'within_plan') {
-        e.cell.innerText = t('text-demand_within_plan_period', { br: '\n', interpolation: { escapeValue: false } });
-      }
-
-      if (e.cell.innerText === 'after_plan') {
-        e.cell.innerText = t('text-demand_beyond_plan_period', { br: '\n', interpolation: { escapeValue: false } });
-      }
-    }
-
-    if (e.col === 1) {
-      if (e.cell.innerText === 'early') {
-        e.cell.innerText = t('text-global-upper-early');
-      }
-
-      if (e.cell.innerText === 'on_time') {
-        e.cell.innerText = t('text-global-upper-on_time');
-      }
-
-      if (e.cell.innerText === 'late') {
-        e.cell.innerText = t('text-global-upper-late');
-      }
-
-      if (e.cell.innerText === 'remain') {
-        e.cell.innerText = t('text-global-upper-remain');
-      }
-
-      if (e.cell.innerText === 'short') {
-        e.cell.innerText = t('text-global-upper-short');
-      }
-    }
-  }
-
-  if (s.columns[e.col]?.binding === 'plan_type') {
-    e.cell.classList.add('rtf-grid-border-right');
-  }
+  rtfSummarySource.value.setting = rtfSummarySource.value.setting.map((item) => {
+    if (item.category !== rowData.category || item.plan_type !== rowData.plan_type) return item;
+    const next = { ...item };
+    radioColumns.forEach((column) => {
+      (next as any)[column] = column === field;
+    });
+    return next;
+  });
 };
+
+const CATEGORY_LABEL_KEYS: Record<string, string> = {
+  within_plan: 'text-demand_within_plan_period',
+  after_plan: 'text-demand_beyond_plan_period',
+};
+
+const PLAN_TYPE_LABEL_KEYS: Record<string, string> = {
+  early: 'text-global-upper-early',
+  on_time: 'text-global-upper-on_time',
+  late: 'text-global-upper-late',
+  remain: 'text-global-upper-remain',
+  short: 'text-global-upper-short',
+};
+
+const rtfGridCoreConfig = computed<MozGridCoreProps>(() => ({
+  mode: 'flat',
+  keyFields: ['category', 'plan_type'],
+  data: rtfSummarySource.value?.setting || [],
+  rowHeader: { width: 73 },
+  // 셀 선택 비활성화
+  cellSelection: { mode: 'none' },
+  fields: [
+    {
+      id: 'category',
+      header: t('text-category'),
+      dataType: 'string',
+      width: 125,
+      readonly: true,
+      align: 'center',
+      sortable: false,
+      cellAttributes: { class: 'rtf-grid-category' },
+      mask: {
+        type: 'function',
+        formatter: (value: unknown) =>
+          CATEGORY_LABEL_KEYS[String(value)]
+            ? t(CATEGORY_LABEL_KEYS[String(value)], { br: '\n', interpolation: { escapeValue: false } })
+            : String(value ?? ''),
+      },
+    },
+    {
+      id: 'plan_type',
+      header: t('text-plan_type'),
+      dataType: 'string',
+      width: 130,
+      readonly: true,
+      align: 'center',
+      sortable: false,
+      cellAttributes: { class: 'rtf-grid-border-right' },
+      headerAttributes: { class: 'rtf-grid-border-right' },
+      mask: {
+        type: 'function',
+        formatter: (value: unknown) =>
+          PLAN_TYPE_LABEL_KEYS[String(value)] ? t(PLAN_TYPE_LABEL_KEYS[String(value)]) : String(value ?? ''),
+      },
+    },
+    { id: 'apply_early', header: t('text-plan_dashboard-early'), dataType: 'boolean', width: 120, sortable: false },
+    { id: 'apply_on_time', header: t('text-plan_dashboard-on_time'), dataType: 'boolean', width: 120, sortable: false },
+    { id: 'apply_late', header: t('text-plan_dashboard-late'), dataType: 'boolean', width: 120, sortable: false },
+    { id: 'apply_short', header: t('text-plan_dashboard-short'), dataType: 'boolean', width: 120, sortable: false },
+    {
+      id: 'apply_excluded',
+      header: t('text-plan_dashboard-excluded'),
+      dataType: 'boolean',
+      width: 120,
+      sortable: false,
+    },
+  ],
+}));
 
 // const getRtfSummaryQuery = useMutation({
 //   mutationFn: () => apiCall(GET_RTF_SUMMARY, { userID: userID.value, planVer: planVer.value }, 'POST'),
@@ -432,17 +390,6 @@ const onLoadPopup = async () => {
           gap: 0;
         }
 
-        .std-summary-grid {
-          .sudo-read-only.wj-state-multi-selected,
-          .sudo-read-only.wj-state-active {
-            // hover로 row 전체 색변경은 유지하지만 체크박스로 cell의 글자색 변경은 방지
-            color: #28364e;
-            background-color: #e2e7fa !important;
-            span.wj-cell-text {
-              color: #28364e;
-            }
-          }
-        }
       }
 
       .setting-popup-sub-title {
@@ -563,5 +510,9 @@ const onLoadPopup = async () => {
 
 .rtf-grid-border-right {
   border-right: 1px solid #6a7184 !important;
+}
+
+.rtf-grid-category {
+  white-space: pre-line;
 }
 </style>

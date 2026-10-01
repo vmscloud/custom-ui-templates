@@ -253,35 +253,44 @@ export function useWorkOrder() {
       </template>
     </Controller>
 
-    <ExtendFlexGrid
-      style="width: 100%; height: 100%"
-      :items-source="rows"
-      :is-read-only="true"
+    <MozGrid
+      name="work-order-grid"
+      :coreConfig="coreConfig"
+      height="100%"
       :loading="isPending"
-      :empty-state="{ isLoading: isPending }"
-      :use-tool-box="false"
-    >
-      <WjFlexGridColumn binding="work_order_id" :header="t('text-work_order_id')" :width="160" />
-      <WjFlexGridColumn binding="item_id"       :header="t('text-item_id')"       :width="140" />
-      <WjFlexGridColumn binding="due_date"      :header="t('text-due_date')"      :width="120" dataType="Date" format="yyyy-MM-dd" align="center" />
-      <WjFlexGridColumn binding="qty"           :header="t('text-qty')"           :width="120" dataType="Number" format="n2" align="right" />
-      <WjFlexGridColumn binding="status"        :header="t('text-status')"        :width="100" />
-    </ExtendFlexGrid>
+      :useToolBox="false"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { Controller, MultiSelect, DateInput } from "@vmscloud/moz-ui-components";
-import { ExtendFlexGrid } from "@vmscloud/moz-wijmo-grid";
-import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
+import { Controller, MultiSelect, DateInput } from "@vmscloud/moz-ui-components-vue";
+import { MozGrid } from "@vmscloud/moz-ui-grid-vue";
+import type { MozGridCoreProps } from "@vmscloud/moz-ui-grid-vue";
 import { useTranslation } from "i18next-vue";
-import { watch } from "vue";
+import { computed, watch } from "vue";
 import { useHostPlanCycle } from "@/composables/useHostStores";
 import { useWorkOrder } from "./workOrder";
 
 const { t } = useTranslation();
 const { planVer } = useHostPlanCycle();
 const { rows, isPending, fromDate, toDate, statuses, statusSource, load } = useWorkOrder();
+
+// 컬럼은 fields, 행 식별자는 keyFields 로 선언한다. 숫자·날짜 표시는 mask 로 맞춘다.
+const coreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: ["work_order_id"],
+  data: rows.value,
+  fields: [
+    { id: "work_order_id", header: t("text-work_order_id"), dataType: "string", width: 160 },
+    { id: "item_id",       header: t("text-item_id"),       dataType: "string", width: 140 },
+    { id: "due_date",      header: t("text-due_date"),      dataType: "date",   width: 120, align: "center",
+      mask: { type: "date", pattern: "YYYY-MM-DD" } },
+    { id: "qty",           header: t("text-qty"),           dataType: "number", width: 120,
+      mask: { type: "numeric", pattern: "#,##0.00" } },
+    { id: "status",        header: t("text-status"),        dataType: "string", width: 100 },
+  ],
+}));
 
 watch(planVer, (v) => v && load(v), { immediate: true });
 function onSearch() { load(planVer.value); }
@@ -381,7 +390,8 @@ git commit -m "feat: Work Order 화면 및 /work-order/list 엔드포인트 추�
 - `api.py`에 `include_router` 누락 → 404.
 - `planVer` 준비 전 `load()` 호출 → 빈 필터로 조회돼 결과가 이상해 보임. `if (!planVer) return;` 가드 필수.
 - SQL에서 `CAST(plan_date AS DATE)` 실행 실패 → `plan_date` 가 `YYYYMMDD` 문자열이면 문자열 비교로 바꾸세요. [07-data-sources](./07-data-sources.md#trino-타입-주의) 참조.
-- 숫자 컬럼에 `format="n2"` 누락 → 소수점 표시 어긋남.
+- 숫자 컬럼에 `mask` 누락 → 소수점 표시 어긋남.
+- `keyFields` 값이 중복 → MozGrid 가 오류를 냄. 고유 키가 없으면 `rows.map((row, idx) => ({ ...row, _rowKey: idx }))` 처럼 행 순번 키를 붙여 `keyFields: ["_rowKey"]` 로 지정.
 - 다국어 JSON 에 키 누락 → 템플릿에 `text-...` 키가 그대로 표시됨.
 
 다음: [07-data-sources](./07-data-sources.md) 에서 PG/Trino/APS Host API를 언제 쓰는지 정리.

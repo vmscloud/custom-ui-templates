@@ -79,7 +79,7 @@
 <script setup lang="ts">
 import { computed, inject, ref, watch } from "vue";
 import { useTranslation } from "i18next-vue";
-import { Button, Radio } from "@vmscloud/moz-ui-components";
+import { Button, Radio } from "@vmscloud/moz-ui-components-vue";
 import type { usePlanDashboard } from "../planDashboard";
 import SimpleGrid from "./SimpleGrid.vue";
 import { useHostPlanCycle } from "@/composables/useHostStores";

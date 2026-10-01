@@ -564,7 +564,7 @@ class ReExecutePlanService:
             total_demand_ids: set[str] = set()
 
             # 원본 C# AddPlanQty/AddTargetQty는 double을 반올림 없이 누적.
-            # 표시 단(Wijmo format="n2")에서만 소수 2자리로 렌더링하므로 여기서는
+            # 표시 단(그리드 컬럼 mask)에서만 소수 2자리로 렌더링하므로 여기서는
             # 중간 반올림을 하지 않는다. 중간에 round를 걸면 누적 오차로 값이 밀린다.
             for d in sorted(info["dates"].keys()):
                 cell = info["dates"][d]

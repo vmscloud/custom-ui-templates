@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from "vue";
 import { useTranslation } from "i18next-vue";
-import { Popup, Radio, Select } from "@vmscloud/moz-ui-components";
+import { Popup, Radio, Select } from "@vmscloud/moz-ui-components-vue";
 import { fetchWidgetSettings, saveWidgetSettings } from "./onTimeRescheduledPlanResult";
 
 const { t } = useTranslation();

@@ -33,9 +33,6 @@ export default defineConfig(({ mode }) => {
       "@moz-shared/icons": path.resolve(__dirname, "src/shims/moz-shared/icons"),
       "@moz-shared/utils": path.resolve(__dirname, "src/shims/moz-shared/utils"),
       "@moz-shared/types": path.resolve(__dirname, "src/shims/moz-shared/types"),
-      "@vmscloud/moz-wijmo-grid/utils": path.resolve(__dirname, "src/shims/moz-wijmo-grid/utils"),
-      "@vmscloud/moz-wijmo-grid/store": path.resolve(__dirname, "src/shims/moz-wijmo-grid/store"),
-      "@vmscloud/moz-wijmo-grid/excel": path.resolve(__dirname, "src/shims/moz-wijmo-grid/excel"),
     },
   },
   css: {
@@ -47,12 +44,12 @@ export default defineConfig(({ mode }) => {
   },
   optimizeDeps: {
     include: [
-      "@vmscloud/moz-ui-chart/echarts",
-      "@vmscloud/moz-ui-chart/echarts/core",
-      "@vmscloud/moz-ui-chart/echarts/charts",
-      "@vmscloud/moz-ui-chart/echarts/components",
-      "@vmscloud/moz-ui-chart/echarts/renderers",
-      "@vmscloud/moz-ui-chart/echarts-stat",
+      "@vmscloud/moz-ui-chart-vue/echarts",
+      "@vmscloud/moz-ui-chart-vue/echarts/core",
+      "@vmscloud/moz-ui-chart-vue/echarts/charts",
+      "@vmscloud/moz-ui-chart-vue/echarts/components",
+      "@vmscloud/moz-ui-chart-vue/echarts/renderers",
+      "@vmscloud/moz-ui-chart-vue/echarts-stat",
       "vue-echarts",
     ],
   },

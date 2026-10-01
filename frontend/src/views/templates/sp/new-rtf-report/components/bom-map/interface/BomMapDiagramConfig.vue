@@ -152,7 +152,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Select } from '@vmscloud/moz-ui-components';
+import { Select } from '@vmscloud/moz-ui-components-vue';
 import { IconClose } from '@moz-shared/icons';
 import { useTranslation } from 'i18next-vue';
 import { inject } from 'vue';

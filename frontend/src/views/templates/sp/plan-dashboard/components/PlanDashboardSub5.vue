@@ -37,9 +37,9 @@
 import { computed, inject } from "vue";
 import { useTranslation } from "i18next-vue";
 import VChart from "vue-echarts";
-import { use } from "@vmscloud/moz-ui-chart/echarts/core";
-import { CanvasRenderer } from "@vmscloud/moz-ui-chart/echarts/renderers";
-import { BarChart, LineChart } from "@vmscloud/moz-ui-chart/echarts/charts";
+import { use } from "@vmscloud/moz-ui-chart-vue/echarts/core";
+import { CanvasRenderer } from "@vmscloud/moz-ui-chart-vue/echarts/renderers";
+import { BarChart, LineChart } from "@vmscloud/moz-ui-chart-vue/echarts/charts";
 import {
   GridComponent,
   TitleComponent,
@@ -47,10 +47,10 @@ import {
   LegendComponent,
   MarkLineComponent,
   DataZoomComponent,
-} from "@vmscloud/moz-ui-chart/echarts/components";
+} from "@vmscloud/moz-ui-chart-vue/echarts/components";
 import type { usePlanDashboard } from "../planDashboard";
 import { useHostPlanCycle } from "@/composables/useHostStores";
-import { Button } from "@vmscloud/moz-ui-components";
+import { Button } from "@vmscloud/moz-ui-components-vue";
 import IconOpen from "../assets/IconOpen.vue";
 
 const { t } = useTranslation();

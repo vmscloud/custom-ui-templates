@@ -15,6 +15,7 @@ frontend/src/
 │   │   └─ index.ts           ← 공개 export
 │   ├─ utils/
 │   └─ types/
+├─ shims/grid/                ← 그리드 공용 유틸·엑셀 다운로드 (utils / store / excel)
 ├─ plugins/i18n.ts            ← i18next 세팅
 ├─ lang/{ko,en,jp,zh}.json    ← 번역 리소스
 ├─ expose.ts                  ← Module Federation viewRegistry
@@ -105,7 +106,7 @@ interface Props {
 }
 ```
 
-## 주요 UI 컴포넌트 (`@vmscloud/moz-ui-components`)
+## 주요 UI 컴포넌트 (`@vmscloud/moz-ui-components-vue`)
 
 - `Controller` — 화면 상단 필터 바
 - `Button`
@@ -115,12 +116,28 @@ interface Props {
 - `SplitPane`, `Pane` — 분할 레이아웃
 - `TextArea`
 - `EmptyState`
+- `MozComponentLocaleProvider`, `koKR` — 컴포넌트 로캘 (`App.vue` 에서 감쌈)
 
-## 그리드 (`@vmscloud/moz-wijmo-grid`)
+props 타입이 `any` 로 노출되어 `vue-tsc` 가 prop 오류를 잡지 못합니다. prop 은 `node_modules/@vmscloud/moz-ui-components-core/dist/components/<컴포넌트>/*.core.d.ts` 에서 확인하세요.
 
-- `ExtendFlexGrid`, `ExtendPivotGrid` — 기본 확장 그리드
-- `WjFlexGridColumn` (from `.../wijmo.vue2.grid`) — 컬럼 정의
-- `CollectionView`, `DataType`, `ShowTotals` — Wijmo 하위 API
+## 그리드 (`@vmscloud/moz-ui-grid-vue`)
+
+- `MozGrid` — 일반(`mode: "flat"`)·피벗(`mode: "pivot"`) 공용 그리드. 설정은 `coreConfig` 하나로 전달
+- `MozGridCoreProps`, `PureSheet`, `GridChrome` — 설정·코어 그리드·래퍼 타입 (`import type`)
+- 컬럼: `coreConfig.fields` (`id`, `header`, `dataType`, `width`, `mask`, `aggregate` …). 피벗은 `rowFields`·`columnFields`·`valueFields`
+- 행 키: `coreConfig.keyFields` — 중복되면 오류. 고유 키가 없으면 행 순번 키를 붙여 지정
+- 포맷: `mask` (`{ type: "numeric", pattern: "#,##0" }`, `{ type: "date", pattern: "YYYY-MM-DD" }`)
+- 스타일: `@vmscloud/moz-ui-grid-wrapper/style.css`, `@vmscloud/moz-ui-grid-vue/style.css` (`bootstrap.ts`·`expose.ts` 에서 import)
+- 레퍼런스: `node_modules/@vmscloud/moz-ui-grid-vue/docs/manual/reference_vue.md`(래퍼), `reference.md`(코어)
+- 작성 기준 예제: `frontend/src/views/templates/grid/ProductGrid.vue`
+
+## 그리드 shim (`@/shims/grid/*`)
+
+| import | 내용 |
+|--------|------|
+| `@/shims/grid/utils` | `dayjs`, `generateUUID`, `showMessage`, `copyToClipboard` 등 공용 유틸 |
+| `@/shims/grid/store` | `useExcelStore` — 엑셀 다운로드 진행 상태 |
+| `@/shims/grid/excel` | `downloadBigData`, `createColumnMapForExport(fields)` — 필드 배열(`coreConfig.fields`)로 export 컬럼 맵 생성 |
 
 ## 백엔드 환경 변수 (core/config.py)
 
@@ -161,8 +178,6 @@ interface Props {
 | `@moz-shared/icons` | `frontend/src/shims/moz-shared/icons` |
 | `@moz-shared/utils` | `frontend/src/shims/moz-shared/utils` |
 | `@moz-shared/types` | `frontend/src/shims/moz-shared/types` |
-| `@vmscloud/moz-wijmo-grid/utils` | `frontend/src/shims/moz-wijmo-grid/utils` |
-| `@vmscloud/moz-wijmo-grid/store` | `frontend/src/shims/moz-wijmo-grid/store` |
 
 ## 백엔드 주요 API 엔드포인트 (예시)
 

@@ -5,9 +5,9 @@
 
 // ECharts 초기화 (가장 먼저 실행되어야 함)
 // 단독 개발 환경에서 CanvasRenderer가 등록되지 않는 문제 해결
-import { use } from "@vmscloud/moz-ui-chart/echarts/core";
-import { CanvasRenderer } from "@vmscloud/moz-ui-chart/echarts/renderers";
-import { BarChart, LineChart, PieChart, ScatterChart } from "@vmscloud/moz-ui-chart/echarts/charts";
+import { use } from "@vmscloud/moz-ui-chart-vue/echarts/core";
+import { CanvasRenderer } from "@vmscloud/moz-ui-chart-vue/echarts/renderers";
+import { BarChart, LineChart, PieChart, ScatterChart } from "@vmscloud/moz-ui-chart-vue/echarts/charts";
 import {
   GridComponent,
   TooltipComponent,
@@ -15,7 +15,7 @@ import {
   DatasetComponent,
   DataZoomComponent,
   TitleComponent,
-} from "@vmscloud/moz-ui-chart/echarts/components";
+} from "@vmscloud/moz-ui-chart-vue/echarts/components";
 
 use([
   CanvasRenderer,
@@ -39,10 +39,11 @@ import App from "./App.vue";
 import router from "./router";
 import i18nPlugin from "./plugins/i18n";
 
-// 2. moz-ui-components 스타일 (Wijmo Grid 커스터마이징 포함, 마지막에 덮어쓰기)
-import "@vmscloud/moz-ui-components/style.css";
-import "@vmscloud/moz-wijmo-grid/style.css";
-import "@vmscloud/moz-ui-chart/style.css";
+// 2. moz-ui 컴포넌트·그리드·차트 스타일 (그리드 본체 .ps-* 는 grid-wrapper 스타일에만 있음)
+import "@vmscloud/moz-ui-components-core/styles/default";
+import "@vmscloud/moz-ui-grid-wrapper/style.css";
+import "@vmscloud/moz-ui-grid-vue/style.css";
+import "@vmscloud/moz-ui-chart-vue/style.css";
 
 // 커스텀 디렉티브 스타일
 import "./directives/tooltip/_index.scss";

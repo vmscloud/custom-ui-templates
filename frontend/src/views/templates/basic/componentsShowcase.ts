@@ -1,5 +1,6 @@
 import { ref } from "vue";
-import type { Rule } from "@vmscloud/moz-ui-components";
+import dayjs, { type Dayjs } from "dayjs";
+import type { Rule } from "@vmscloud/moz-ui-components-vue";
 
 // Select & MultiSelect용 옵션 데이터
 export interface SelectOption {
@@ -38,16 +39,16 @@ export function useComponentsShowcase() {
   const treeSelectValue = ref<string[]>([]);
 
   // Date/Time 상태
-  const calendarValue = ref<Date>(new Date());
-  const dateInputValue = ref<Date | null>(null);
+  // Calendar/DateInput 은 모델이 Date 면 Date, 비어 있으면 Dayjs 로 갱신한다
+  const calendarValue = ref<Date | Dayjs>(new Date());
+  const dateInputValue = ref<Date | Dayjs | null>(null);
 
   // Layout & Navigation 상태
   const activeTabId = ref("tab1");
   const popupVisible = ref(false);
 
-  // SearchBox 상태
+  // 검색 Select 상태 (useObjBinding 이라 선택 항목 객체가 들어온다)
   const searchBoxModel = ref<Record<string, unknown> | null>(null);
-  const searchBoxInput = ref("");
 
   // Validator 상태
   const validatorInput = ref("");
@@ -198,6 +199,10 @@ export function useComponentsShowcase() {
     popupVisible.value = !popupVisible.value;
   };
 
+  // 날짜 표시
+  const formatDate = (value: Date | Dayjs | null | undefined) =>
+    value ? dayjs(value).toDate().toLocaleDateString("ko-KR") : "(없음)";
+
   return {
     // Form Controls 상태
     buttonClickCount,
@@ -223,9 +228,8 @@ export function useComponentsShowcase() {
     activeTabId,
     popupVisible,
 
-    // SearchBox 상태
+    // 검색 Select 상태
     searchBoxModel,
-    searchBoxInput,
 
     // Validator 상태
     validatorInput,
@@ -241,5 +245,6 @@ export function useComponentsShowcase() {
     // 핸들러
     handleButtonClick,
     togglePopup,
+    formatDate,
   };
 }

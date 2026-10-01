@@ -143,7 +143,9 @@ export const fetchScenarioList = () =>
 
 ## 폼/필터 컴포넌트
 
-`@vmscloud/moz-ui-components` 가 `Input`, `Select`, `MultiSelect`, `Radio`, `DateInput`, `TimePicker`, `NumberInput`, `Toggle`, `Controller`, `Popup`, `SplitPane`, `Pane`, `Button` 등을 제공합니다. 화면 상단 필터 영역은 `Controller` 래퍼를 쓰는 것이 공통 관례.
+`@vmscloud/moz-ui-components-vue` 가 `Input`, `Select`, `MultiSelect`, `Radio`, `DateInput`, `TimePicker`, `NumberInput`, `Toggle`, `Controller`, `Popup`, `SplitPane`, `Pane`, `Button` 등을 제공합니다. 화면 상단 필터 영역은 `Controller` 래퍼를 쓰는 것이 공통 관례.
+
+> ⚠️ `moz-ui-components-vue` 의 컴포넌트 props 타입은 `any` 로 노출되어 `vue-tsc` 가 잘못된 prop 이름·타입을 잡지 못합니다. 사용할 prop 은 코어 정의 `node_modules/@vmscloud/moz-ui-components-core/dist/components/<컴포넌트>/*.core.d.ts` 에서 확인하세요.
 
 ```vue
 <Controller
@@ -161,14 +163,35 @@ export const fetchScenarioList = () =>
 
 팝업은 `Popup` + `v-model:visible`. `width` 등은 props 로 조정. 자세한 패턴은 [08-ui-patterns](./08-ui-patterns.md).
 
-## 그리드 (Wijmo)
+## 그리드 (MozGrid)
 
-- 일반 그리드: `@vmscloud/moz-wijmo-grid` 의 `ExtendFlexGrid`.
-- 피벗 그리드: `ExtendPivotGrid`.
-- 컬럼 정의: `WjFlexGridColumn`.
-- 숫자 표시 포맷: `dataType="Number" format="n2"`.
+- 그리드: `@vmscloud/moz-ui-grid-vue` 의 `MozGrid` 하나로 일반·피벗을 모두 다룹니다. `coreConfig.mode` 를 `"flat"` 또는 `"pivot"` 으로 지정.
+- 컬럼 정의: `coreConfig.fields` 배열 (`{ id, header, dataType, width, mask, ... }`). 피벗은 `rowFields`·`columnFields`·`valueFields`.
+- 행 식별자: `coreConfig.keyFields`. **키가 중복되면 MozGrid 가 오류를 냅니다.** 고유 키가 없는 데이터는 행 순번 키(`_rowKey` 등)를 붙여 `keyFields` 로 지정하세요.
+- 숫자/날짜 표시 포맷: `format="n2"` 같은 문자열 대신 필드의 `mask` 로 지정 (`{ type: "numeric", pattern: "#,##0.00" }`, `{ type: "date", pattern: "YYYY-MM-DD" }`).
+- 그리드 객체: `@ready="(grid, chrome) => ..."` 로 코어 `PureSheet` 와 래퍼 `GridChrome` 을 받습니다.
+- 작성 기준 예제: `frontend/src/views/templates/grid/ProductGrid.vue`. API 전체는 `node_modules/@vmscloud/moz-ui-grid-vue/docs/manual/reference_vue.md`(래퍼)·`reference.md`(코어).
 
-**중요**: 숫자는 백엔드에서 raw `double`/`number`로 내려받고, 표시 단에서 `format="n2"` 같은 지시로 반올림하세요. 중간에 반올림이 섞이면 누적 오차로 값이 밀립니다.
+```vue
+<MozGrid name="my-page-grid" :coreConfig="coreConfig" height="100%" :loading="isPending" @ready="onGridReady" />
+```
+
+```ts
+import { MozGrid } from "@vmscloud/moz-ui-grid-vue";
+import type { GridChrome, MozGridCoreProps, PureSheet } from "@vmscloud/moz-ui-grid-vue";
+
+const coreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: ["work_order_id"],
+  data: rows.value,
+  fields: [
+    { id: "work_order_id", header: t("text-work_order_id"), dataType: "string", width: 160 },
+    { id: "qty", header: t("text-qty"), dataType: "number", width: 120, mask: { type: "numeric", pattern: "#,##0.00" } },
+  ],
+}));
+```
+
+**중요**: 숫자는 백엔드에서 raw `double`/`number`로 내려받고, 표시 단에서 `mask` 로 반올림하세요. 중간에 반올림이 섞이면 누적 오차로 값이 밀립니다.
 
 ## i18n
 
@@ -182,7 +205,7 @@ t("text-my_page_title");
 
 ## Dayjs 규칙
 
-`DateInput`, `TimePicker` 는 `Dayjs` 객체를 v-model 로 받습니다. composable 에서 상태를 만들 때:
+`DateInput` 은 v-model 값의 타입을 그대로 유지하므로(Dayjs 를 넣으면 Dayjs) 상태를 처음부터 `Dayjs` 로 만듭니다. (`TimePicker` 는 `"HH:mm"` 문자열.) composable 에서 상태를 만들 때:
 
 ```ts
 import dayjs, { type Dayjs } from "dayjs";
@@ -201,7 +224,8 @@ const state = ref<{ startDate: Dayjs }>({ startDate: dayjs() });
 - [ ] host 값은 `useHostPlanCycle` 등으로 참조했는가
 - [ ] `planVer` 등 host 주입값이 비어있는 동안 API 호출이 나가지 않도록 가드했는가
 - [ ] UOM Select 가 있다면 `useQtyUomQuery` 로 만들었는가
-- [ ] 숫자/날짜 컬럼의 포맷을 Wijmo 컬럼 속성에 맡겼는가
+- [ ] 숫자/날짜 컬럼의 포맷을 MozGrid 필드의 `mask` 에 맡겼는가
+- [ ] 그리드 `keyFields` 가 행마다 고유한가 (없으면 행 순번 키를 붙였는가)
 - [ ] i18n 키를 `t()` 로만 사용했는가 (4개 언어에 모두 추가했는가)
 - [ ] `expose.ts` · `router/index.ts` 등록했는가
 - [ ] `Dayjs` 와 `Date` 가 섞여 있지 않은가

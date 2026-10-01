@@ -1,19 +1,11 @@
 <template>
-  <ExtendFlexGrid
+  <MozGrid
     :key="mainLoadParams.summary"
-    :name="t(`${currentMenu.menuName}`) + '-sub1-Summary'"
     :id="`${currentMenu.menuName}-sub1-Summary-id`"
-    :allowSorting="'None'"
     class="moz-readonly-grid rtf-report-sub1-grid"
     :style="{ width: parentsSummaryWidth, height: parentsSummaryHeight }"
-    :itemsSource="summaryDataSource"
-    :initialized="onInitialized"
-    :selectionChanged="onSelectionChanged"
-    :formatItem="formatItem"
-    :isReadOnly="true"
-    :setContextMenuProps="{
-      useFlexGridSetting: true,
-      useGroupColumn: false,
+    :coreConfig="coreConfig"
+    :contextMenuConfig="{
       useViewSelectColumn: true,
       useExportExcel: true,
       useFilter: true,
@@ -27,134 +19,18 @@
         }),
     }"
     :use-tool-box="true"
-    :isToolBoxExpanded="false"
     :loading="mainQuery.isFetching.value"
     :useSort="false"
-    :use-preset="false"
-  >
-    <!-- v-if="mainLoadParams.summary === 'cust'" -->
-
-    <WjFlexGridColumn
-      binding="due"
-      :header="groupingColumnHeader"
-      aggregate="Cnt"
-      :width="mainLoadParams.summary === 'due' ? 80 : 120"
-      align="center"
-      dataType="String"
-    />
-    <WjFlexGridColumn
-      binding="custID"
-      :header="t('text-cust_name')"
-      :width="80"
-      :visible="mainLoadParams.summary === 'cust'"
-      align="center"
-    />
-    <WjFlexGridColumn
-      binding="itemGroupID"
-      :header="t('text-item_group')"
-      :width="80"
-      :visible="mainLoadParams.summary === 'itemGroup'"
-      align="center"
-    />
-    <WjFlexGridColumn
-      binding="region"
-      :header="t('text-region')"
-      :width="80"
-      :visible="mainLoadParams.summary === 'region'"
-      align="center"
-    />
-    <WjFlexGridColumn
-      binding="demandType"
-      :header="t('text-demand_type')"
-      :width="80"
-      :visible="mainLoadParams.summary === 'demandType'"
-      align="center"
-    />
-    <WjFlexGridColumn binding="demandCnt" :header="t('text-demand_cnt')" aggregate="Sum" :width="80" />
-    <WjFlexGridColumn
-      binding="demandQty"
-      :header="t('text-demand_qty')"
-      dataType="Number"
-      aggregate="Sum"
-      :width="90"
-      align="right"
-      :format="projectModule.formatGrid('qty')"
-    />
-    <WjFlexGridColumn
-      binding="rtfQty"
-      :header="t('text-rtf_qty')"
-      dataType="Number"
-      aggregate="Sum"
-      :width="90"
-      align="right"
-      :format="projectModule.formatGrid('qty')"
-    />
-    <WjFlexGridColumn
-      binding="qtyUom"
-      :header="t('text-qty_uom')"
-      dataType="String"
-      align="left"
-      :width="90"
-      :visible="false"
-    />
-    <WjFlexGridColumn
-      binding="onTimeRatio"
-      :header="t('text-on_time_ratio')"
-      dataType="Number"
-      aggregate="Avg"
-      align="right"
-      :width="90"
-      :format="projectModule.formatGrid('ratio')"
-    />
-    <WjFlexGridColumn
-      binding="onTimeQty"
-      :header="t('text-on_time_qty')"
-      dataType="Number"
-      aggregate="Sum"
-      align="right"
-      :width="90"
-      :visible="false"
-      :format="projectModule.formatGrid('qty')"
-    />
-    <WjFlexGridColumn
-      binding="lateRatio"
-      :header="t('text-late_ratio')"
-      dataType="Number"
-      aggregate="Avg"
-      align="right"
-      :width="90"
-      :format="projectModule.formatGrid('ratio')"
-    />
-    <WjFlexGridColumn
-      binding="lateQty"
-      :header="t('text-late_qty')"
-      dataType="Number"
-      aggregate="Sum"
-      align="right"
-      :width="90"
-      :visible="false"
-      :format="projectModule.formatGrid('qty')"
-    />
-    <WjFlexGridColumn
-      binding="rtfRatio"
-      :header="t('text-rtf_ratio')"
-      dataType="Number"
-      aggregate="Avg"
-      align="right"
-      :width="90"
-      :format="projectModule.formatGrid('ratio')"
-    />
-  </ExtendFlexGrid>
+    @ready="onReady"
+    @cell:click="onCellClick"
+  />
 </template>
 
 <script setup lang="ts">
 import { downloadBigData, useMenuStore } from './adapters/stores';
 import { useProjectInfoStore } from './adapters/stores';
-import { CollectionView } from '@vmscloud/moz-wijmo-grid/wijmo';
-import { AllowMerging, CellRange, type FlexGrid, GroupRow } from '@vmscloud/moz-wijmo-grid/wijmo.grid';
-import { WjFlexGridColumn } from '@vmscloud/moz-wijmo-grid/wijmo.vue2.grid';
-import { ExtendFlexGrid, type ExtendGrid } from '@vmscloud/moz-wijmo-grid';
-import { isDataCell } from '@vmscloud/moz-wijmo-grid/utils';
+import { MozGrid } from '@vmscloud/moz-ui-grid-vue';
+import type { GridChrome, MozGridCoreProps, PureSheet } from '@vmscloud/moz-ui-grid-vue';
 import { showMessage } from '@moz-shared/utils';
 import { useQueryClient } from '@tanstack/vue-query';
 import { useTranslation } from 'i18next-vue';
@@ -183,14 +59,26 @@ const { selectedItem, mainQuery, refSub2, mainQueryKey, saveMainParams, mainLoad
   'useRtfReport',
 ) as IRtfReportQuery;
 const { t } = useTranslation(); // 다국어
-const summaryGrid = ref<FlexGrid>(); // Wijmo grid
-const summaryExtendGrid = ref<ExtendGrid | null>(null); // Wijmo grid 확장 기능
-const summaryDataSource = shallowRef<CollectionView>(new CollectionView([]));
+const summaryGrid = shallowRef<PureSheet>(); // 코어 그리드
+/** 그리드 행 — 그룹 요약이면 그룹 행(부모) 아래에 데이터 행(자식)을 둔 트리 구조 */
+const summaryDataSource = shallowRef<SummaryRow[]>([]);
 const summaryTotalRowData = ref<any>();
+
+type SummaryRowKind = 'group' | 'data' | 'total';
+type SummaryRow = Record<string, any> & { _rowKey: string; _parentKey: string | null; _kind: SummaryRowKind };
+
+// 요약 기준별 그룹 컬럼
+const GROUP_BINDING: Record<string, string | undefined> = {
+  cust: 'custID',
+  itemGroup: 'itemGroupID',
+  region: 'region',
+  demandType: 'demandType',
+};
+const SUM_BINDINGS = ['demandCnt', 'demandQty', 'rtfQty', 'onTimeQty', 'lateQty'];
 
 /**
  * @todo 백엔드 API 스네이크 케이스로 받고 하드코딩된 로직 제거
- * 서버에서 받는 케이스가 안 맞아서 `excelModule.createColumnMapForExport(grid as FlexGrid)`으로 처리 불가능 함
+ * 서버에서 받는 케이스가 안 맞아서 `createColumnMapForExport(coreConfig.fields)`로 처리 불가능 함
  */
 const COLUMN_MAP = {
   due: {
@@ -281,20 +169,158 @@ const groupingColumnHeader = computed(() => {
 
   return mainLoadParams.value.aggregateType === 'MONTH' ? t('text-due_month') : t('text-due_week');
 });
+
+/**
+ * 비율 = 분자 합 / 분모 합 * 100 (소수점 첫째 자리)
+ */
+const calcRatio = (numerator: number, denominator: number) => {
+  if (!denominator) return 0;
+  return Number(((numerator / denominator) * 100).toFixed(1));
+};
+
+/**
+ * 합계 컬럼을 더하고 비율 컬럼을 합계로 다시 계산한다 (그룹 행·전체 합계 행 공용)
+ */
+const summarize = (rows: any[]) => {
+  const result: Record<string, number> = {};
+  SUM_BINDINGS.forEach((binding) => {
+    result[binding] = rows.reduce((acc, row) => acc + (Number(row[binding]) || 0), 0);
+  });
+  result.rtfRatio = calcRatio(result.rtfQty, result.demandQty);
+  result.onTimeRatio = calcRatio(result.onTimeQty, result.demandQty);
+  result.lateRatio = calcRatio(result.lateQty, result.demandQty);
+  return result;
+};
+
+const buildSummaryRows = (data: any[]): SummaryRow[] => {
+  const groupBinding = GROUP_BINDING[mainLoadParams.value.summary];
+  const rows: SummaryRow[] = [];
+
+  if (!groupBinding) {
+    data.forEach((elem, idx) => rows.push({ ...elem, _rowKey: `data-${idx}`, _parentKey: null, _kind: 'data' }));
+  } else {
+    const groups = new Map<string, any[]>();
+    data.forEach((elem) => {
+      const groupName = elem[groupBinding];
+      if (!groups.has(groupName)) groups.set(groupName, []);
+      groups.get(groupName)!.push(elem);
+    });
+
+    let dataIdx = 0;
+    groups.forEach((children, groupName) => {
+      const groupKey = `group-${groupName}`;
+      rows.push({
+        ...summarize(children),
+        due: groupName,
+        [groupBinding]: groupName,
+        _rowKey: groupKey,
+        _parentKey: null,
+        _kind: 'group',
+      });
+      children.forEach((elem) => {
+        rows.push({ ...elem, _rowKey: `data-${dataIdx++}`, _parentKey: groupKey, _kind: 'data' });
+      });
+    });
+  }
+
+  // 전체 합계 행 (옛 그리드의 컬럼 푸터)
+  rows.push({ ...summarize(data), due: '[TOTAL]', _rowKey: 'total', _parentKey: null, _kind: 'total' });
+  return rows;
+};
+
+const isTempGroupColumnTitle = ref<boolean>(true);
+
+const ratioMask = {
+  type: 'function' as const,
+  formatter: (value: unknown) => (typeof value === 'number' ? `${value.toLocaleString()}%` : String(value ?? '')),
+};
+
+const rowClass = ({ rowData }: { rowData: any }) => {
+  switch (rowData?._kind) {
+    case 'group':
+      return { class: 'rtf-report-group-separator' };
+    case 'total':
+      return { class: 'summary-footer' };
+    default:
+      return { class: 'rtf-report-child-row' };
+  }
+};
+
+const coreConfig = computed<MozGridCoreProps>(() => {
+  const isGrouped = !!GROUP_BINDING[mainLoadParams.value.summary];
+  const qtyMask = projectModule.maskGrid('qty');
+  const numberField = (id: string, header: string, extra: Record<string, any> = {}) => ({
+    id,
+    header,
+    dataType: 'number',
+    width: 90,
+    align: 'right',
+    sortable: false,
+    cellAttributes: rowClass,
+    ...extra,
+  });
+  const textField = (id: string, header: string) => ({
+    id,
+    header,
+    dataType: 'string',
+    width: 80,
+    align: 'center',
+    hidden: true,
+    sortable: false,
+    cellAttributes: rowClass,
+  });
+
+  return {
+    mode: 'flat',
+    keyFields: ['_rowKey'],
+    data: summaryDataSource.value,
+    treeConfig: isGrouped
+      ? {
+          idField: '_rowKey',
+          parentField: '_parentKey',
+          treeColumn: 'due',
+          /**
+           * RTF 현황(aps/sp/RtfReport)랑 일관적으로 접혀있는 것이 올바름
+           * 펼치려면 0을 1로 변경하면 됨
+           */
+          defaultExpandLevel: 0,
+        }
+      : undefined,
+    fields: [
+      {
+        id: 'due',
+        header: groupingColumnHeader.value,
+        dataType: 'string',
+        width: mainLoadParams.value.summary === 'due' ? 80 : 120,
+        align: 'center',
+        sortable: false,
+        cellAttributes: rowClass,
+      },
+      // 그룹핑 관련 컬럼은 그룹 행 이름으로 대신 보여주므로 숨긴다
+      textField('custID', t('text-cust_name')),
+      textField('itemGroupID', t('text-item_group')),
+      textField('region', t('text-region')),
+      textField('demandType', t('text-demand_type')),
+      numberField('demandCnt', t('text-demand_cnt'), { width: 80 }),
+      numberField('demandQty', t('text-demand_qty'), { mask: qtyMask }),
+      numberField('rtfQty', t('text-rtf_qty'), { mask: qtyMask }),
+      { ...textField('qtyUom', t('text-qty_uom')), width: 90, align: 'left' },
+      numberField('onTimeRatio', t('text-on_time_ratio'), { mask: ratioMask }),
+      numberField('onTimeQty', t('text-on_time_qty'), { mask: qtyMask, hidden: true }),
+      numberField('lateRatio', t('text-late_ratio'), { mask: ratioMask }),
+      numberField('lateQty', t('text-late_qty'), { mask: qtyMask, hidden: true }),
+      numberField('rtfRatio', t('text-rtf_ratio'), { mask: ratioMask }),
+    ],
+  };
+});
+
 /**
  * INITIALIZE
  */
 // GRID INITIALIZE
-const onInitialized = (flexGrid: FlexGrid, _extendGrid: ExtendGrid) => {
-  summaryGrid.value = flexGrid;
-  summaryExtendGrid.value = _extendGrid;
-  flexGrid.allowMerging = AllowMerging.Cells;
-
-  const extraRow = new GroupRow();
-  summaryGrid.value.columnFooters.rows.push(extraRow);
+const onReady = (grid: PureSheet, _chrome: GridChrome) => {
+  summaryGrid.value = grid;
 };
-
-const isTempGroupColumnTitle = ref<boolean>(true);
 
 const onLoad = async () => {
   isTempGroupColumnTitle.value = true;
@@ -321,83 +347,26 @@ const onLoad = async () => {
         });
       const totalRow = data.pop();
 
-      switch (mainLoadParams.value.summary) {
-        case 'due':
-          summaryDataSource.value = new CollectionView(data);
-          break;
-        case 'cust':
-          summaryDataSource.value = new CollectionView(data, {
-            groupDescriptions: ['custID'],
-          });
-          break;
-        case 'itemGroup':
-          summaryDataSource.value = new CollectionView(data, {
-            groupDescriptions: ['itemGroupID'],
-          });
-          break;
-        case 'region':
-          summaryDataSource.value = new CollectionView(data, {
-            groupDescriptions: ['region'],
-          });
-          break;
-        case 'demandType':
-          summaryDataSource.value = new CollectionView(data, {
-            groupDescriptions: ['demandType'],
-          });
-          break;
-        default:
-          break;
-      }
+      summaryDataSource.value = buildSummaryRows(data);
 
       isTempGroupColumnTitle.value = false;
 
-      await nextTick(() => {
-        if (summaryGrid.value) {
-          /**
-           * RTF 현황(aps/sp/RtfReport)랑 일관적으로 접혀있는 것이 올바름
-           * 펼치려면 0을 1로 변경하면 됨
-           */
-          summaryGrid.value.collapseGroupsToLevel(0);
-
-          // 컬럼 visibility 설정
-          const columns = summaryGrid.value.columns;
-
-          // 모든 그룹핑 관련 컬럼을 먼저 숨김
-          const custCol = columns.getColumn('custID');
-          if (custCol) custCol.visible = false;
-
-          const itemGroupCol = columns.getColumn('itemGroupID');
-          if (itemGroupCol) itemGroupCol.visible = false;
-
-          const regionCol = columns.getColumn('region');
-          if (regionCol) regionCol.visible = false;
-
-          const demandTypeCol = columns.getColumn('demandType');
-          if (demandTypeCol) demandTypeCol.visible = false;
-        }
-      });
-
       summaryTotalRowData.value = totalRow;
     } else {
-      summaryDataSource.value = new CollectionView([]);
+      summaryDataSource.value = [];
     }
   } else if (mainQuery.isError.value) {
     showMessage(t('msg-toast-get_error'), false);
-    summaryDataSource.value = new CollectionView([]);
+    summaryDataSource.value = [];
   }
 };
 
 watch(summaryDataSource, (newSummaryDataSource) => {
-  if (newSummaryDataSource?.items?.length) {
+  if (newSummaryDataSource?.length) {
     nextTick(() => {
-      if (summaryGrid.value) {
-        summaryGrid.value.select(new CellRange(-1, -1), true);
-        summaryGrid.value.select(new CellRange(0, 0, 0, 0), true);
-      }
-
-      // 그리드 초기화 (스키마 변경시 ExtendGrid 다시 초기화해줘야 text-ellipsis 적용됨)
-      if (!summaryExtendGrid.value) return;
-      summaryExtendGrid.value.refresh();
+      // 첫 행을 선택한다 (옛 그리드의 select(0, 0) 과 같은 동작)
+      summaryGrid.value?.cells.selectCellsByViewIndices([{ viewIndex: 0, columnId: 'due' }]);
+      selectRow(newSummaryDataSource[0]);
     });
   }
 });
@@ -407,36 +376,52 @@ watch(summaryDataSource, (newSummaryDataSource) => {
  * GRID EVENT
  */
 
-const onSelectionChanged = (s: FlexGrid, e: any) => {
-  const { row, col } = s.selection;
-  if (row < 0 && col < 0) return;
-  let dataItem;
-
-  if (e.getRow() instanceof GroupRow) {
-    const groupName = e.getRow()?.dataItem?.name;
+const selectTotalRow = () => {
+  if (summaryTotalRowData.value?.due === 'Invalid Date') {
     switch (mainLoadParams.value.summary) {
       case 'cust':
-        dataItem = { due: '[SUB TOTAL]', custID: groupName };
+        selectedItem.value = { ...toRaw(summaryTotalRowData.value), due: '[SUB TOTAL]' };
         break;
-      case 'demandType':
-        dataItem = { due: '[SUB TOTAL]', demandType: groupName };
+      case 'due':
+        selectedItem.value = { ...toRaw(summaryTotalRowData.value), due: '[TOTAL]' };
         break;
       case 'itemGroup':
-        dataItem = { due: '[SUB TOTAL]', itemGroupID: groupName };
-        break;
-      case 'region':
-        dataItem = { due: '[SUB TOTAL]', region: groupName };
+        // 여기 분기처리를 타면 아주 곤란함
         break;
       default:
         break;
     }
   } else {
-    dataItem = e.getRow()?.dataItem;
+    selectedItem.value = summaryTotalRowData.value;
+  }
+};
+
+const selectRow = (row?: SummaryRow) => {
+  if (!row) return;
+  const { _rowKey, _parentKey, _kind, ...item } = row;
+  let dataItem: any;
+
+  switch (_kind) {
+    case 'total':
+      selectTotalRow();
+      return;
+    case 'group': {
+      const groupBinding = GROUP_BINDING[mainLoadParams.value.summary];
+      if (groupBinding) dataItem = { due: '[SUB TOTAL]', [groupBinding]: item[groupBinding] };
+      break;
+    }
+    default:
+      dataItem = item;
+      break;
   }
 
   if (dataItem && Object.keys(dataItem)?.length) {
     selectedItem.value = dataItem;
   }
+};
+
+const onCellClick = (payload: any) => {
+  selectRow(payload?.row);
 };
 
 /**
@@ -446,205 +431,22 @@ watch([selectedItem], () => {
   refSub2.value?.onLoad();
 });
 
-const calcFormula = (columnDatas: any, row: number, binding1: string, binding2: string) =>
-  (columnDatas.getCellData(
-    row,
-    columnDatas.columns.findIndex((col: any) => col.binding === binding1),
-    false,
-  ) /
-    columnDatas.getCellData(
-      row,
-      columnDatas.columns.findIndex((col: any) => col.binding === binding2),
-      false,
-    )) *
-  100;
-
-const formatNumber = (num: number) => {
-  // 소수점 첫째 자리에서 버림
-  const truncated = Number(num.toFixed(1));
-
-  // 소수점이 0이면 정수로 변환
-  if (truncated % 1 === 0) {
-    return truncated.toFixed(0);
-  }
-  return truncated.toFixed(1);
-};
-
-/**
- * @todo 상태 관리 및 업데이트는 formatItem에서 처리하지 말고 다른 곳으로 로직 이동시키기
- */
-const formatItem = (s: FlexGrid, e: any) => {
-  if (e.panel.cellType === 5) {
-    e.cell.classList.add('summary-footer');
-    e.cell.addEventListener('mousedown', () => {
-      if (summaryTotalRowData.value.due === 'Invalid Date') {
-        switch (mainLoadParams.value.summary) {
-          case 'cust':
-            selectedItem.value = { ...toRaw(summaryTotalRowData.value), due: '[SUB TOTAL]' };
-            break;
-          case 'due':
-            selectedItem.value = { ...toRaw(summaryTotalRowData.value), due: '[TOTAL]' };
-            break;
-          case 'itemGroup':
-            // 여기 분기처리를 타면 아주 곤란함
-            break;
-          default:
-            break;
-        }
-      } else {
-        selectedItem.value = summaryTotalRowData.value;
-      }
-      summaryGrid.value && summaryGrid.value.select(new CellRange(-1, -1), false);
-    });
-
-    if (e.getColumn().binding === 'rtfRatio') {
-      const rtfRatio = calcFormula(s.columnFooters, 0, 'rtfQty', 'demandQty');
-      if (rtfRatio !== null && rtfRatio !== undefined && !Number.isNaN(rtfRatio)) {
-        e.cell.innerHTML = projectModule.convertToFormat('ratio', rtfRatio);
-      }
-    }
-
-    if (e.getColumn().binding === 'onTimeRatio') {
-      const onTimeRatio = calcFormula(s.columnFooters, 0, 'onTimeQty', 'demandQty');
-      if (onTimeRatio !== null && onTimeRatio !== undefined && !Number.isNaN(onTimeRatio)) {
-        e.cell.innerHTML = projectModule.convertToFormat('ratio', onTimeRatio);
-      }
-    }
-
-    if (e.getColumn().binding === 'lateRatio') {
-      const lateRatio = calcFormula(s.columnFooters, 0, 'lateQty', 'demandQty');
-      if (lateRatio !== null && lateRatio !== undefined && !Number.isNaN(lateRatio)) {
-        e.cell.innerHTML = projectModule.convertToFormat('ratio', lateRatio);
-      }
-    }
-
-    if (e.getColumn().binding === 'due') {
-      e.cell.innerText = '[TOTAL]';
-    }
-  } else if (e.panel !== s.columnHeaders && s.rows[e.row] instanceof GroupRow) {
-    const row = s.rows[e.row];
-    if (row instanceof GroupRow && !row.isCollapsed) {
-      e.cell.classList.add('rtf-report-group-separator');
-    }
-
-    // 현재 셀의 컬럼에 대해 visible = true인 컬럼 인덱스를 구합니다.
-    const visibleColumns = e.panel.columns.filter((column: any) => column.visible);
-    const visibleColumnIndex = visibleColumns.indexOf(e.panel.columns[e.col]);
-
-    if (visibleColumnIndex === 0) {
-      const btn = e.cell.childNodes[0];
-      const spanEl = document.createElement('span');
-      spanEl.style.width = '90%';
-      spanEl.textContent = s.rows[e.row]?.dataItem?.name;
-      spanEl.classList.add('wj-cell-text');
-      e.cell.innerHTML = '';
-      e.cell.append(btn);
-      e.cell.append(spanEl);
-    } else {
-      const spanEl = document.createElement('span');
-      spanEl.classList.add('wj-cell-text');
-      spanEl.innerText = e.cell.innerText;
-      e.cell.innerHTML = '';
-      e.cell.append(spanEl);
-    }
-
-    if (e.getColumn().binding === 'rtfRatio') {
-      const rtfRatio = calcFormula(s, e.row, 'rtfQty', 'demandQty');
-      e.cell.innerHTML = `${formatNumber(rtfRatio) || '0'}%`;
-    }
-
-    if (e.getColumn().binding === 'onTimeRatio') {
-      const onTimeRatio = calcFormula(s, e.row, 'onTimeQty', 'demandQty');
-      e.cell.innerHTML = `${formatNumber(onTimeRatio) || '0'}%`;
-    }
-
-    if (e.getColumn().binding === 'lateRatio') {
-      const lateRatio = calcFormula(s, e.row, 'lateQty', 'demandQty');
-      e.cell.innerHTML = `${formatNumber(lateRatio) || '0'}%`;
-    }
-  } else if (isDataCell(s, e)) {
-    e.cell.classList.add('rtf-report-child-row');
-  }
-
-  if (s.rows[e.row + 1] instanceof GroupRow) {
-    e.cell.classList.add('rtf-report-separator');
-  }
-
-  if (!isDataCell(s, e)) return;
-
-  const item = e.getRow()?.dataItem;
-  const col = e.getColumn().binding;
-  const cell = e.cell.querySelector('span') != null ? e.cell.querySelector('span') : e.cell;
-
-  switch (col) {
-    case 'demandQty':
-    case 'onTimeQty':
-    case 'shortQty':
-    case 'rtfQty':
-      if (typeof item[col] === 'number') cell.textContent = item[col].toLocaleString();
-      break;
-    case 'onTimeRatio':
-      if (typeof item[col] === 'number') cell.textContent = `${item[col].toLocaleString()}%`;
-      break;
-    case 'rtfRatio':
-      if (typeof item[col] === 'number') cell.textContent = `${item[col].toLocaleString()}%`;
-      break;
-    case 'lateRatio':
-      if (typeof item[col] === 'number') cell.textContent = `${item[col].toLocaleString()}%`;
-      break;
-    default:
-      break;
-  }
-};
-
 defineExpose({ onLoad });
 </script>
 <style lang="scss">
 .rtf-report-sub1-grid {
-  .wj-group {
-    // background-color: #d6def8 !important;
+  .ps-cell.rtf-report-group-separator {
+    font-weight: 500;
+    box-shadow: 0px -1px 0px 0px #6a7184;
+  }
+
+  .ps-cell.summary-footer {
+    border-top: 1px solid #6a7184;
+    border-right: 1px solid #c1c1d8;
+    border-bottom: 1px solid #c1c1d8;
+    background-color: #d6def8;
     font-weight: 500;
   }
-
-  .wj-flexgrid .wj-cell .wj-btn.wj-btn-glyph {
-    width: 20px;
-    height: 12px;
-  }
-
-  .wj-glyph-right,
-  .wj-glyph-down-right {
-    color: #8998b5 !important;
-  }
-}
-
-.summary-footer {
-  // border-top: 1px solid #6a7184 !important;
-  border-right: 1px solid #c1c1d8 !important;
-  border-bottom: 1px solid #c1c1d8;
-  background-color: #d6def8 !important;
-  font-weight: 500;
-  &:focus {
-    color: #4568e0;
-    &::after {
-      content: '';
-      border: 2px solid #4568e0;
-      width: 100%;
-      height: 100%;
-      left: 0;
-      top: 0;
-      position: absolute;
-      border-radius: 1px;
-    }
-  }
-}
-
-.rtf-report-separator {
-  border-bottom: 1px solid #6a7184 !important;
-}
-
-.rtf-report-group-separator {
-  box-shadow: 0px -1px 0px 0px #6a7184;
-  // background-color: #d6def8 !important;
 }
 
 .rtf-report-child-row {

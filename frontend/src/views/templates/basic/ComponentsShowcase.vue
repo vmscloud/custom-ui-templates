@@ -4,7 +4,7 @@
     <div class="page-header">
       <h1 class="page-title">UI Components Showcase</h1>
       <p class="page-description">
-        moz-ui-components 라이브러리의 다양한 UI 컴포넌트 사용 예시입니다.
+        moz-ui-components-vue 라이브러리의 다양한 UI 컴포넌트 사용 예시입니다.
       </p>
     </div>
 
@@ -18,10 +18,8 @@
           <p class="component-desc">기본 버튼 컴포넌트</p>
           <div class="component-example">
             <Button @click="handleButtonClick">버튼 클릭</Button>
-            <Button variant="outlined" @click="handleButtonClick"
-              >Outlined</Button
-            >
-            <Button variant="text" @click="handleButtonClick">Text</Button>
+            <Button type="outline" @click="handleButtonClick">Outline</Button>
+            <Button type="text" @click="handleButtonClick">Text</Button>
             <p class="result-text">클릭 횟수: {{ buttonClickCount }}</p>
           </div>
         </div>
@@ -67,9 +65,9 @@
           <h3 class="component-name">Radio</h3>
           <p class="component-desc">라디오 버튼</p>
           <div class="component-example">
-<!--            <Radio v-model="radioValue" value="option1" label="옵션 1" />-->
-<!--            <Radio v-model="radioValue" value="option2" label="옵션 2" />-->
-<!--            <Radio v-model="radioValue" value="option3" label="옵션 3" />-->
+            <Radio v-model="radioValue" name="showcase-radio" value="option1" text="옵션 1" />
+            <Radio v-model="radioValue" name="showcase-radio" value="option2" text="옵션 2" />
+            <Radio v-model="radioValue" name="showcase-radio" value="option3" text="옵션 3" />
             <p class="result-text">선택: {{ radioValue }}</p>
           </div>
         </div>
@@ -130,17 +128,20 @@
 
         <!-- SearchBox -->
         <div class="component-card">
-          <h3 class="component-name">SearchBox</h3>
-          <p class="component-desc">검색 입력 박스</p>
+          <h3 class="component-name">Select (검색)</h3>
+          <p class="component-desc">목록 필터 검색이 있는 선택 박스</p>
           <div class="component-example">
-            <SearchBox
+            <Select
               v-model="searchBoxModel"
-              v-model:input="searchBoxInput"
               :items-source="selectOptions"
-              placeholder="검색어를 입력하세요"
+              key-prop="value"
+              display-prop="label"
+              use-filter
+              use-obj-binding
+              placeholder="항목을 선택하세요"
+              search-placeholder="검색어를 입력하세요"
               label="검색"
             />
-            <p class="result-text">입력값: {{ searchBoxInput || "(없음)" }}</p>
             <p class="result-text">
               선택값: {{ searchBoxModel?.label || "(없음)" }}
             </p>
@@ -237,7 +238,7 @@
           <div class="component-example">
             <Calendar v-model="calendarValue" />
             <p class="result-text">
-              선택 날짜: {{ calendarValue.toLocaleDateString("ko-KR") }}
+              선택 날짜: {{ formatDate(calendarValue) }}
             </p>
           </div>
         </div>
@@ -254,11 +255,7 @@
             />
             <p class="result-text">
               선택 날짜:
-              {{
-                dateInputValue
-                  ? dateInputValue.toLocaleDateString("ko-KR")
-                  : "(없음)"
-              }}
+              {{ formatDate(dateInputValue) }}
             </p>
           </div>
         </div>
@@ -321,9 +318,9 @@
           <h3 class="component-name">Label</h3>
           <p class="component-desc">라벨</p>
           <div class="component-example">
-            <Label text="기본 라벨" />
-            <Label text="필수 항목" required />
-            <Label text="툴팁 있는 라벨" tooltip="이것은 툴팁입니다" />
+            <Label>기본 라벨</Label>
+            <Label required>필수 항목</Label>
+            <Label title="이것은 툴팁입니다">툴팁 있는 라벨</Label>
           </div>
         </div>
 
@@ -378,6 +375,7 @@ import {
   Toggle,
   Input,
   CheckBox,
+  Radio,
   NumberInput,
   PasswordInput,
   Slider,
@@ -393,7 +391,7 @@ import {
   Label,
   EmptyState,
   Validator,
-} from "@vmscloud/moz-ui-components";
+} from "@vmscloud/moz-ui-components-vue";
 
 // Composable 사용
 const {
@@ -421,9 +419,8 @@ const {
   activeTabId,
   popupVisible,
 
-  // SearchBox
+  // 검색 Select
   searchBoxModel,
-  searchBoxInput,
 
   // Validator
   validatorInput,
@@ -439,6 +436,7 @@ const {
   // 핸들러
   handleButtonClick,
   togglePopup,
+  formatDate,
 } = useComponentsShowcase();
 </script>
 

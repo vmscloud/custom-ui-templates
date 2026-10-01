@@ -14,56 +14,48 @@
 
     <!-- 그리드 영역 -->
     <section class="grid-section">
-      <ExtendFlexGrid
+      <MozGrid
         name="productGrid"
-        :dataKey="['id']"
-        :itemsSource="data"
-        :width="'100%'"
+        :coreConfig="coreConfig"
         :height="550"
-        :useToolBox="true"
-        :useToolBoxSetting="true"
-        :useExtendFooter="true"
         :useSummaryFooter="true"
-        :useSort="true"
-        :isReadOnly="false"
         :loading="loading"
-        :initialized="onGridInitialized"
-      >
-        <WjFlexGridColumn binding="id" header="ID" :width="60" :isReadOnly="true" />
-        <WjFlexGridColumn binding="name" header="상품명" :width="150" />
-        <WjFlexGridColumn binding="category" header="카테고리" :width="100" />
-        <WjFlexGridColumn binding="price" header="가격" :width="120" format="n0" />
-        <WjFlexGridColumn binding="stock" header="재고" :width="80" />
-        <WjFlexGridColumn
-          binding="manufacturer"
-          header="제조사"
-          :width="120"
-        />
-        <WjFlexGridColumn
-          binding="releaseDate"
-          header="출시일"
-          :width="120"
-          format="yyyy-MM-dd"
-        />
-        <WjFlexGridColumn binding="isActive" header="판매중" :width="70" />
-      </ExtendFlexGrid>
+        @ready="onGridReady"
+      />
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { useProductGrid } from "./productGrid";
-import { ExtendFlexGrid, type ExtendGrid } from "@vmscloud/moz-wijmo-grid";
-import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
-import type { FlexGrid } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
+import { MozGrid } from "@vmscloud/moz-ui-grid-vue";
+import type { GridChrome, MozGridCoreProps, PureSheet } from "@vmscloud/moz-ui-grid-vue";
 
 // 상품 그리드 컴포저블
 const { data, loading, error, count, loadData } = useProductGrid();
 
-// 그리드 초기화 핸들러
-const onGridInitialized = (flexGrid: FlexGrid, extendGrid: ExtendGrid) => {
-  console.log("그리드 초기화 완료", flexGrid, extendGrid);
+// 그리드 설정 — 컬럼은 fields, 행 식별자는 keyFields 로 선언한다.
+const coreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: ["id"],
+  editable: true,
+  data: data.value,
+  fields: [
+    { id: "id", header: "ID", dataType: "number", width: 60, readonly: true },
+    { id: "name", header: "상품명", dataType: "string", width: 150 },
+    { id: "category", header: "카테고리", dataType: "string", width: 100 },
+    { id: "price", header: "가격", dataType: "number", width: 120, mask: { type: "numeric", pattern: "#,##0" } },
+    { id: "stock", header: "재고", dataType: "number", width: 80 },
+    { id: "manufacturer", header: "제조사", dataType: "string", width: 120 },
+    { id: "releaseDate", header: "출시일", dataType: "date", width: 120, mask: { type: "date", pattern: "YYYY-MM-DD" } },
+    { id: "isActive", header: "판매중", dataType: "boolean", width: 70 },
+  ],
+}));
+
+// 그리드 준비 완료 핸들러 — 코어 그리드(PureSheet)와 래퍼(GridChrome)를 받는다.
+const onGridReady = (grid: PureSheet, chrome: GridChrome) => {
+  console.log("그리드 초기화 완료", grid, chrome);
 };
 
 // 초기 로드

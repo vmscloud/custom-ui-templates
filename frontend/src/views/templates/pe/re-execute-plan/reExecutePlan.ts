@@ -6,7 +6,7 @@
  */
 import { api, getProjectId } from "@/api/client";
 import { useQtyUomQuery } from "@/composables/useQtyUomQuery";
-import { CollectionView } from "@vmscloud/moz-wijmo-grid/wijmo";
+import type { FieldDef, PureSheet } from "@vmscloud/moz-ui-grid-vue";
 import dayjs, { type Dayjs } from "dayjs";
 import { useTranslation } from "i18next-vue";
 import {
@@ -140,6 +140,69 @@ export const fetchItemGroupInRtf = (planVer: string) =>
 export const fetchDemandTypes = (planVer: string) =>
   api.get<{ data: any[] }>(`${BASE_URL()}/demand-types?planVer=${planVer}`);
 
+// ===== Demand Grid Fields =====
+
+// 수요 그리드 공통 컬럼. width 는 메인 화면, popupWidth 는 팝업(원본 getWidthByKey S1~N2) 기준.
+const DEMAND_COLUMNS: {
+  id: string;
+  header: string;
+  width: number;
+  popupWidth: number;
+  dataType?: FieldDef["dataType"];
+  pattern?: string;
+}[] = [
+  { id: "demand_id", header: "text-demand_id", width: 120, popupWidth: 100 },
+  { id: "item_id", header: "text-item_id", width: 150, popupWidth: 120 },
+  { id: "site_id", header: "text-site_id", width: 120, popupWidth: 100 },
+  { id: "buffer_id", header: "text-buffer_id", width: 120, popupWidth: 100 },
+  { id: "due_date", header: "text-due_date", width: 120, popupWidth: 110, dataType: "date", pattern: "YYYY-MM-DD" },
+  { id: "due_datetime", header: "text-due_datetime", width: 160, popupWidth: 130, dataType: "date", pattern: "YYYY-MM-DD HH:mm:ss" },
+  { id: "demand_qty", header: "text-demand_qty", width: 100, popupWidth: 90, dataType: "number" },
+  { id: "demand_priority", header: "text-demand_priority", width: 100, popupWidth: 90, dataType: "number" },
+  { id: "cust_id", header: "text-cust_id", width: 120, popupWidth: 100 },
+  { id: "demand_type", header: "text-demand_type", width: 120, popupWidth: 120 },
+  { id: "max_lateness_day", header: "text-max_lateness_day", width: 120, popupWidth: 90, dataType: "number" },
+  { id: "max_earliness_day", header: "text-max_earliness_day", width: 120, popupWidth: 90, dataType: "number" },
+  { id: "demand_group", header: "text-demand_group", width: 120, popupWidth: 100 },
+  { id: "final_item_buffer_id", header: "text-final_item_buffer_id", width: 120, popupWidth: 100 },
+  { id: "description", header: "text-description", width: 100, popupWidth: 80 },
+];
+
+// 서버 헤더의 dataType(문자열 또는 옛 그리드의 숫자 enum)을 그리드 dataType 으로 변환한다.
+const toFieldDataType = (dataType: unknown): FieldDef["dataType"] => {
+  const value = String(dataType ?? "").toLowerCase();
+  if (value === "number" || value === "2") return "number";
+  if (value === "boolean" || value === "3") return "boolean";
+  if (value === "date" || value === "datetime" || value === "4") return "date";
+  return "string";
+};
+
+export const buildDemandFields = (
+  t: (key: string) => string,
+  propColumns: any[],
+  mode: "main" | "popup",
+): FieldDef[] => [
+  ...DEMAND_COLUMNS.map((col): FieldDef => ({
+    id: col.id,
+    header: t(col.header),
+    dataType: col.dataType ?? "string",
+    width: mode === "main" ? col.width : col.popupWidth,
+    ...(col.dataType === "date" && {
+      align: "center" as const,
+      mask: { type: "date" as const, pattern: col.pattern ?? "YYYY-MM-DD" },
+    }),
+    ...(col.dataType === "number" && { align: "right" as const }),
+  })),
+  // 서버 헤더 기반 확장 컬럼. width '*' 는 남은 공간을 채운다.
+  ...propColumns.map((col): FieldDef => ({
+    id: col.binding,
+    header: col.header,
+    dataType: toFieldDataType(col.dataType),
+    ...(typeof col.width === "number" ? { width: col.width } : { flex: 1 }),
+    align: col.align,
+  })),
+];
+
 // ===== Composable =====
 
 export const useReExecutePlanQuery = (
@@ -242,137 +305,59 @@ export const useReExecutePlanQuery = (
   // propColumns (simplified)
   const propColumns = ref<any[]>([]);
 
-  // 공유 CollectionView
-  const sharedCollectionView = shallowRef<CollectionView | null>(null);
-  const isCollectionViewInitialized = ref<boolean>(false);
+  // 메인 수요 그리드의 변경 추적(grid.changes) 스냅샷. 키는 demand_id(keyFields)다.
+  //   그리드는 원본 행 객체를 고치지 않으므로, 팝업·재실행 요청에 쓰는 값은 이 스냅샷으로 합성한다.
+  const editedDemandMap = shallowRef<Map<string, any>>(new Map());
+  const editedDemandFields = shallowRef<Record<string, string[]>>({});
+  const addedDemandRows = shallowRef<any[]>([]);
+  const deletedDemandIds = shallowRef<Set<string>>(new Set());
 
-  // 그리드 참조 공유
-  const mainGrid = ref<any>(null);
-  const popupGrid = ref<any>(null);
+  const resetDemandChanges = () => {
+    editedDemandMap.value = new Map();
+    editedDemandFields.value = {};
+    addedDemandRows.value = [];
+    deletedDemandIds.value = new Set();
+  };
 
-  // ExtendGrid 인스턴스 참조 공유
-  const mainExtendGrid = ref<any>(null);
-  const popupExtendGrid = ref<any>(null);
-
-  // computed 강제 업데이트용 트리거
-  const updateTrigger = ref(0);
-
-  // 원본 column filter 함수 보관
-  const originalColumnFilter = ref<((item: any) => boolean) | null>(null);
-
-  // CollectionView 초기화
-  const initializeSharedCollectionView = () => {
-    if (!demandSource.value?.length) {
+  // 메인 그리드의 changes:changed 마다 호출해 변경 스냅샷을 갱신한다.
+  const syncDemandChanges = (grid: PureSheet | null | undefined) => {
+    if (!grid) {
+      resetDemandChanges();
       return;
     }
-
-    demandSource.value.forEach((item, index) => {
-      const ridKey = "_RID";
-      if (item && !item[ridKey]) {
-        item[ridKey] = `original_${item.demand_id || index}`;
-      }
+    const { added, modified, deleted } = grid.changes.getAll();
+    const edited = new Map<string, any>();
+    const fields: Record<string, string[]> = {};
+    modified.forEach((row: { rowId: unknown; currentData: any; changedFields: Map<string, unknown> }) => {
+      const id = String(row.rowId);
+      edited.set(id, row.currentData);
+      fields[id] = Array.from(row.changedFields.keys());
     });
-
-    if (sharedCollectionView.value) {
-      sharedCollectionView.value.sourceCollection = demandSource.value;
-      sharedCollectionView.value.refresh();
-    } else {
-      sharedCollectionView.value = new CollectionView(demandSource.value);
-    }
-
-    isCollectionViewInitialized.value = true;
+    editedDemandMap.value = edited;
+    editedDemandFields.value = fields;
+    addedDemandRows.value = added.map((row: { data: Record<string, unknown> }) => ({ ...row.data, isAdded: true }));
+    deletedDemandIds.value = new Set(deleted.map((row: { rowId: unknown }) => String(row.rowId)));
   };
 
-  const sharedDataSource = computed(
-    () => sharedCollectionView.value || demandSource.value,
-  );
+  // 조회로 수요 데이터가 바뀌면 그리드도 새로 로드되므로 변경 스냅샷을 비운다.
+  watch(demandSource, resetDemandChanges);
 
-  // 팝업 전용 CollectionView
-  const popupCollectionView = shallowRef<CollectionView | null>(null);
-
-  const initializePopupCollectionView = () => {
-    if (demandSource.value && demandSource.value.length > 0) {
-      popupCollectionView.value = new CollectionView(demandSource.value);
-      return;
-    }
-    console.warn("demandSource가 없어서 popupCollectionView 초기화 불가");
-  };
+  // 그리드 변경을 반영한 수요 목록(삭제 제외 · 수정값 반영 · 추가 행 포함).
+  const mergedDemandSource = computed(() => {
+    const source = demandSource.value ?? [];
+    const edited = editedDemandMap.value;
+    const deleted = deletedDemandIds.value;
+    return [
+      ...source
+        .filter((item: any) => !deleted.has(String(item?.demand_id)))
+        .map((item: any) => edited.get(String(item?.demand_id)) ?? item),
+      ...addedDemandRows.value,
+    ];
+  });
 
   const showEditedData = ref<boolean>(false);
 
-  const applyPopupFilter = () => {
-    if (!popupCollectionView.value) {
-      console.warn("popupCollectionView가 없어서 필터 적용 불가");
-      return;
-    }
-
-    if (!showEditedData.value) {
-      popupCollectionView.value.filter = null;
-      popupCollectionView.value.refresh();
-    } else {
-      if (
-        mainExtendGrid.value &&
-        mainExtendGrid.value.updated &&
-        mainExtendGrid.value.updated.size > 0
-      ) {
-        const updatedRIDs = new Set(mainExtendGrid.value.updated.keys());
-        const ridKey = "_RID";
-        popupCollectionView.value.filter = (item: any) =>
-          item[ridKey] && updatedRIDs.has(item[ridKey]);
-        popupCollectionView.value.refresh();
-      } else {
-        popupCollectionView.value.filter = () => false;
-        popupCollectionView.value.refresh();
-      }
-    }
-  };
-
-  const popupDataSource = computed(() => demandSource.value);
-
-  const applyPopupGridFilter = (gridRef: any) => {
-    if (!gridRef || !gridRef.collectionView) return;
-
-    const cv = gridRef.collectionView;
-
-    if (!showEditedData.value) {
-      const filterStr = cv.filter?.toString() || "";
-      const isOurFilter =
-        filterStr.includes("isUpdated") || filterStr.includes("_RID");
-
-      if (!isOurFilter && cv.filter && typeof cv.filter === "function") {
-        originalColumnFilter.value = cv.filter;
-      } else if (!isOurFilter && !cv.filter) {
-        originalColumnFilter.value = null;
-      } else if (isOurFilter) {
-        if (originalColumnFilter.value) {
-          cv.filter = originalColumnFilter.value;
-        } else {
-          cv.filter = null;
-        }
-      }
-    } else {
-      if (
-        mainExtendGrid.value &&
-        mainExtendGrid.value.updated &&
-        mainExtendGrid.value.updated.size > 0
-      ) {
-        const updatedRIDs = new Set(mainExtendGrid.value.updated.keys());
-        const ridKey = "_RID";
-
-        cv.filter = (item: any) => {
-          const isUpdated = item[ridKey] && updatedRIDs.has(item[ridKey]);
-          if (originalColumnFilter.value) {
-            return isUpdated && originalColumnFilter.value(item);
-          }
-          return isUpdated;
-        };
-      } else {
-        cv.filter = () => false;
-      }
-    }
-
-    cv.refresh();
-  };
+  const popupDataSource = computed(() => mergedDemandSource.value);
 
   /**
    * API 호출
@@ -381,9 +366,9 @@ export const useReExecutePlanQuery = (
   const mainQueryIsPending = ref(false);
 
   // 원본(lb/re-execute-plan)은 TanStack useQuery 의 isPending 을 바로 쓰지만,
-  //   그 경우 HTTP fetch 가 끝난 직후 스피너가 사라져 Wijmo PivotEngine 이 동기 집계하는
+  //   그 경우 HTTP fetch 가 끝난 직후 스피너가 사라져 피벗 집계가 도는
   //   수초 동안 빈 화면으로 보이는 UX 불만이 있다. isPivotRendering 은 "fetch 시작 ~
-  //   pivot 의 첫 loadedRows" 구간만 덮는 보조 플래그. watchdog 없이 loadedRows 에만 의존.
+  //   pivot 의 첫 data:loaded" 구간만 덮는 보조 플래그. watchdog 없이 data:loaded 에만 의존.
   const isPivotRendering = ref(false);
 
   const onLoad = async () => {
@@ -423,53 +408,19 @@ export const useReExecutePlanQuery = (
 
   const currentStep = ref<1 | 2>(1);
 
-  // 수정된 데이터만 필터링하는 computed
-  const editedDemandSource = computed(() => {
-    updateTrigger.value;
-
-    if (!showEditedData.value) {
-      return sharedDataSource.value;
-    }
-
-    if (
-      mainExtendGrid.value &&
-      mainExtendGrid.value.updated &&
-      sharedDataSource.value
-    ) {
-      const updatedRIDs = new Set(mainExtendGrid.value.updated.keys());
-      const sourceArray =
-        (sharedDataSource.value as any)?.items || sharedDataSource.value;
-      const ridKey = "_RID";
-      const filteredData = sourceArray?.filter(
-        (item: any) => item[ridKey] && updatedRIDs.has(item[ridKey]),
-      );
-      return filteredData;
-    }
-
-    return [];
-  });
-
+  // 수정된 행(수정값 반영). 원본 수요 순서를 유지한다.
   const alwaysEditedData = computed(() => {
-    updateTrigger.value;
-
-    if (
-      mainExtendGrid.value &&
-      mainExtendGrid.value.updated &&
-      demandSource.value
-    ) {
-      const updatedRIDs = new Set(mainExtendGrid.value.updated.keys());
-      const sourceArray = demandSource.value;
-      const ridKey = "_RID";
-      const filteredData = sourceArray?.filter((item: any) => {
-        const hasRID = !!item?.[ridKey];
-        const isUpdated = updatedRIDs.has(item?.[ridKey]);
-        return hasRID && isUpdated;
-      });
-      return filteredData;
-    }
-
-    return [];
+    const edited = editedDemandMap.value;
+    if (!edited.size) return [];
+    return (demandSource.value ?? [])
+      .map((item: any) => edited.get(String(item?.demand_id)))
+      .filter((item: any) => !!item);
   });
+
+  // 수정된 데이터만 필터링하는 computed
+  const editedDemandSource = computed(() =>
+    showEditedData.value ? alwaysEditedData.value : mergedDemandSource.value,
+  );
 
   /**
    * util 함수
@@ -1091,7 +1042,7 @@ export const useReExecutePlanQuery = (
       isPivotRendering.value = false; // 에러 시 스피너 해제
     } finally {
       mainQueryIsPending.value = false;
-      // 데이터 없음 → 집계할 게 없으니 즉시 해제. 있으면 pivotOnInitialized/loadedRows 에서 해제.
+      // 데이터 없음 → 집계할 게 없으니 즉시 해제. 있으면 피벗 data:loaded 에서 해제.
       if (!pivotDataSource.value?.length) {
         isPivotRendering.value = false;
       }
@@ -1402,24 +1353,11 @@ export const useReExecutePlanQuery = (
     scenarioConfigSource,
     loadScenarioConfig,
 
-    // 공유 CollectionView 관련
-    sharedCollectionView,
-    initializeSharedCollectionView,
-    sharedDataSource,
-    popupCollectionView,
-    initializePopupCollectionView,
-    applyPopupFilter,
-    applyPopupGridFilter,
+    // 수요 그리드 변경 추적
+    syncDemandChanges,
+    mergedDemandSource,
+    editedDemandFields,
     popupDataSource,
-
-    // 그리드 참조 공유
-    mainGrid,
-    popupGrid,
-
-    // ExtendGrid 인스턴스 공유
-    mainExtendGrid,
-    popupExtendGrid,
-    updateTrigger,
 
     // 계획 재실행 Pop 기능
     isOpen,

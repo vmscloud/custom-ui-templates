@@ -182,8 +182,8 @@ import {
   MultiSelect,
   Radio,
   EmptyState,
-} from "@vmscloud/moz-ui-components";
-import { SplitPane, Pane } from "@vmscloud/moz-ui-components";
+} from "@vmscloud/moz-ui-components-vue";
+import { SplitPane, Pane } from "@vmscloud/moz-ui-components-vue";
 import { useHostPlanCycle, useHostNavigations } from "@/composables/useHostStores";
 import { useRtfReport } from "./rtfReport";
 import RtfReportSummary from "./RtfReportSummary.vue";
@@ -362,7 +362,7 @@ watch(planVer, async (newVer) => {
   min-height: 300px;
 }
 
-.hide-splitter :deep(.splitpanes__splitter) {
+.hide-splitter :deep(.resizer) {
   display: none;
 }
 </style>

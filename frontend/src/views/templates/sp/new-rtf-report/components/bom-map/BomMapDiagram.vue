@@ -152,7 +152,7 @@ import ExtendedWindow from '../extended-window/ExtendedWindow.vue';
 import ExtendedWindowInstance from '../extended-window/ExtendedWindowInstance.vue';
 import { apiCall } from '../../adapters/stores';
 import { openLinkNewTab } from '../../adapters/utils';
-import { ContextMenu } from '@vmscloud/moz-ui-components';
+import { ContextMenu } from '@vmscloud/moz-ui-components-vue';
 import { debounce } from 'es-toolkit';
 import * as go from 'gojs';
 import { Diagram } from 'gojs';

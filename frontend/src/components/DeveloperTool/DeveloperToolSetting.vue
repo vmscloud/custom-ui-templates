@@ -33,7 +33,7 @@ left: 'calc(100% - 14px)'
 <script setup lang="ts">
 import {computed, inject, ref, watch} from "vue";
 import {HOST_DATA_KEY} from "@/composables/useHostStores.ts";
-import {Button, ContextMenu, Input, Toggle, Select} from "@vmscloud/moz-ui-components";
+import {Button, ContextMenu, Input, Toggle, Select} from "@vmscloud/moz-ui-components-vue";
 import { DeveloperToolType } from "./DeveloperTool.ts";
 
 const settingsRef = defineModel<any>({required: true})

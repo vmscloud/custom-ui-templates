@@ -32,27 +32,19 @@
               />
             </template>
           </PopupController>
-          <ExtendFlexGrid
+          <MozGrid
             name="ResBasedPlanAnalysis"
-            width="100%"
             height="100%"
             class="prod-plan-ins-master"
             :emptyState="{
-              isLoading: masterQuery.isPending.value,
               useImg: false,
             }"
-            :autoGenerateColumns="false"
-            :itemsSource="masterDataSource"
-            :initialized="onInitialized"
-            :allowSorting="'None'"
-            :isReadOnly="true"
-            :setContextMenuProps="{
-              useFlexGridSetting: false,
+            :coreConfig="masterCoreConfig"
+            :contextMenuConfig="{
               useFilter: false,
-              useGroupColumn: false,
               useViewSelectColumn: false,
               useExportExcel: true,
-              useSum: true,
+              customMenu: masterContextMenus,
               onExportOriginalData: () =>
                 downloadBigData({
                   column_map: COLUMN_MAP,
@@ -62,121 +54,23 @@
                   api_key: summaryApiKey,
                 }),
             }"
-            :selectionChanged="onMasterSelectionChanged"
-            :formatItem="masterFormatItem"
             :use-tool-box="false"
             :loading="masterQuery.isPending.value"
             :use-sort="false"
-          >
-            <ExtendGridContextOpenNewTab
-              :route="
-                (item: any) => {
-                  return {
-                    path: `/sp/BomMapPlanView`,
-                    query: {
-                      planCycle: planCycleID,
-                      planVer: planVer,
-                      demandItemID: item?.demandItemID,
-                      demandID: item?.demandID,
-                    },
-                  };
-                }
-              "
-              :disabled="
-                (item: any) => {
-                  return !(item?.demandItemID || item?.itemID || item?.demandID);
-                }
-              "
-              :label="t('text-context-open_bom_map_plan_view')"
-            />
-            <WjFlexGridColumn binding="demandID" :header="t('text-demand_id')" :width="getWidthByKey('DF')" />
-            <WjFlexGridColumn binding="demandItemID" :header="t('text-demand_item_id')" :width="getWidthByKey('DF')" />
-            <WjFlexGridColumn binding="demandItemName" :header="t('text-demand_item_name')" :width="getWidthByKey('DF')" />
-            <WjFlexGridColumn binding="custName" :header="t('text-cust_name')" :width="getWidthByKey('D1')" />
-            <WjFlexGridColumn
-              binding="demandQty"
-              :header="t('text-demand_qty')"
-              dataType="Number"
-              :width="getWidthByKey('D2')"
-              :format="projectModule.formatGrid('qty')"
-            />
-            <WjFlexGridColumn
-              binding="dueDate"
-              :header="t('text-due_date')"
-              dataType="Date"
-              :format="projectModule.formatGrid('date')"
-              align="center"
-              :width="getWidthByKey('D2')"
-            />
-            <WjFlexGridColumn
-              binding="warehousingDate"
-              :header="t('text-upper-warehousing_date')"
-              dataType="Date"
-              :format="projectModule.formatGrid('date')"
-              align="center"
-              :width="getWidthByKey('D2')"
-            />
-            <WjFlexGridColumn
-              binding="shipmentDate"
-              :header="t('text-shipment_date')"
-              dataType="Date"
-              :width="getWidthByKey('D2')"
-              :format="projectModule.formatGrid('date')"
-              align="center"
-            />
-            <WjFlexGridColumn
-              binding="dateDiff"
-              :header="`${t('text-due_delay')}(${t('text-day')})`"
-              :width="getWidthByKey('D2')"
-            />
-            <WjFlexGridColumn
-              binding="rtfRatio"
-              :header="t('text-rtf_ratio')"
-              dataType="Number"
-              aggregate="Avg"
-              :width="getWidthByKey('D2')"
-              :format="projectModule.formatGrid('qty')"
-            />
-            <WjFlexGridColumn
-              binding="onTimeQty"
-              :header="t('text-on_time_qty')"
-              dataType="Number"
-              :width="getWidthByKey('D2')"
-              :format="projectModule.formatGrid('qty')"
-            />
-            <WjFlexGridColumn
-              binding="lateQty"
-              :header="t('text-late_qty')"
-              dataType="Number"
-              :width="getWidthByKey('D2')"
-              :format="projectModule.formatGrid('qty')"
-            />
-            <WjFlexGridColumn
-              :width="getWidthByKey('N2')"
-              binding="shortQty"
-              :header="t('text-short_qty')"
-              dataType="Number"
-              :format="projectModule.formatGrid('qty')"
-              align="right"
-            />
-          </ExtendFlexGrid>
-          <ExtendFlexGrid
+            @ready="onReady"
+            @data:loaded="onMasterDataLoaded"
+            @cell:click="onMasterCellClick"
+            @contextmenu="onMasterContextMenu"
+          />
+          <MozGrid
             name="ResBasedPlanAnalysis"
-            width="100%"
             height="100%"
             class="prod-plan-ins-detail"
-            :autoGenerateColumns="false"
-            :itemsSource="detailDataSource"
-            :initialized="onInitializedDetail"
-            :allowSorting="'None'"
-            :isReadOnly="true"
-            :setContextMenuProps="{
-              useFlexGridSetting: false,
+            :coreConfig="detailCoreConfig"
+            :contextMenuConfig="{
               useFilter: false,
-              useGroupColumn: false,
               useViewSelectColumn: false,
               useExportExcel: true,
-              useSum: true,
               onExportOriginalData: () =>
                 downloadBigData({
                   column_map: DETAIL_COLUMN_MAP,
@@ -186,72 +80,35 @@
                   api_key: `${detailApiKey}/Excel`,
                 }),
             }"
-            :formatItem="detailFormatItem"
             :use-tool-box="false"
             :use-extend-footer="true"
             :loading="detailQuery.isPending.value"
             :use-sort="false"
-          >
-            <WjFlexGridColumn binding="itemID" :header="t('text-item_id')" :width="getWidthByKey('D2')" />
-            <WjFlexGridColumn binding="itemName" :header="t('text-item_name')" :width="getWidthByKey('D2')" />
-            <WjFlexGridColumn binding="bufferID" :header="t('text-buffer_id')" :width="getWidthByKey('N3')" />
-            <WjFlexGridColumn binding="siteID" :header="t('text-site_id')" :width="getWidthByKey('N3')" />
-            <WjFlexGridColumn binding="itemType" :header="t('text-type')" :width="getWidthByKey('N3')" />
-            <WjFlexGridColumn
-              binding="wipQty"
-              :header="t('text-boh')"
-              :width="getWidthByKey('N3')"
-              dataType="Number"
-              :format="projectModule.formatGrid('qty')"
-            />
-            <WjFlexGridColumn
-              binding="pegQty"
-              :header="t('text-use')"
-              :width="getWidthByKey('N3')"
-              dataType="Number"
-              :format="projectModule.formatGrid('qty')"
-            />
-            <WjFlexGridColumn
-              binding="usedTotal"
-              :header="t('text-used_total')"
-              :width="getWidthByKey('N3')"
-              dataType="Number"
-              :format="projectModule.formatGrid('qty')"
-            />
-            <WjFlexGridColumn
-              v-for="col in itemColumns"
-              :binding="col.binding"
-              :header="t(col.header)"
-              :width="col.width"
-              :align="col.align"
-              :format="projectModule.formatGrid('qty')"
-            />
-          </ExtendFlexGrid>
+            @ready="onReadyDetail"
+          />
         </div>
       </template>
     </Tab>
   </Popup>
 </template>
 <script setup lang="ts">
-import ExtendGridContextOpenNewTab from './ExtendGridContextOpenNewTab.vue';
+import { createOpenNewTabMenu, useGridContextTarget } from './gridContextMenu';
 import PopupController from './PopupController.vue';
 import { apiCall, downloadBigData } from '../adapters/stores';
 import { useProjectInfoStore } from '../adapters/stores';
-import { useLoaderParams } from '../adapters/utils';
+import { ROW_KEY, useLoaderParams, withRowKey } from '../adapters/utils';
 import { IPlanByProdDetailSource, IPlanByProdMasterSource } from '../adapters/types';
-import { AllowMerging, CellRange, FlexGrid, GridPanel, MergeManager, Row } from '@vmscloud/moz-wijmo-grid/wijmo.grid';
-import { WjFlexGridColumn } from '@vmscloud/moz-wijmo-grid/wijmo.vue2.grid';
-import { Popup, Radio, Tab } from '@vmscloud/moz-ui-components';
-import { ExtendFlexGrid } from '@vmscloud/moz-wijmo-grid';
-import { ExtendGrid } from '@vmscloud/moz-wijmo-grid';
+import { MozGrid } from '@vmscloud/moz-ui-grid-vue';
+import type { GridChrome, MozGridCoreProps, PureSheet } from '@vmscloud/moz-ui-grid-vue';
+import { Popup, Radio, Tab } from '@vmscloud/moz-ui-components-vue';
 
-import { getWidthByKey, isDataCell } from '@vmscloud/moz-wijmo-grid/utils';
+import { getWidthByKey } from '@/shims/grid/utils';
 import { showMessage } from '@moz-shared/utils';
 import { useMutation } from '@tanstack/vue-query';
 import dayjs from 'dayjs';
 import { debounce, groupBy } from 'es-toolkit';
 import { useTranslation } from 'i18next-vue';
-import { computed, nextTick, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, toRefs, watch } from 'vue';
+import { computed, onMounted, onUnmounted, reactive, ref, shallowRef, toRefs, watch } from 'vue';
 
 // API로 받아오는 스키마가 아니므로 타입 폴더가 아닌 컴포넌트 내에서 타입을 정의함
 export interface IPlanByProdPopData {
@@ -332,7 +189,7 @@ const currentDemandFilter = ref<'customers' | 'demandItemIDs' | 'demandIDs' | ''
 
 /**
  * @todo 백엔드 API 스네이크 케이스로 받고 하드코딩된 로직 제거
- * 서버에서 받는 케이스가 안 맞아서 `excelModule.createColumnMapForExport(grid as FlexGrid)`으로 처리 불가능 함
+ * 서버에서 받는 케이스가 안 맞아서 `createColumnMapForExport(coreConfig.fields)`로 처리 불가능 함
  */
 const COLUMN_MAP = {
   demand_id: {
@@ -399,7 +256,7 @@ const COLUMN_MAP = {
 
 /**
  * @todo 백엔드 API 스네이크 케이스로 받고 하드코딩된 로직 제거
- * 서버에서 받는 케이스가 안 맞아서 `excelModule.createColumnMapForExport(grid as FlexGrid)`으로 처리 불가능 함
+ * 서버에서 받는 케이스가 안 맞아서 `createColumnMapForExport(coreConfig.fields)`로 처리 불가능 함
  */
 const DETAIL_COLUMN_MAP = {
   item_id: {
@@ -502,10 +359,8 @@ watch([showDetail, currentDemandFilter], () => {
   }
 });
 
-const masterGrid = ref<FlexGrid | null>(null); // Wijmo Grid
-const masterExtendGrid = ref<ExtendGrid | null>(null); // Wijmo Grid 확장 기능
-const detailGrid = ref<FlexGrid | null>(null); // Wijmo Grid
-const detailExtendGrid = ref<ExtendGrid | null>(null); // Wijmo Grid 확장 기능
+const masterGrid = shallowRef<PureSheet | null>(null); // 코어 그리드
+const detailGrid = shallowRef<PureSheet | null>(null); // 코어 그리드
 const masterDataSource = ref<IPlanByProdMasterSource[]>([]); // DataSource 객체 선언
 const detailDataSource = ref<GroupByPlanDateType[]>([]); // DataSource 객체 선언
 
@@ -520,50 +375,202 @@ const apiKey = 'RarPlanByProd'; // Api Uri Key
 const colorTargetDetailGridLastDate = ref('');
 const colorTargetDueDate = ref('');
 
-class CustomMergeManager extends MergeManager {
-  getMergedRange(panel: GridPanel, r: number, c: number) {
-    // create basic cell range
-    const rng = new CellRange(r, c);
+const { target: masterContextTarget, onContextMenu: onMasterContextMenu } = useGridContextTarget();
 
-    if (panel === panel.grid.cells) {
-      if (r <= 0 && c <= 4) {
-        for (let i = rng.col; i < panel.columns.length - 1; i++) {
-          if (panel.getCellData(rng.row, i, true) !== panel.getCellData(rng.row, i + 1, true)) break;
-          rng.col2 = i + 1;
-        }
-        for (let i = rng.col; i > 0; i--) {
-          if (panel.getCellData(rng.row, i, true) !== panel.getCellData(rng.row, i - 1, true)) break;
-          rng.col = i - 1;
-        }
-      }
-      return rng;
-    }
+const masterContextMenus = [
+  createOpenNewTabMenu(
+    'openBomMapPlanView',
+    {
+      route: (item: any) => {
+        return {
+          path: `/sp/BomMapPlanView`,
+          query: {
+            planCycle: planCycleID.value,
+            planVer: planVer.value,
+            demandItemID: item?.demandItemID,
+            demandID: item?.demandID,
+          },
+        };
+      },
+      disabled: (item: any) => {
+        return !(item?.demandItemID || item?.itemID || item?.demandID);
+      },
+      label: t('text-context-open_bom_map_plan_view'),
+    },
+    () => masterContextTarget.value,
+  ),
+];
 
-    //
-    // expand left/right
-    for (let i = rng.col; i < panel.columns.length - 1; i++) {
-      if (panel.getCellData(rng.row, i, true) !== panel.getCellData(rng.row, i + 1, true)) break;
-      rng.col2 = i + 1;
-    }
-    for (let i = rng.col; i > 0; i--) {
-      if (panel.getCellData(rng.row, i, true) !== panel.getCellData(rng.row, i - 1, true)) break;
-      rng.col = i - 1;
-    }
-
-    // expand up/down
-    for (let i = rng.row; i < panel.rows.length - 1; i++) {
-      if (panel.getCellData(i, rng.col, true) !== panel.getCellData(i + 1, rng.col, true)) break;
-      rng.row2 = i + 1;
-    }
-    for (let i = rng.row; i > 0; i--) {
-      if (panel.getCellData(i, rng.col, true) !== panel.getCellData(i - 1, rng.col, true)) break;
-      rng.row = i - 1;
-    }
-
-    // done
-    return rng;
+/**
+ * short이 그리드 표시 우선순위에 더 중요해서 다음과 같이 분기처리함
+ */
+const masterCellAttributes = ({ rowData, columnId }: { rowData: any; columnId: string }) => {
+  const classes = ['mouse-point'];
+  if (rowData?.rtfRatio < 100) {
+    classes.push('ratio-short');
+    if (columnId === 'rtfRatio') classes.push('ratio-short-col');
   }
-}
+  if (rowData?.rtfRatio === 100 && rowData?.lateQty > 0) {
+    classes.push('ratio-late');
+  }
+  return { class: classes.join(' ') };
+};
+
+const masterCoreConfig = computed<MozGridCoreProps>(() => {
+  const qtyMask = projectModule.maskGrid('qty');
+  const dateMask = projectModule.maskGrid('date');
+
+  return {
+    mode: 'flat',
+    keyFields: [ROW_KEY],
+    data: masterDataSource.value,
+    fields: [
+      { id: 'demandID', header: t('text-demand_id'), dataType: 'string', width: getWidthByKey('DF') },
+      { id: 'demandItemID', header: t('text-demand_item_id'), dataType: 'string', width: getWidthByKey('DF') },
+      { id: 'demandItemName', header: t('text-demand_item_name'), dataType: 'string', width: getWidthByKey('DF') },
+      { id: 'custName', header: t('text-cust_name'), dataType: 'string', width: getWidthByKey('D1') },
+      { id: 'demandQty', header: t('text-demand_qty'), dataType: 'number', width: getWidthByKey('D2'), mask: qtyMask },
+      {
+        id: 'dueDate',
+        header: t('text-due_date'),
+        dataType: 'date',
+        mask: dateMask,
+        align: 'center',
+        width: getWidthByKey('D2'),
+      },
+      {
+        id: 'warehousingDate',
+        header: t('text-upper-warehousing_date'),
+        dataType: 'date',
+        mask: dateMask,
+        align: 'center',
+        width: getWidthByKey('D2'),
+      },
+      {
+        id: 'shipmentDate',
+        header: t('text-shipment_date'),
+        dataType: 'date',
+        width: getWidthByKey('D2'),
+        mask: dateMask,
+        align: 'center',
+      },
+      {
+        id: 'dateDiff',
+        header: `${t('text-due_delay')}(${t('text-day')})`,
+        dataType: 'string',
+        width: getWidthByKey('D2'),
+      },
+      {
+        id: 'rtfRatio',
+        header: t('text-rtf_ratio'),
+        dataType: 'number',
+        width: getWidthByKey('D2'),
+        mask: { type: 'function', formatter: (value: unknown) => `${value ? value : '0'}%` },
+      },
+      { id: 'onTimeQty', header: t('text-on_time_qty'), dataType: 'number', width: getWidthByKey('D2'), mask: qtyMask },
+      { id: 'lateQty', header: t('text-late_qty'), dataType: 'number', width: getWidthByKey('D2'), mask: qtyMask },
+      {
+        id: 'shortQty',
+        header: t('text-short_qty'),
+        dataType: 'number',
+        width: getWidthByKey('N2'),
+        mask: qtyMask,
+        align: 'right',
+      },
+    ].map((field) => ({ ...field, sortable: false, cellAttributes: masterCellAttributes })),
+  };
+});
+
+const isDateFormat = (str: string): boolean => {
+  const regex = /^\d{4}-\d{2}-\d{2}$/;
+  return regex.test(str);
+};
+
+/**
+ * 납기일 이후 날짜 컬럼 표시 (헤더·셀 공용)
+ */
+const dueDateClasses = (col: string) => {
+  const classes: string[] = [];
+  const dueDate = localState?.masterSelectedRow?.dueDate;
+
+  if (isDateFormat(col) && dueDate) {
+    const colDate = dayjs(col);
+
+    if (colDate.isAfter(afterDueDate.value)) {
+      classes.push('late');
+    } else if (colDate.isSame(afterDueDate.value, 'day')) {
+      classes.push('late');
+      classes.push('after-due-date');
+    }
+  }
+  return classes;
+};
+
+const detailCellAttributes = ({ rowData, columnId }: { rowData: any; columnId: string }) => {
+  const classes = dueDateClasses(columnId);
+  if (rowData?.isSummaryRow) {
+    classes.push('summary-row');
+  }
+
+  const attributes: Record<string, string> = {};
+  if (classes.length) attributes.class = classes.join(' ');
+  if (colorTargetDetailGridLastDate.value === columnId || colorTargetDueDate.value === columnId) {
+    attributes.style = 'background-color: #e1707021'; // 우선순위 문제로 인라인 스타일 지정
+  }
+  return attributes;
+};
+
+// 왼쪽 7개 열 고정
+const DETAIL_PINNED_COLUMNS = ['itemID', 'itemName', 'bufferID', 'siteID', 'itemType', 'wipQty', 'pegQty'];
+// 첫 행(Summary)에서 같은 값이면 가로로 병합할 컬럼
+const DETAIL_SUMMARY_MERGE_COLUMNS = ['itemID', 'itemName', 'bufferID', 'siteID', 'itemType'];
+
+const detailCoreConfig = computed<MozGridCoreProps>(() => {
+  const qtyMask = projectModule.maskGrid('qty');
+  const fields = [
+    { id: 'itemID', header: t('text-item_id'), dataType: 'string', width: getWidthByKey('D2') },
+    { id: 'itemName', header: t('text-item_name'), dataType: 'string', width: getWidthByKey('D2') },
+    { id: 'bufferID', header: t('text-buffer_id'), dataType: 'string', width: getWidthByKey('N3') },
+    { id: 'siteID', header: t('text-site_id'), dataType: 'string', width: getWidthByKey('N3') },
+    { id: 'itemType', header: t('text-type'), dataType: 'string', width: getWidthByKey('N3') },
+    { id: 'wipQty', header: t('text-boh'), dataType: 'number', width: getWidthByKey('N3'), mask: qtyMask },
+    { id: 'pegQty', header: t('text-use'), dataType: 'number', width: getWidthByKey('N3'), mask: qtyMask },
+    { id: 'usedTotal', header: t('text-used_total'), dataType: 'number', width: getWidthByKey('N3'), mask: qtyMask },
+    ...itemColumns.value.map((col) => ({
+      id: col.binding,
+      header: t(col.header),
+      dataType: 'number',
+      width: col.width,
+      align: col.align,
+      mask: qtyMask,
+    })),
+  ].map((field) => {
+    const headerClasses = dueDateClasses(field.id);
+    return {
+      ...field,
+      sortable: false,
+      pinned: DETAIL_PINNED_COLUMNS.includes(field.id) ? ('left' as const) : undefined,
+      cellAttributes: detailCellAttributes,
+      headerAttributes: headerClasses.length ? { class: headerClasses.join(' ') } : undefined,
+    };
+  });
+
+  return {
+    mode: 'flat',
+    keyFields: [ROW_KEY],
+    data: detailDataSource.value,
+    fields,
+    // 7번째 이후 컬럼은 생산계획, 재공 수량은 재공으로 헤더를 묶는다
+    columnGroups: [
+      { id: 'wip', header: t('text-wip'), children: ['wipQty', 'pegQty'] },
+      {
+        id: 'prodPlan',
+        header: t('text-prod_plan'),
+        children: ['usedTotal', ...itemColumns.value.map((col) => col.binding)],
+      },
+    ],
+  };
+});
 
 /**
  * INITIALIZE
@@ -577,12 +584,23 @@ const masterFocusColumnHandler = () => {
   }
 };
 
+/**
+ * 마스터 그리드의 행을 선택하고 선택 변경을 처리한다 (옛 그리드의 select(new CellRange(idx, 0)) 대체)
+ */
+const selectMasterRow = (index: number) => {
+  const item = masterDataSource.value[index];
+  if (!item) return;
+  masterGrid.value?.cells.selectCellsByViewIndices([{ viewIndex: index, columnId: 'demandID' }]);
+  masterGrid.value?.scrollToRow(index);
+  onMasterSelectionChanged(item);
+};
+
 const masterFocusColumnByDemandID = () => {
-  if (!masterGrid.value?.collectionView?.items) return;
+  if (!masterDataSource.value) return;
   let focusTargetIndex = -1;
 
   if (data.value?.demandIDs?.length) {
-    focusTargetIndex = masterGrid.value.collectionView?.items.findIndex(
+    focusTargetIndex = masterDataSource.value.findIndex(
       (elem) => elem.demandID === data.value?.demandIDs?.[0],
     );
   } else {
@@ -594,14 +612,14 @@ const masterFocusColumnByDemandID = () => {
 
     // 생산계획량이 0을 초과하면 생산완료일에 해당하는 첫번째
     if (prodQty) {
-      focusTargetIndex = masterGrid.value.collectionView?.items.findIndex(
+      focusTargetIndex = masterDataSource.value.findIndex(
         (elem) => elem.shipmentDate === data.value?.date,
       );
     }
 
     // 생산계획량이 0이면 납기일에 해당하는 첫번째 선택
     if (!prodQty && demandQty) {
-      focusTargetIndex = masterGrid.value.collectionView?.items.findIndex(
+      focusTargetIndex = masterDataSource.value.findIndex(
         (elem) => dayjs(elem.dueDate).format('YYYY-MM-DD') === data.value?.date,
       );
     }
@@ -609,12 +627,12 @@ const masterFocusColumnByDemandID = () => {
     // masterGrid 가 정합성이 깨져 -1이 발생한 경우 첫번째 선택으로 초기화
     if (focusTargetIndex === -1) {
       focusTargetIndex = 0;
-      onDetailLoad(masterGrid.value.collectionView.items[0]);
+      onDetailLoad(masterDataSource.value[0]);
     }
   }
 
   if (focusTargetIndex !== -1) {
-    masterGrid.value?.select(new CellRange(focusTargetIndex, 0), true);
+    selectMasterRow(focusTargetIndex);
   }
 };
 
@@ -632,19 +650,19 @@ const masterFocusColumnByDate = () => {
   let focusTargetIndex;
   // 이진 탐색으로 targetDate 이후의 날짜중 가장 빠른 날짜를 구한다.
   const binarySearch = (targetDate: string) => {
-    if (!masterGrid.value || !masterGrid.value.collectionView?.items.length) {
+    if (!masterGrid.value || !masterDataSource.value.length) {
       return { dueDateMidIdx: -1, shipmentDateMidIdx: -1 };
     }
 
     // plan_date와의 일 수 차이가 0일인 날짜가 1순위이므로 target은 0이다.
     const target = 0;
     let dueDateStart = 0;
-    let dueDateEnd = masterGrid.value.collectionView?.items.length - 1;
+    let dueDateEnd = masterDataSource.value.length - 1;
     let dueDateMidIdx = -1;
     let dueDateFinishedExplore = false;
 
     let shipmentDateStart = 0;
-    let shipmentDateEnd = masterGrid.value.collectionView?.items.length - 1;
+    let shipmentDateEnd = masterDataSource.value.length - 1;
     let shipmentDateMidIdx = -1;
     let shipmentDateFinishedExplore = false;
 
@@ -655,7 +673,7 @@ const masterFocusColumnByDate = () => {
     ) {
       if (!dueDateFinishedExplore) {
         dueDateMidIdx = Math.floor((dueDateStart + dueDateEnd) / 2);
-        if (!masterGrid.value.collectionView?.items[dueDateMidIdx]?.dueDate) {
+        if (!masterDataSource.value[dueDateMidIdx]?.dueDate) {
           dueDateMidIdx = -1;
           break;
         }
@@ -663,17 +681,17 @@ const masterFocusColumnByDate = () => {
 
       if (!shipmentDateFinishedExplore) {
         shipmentDateMidIdx = Math.floor((shipmentDateStart + shipmentDateEnd) / 2);
-        if (!masterGrid.value.collectionView?.items[shipmentDateMidIdx]?.shipmentDate) {
+        if (!masterDataSource.value[shipmentDateMidIdx]?.shipmentDate) {
           shipmentDateMidIdx = -1;
           break;
         }
       }
 
       const dueDateMidDiff = Number(
-        dayjs(masterGrid.value.collectionView?.items[dueDateMidIdx].dueDate).diff(dayjs(targetDate), 'day'),
+        dayjs(masterDataSource.value[dueDateMidIdx].dueDate).diff(dayjs(targetDate), 'day'),
       );
       const shipmentDateMidDiff = Number(
-        dayjs(masterGrid.value.collectionView?.items[shipmentDateMidIdx].shipmentDate).diff(dayjs(targetDate), 'day'),
+        dayjs(masterDataSource.value[shipmentDateMidIdx].shipmentDate).diff(dayjs(targetDate), 'day'),
       );
 
       if (target === dueDateMidDiff) {
@@ -699,17 +717,17 @@ const masterFocusColumnByDate = () => {
 
     while (
       dueDateMidIdx !== -1 &&
-      Number(dayjs(masterGrid.value.collectionView?.items[dueDateMidIdx].dueDate).diff(dayjs(targetDate), 'day')) < 0 &&
-      !masterGrid.value.collectionView?.items[dueDateMidIdx + 1]?.dueDate
+      Number(dayjs(masterDataSource.value[dueDateMidIdx].dueDate).diff(dayjs(targetDate), 'day')) < 0 &&
+      !masterDataSource.value[dueDateMidIdx + 1]?.dueDate
     ) {
       dueDateMidIdx += 1;
     }
     while (
       shipmentDateMidIdx !== -1 &&
       Number(
-        dayjs(masterGrid.value.collectionView?.items[shipmentDateMidIdx].shipmentDate).diff(dayjs(targetDate), 'day'),
+        dayjs(masterDataSource.value[shipmentDateMidIdx].shipmentDate).diff(dayjs(targetDate), 'day'),
       ) < 0 &&
-      masterGrid.value.collectionView?.items[shipmentDateMidIdx + 1]?.shipmentDate
+      masterDataSource.value[shipmentDateMidIdx + 1]?.shipmentDate
     ) {
       shipmentDateMidIdx += 1;
     }
@@ -727,7 +745,7 @@ const masterFocusColumnByDate = () => {
     if (
       // 1 순위 : 납기일 = 선택한 날짜
       dueDateMidIdx !== -1 &&
-      dayjs(masterGrid.value.collectionView?.items[dueDateMidIdx]?.dueDate).diff(
+      dayjs(masterDataSource.value[dueDateMidIdx]?.dueDate).diff(
         dayjs(autoFocusProps.value.targetDate),
         'day',
       ) === 0
@@ -736,7 +754,7 @@ const masterFocusColumnByDate = () => {
     } else if (
       // 2 순위 : 생산 완료일 = 선택한 날짜
       shipmentDateMidIdx !== -1 &&
-      dayjs(masterGrid.value.collectionView?.items[shipmentDateMidIdx]?.shipmentDate).diff(
+      dayjs(masterDataSource.value[shipmentDateMidIdx]?.shipmentDate).diff(
         dayjs(autoFocusProps.value.targetDate),
         'day',
       ) === 0
@@ -745,7 +763,7 @@ const masterFocusColumnByDate = () => {
     } else if (
       // 3 순위 : 선택한 날짜 < 생산 완료일 중에서, 가장 생산 완료일이 작은 Demand
       shipmentDateMidIdx !== -1 &&
-      dayjs(masterGrid.value.collectionView?.items[shipmentDateMidIdx]?.shipmentDate).diff(
+      dayjs(masterDataSource.value[shipmentDateMidIdx]?.shipmentDate).diff(
         dayjs(autoFocusProps.value.targetDate),
         'day',
       ) >= 0
@@ -754,7 +772,7 @@ const masterFocusColumnByDate = () => {
     } else if (
       // 4 순위 : 선택한 날짜 < 납기일 중에서, 가장 납기일이 작은 Demand
       dueDateMidIdx !== -1 &&
-      dayjs(masterGrid.value.collectionView?.items[dueDateMidIdx]?.dueDate).diff(
+      dayjs(masterDataSource.value[dueDateMidIdx]?.dueDate).diff(
         dayjs(autoFocusProps.value.targetDate),
         'day',
       ) >= 0
@@ -762,7 +780,7 @@ const masterFocusColumnByDate = () => {
       focusTargetIndex = dueDateMidIdx;
     } else {
       // 5 순위 : 마지막 Demand (여기까지 왔으면, 되게 뒤쪽 날짜를 선택한 상황이라서, 마지막 Demand 선택하면 됨)
-      focusTargetIndex = masterGrid.value.collectionView?.items.length - 1;
+      focusTargetIndex = masterDataSource.value.length - 1;
     }
   } else {
     // 이진 탐색 실행
@@ -771,25 +789,25 @@ const masterFocusColumnByDate = () => {
     // 이진 탐색으로 구한 인덱스를 기반으로 조건 분기
     const isWeekStartEarlierThanDueDate =
       dueDateMidIdx !== -1 &&
-      dayjs(masterGrid.value.collectionView?.items[dueDateMidIdx].dueDate).diff(
+      dayjs(masterDataSource.value[dueDateMidIdx].dueDate).diff(
         dayjs(autoFocusProps.value.targetStartWeek),
         'day',
       ) >= 0;
     const isWeekEndLaterThanDueDate =
       dueDateMidIdx !== -1 &&
-      dayjs(masterGrid.value.collectionView?.items[dueDateMidIdx].dueDate).diff(
+      dayjs(masterDataSource.value[dueDateMidIdx].dueDate).diff(
         dayjs(autoFocusProps.value.targetEndWeek),
         'day',
       ) <= 0;
     const isWeekStartEarlierThanShipmentDate =
       shipmentDateMidIdx !== -1 &&
-      dayjs(masterGrid.value.collectionView?.items[shipmentDateMidIdx].shipmentDate).diff(
+      dayjs(masterDataSource.value[shipmentDateMidIdx].shipmentDate).diff(
         dayjs(autoFocusProps.value.targetStartWeek),
         'day',
       ) >= 0;
     const isWeekEndLaterThanShipmentDate =
       shipmentDateMidIdx !== -1 &&
-      dayjs(masterGrid.value.collectionView?.items[shipmentDateMidIdx].shipmentDate).diff(
+      dayjs(masterDataSource.value[shipmentDateMidIdx].shipmentDate).diff(
         dayjs(autoFocusProps.value.targetEndWeek),
         'day',
       ) <= 0;
@@ -808,130 +826,52 @@ const masterFocusColumnByDate = () => {
       focusTargetIndex = dueDateMidIdx;
     } else {
       // 5 순위 : 마지막 Demand (여기까지 왔으면, 되게 뒤쪽 날짜를 선택한 상황이라서, 마지막 Demand 선택하면 됨)
-      focusTargetIndex = masterGrid.value.collectionView?.items.length - 1;
+      focusTargetIndex = masterDataSource.value.length - 1;
     }
   }
 
-  if (masterGrid.value) {
-    masterGrid.value.select(new CellRange(focusTargetIndex, 0), true);
-  }
+  selectMasterRow(focusTargetIndex);
 };
 
 // GRID INITIALIZE
-const onInitialized = (flexGrid: FlexGrid, _extendGrid: ExtendGrid) => {
-  masterGrid.value = flexGrid;
-  masterExtendGrid.value = _extendGrid;
-
-  flexGrid.itemsSourceChanged.addHandler(masterFocusColumnHandler);
-  flexGrid.itemsSourceChanged.addHandler(onMasterSelectionChanged);
+const onReady = (grid: PureSheet, _chrome: GridChrome) => {
+  masterGrid.value = grid;
 };
 
-const onInitializedDetail = (flexGrid: FlexGrid, _extendGrid: ExtendGrid) => {
-  detailGrid.value = flexGrid;
-  detailExtendGrid.value = _extendGrid;
+const onReadyDetail = (grid: PureSheet, _chrome: GridChrome) => {
+  detailGrid.value = grid;
 
-  detailGrid.value.mergeManager = new CustomMergeManager();
+  // 첫 행(Summary)은 값이 같은 왼쪽 컬럼끼리 가로로 병합한다
+  grid.setMergeConfig({
+    type: 'custom',
+    columns: DETAIL_SUMMARY_MERGE_COLUMNS,
+    getMergedRange: ({ rowIndex, columnId, columnsInOrder, getCellValue, getRowData }: any) => {
+      if (rowIndex !== 0 || !getRowData(0)?.isSummaryRow) return null;
 
-  const columnHeaders = detailGrid.value.columnHeaders;
-  const extraRow = new Row({ _isExtraRow: true });
-  columnHeaders.rows.insert(0, extraRow);
+      const value = getCellValue(rowIndex, columnId);
+      let start = DETAIL_SUMMARY_MERGE_COLUMNS.indexOf(columnId);
+      let end = start;
+      while (start > 0 && getCellValue(rowIndex, DETAIL_SUMMARY_MERGE_COLUMNS[start - 1]) === value) start--;
+      while (
+        end < DETAIL_SUMMARY_MERGE_COLUMNS.length - 1 &&
+        getCellValue(rowIndex, DETAIL_SUMMARY_MERGE_COLUMNS[end + 1]) === value
+      ) {
+        end++;
+      }
+      if (start === end) return null;
 
-  detailGrid.value.allowMerging = AllowMerging.All;
-  extraRow.allowMerging = true;
-
-  // 헤더 수직 병합
-  detailGrid.value.columns[0].allowMerging = true;
-  detailGrid.value.columns[1].allowMerging = true;
-  detailGrid.value.columns[2].allowMerging = true;
-  detailGrid.value.columns[3].allowMerging = true;
-  // detailGrid.value.columns[4].allowMerging = true;
-  // detailGrid.value.columns[5].allowMerging = true;
-  // detailGrid.value.columns[6].allowMerging = true;
-
-  // 왼쪽 8개 열 고정
-  detailGrid.value.frozenColumns = 7;
+      return {
+        startRow: rowIndex,
+        endRow: rowIndex,
+        startCol: columnsInOrder.indexOf(DETAIL_SUMMARY_MERGE_COLUMNS[start]),
+        endCol: columnsInOrder.indexOf(DETAIL_SUMMARY_MERGE_COLUMNS[end]),
+      };
+    },
+  });
 };
 
-const isDateFormat = (str: string): boolean => {
-  const regex = /^\d{4}-\d{2}-\d{2}$/;
-  return regex.test(str);
-};
-
-const masterFormatItem = (s: FlexGrid, e: any) => {
-  if (!isDataCell(s, e)) return;
-
-  const rowItem = e.getRow()?.dataItem;
-  if (!rowItem) return;
-  const col = e.getColumn().binding as
-    | 'demandID'
-    | 'custName'
-    | 'demandQty'
-    | 'dueDate'
-    | 'shipmentDate'
-    | 'dateDiff'
-    | 'onTimeQty'
-    | 'lateQty'
-    | 'rtfRatio'
-    | 'shortQty';
-
-  const cell = e.cell.querySelector('span') != null ? e.cell.querySelector('span') : e.cell;
-  if (!cell) return;
-
-  switch (col) {
-    case 'rtfRatio':
-      cell.textContent = `${rowItem[col] ? rowItem[col] : '0'}%`;
-      break;
-    default:
-      break;
-  }
-
-  // short이 그리드 표시 우선순위에 더 중요해서 다음과 같이 분기처리함
-  if (rowItem.rtfRatio < 100) {
-    e.cell.classList.add('ratio-short');
-    switch (col) {
-      case 'rtfRatio':
-        e.cell.classList.add('ratio-short-col');
-        break;
-      default:
-        break;
-    }
-  }
-  if (rowItem.rtfRatio === 100 && rowItem.lateQty > 0) {
-    e.cell.classList.add('ratio-late');
-  }
-
-  e.cell.classList.add('mouse-point');
-};
-
-const detailFormatItem = (s: FlexGrid, e: any) => {
-  // if (!isDataCell(s, e)) return;
-
-  const rowItem = e.getRow()?.dataItem;
-  const col: string = e.getColumn().binding;
-
-  const dueDate = localState?.masterSelectedRow?.dueDate;
-
-  if (rowItem?.isSummaryRow) {
-    e.cell.classList.add('summary-row');
-  }
-
-  if (isDateFormat(col) && dueDate) {
-    const colDate = dayjs(col);
-
-    if (colDate.isAfter(afterDueDate.value)) {
-      e.cell.classList.add('late');
-    } else if (colDate.isSame(afterDueDate.value, 'day')) {
-      e.cell.classList.add('late');
-      e.cell.classList.add('after-due-date');
-    }
-  }
-
-  if (!isDataCell(s, e)) return;
-  if (colorTargetDetailGridLastDate.value === col || colorTargetDueDate.value === col) {
-    e.cell.style.backgroundColor = '#e1707021'; // 우선순위 문제로 인라인 스타일 지정
-  } else {
-    e.cell.style.backgroundColor = '#ffffff'; // Master gird 내에서 다른 전환시 복구
-  }
+const onMasterCellClick = (payload: any) => {
+  onMasterSelectionChanged(payload?.row);
 };
 
 /**
@@ -989,7 +929,7 @@ const masterQuery = useMutation({
   mutationFn: async () => await fetchCall(summaryApiKey, summaryLoadParams.value),
   onSuccess: (result) => {
     if (result && result.data && result.data.length) {
-      masterDataSource.value = result.data;
+      masterDataSource.value = withRowKey(result.data);
     } else {
       masterDataSource.value = []
     }
@@ -1080,35 +1020,8 @@ const setColumnGroups = (datas?: { minDate: string; maxDate: string }) => {
     }
   }
 
+  // 헤더 묶음(재공·생산계획)은 detailCoreConfig 의 columnGroups 로 만든다
   itemColumns.value = newItemColumns;
-
-  nextTick(() => {
-    if (detailGrid.value) {
-      // 그리드 헤더 만들기
-      const columnHeaders = detailGrid.value.columnHeaders;
-      const extraRow = columnHeaders.rows[1];
-
-      if (!extraRow) return;
-
-      for (let i = 0; i < detailGrid.value.columns.length; i++) {
-        let headerName = columnHeaders.getCellData(1, i, false);
-
-        if (i >= 7) {
-          // 7번째 이전 컬럼은 원래 데이터 입력하고 그 이후는 생산계획으로 도배
-          headerName = t('text-prod_plan');
-        }
-
-        columnHeaders.setCellData(0, i, headerName);
-      }
-
-      const bohColIndex = columnHeaders.columns.findIndex((c) => c.binding === 'wipQty');
-      const pegColIndex = columnHeaders.columns.findIndex((c) => c.binding === 'pegQty');
-
-      // 특별히 재공 입력
-      columnHeaders.setCellData(0, bohColIndex, t('text-wip'));
-      columnHeaders.setCellData(0, pegColIndex, t('text-wip'));
-    }
-  });
 };
 
 type FirstRowType = { usedTotal: number; isSummaryRow?: boolean };
@@ -1166,14 +1079,13 @@ const groupByPlanDate = (detail: IPlanByProdDetailSource[]) => {
     if (row.itemID) rows.push(row); // 비어있는 row 추가 방지
   });
 
-  detailDataSource.value = rows;
+  detailDataSource.value = withRowKey(rows);
 };
 
 /**
  * EVENT
  */
-const onMasterSelectionChanged = debounce((s: FlexGrid) => {
-  const selected = s.selectedRows[0]?.dataItem;
+const onMasterSelectionChanged = debounce((selected?: any) => {
 
   if (!selected) {
     localState.masterSelectedRow = null;
@@ -1195,7 +1107,7 @@ const onMasterSelectionChanged = debounce((s: FlexGrid) => {
 }, 100);
 
 const onClose = () => {
-  masterGrid.value?.select(-1, -1);
+  masterGrid.value?.cells.clearCellSelection();
   props?.close();
 };
 
@@ -1217,11 +1129,15 @@ watch([showDetail], () => {
   }
 });
 
-onBeforeUnmount(() => {
-  if (masterGrid.value) {
-    masterGrid.value.itemsSourceChanged.removeAllHandlers();
+// 데이터가 바뀌면 첫 행을 선택하고, 자동 포커스 대상이 있으면 그 행을 선택한다 (옛 itemsSourceChanged 대체)
+const onMasterDataLoaded = () => {
+  if (!masterDataSource.value.length) {
+    onMasterSelectionChanged(null);
+    return;
   }
-});
+  selectMasterRow(0);
+  masterFocusColumnHandler();
+};
 
 // region 브라우저 사이즈에 따른 팝업 크기 계산
 // 팝업 크기 계산을 위한 상수
@@ -1261,80 +1177,23 @@ onUnmounted(() => {
   gap: 10px;
   height: 100%;
 
-  .wj-flexgrid .wj-cells .wj-row {
-    &:nth-child(n) {
-      .wj-cell.ratio-short {
-        // 흰 배경일때 ratio-short 일때
-        background-color: #f6d5d5 !important;
+  .ps-cell.ratio-short {
+    background-color: #f6d5d5;
+  }
 
-        // 그 상태에서 clicked 했을때
-        &.aleatorik-clicked-state {
-          background-color: #eae0ec !important;
-        }
-      }
+  .ps-cell.ratio-late {
+    background-color: #fde6c8;
+  }
 
-      .wj-cell.ratio-late {
-        // 흰 배경일때 ratio-late 일때
-        background-color: #fde6c8 !important;
-
-        // 그 상태에서 clicked 했을때
-        &.aleatorik-clicked-state {
-          background-color: #eae0ec !important;
-        }
-      }
-    }
-
-    &:nth-child(2n) {
-      .wj-cell.ratio-short {
-        // 파란 배경에서 ratio-short 일때
-        background-color: #f1d0d4 !important;
-
-        &.aleatorik-clicked-state {
-          background-color: #e5daea !important;
-        }
-        .ratio-short-col {
-          color: #dc5a5a;
-        }
-      }
-
-      .wj-cell.ratio-late {
-        // 파란 배경에서 ratio-late 일때
-        background-color: #f8e1c7 !important;
-
-        &.aleatorik-clicked-state {
-          background-color: #e5daea !important;
-        }
-      }
-    }
-
-    .wj-cell.ratio-short:not(.wj-header) {
-      &.wj-state-multi-selected,
-      &.wj-state-active {
-        background-color: #d4cde8 !important;
-      }
-    }
-
-    &:hover {
-      .wj-cell.ratio-short:not(.wj-header) {
-        background-color: #d4cde8 !important;
-      }
-    }
-
-    .wj-cell.ratio-late:not(.wj-header) {
-      &.wj-state-multi-selected,
-      &.wj-state-active {
-        background-color: #d4cde8 !important;
-      }
-    }
-
-    &:hover {
-      .wj-cell.ratio-late:not(.wj-header) {
-        background-color: #d4cde8 !important;
-      }
+  .ps-row:hover,
+  .ps-row.ps-selected {
+    .ps-cell.ratio-short,
+    .ps-cell.ratio-late {
+      background-color: #d4cde8;
     }
   }
 
-  .ratio-short-col span {
+  .ratio-short-col {
     color: #dc5a5a !important;
   }
 
@@ -1349,42 +1208,26 @@ onUnmounted(() => {
 
 .prod-plan-ins-master,
 .prod-plan-ins-detail {
-  .wj-colheaders {
-    .wj-cell.wj-header {
-      justify-content: center;
-      .spacer {
-        display: none;
-      }
+  .ps-header-cell {
+    justify-content: center;
+
+    &.after-due-date {
+      border-left: 2px solid #dc5a5a;
     }
   }
 
-  .wj-colheaders {
-    .wj-row {
-      .wj-header.after-due-date {
-        border-left: 2px solid #dc5a5a;
-      }
+  .ps-cell {
+    &.summary-row {
+      background-color: #d6def8;
+      font-weight: 500;
     }
-  }
 
-  .wj-cells {
-    .wj-row {
-      .wj-cell {
-        &.summary-row {
-          background-color: #d6def8;
-          font-weight: 500;
-        }
+    &.late {
+      color: #dc5a5a;
+    }
 
-        &.late {
-          color: #dc5a5a;
-          span {
-            color: #dc5a5a;
-          }
-        }
-
-        &.after-due-date {
-          border-left: 2px solid #dc5a5a;
-        }
-      }
+    &.after-due-date {
+      border-left: 2px solid #dc5a5a;
     }
   }
 }

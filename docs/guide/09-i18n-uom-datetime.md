@@ -128,7 +128,7 @@ URL 쿼리 우선 규칙 덕분에 Host 가 `?qtyUOM=...` 을 포함해 리모�
 
 ### 왜 Dayjs인가
 
-- `@vmscloud/moz-ui-components` 의 `DateInput`, `TimePicker` 가 Dayjs 객체를 v-model 로 기대.
+- `@vmscloud/moz-ui-components-vue` 의 `DateInput` 은 v-model 값의 타입을 그대로 유지합니다(Dayjs 를 넣으면 Dayjs 로 돌려줌). 상태를 Dayjs 로 만들어 두면 끝까지 Dayjs 로 다룰 수 있습니다. (`TimePicker` 는 `"HH:mm"` 문자열을 v-model 로 씁니다.)
 - 템플릿 안에서 `.format('YYYY-MM-DD')`, `.add(n, 'day')`, `.startOf('month')` 같은 표현을 쉽게 쓰고 싶음.
 - `Date` 객체를 섞어 쓰면 위 호출에서 **런타임 `TypeError`** 가 납니다.
 
@@ -193,7 +193,7 @@ watch(() => state.value.startDate, (newVal) => {
 
 ## 주·월 포맷
 
-Wijmo 피벗 헤더에는 흔히 `"월:2026-04"`, `"주:2026-14"`, `"날짜:2026-04-20"` 같은 포맷이 쓰입니다. 이 문자열은 백엔드에서 내려주거나 프론트에서 `dayjs(...).format("YYYY-MM")` 으로 생성.
+피벗 그리드 헤더에는 흔히 `"월:2026-04"`, `"주:2026-14"`, `"날짜:2026-04-20"` 같은 포맷이 쓰입니다. 이 문자열은 백엔드에서 내려주거나 프론트에서 `dayjs(...).format("YYYY-MM")` 으로 생성.
 
 주차는 ISO week 기준 `YYYY-WW` 형식이 일반적입니다.
 
@@ -207,13 +207,13 @@ const weekStr = `${dayjs("2026-04-20").year()}-${String(iso).padStart(2, "0")}`;
 
 ## 숫자 포맷
 
-- 그리드 컬럼: `dataType="Number" format="n2"` 등.
-- `toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })` 같은 표시 변환은 셀 `formatItem` 훅에서 제한적으로 사용.
+- 그리드 컬럼: MozGrid 필드의 `mask` 로 지정 (`{ type: "numeric", pattern: "#,##0.00" }` 등).
+- `toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })` 같은 표시 변환은 `mask: { type: "function", formatter }` 에서 제한적으로 사용.
 - **백엔드는 raw `double`** 을 그대로 내려주세요. 서버 `round(x, 2)` 는 누적 오차의 원인입니다.
 
 ## 타임존 주의
 
 - 대부분의 화면은 **로컬 시각 표시**를 전제. 서버 UTC 데이터를 쓸 때는 dayjs-plugin-timezone 을 로드하거나 명시적으로 변환.
-- `DateInput`/`TimePicker` 출력값을 서버로 보낼 때는 항상 `format("YYYY-MM-DD")` / `format("HH:mm:ss")` 등으로 명시적 문자열화.
+- `DateInput` 출력값을 서버로 보낼 때는 항상 `format("YYYY-MM-DD")` 등으로 명시적 문자열화. `TimePicker` 값은 이미 `"HH:mm"` 문자열입니다.
 
 다음: [10-debugging](./10-debugging.md) 에서 API 디버깅·데이터 정합성 검증 방법을 다룹니다.

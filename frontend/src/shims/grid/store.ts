@@ -1,11 +1,11 @@
 /**
- * Runtime shim for @vmscloud/moz-wijmo-grid/store
+ * 그리드 엑셀 다운로드 상태
  *
- * 원본 libraries/moz-wijmo-grid/src/store/index.ts 의 Pinia 기반 useExcelStore 를
+ * 원본 레거시 그리드 패키지의 Pinia 기반 useExcelStore 를
  * 간략화해 호출부가 참고하는 표면만 맞춘다.
  *
  *   - excelFileMap, exportFormat: downloadBigData wrapper 에서 참조
- *   - createColumnMapForExport: FlexGrid → column binding/header 맵 추출
+ *   - createColumnMapForExport: 그리드 필드 → 컬럼 id/header 맵 추출
  *   - isDownloading / downloadProgress: 호출부의 진행률 뱃지용
  */
 import { ref } from "vue";
