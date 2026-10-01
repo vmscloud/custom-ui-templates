@@ -47,14 +47,14 @@ export async function loadLanguage(lang: string) {
 }
 
 /**
- * loadLanguageFromHost — APS SamLanguage API 로부터 번역 로드
+ * loadLanguageFromHost — APS SamLanguage API(용어관리 DB)로부터 번역 로드
  *
- * Module Federation 으로 호스트 환경에 올라갔을 때 사용.
- * 원본 APS `packages/aps/src/utils/i18n.ts` 의 loadLanguage 와 동일한 패턴.
+ * dev 단독 실행에서 정적 JSON 대신 용어관리 DB 번역을 쓰기 위한 함수다.
+ * Host 에 로드된 화면은 Host 의 i18next 로 번역되므로 Host 경로에서는 호출하지 않는다.
  *
- * - host 와 리모트의 i18next 는 각각 독립 인스턴스라 서로의 resource 를 덮지 않음
- * - 원본 서버 번역(정식 text-* 키) 을 리모트의 i18next 에 그대로 주입해 이용
- * - 세션이 없으면 401 — 그 경우 정적 JSON(위 init 결과) 을 유지
+ * - 현재는 호출하는 곳이 없다. 세션 없는 dev 단독 실행에서는 apigateway 가 401 을 반환하기 때문이다.
+ * - 로컬 개발자의 인증 방식(ITSM-2026-001701 방법 A/B)이 정해지면 bootstrap.ts 에서 호출하고,
+ *   필요하면 URL·헤더를 그 방식에 맞게 바꾼다.
  */
 export async function loadLanguageFromHost(
   projectId: string,

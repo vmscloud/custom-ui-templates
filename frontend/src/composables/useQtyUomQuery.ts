@@ -7,8 +7,8 @@
  * Host에 module federation으로 로드되면 window.location은 호스트 페이지 URL이라
  * 원본과 동일하게 URL의 qtyUOM 파라미터가 전달됩니다.
  */
-import { ref, watch } from "vue";
-import i18next from "i18next";
+import { computed, ref, watch } from "vue";
+import { useTranslation } from "i18next-vue";
 
 export type QtyUOMType = "DEFAULT" | "CONVERSION";
 export type QtyUOMSourceType = {
@@ -68,22 +68,18 @@ export function useQtyUomQuery(
 
   const uomType = ref<QtyUOMType>(initial);
 
-  const buildSource = (): QtyUOMSourceType[] =>
+  // Host 에 로드되면 useTranslation() 은 Host 의 i18next 를 쓴다.
+  // computed 로 두면 언어 전환·번역 적재 시 i18next-vue 가 다시 계산한다.
+  const { t } = useTranslation();
+
+  const qtyUOMSource = computed<QtyUOMSourceType[]>(() =>
     source.map((v) => {
       const display =
-        v === "DEFAULT"
-          ? i18next.t("text-default_uom")
-          : i18next.t("text-conversion_uom");
+        v === "DEFAULT" ? t("text-default_uom") : t("text-conversion_uom");
       // label/displayValue 둘 다 번역값으로 채워서 display-prop 명칭이 달라도 동작.
       return { label: display, value: v, displayValue: display };
-    });
-
-  const qtyUOMSource = ref<QtyUOMSourceType[]>(buildSource());
-
-  // 언어 전환 시 displayValue 갱신
-  i18next.on("languageChanged", () => {
-    qtyUOMSource.value = buildSource();
-  });
+    }),
+  );
 
   // URL에 없었던 경우에는 첫 초기화도 캐시로 저장해 두면 새 탭에서도 유지됨
   if (!urlVal) {

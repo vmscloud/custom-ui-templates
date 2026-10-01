@@ -14,44 +14,17 @@ import "@vmscloud/moz-ui-chart/style.css";
 import { defineComponent, h, inject, type Component } from "vue";
 import { setProjectIdResolver } from "@/api/client";
 import { HOST_DATA_KEY } from "@/composables/useHostStores";
-import { loadLanguageFromHost } from "@/plugins/i18n";
 
 /**
- * 원본 APS `packages/aps/src/utils/i18n.ts` 의 loadLanguage 와 동일하게
- * `SamLanguage/<lang>` API 를 호출해 i18next 에 번역 번들을 주입한다.
+ * Host 환경에서 projectId resolver 설정
  *
- * - Module Federation 으로 로드된 리모트에서 bootstrap.ts 가 실행되지 않아
- *   리모트 i18next 에 번역이 비어있던 문제를 원본과 동일한 방식으로 해결.
- * - 리모트 i18next 인스턴스가 host 와 독립이든 공유든, SamLanguage 응답을
- *   자기 인스턴스에 addResourceBundle 하므로 host 번역을 덮어쓰지 않는다.
- * - 세션이 없는 dev 단독 실행에서는 호출이 401 로 실패하고 fallback 없이
- *   정적 JSON(plugins/i18n.ts 의 초기 init) 을 유지.
- */
-let _i18nHostInitPromise: Promise<void> | null = null;
-
-function ensureRemoteI18n(hostData: any): Promise<void> {
-  if (_i18nHostInitPromise) return _i18nHostInitPromise;
-  _i18nHostInitPromise = (async () => {
-    const lang =
-      hostData?.value?.projectInfo?.userInfo?.language ||
-      hostData?.value?.projectInfo?.language ||
-      (typeof navigator !== "undefined"
-        ? navigator.language?.split("-")[0]
-        : "") ||
-      "ko";
-    const projectId = hostData?.value?.projectInfo?.currentProjectID ?? "";
-    await loadLanguageFromHost(projectId, lang);
-  })();
-  return _i18nHostInitPromise;
-}
-
-/**
- * Host 환경에서 projectId resolver 설정 + SamLanguage 번역 로드
+ * 번역은 따로 로드하지 않는다. Host 안에 마운트된 화면의 useTranslation()·$t 는
+ * Host 앱에 등록된 i18next(용어관리 DB 번역)를 쓰기 때문이다.
+ * 리모트 코드에서 `import i18next from "i18next"` 로 직접 번역하면
+ * Host 와 분리된 리모트 사본을 쓰게 되어 번역이 늦게 반영되므로 금지한다.
  *
  * 주의: `async setup()` 은 host 가 <Suspense> 경계를 제공하지 않는 한
- * 마운트 자체가 막혀 화면이 비어버린다. 따라서 setup 은 **동기**로 유지하고
- * 번역 로드는 fire-and-forget. i18next 가 addResourceBundle 후
- * languageChanged 이벤트를 쏘면 i18next-vue 가 reactive 하게 라벨을 갱신한다.
+ * 마운트 자체가 막혀 화면이 비어버린다. 따라서 setup 은 **동기**로 유지한다.
  */
 function withHostInit(loader: () => Promise<{ default: Component }>) {
   return () =>
@@ -66,9 +39,6 @@ function withHostInit(loader: () => Promise<{ default: Component }>) {
               () => hostData.value?.projectInfo?.currentProjectID ?? "",
             );
           }
-
-          // 번역은 비동기로 적재하되 렌더를 막지 않는다.
-          void ensureRemoteI18n(hostData);
 
           return () => h(mod.default, attrs, slots);
         },
