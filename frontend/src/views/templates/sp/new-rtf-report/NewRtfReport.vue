@@ -248,7 +248,7 @@
           :size="`${isZoomedDetail ? 0 : 60}%`"
           :max-size="`${isZoomedDetail ? 0 : 70}%`"
           :min-size="`${isZoomedDetail ? 0 : 30}%`"
-          v-show="!isZoomedDetail"
+          :hidden="isZoomedDetail"
         >
           <!--  1280:720에서 그룹패널 보기 짤림을 대응 위해 50으로 적용 -->
           <SplitPane>
@@ -390,7 +390,7 @@ import {
   useProjectInfoStore,
   useTextareaValidation,
 } from "./adapters/stores";
-import { Controller } from "@vmscloud/moz-ui-components";
+import { Controller } from "@vmscloud/moz-ui-components-vue";
 import {
   Button,
   MultiSelect,
@@ -400,7 +400,7 @@ import {
   Select,
   SplitPane,
   TextArea,
-} from "@vmscloud/moz-ui-components";
+} from "@vmscloud/moz-ui-components-vue";
 import {
   IconCircleCheck,
   IconCircleX,

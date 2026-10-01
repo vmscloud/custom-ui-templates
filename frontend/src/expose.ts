@@ -7,9 +7,11 @@
  */
 
 // Module Federation으로 로드될 때 필요한 스타일
-import "@vmscloud/moz-ui-components/style.css";
-import "@vmscloud/moz-wijmo-grid/style.css";
-import "@vmscloud/moz-ui-chart/style.css";
+import "@vmscloud/moz-ui-components-core/styles/default";
+import "@vmscloud/moz-ui-grid-wrapper/style.css";
+import "@vmscloud/moz-ui-grid-vue/style.css";
+import "@vmscloud/moz-ui-chart-vue/style.css";
+import "@/styles/moz-overrides.css";
 
 import { defineComponent, h, inject, type Component } from "vue";
 import { setProjectIdResolver } from "@/api/client";

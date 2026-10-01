@@ -35,15 +35,15 @@
 import { computed, inject } from "vue";
 import { useTranslation } from "i18next-vue";
 import VChart from "vue-echarts";
-import { use } from "@vmscloud/moz-ui-chart/echarts/core";
-import { CanvasRenderer } from "@vmscloud/moz-ui-chart/echarts/renderers";
-import { BarChart } from "@vmscloud/moz-ui-chart/echarts/charts";
+import { use } from "@vmscloud/moz-ui-chart-vue/echarts/core";
+import { CanvasRenderer } from "@vmscloud/moz-ui-chart-vue/echarts/renderers";
+import { BarChart } from "@vmscloud/moz-ui-chart-vue/echarts/charts";
 import {
   GridComponent,
   TitleComponent,
   TooltipComponent,
   LegendComponent,
-} from "@vmscloud/moz-ui-chart/echarts/components";
+} from "@vmscloud/moz-ui-chart-vue/echarts/components";
 import { normalizeRatios, round2, type usePlanDashboard } from "../planDashboard";
 import IconTime from "../assets/IconTime.vue";
 

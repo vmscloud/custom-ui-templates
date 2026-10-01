@@ -1,16 +1,16 @@
 <template>
-  <MozConfigProvider :locale="koKR">
+  <MozComponentLocaleProvider :locale="koKR">
     <DeveloperTool>
       <main class="moz-contents">
         <router-view />
       </main>
     </DeveloperTool>
-  </MozConfigProvider>
+  </MozComponentLocaleProvider>
 </template>
 
 <script setup lang="ts">
 import DeveloperTool from "@/components/DeveloperTool/DeveloperTool.vue";
-import { MozConfigProvider, koKR } from "@vmscloud/moz-ui-components";
+import { MozComponentLocaleProvider, koKR } from "@vmscloud/moz-ui-components-vue";
 </script>
 
 <style scoped>

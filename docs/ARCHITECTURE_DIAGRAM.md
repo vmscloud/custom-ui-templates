@@ -8,10 +8,10 @@ flowchart TB
         direction TB
         DEV_FE["외주 개발자<br/>Frontend 개발<br/>(Vue 3 + TypeScript)"]
         DEV_BE["외주 개발자<br/>Backend 개발<br/>(FastAPI + Python)"]
-        MOZ_UI["moz-ui-components<br/>(@vmscloud/moz-ui-components)<br/>GitHub Packages"]
+        MOZ_UI["moz-ui 패키지<br/>(@vmscloud/moz-ui-components-vue,<br/>moz-ui-grid-vue, moz-ui-chart-vue)<br/>public npm"]
         QM["Query Manager<br/>(쿼리 작성/저장 도구)"]
 
-        DEV_FE -->|"pnpm install<br/>npm 토큰 인증"| MOZ_UI
+        DEV_FE -->|"pnpm install<br/>(토큰 불필요)"| MOZ_UI
         DEV_BE -->|"쿼리 작성 & 저장<br/>→ query_id 발급"| QM
     end
 
@@ -109,7 +109,6 @@ flowchart LR
     subgraph SHARED["Singleton 공유 의존성"]
         S1["vue ^3.4.14"]
         S2["pinia ^2.1.7"]
-        S3["moz-ui-components ^1.0.10"]
         S4["echarts ^5.0.0"]
     end
 
@@ -165,7 +164,7 @@ flowchart LR
 
     subgraph BUILD_FE["FE 빌드 (GitHub Workflow)"]
         FE1["node:22-alpine"]
-        FE2["pnpm install<br/>(npm_token secret)"]
+        FE2["pnpm install<br/>(public npm, 토큰 불필요)"]
         FE3["pnpm build<br/>→ dist/remoteEntry.js"]
         FE4["nginx:alpine<br/>+ dist + nginx.conf"]
         FE1 --> FE2 --> FE3 --> FE4
@@ -256,7 +255,7 @@ graph TB
 
 | 구분 | 설명 |
 |------|------|
-| **FE 라이브러리** | `@vmscloud/moz-ui-components` (GitHub Packages, npm 토큰 필요) |
+| **FE 라이브러리** | `@vmscloud/moz-ui-components-vue`, `@vmscloud/moz-ui-grid-vue`(`MozGrid`), `@vmscloud/moz-ui-chart-vue` (public npm, 토큰 불필요) |
 | **FE-Host 연결** | Module Federation (`remoteEntry.js`), singleton 공유 (vue, pinia) |
 | **Host → Remote 데이터** | `provide/inject` 패턴 (`projectInfo`, `planCycle`, `menu`) |
 | **BE 쿼리 실행** | Query Manager에서 쿼리 저장 → `query_id` 발급 → `QueryExecutorAdapter.execute_query()` |

@@ -16,116 +16,70 @@
   >
     <template #alertInfo="{ props }">
       <div class="bom-map-floating-alert" style="padding: 11px 11px 7px 11px" :data-isExpanded="isExpanded">
-        <ExtendFlexGrid
+        <MozGrid
           v-if="isExpanded"
+          :key="`expanded-${gridKey}`"
           class="bom-map-floating-info-grid"
-          :style="{ width: 'calc(100% - 1px)', height: 'fit-content' }"
-          :alternatingRowStep="0"
-          :itemsSource="userAction.clickAlert.current.node?.data.alerts"
-          :isReadOnly="true"
+          :style="{ width: 'calc(100% - 1px)' }"
+          :height="gridHeight"
+          :coreConfig="expandedCoreConfig"
           :use-tool-box="false"
           :use-extend-footer="false"
-          :initialized="onInitialized"
-          :formatItem="formatItem"
           :name="'bom-map-diagram-floating-alert-info-grid1'"
+          @ready="onReady"
         >
-          <WjFlexGridColumn
-            v-if="userAction.clickAlert.current.node?.data.type === 'bom'"
-            :width="73"
-            binding="oper_id"
-            :header="t('text-oper_id')"
-          />
-          <WjFlexGridColumn :width="380" binding="short_reason" :header="t('text-short_reason')">
-            <WjFlexGridCellTemplate cellType="Cell" v-slot="cell">
-              <div class="bom-map-floating-grid-short-reason-expanded">
-                <div
-                  v-tooltip="{
-                    text: `${cell.item.short_reason}: ${t(`desc-${cell.item.short_type}-${cell.item.short_category}${cell.item.short_category !== 'Factor' ? '-' + cell.item.short_reason : ''}`)}`,
-                    onlyEllipsis: true,
-                  }"
-                >
-                  <span
-                    :style="{
-                      backgroundColor: ALERT_COLOR[cell.item.short_type?.toUpperCase()].FILL,
-                    }"
-                  >
-                    {{ convertToInternationalization(cell.item.short_reason, 'short') }}
-                  </span>
-                  {{
-                    t(
-                      `desc-${cell.item.short_type}-${cell.item.short_category}${cell.item.short_category !== 'Factor' ? '-' + cell.item.short_reason : ''}`,
-                    )
-                  }}
-                </div>
-              </div>
-            </WjFlexGridCellTemplate>
-          </WjFlexGridColumn>
-          <WjFlexGridColumn
-            :width="100"
-            binding="short_qty"
-            :header="t('text-short_qty')"
-            dataType="Number"
-            :format="projectModule.formatGrid('qty')"
-          />
-          <!--          <WjFlexGridColumn-->
-          <!--            v-if="userAction.clickAlert.current.node?.data.type === 'bom'"-->
-          <!--            :width="100"-->
-          <!--            binding="res_id"-->
-          <!--            :header="t('text-res_id')"-->
-          <!--          />-->
-          <WjFlexGridColumn :width="360" binding="short_detail_info" :header="t('text-short_detail_info')">
-            <WjFlexGridCellTemplate cellType="Cell" v-slot="cell">
-              <div class="bom-map-floating-grid-short-detail-info-expanded">
-                {{ cell.item.short_detail_info }}
-              </div>
-            </WjFlexGridCellTemplate>
-          </WjFlexGridColumn>
-        </ExtendFlexGrid>
-        <ExtendFlexGrid
-          v-else
-          class="bom-map-floating-info-grid"
-          style="height: fit-content"
-          :alternatingRowStep="0"
-          :itemsSource="userAction.clickAlert.current.node?.data.alerts"
-          :isReadOnly="true"
-          :use-tool-box="false"
-          :use-extend-footer="false"
-          :initialized="onInitialized"
-          :formatItem="formatItem"
-          :name="'bom-map-diagram-floating-alert-info-grid2'"
-        >
-          <WjFlexGridColumn
-            v-if="userAction.clickAlert.current.node?.data.type === 'bom'"
-            :width="73"
-            binding="oper_id"
-            :header="t('text-oper_id')"
-          />
-          <WjFlexGridColumn :width="120" binding="short_reason" :header="t('text-short_reason')">
-            <WjFlexGridCellTemplate cellType="Cell" v-slot="cell">
-              <div class="bom-map-floating-grid-short-reason">
+          <CellTemplate field="short_reason" #default="{ rowData }">
+            <div class="bom-map-floating-grid-short-reason-expanded">
+              <div
+                v-tooltip="{
+                  text: `${rowData.short_reason}: ${t(shortDescKey(rowData))}`,
+                  onlyEllipsis: true,
+                }"
+              >
                 <span
                   :style="{
-                    backgroundColor: ALERT_COLOR[cell.item.short_type?.toUpperCase()].FILL,
-                  }"
-                  v-tooltip="{
-                    text: `${cell.item.short_reason}: ${t(`desc-${cell.item.short_type}-${cell.item.short_category}${cell.item.short_category !== 'Factor' ? '-' + cell.item.short_reason : ''}`)}`,
-                    onlyEllipsis: false,
+                    backgroundColor: alertFill(rowData),
                   }"
                 >
-                  {{ convertToInternationalization(cell.item.short_reason, 'short') }}
+                  {{ convertToInternationalization(rowData.short_reason, 'short') }}
                 </span>
+                {{ t(shortDescKey(rowData)) }}
               </div>
-            </WjFlexGridCellTemplate>
-          </WjFlexGridColumn>
-          <WjFlexGridColumn :width="100" binding="short_qty" :header="t('text-short_qty')" />
-          <!--          <WjFlexGridColumn-->
-          <!--            v-if="userAction.clickAlert.current.node?.data.type === 'bom'"-->
-          <!--            :width="100"-->
-          <!--            binding="res_id"-->
-          <!--            :header="t('text-res_id')"-->
-          <!--          />-->
-          <WjFlexGridColumn :width="470" binding="short_detail_info" :header="t('text-short_detail_info')" />
-        </ExtendFlexGrid>
+            </div>
+          </CellTemplate>
+          <CellTemplate field="short_detail_info" #default="{ rowData }">
+            <div class="bom-map-floating-grid-short-detail-info-expanded">
+              {{ rowData.short_detail_info }}
+            </div>
+          </CellTemplate>
+        </MozGrid>
+        <MozGrid
+          v-else
+          :key="`collapsed-${gridKey}`"
+          class="bom-map-floating-info-grid"
+          :height="gridHeight"
+          :coreConfig="collapsedCoreConfig"
+          :use-tool-box="false"
+          :use-extend-footer="false"
+          :name="'bom-map-diagram-floating-alert-info-grid2'"
+          @ready="onReady"
+        >
+          <CellTemplate field="short_reason" #default="{ rowData }">
+            <div class="bom-map-floating-grid-short-reason">
+              <span
+                :style="{
+                  backgroundColor: alertFill(rowData),
+                }"
+                v-tooltip="{
+                  text: `${rowData.short_reason}: ${t(shortDescKey(rowData))}`,
+                  onlyEllipsis: false,
+                }"
+              >
+                {{ convertToInternationalization(rowData.short_reason, 'short') }}
+              </span>
+            </div>
+          </CellTemplate>
+        </MozGrid>
         <div
           @click="onClickExpandHandler"
           :class="{
@@ -141,15 +95,13 @@
 </template>
 <script setup lang="ts">
 import { useProjectInfoStore } from '../../../adapters/stores';
-import { AllowMerging, FlexGrid } from '@vmscloud/moz-wijmo-grid/wijmo.grid';
-import { WjFlexGridCellTemplate, WjFlexGridColumn } from '@vmscloud/moz-wijmo-grid/wijmo.vue2.grid';
-import { ExtendFlexGrid } from '@vmscloud/moz-wijmo-grid';
-import { ExtendGrid } from '@vmscloud/moz-wijmo-grid';
-import { isDataCell } from '@vmscloud/moz-wijmo-grid/utils';
+import { ROW_KEY, withRowKey } from '../../../adapters/utils';
+import { CellTemplate, MozGrid } from '@vmscloud/moz-ui-grid-vue';
+import type { FieldDef, GridChrome, MozGridCoreProps, PureSheet } from '@vmscloud/moz-ui-grid-vue';
 import { convertToInternationalization } from '@moz-shared/utils';
 import { Diagram } from 'gojs';
 import { useTranslation } from 'i18next-vue';
-import { inject, ref, toRefs } from 'vue';
+import { computed, inject, ref, toRefs } from 'vue';
 import { IBomMapIntefaceQuery } from '../BomMapInterface';
 import { ALERT_COLOR } from '../common/BomMapConstants';
 import BomMapDiagramFloating from '../common/BomMapDiagramFloating.vue';
@@ -163,31 +115,74 @@ const { getDiagram } = toRefs(props);
 const { t } = useTranslation(); // 다국어
 const { userAction } = inject('useBomMapInterface') as IBomMapIntefaceQuery;
 const contextRef = ref();
-const grid = ref<FlexGrid | null>(null); // Wijmo grid
-const extendGrid = ref<ExtendGrid | null>(null); // Wijmo grid 확장 기능
 const isExpanded = ref(true);
-const onInitialized = (flexGrid: FlexGrid, _extendGrid: ExtendGrid) => {
-  grid.value = flexGrid;
-  extendGrid.value = _extendGrid;
 
-  grid.value.autoRowHeights = true;
-  grid.value.allowMerging = AllowMerging.All;
-  grid.value.columns[0].allowMerging = true;
+const alerts = computed<any[]>(() => userAction.value.clickAlert.current.node?.data.alerts ?? []);
+const isBomNode = computed(() => userAction.value.clickAlert.current.node?.data.type === 'bom');
+// 노드 종류가 바뀌면 그리드를 다시 만든다 (컬럼 구성과 병합 설정이 노드 종류에 따라 달라짐)
+const gridKey = computed(() => (isBomNode.value ? 'bom' : 'buffer'));
+
+// 옛 그리드의 fit-content 높이를 대신해 행 수로 높이를 정한다
+const ROW_HEIGHT = { expanded: 56, collapsed: 36 };
+const HEADER_HEIGHT = 32;
+const gridHeight = computed(
+  () =>
+    HEADER_HEIGHT +
+    2 +
+    Math.max(alerts.value.length, 1) * (isExpanded.value ? ROW_HEIGHT.expanded : ROW_HEIGHT.collapsed),
+);
+
+const shortDescKey = (item: any) =>
+  `desc-${item.short_type}-${item.short_category}${item.short_category !== 'Factor' ? '-' + item.short_reason : ''}`;
+
+const alertFill = (item: any) => (ALERT_COLOR as any)[item.short_type?.toUpperCase()]?.FILL;
+
+const emptyCellAttributes = ({ value, columnId }: { value: unknown; columnId: string }) => {
+  const classes: string[] = [];
+  if (columnId === 'short_reason') classes.push('short-reason-height');
+  if (String(value ?? '').trim() === '') classes.push('bom-map-empty-status');
+  return classes.length ? { class: classes.join(' ') } : undefined;
+};
+
+const buildCoreConfig = (expanded: boolean): MozGridCoreProps => {
+  const qtyMask = projectModule.maskGrid('qty');
+  const operFields: FieldDef[] = isBomNode.value
+    ? [{ id: 'oper_id', header: t('text-oper_id'), dataType: 'string', width: 73 }]
+    : [];
+  const fields: FieldDef[] = [
+    ...operFields,
+    { id: 'short_reason', header: t('text-short_reason'), dataType: 'string', width: expanded ? 380 : 120 },
+    {
+      id: 'short_qty',
+      header: t('text-short_qty'),
+      dataType: 'number',
+      width: 100,
+      ...(expanded ? { mask: qtyMask } : {}),
+    },
+    // { id: 'res_id', header: t('text-res_id'), width: 100 },  (bom 노드만)
+    { id: 'short_detail_info', header: t('text-short_detail_info'), dataType: 'string', width: expanded ? 360 : 470 },
+  ];
+
+  return {
+    mode: 'flat',
+    keyFields: [ROW_KEY],
+    data: withRowKey(alerts.value),
+    headerHeight: HEADER_HEIGHT,
+    rowHeight: expanded ? ROW_HEIGHT.expanded : ROW_HEIGHT.collapsed,
+    dynamicRowHeights: expanded,
+    fields: fields.map((field) => ({ ...field, sortable: false, cellAttributes: emptyCellAttributes })),
+  };
+};
+
+const expandedCoreConfig = computed(() => buildCoreConfig(true));
+const collapsedCoreConfig = computed(() => buildCoreConfig(false));
+
+const onReady = (grid: PureSheet, _chrome: GridChrome) => {
+  // 첫 컬럼(공정)의 같은 값을 세로로 병합한다
+  if (isBomNode.value) grid.setMergeConfig({ type: 'content', columns: ['oper_id'] });
 };
 
 const projectModule = useProjectInfoStore();
-
-const formatItem = (s: FlexGrid, e: any) => {
-  if (!isDataCell(s, e)) return;
-
-  if (e?.getColumn()?.binding === 'short_reason') {
-    e.cell.classList.add('short-reason-height');
-  }
-
-  if (e.cell.innerText.trim() === '') {
-    e.cell.classList.add('bom-map-empty-status');
-  }
-};
 
 const onClickExpandHandler = () => {
   isExpanded.value = !isExpanded.value;
@@ -208,23 +203,11 @@ defineExpose({ context: contextRef });
 .bom-map-floating-alert[data-isExpanded='false'] {
   z-index: 3 !important;
 
-  & .wj-cell {
-    width: 100%;
+  & .ps-cell {
     overflow: hidden;
 
     &:has(.bom-map-floating-grid-short-reason) {
       padding: 0;
-    }
-
-    & > div:has(div) {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-
-      & > div:has(div) {
-        width: 100%;
-        height: 100%;
-      }
     }
   }
 }
@@ -297,10 +280,8 @@ defineExpose({ context: contextRef });
 }
 
 .bom-map-floating-info-grid {
-  .wj-cell.short-reason-height {
-    // Wijmo의 글자수 계산을 통한 height와 css의 fit-content가 일치하지 않는 경우가 있음 ==> 운없는 높이 :(
-    // 근데 이걸 빼버리면 처음에 높이 계산이 제대로 안됨... 좋은 방법 있으면 코드 수정 바랍니다.
-    height: fit-content !important;
+  .ps-cell.short-reason-height {
+    white-space: normal;
   }
 }
 </style>

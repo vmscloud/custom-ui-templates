@@ -1,7 +1,7 @@
 /**
- * Runtime shim for @vmscloud/moz-wijmo-grid 의 Excel 다운로드 유틸리티.
+ * 대용량 Excel 다운로드 유틸리티.
  *
- * 원본 aps monorepo 의 libraries/moz-wijmo-grid/src/store/excelStore.ts 와
+ * 원본 APS 의 레거시 그리드 excelStore 와
  * 동일한 철학:
  *   "백엔드가 xlsx 를 생성해 스트리밍, 프론트는 받아서 saveAs" 만 수행.
  *
@@ -100,23 +100,25 @@ export const downloadBigData = async (
   return { queued: true };
 };
 
+/** createColumnMapForExport 가 읽는 필드 정의 (MozGrid coreConfig.fields 항목과 호환) */
+export interface ExportField {
+  id: string;
+  header?: string;
+  hidden?: boolean;
+  visible?: boolean;
+}
+
 /**
- * createColumnMapForExport — wijmo FlexGrid 인스턴스에서 컬럼 바인딩/헤더 맵 생성.
- *   원본 excelStoreSetup().createColumnMapForExport 와 동일한 형태를 반환.
+ * createColumnMapForExport — 그리드 필드 정의에서 컬럼 id/헤더 맵 생성.
+ *   원본 excelStoreSetup().createColumnMapForExport 와 같은 형태({ id: header })를 반환한다.
+ *   MozGrid 는 coreConfig.fields 를 그대로 넘기면 된다.
  */
-export const createColumnMapForExport = (grid: any): ColumnMap => {
+export const createColumnMapForExport = (fields: readonly ExportField[] | undefined): ColumnMap => {
   const map: ColumnMap = {};
-  const columns = grid?.columns;
-  if (!columns) return map;
-  const len = typeof columns.length === "number" ? columns.length : 0;
-  for (let i = 0; i < len; i++) {
-    const col = columns[i];
-    if (!col) continue;
-    // visible === false 면 export 제외 (원본 동작과 일치)
-    if (col.visible === false) continue;
-    const binding: string | undefined = col.binding;
-    if (!binding) continue;
-    map[binding] = col.header ?? binding;
+  for (const field of fields ?? []) {
+    // 숨긴 컬럼은 export 제외 (원본 동작과 일치). MozGrid 필드는 hidden, 런타임 컬럼 정보는 visible 로 표시한다.
+    if (!field?.id || field.hidden === true || field.visible === false) continue;
+    map[field.id] = field.header ?? field.id;
   }
   return map;
 };

@@ -1,6 +1,8 @@
 # 08. UI 패턴
 
-자주 반복되는 화면 구성 패턴을 모아둔 챕터입니다. 각 패턴은 `@vmscloud/moz-ui-components` / `@vmscloud/moz-wijmo-grid` 사용을 전제로 합니다.
+자주 반복되는 화면 구성 패턴을 모아둔 챕터입니다. 각 패턴은 `@vmscloud/moz-ui-components-vue` / `@vmscloud/moz-ui-grid-vue`(`MozGrid`) 사용을 전제로 합니다.
+
+> `moz-ui-components-vue` 의 props 타입은 `any` 라 `vue-tsc` 가 prop 오류를 잡지 못합니다. 낯선 prop 은 `node_modules/@vmscloud/moz-ui-components-core/dist/components/<컴포넌트>/*.core.d.ts` 에서 확인하세요.
 
 ## 상단 필터 바 (Controller)
 
@@ -34,95 +36,124 @@
 </Controller>
 ```
 
-## 그리드 (ExtendFlexGrid)
+## 그리드 (MozGrid)
+
+컬럼은 템플릿 태그가 아니라 `coreConfig.fields` 배열로 선언합니다. 작성 기준 예제는 `frontend/src/views/templates/grid/ProductGrid.vue`.
 
 ```vue
-<ExtendFlexGrid
-  style="width: 100%; height: 100%"
-  :id="'my-page-grid-id'"
-  :name="'my-page-grid'"
-  :use-preset="true"
-  :auto-generate-columns="false"
-  :items-source="rows"
-  :is-read-only="true"
+<MozGrid
+  name="my-page-grid"
+  :coreConfig="coreConfig"
+  height="100%"
   :loading="isPending"
-  :empty-state="{ isLoading: isPending }"
-  :use-tool-box="true"
-  :is-tool-box-expanded="false"
->
-  <WjFlexGridColumn binding="work_order_id"
-                    :header="t('text-work_order_id')" :width="160" :is-required="true" />
-  <WjFlexGridColumn binding="qty" :header="t('text-qty')" :width="120"
-                    dataType="Number" format="n2" align="right" />
-  <WjFlexGridColumn binding="due_date" :header="t('text-due_date')" :width="120"
-                    dataType="Date" format="yyyy-MM-dd" align="center" />
-
-  <!-- 동적 컬럼 (백엔드에서 메타데이터 내려줄 때) -->
-  <WjFlexGridColumn
-    v-for="col in propColumns"
-    :key="col.binding"
-    :binding="col.binding"
-    :header="col.header"
-    :dataType="col.dataType"
-    :width="col.width"
-    :align="col.align"
-  />
-</ExtendFlexGrid>
+  :useToolBox="true"
+  @ready="onGridReady"
+/>
 ```
+
+```ts
+import { MozGrid } from "@vmscloud/moz-ui-grid-vue";
+import type { GridChrome, MozGridCoreProps, PureSheet } from "@vmscloud/moz-ui-grid-vue";
+
+const coreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: ["work_order_id"],
+  data: rows.value,
+  fields: [
+    { id: "work_order_id", header: t("text-work_order_id"), dataType: "string", width: 160 },
+    { id: "qty", header: t("text-qty"), dataType: "number", width: 120,
+      mask: { type: "numeric", pattern: "#,##0.00" } },
+    { id: "due_date", header: t("text-due_date"), dataType: "date", width: 120, align: "center",
+      mask: { type: "date", pattern: "YYYY-MM-DD" } },
+
+    // 동적 컬럼 (백엔드에서 메타데이터 내려줄 때)
+    ...propColumns.value.map((col) => ({
+      id: col.binding,
+      header: col.header,
+      dataType: col.dataType,
+      width: col.width,
+      align: col.align,
+    })),
+  ],
+}));
+
+// 코어 그리드(PureSheet)와 래퍼(GridChrome)를 받는다. 필터·선택·변경 추적은 grid 로 다룬다.
+const grid = shallowRef<PureSheet | null>(null);
+const onGridReady = (g: PureSheet, _chrome: GridChrome) => { grid.value = g; };
+```
+
+### 행 키 (`keyFields`)
+
+MozGrid 는 `keyFields` 로 행을 식별하며 **키가 중복되면 오류를 냅니다.** 서버 데이터에 고유 키가 없으면 행 순번 키를 붙여 씁니다.
+
+```ts
+const coreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: ["_rowKey"],
+  data: rows.value.map((row, idx) => ({ ...row, _rowKey: idx })),
+  fields: [ /* ... */ ],
+}));
+```
+
+`new-rtf-report/adapters/utils.ts` 의 `withRowKey` · `ROW_KEY` 가 같은 일을 합니다.
 
 ### 포맷 규칙
 
+숫자/날짜 포맷은 필드의 `mask` 로 지정합니다 (`format="n0"` 같은 문자열 포맷은 쓰지 않음).
 
-| 타입     | 권장 format             |
-| ------ | --------------------- |
-| 정수     | `n0`                  |
-| 소수 2자리 | `n2`                  |
-| 퍼센트    | `p2` (곱해서 100)        |
-| 날짜     | `yyyy-MM-dd`          |
-| 날짜+시간  | `yyyy-MM-dd HH:mm:ss` |
+
+| 타입     | 권장 mask                                                  |
+| ------ | -------------------------------------------------------- |
+| 정수     | `{ type: "numeric", pattern: "#,##0" }`                  |
+| 소수 2자리 | `{ type: "numeric", pattern: "#,##0.00" }`               |
+| 퍼센트    | `{ type: "function", formatter: (v) => ... }` 로 직접 변환    |
+| 날짜     | `{ type: "date", pattern: "YYYY-MM-DD" }`                |
+| 날짜+시간  | `{ type: "date", pattern: "YYYY-MM-DD HH:mm:ss" }`       |
+| 그 외 규칙 | `{ type: "function", formatter: formatQty }`             |
 
 
 **원칙**: 소수점 반올림은 그리드에서 작업하세요. 백엔드는 raw 숫자 그대로 내려주는 것이 누적 오차를 피하는 길입니다.
 
-## 피벗 그리드 (ExtendPivotGrid)
+## 피벗 그리드 (MozGrid pivot 모드)
+
+같은 `MozGrid` 에 `mode: "pivot"` 을 줍니다. `fields` 대신 `rowFields`·`columnFields`·`valueFields` 를 객체로 선언합니다.
 
 ```vue
-<ExtendPivotGrid
-  :name="'my-page-pivot'"
-  :id="'my-page-pivot-id'"
-  :items-source="pivotDataSource"
-  :engine-option="{
-    fields,
-    rowFields,
-    columnFields,
-    valueFields,
-    showRowTotals: dataState.showRowTotals,
-    showColumnTotals: dataState.showColumnTotals,
-    showZeros: dataState.showZeros,
-    totalsBeforeData: dataState.totalsBeforeData,
-  }"
-  :formatItem="pivotFormatItem"
+<MozGrid
+  name="my-page-pivot"
+  :coreConfig="pivotConfig"
+  height="100%"
   :loading="isPending"
-  :empty-state="{ isLoading: isPending }"
-  :use-pivot-chart="false"
-  :use-tool-box="false"
+  :useToolBox="false"
+  @ready="onPivotReady"
+  @cell:click="onPivotCellClick"
 />
 ```
 
-필드 정의:
-
 ```ts
-const fields = computed(() => ([
-  { binding: "oper_group_id", header: t("text-oper_group_id"), dataType: DataType.String, align: "left" },
-  { binding: "item_group_id", header: t("text-item_group_id"), dataType: DataType.String, align: "left" },
-  { binding: "date",          header: t("text-date"),          dataType: DataType.String, align: "left" },
-  { binding: "qty",           header: t("text-sum"),           dataType: DataType.Number, align: "right", format: "n2" },
-]));
-
-const rowFields    = computed(() => [t("text-oper_group_id"), t("text-item_group_id")]);
-const columnFields = ref([t("text-month"), t("text-week"), t("text-date")]);
-const valueFields  = ref([t("text-sum")]);
+const pivotConfig = computed<MozGridCoreProps>(() => ({
+  mode: "pivot",
+  data: pivotDataSource.value,
+  rowFields: [
+    { field: "oper_group_id", header: t("text-oper_group_id"), dataType: "string" },
+    { field: "item_group_id", header: t("text-item_group_id"), dataType: "string" },
+  ],
+  columnFields: [
+    { field: "month", header: t("text-month"), dataType: "string" },
+    { field: "week",  header: t("text-week"),  dataType: "string" },
+    { field: "date",  header: t("text-date"),  dataType: "string" },
+  ],
+  valueFields: [
+    { field: "qty", header: t("text-sum"), dataType: "number", aggregate: "sum", align: "right",
+      mask: { type: "numeric", pattern: "#,##0.00" } },
+  ],
+  showRowGrandTotals: dataState.showRowTotals,
+  showColumnGrandTotals: dataState.showColumnTotals,
+  showZeros: dataState.showZeros,
+}));
 ```
+
+셀 스타일은 `valueFields[].cellAttributes` 로 지정합니다. 실제 예는 `pe/re-execute-plan/ReExecutePlan.vue`, `dm/DemandDistributionSub.vue`.
 
 ## 팝업 (Popup)
 
@@ -173,51 +204,63 @@ const valueFields  = ref([t("text-sum")]);
 ```vue
 <SplitPane horizontal>
   <Pane size="60%" min-size="30%">
-    <ExtendPivotGrid ... />
+    <MozGrid :coreConfig="pivotConfig" ... />
   </Pane>
-  <Pane size="40%" min-size="30%">
-    <ExtendFlexGrid ... />
+  <Pane size="40%" min-size="30%" :hidden="isZoomed">
+    <MozGrid :coreConfig="gridConfig" ... />
   </Pane>
 </SplitPane>
 ```
 
+- `Pane` 을 숨길 때는 **`:hidden`** 을 씁니다. `SplitPane` 은 `Pane` 에 붙인 `v-show` 를 무시합니다.
+
 ## 빈 상태 / 로딩
 
 ```vue
-<ExtendFlexGrid
-  :items-source="rows"
+<MozGrid
+  :coreConfig="coreConfig"
   :loading="isPending"
-  :empty-state="{ isLoading: isPending }"
+  :emptyState="{ useImg: false, contentMsg: t('text-no_data') }"
 />
 ```
 
-- `empty-state` 는 행이 없을 때 표시되는 placeholder를 관리합니다.
-- 로딩 중에는 `isLoading: true` 로 스피너 상태.
+- `loading` 은 로딩 오버레이를 표시합니다.
+- `emptyState` 는 행이 없을 때 표시되는 placeholder 의 문구·이미지를 바꿉니다. 지정하지 않으면 기본 문구·이미지가 나옵니다.
 
 ## 필터-그리드 연동 (피벗 셀 클릭 시 하단 그리드 필터링)
 
 ```ts
 const selectedDemandList = shallowRef<string[]>([]);
 const isPivotCellSelected = ref(false);
+const demandGrid = shallowRef<PureSheet | null>(null);  // 하단 그리드 @ready 에서 저장
 
-const applyDemandFilter = () => {
-  const cv = grid.value.collectionView;
-  if (!isPivotCellSelected.value || !selectedDemandList.value.length) {
-    cv.filter = null;
-  } else {
-    cv.filter = (item: any) => selectedDemandList.value.includes(item.demand_id);
-  }
-  cv.refresh();
+// 사용자가 건 컬럼 필터와 섞이지 않도록 별도 그룹 키로 건다.
+const PIVOT_SELECTION_FILTER_KEY = "pivotSelection";
+
+const applyDemandFilter = async () => {
+  const grid = demandGrid.value;
+  if (!grid) return;
+  const ids = selectedDemandList.value;
+  await grid.setFilterGroup(
+    PIVOT_SELECTION_FILTER_KEY,
+    isPivotCellSelected.value && ids.length
+      ? {
+          type: "values",
+          priority: 0,
+          applied: true,
+          states: [{ id: "demand_id", operator: "in", filterValue: ids, sequence: 0 }],
+        }
+      : null,  // null 이면 그룹 해제
+  );
 };
 
-const onPivotCellClick = (e: MouseEvent) => {
-  const hit = pivot.value.hitTest(e);
-  if (hit.cellType === 1) {  // 1 = data cell
-    // 백엔드 응답의 TOTAL row 에 있는 demandIDs 를 꺼내 selectedDemandList 에 세팅
-    ...
-    isPivotCellSelected.value = true;
-    applyDemandFilter();
-  }
+const onPivotCellClick = (payload: unknown) => {
+  const row = (payload as { row?: Record<string, any> } | undefined)?.row;
+  if (!row || row.__pivotType !== "data") return;  // 데이터 셀만
+  // 백엔드 응답의 TOTAL row 에 있는 demandIDs 를 꺼내 selectedDemandList 에 세팅
+  ...
+  isPivotCellSelected.value = true;
+  applyDemandFilter();
 };
 ```
 
@@ -250,7 +293,7 @@ import { IconLineEdit, IconReExecute, IconDataCheck, IconResultCheck } from "@mo
 ## 스타일 / 테마
 
 - 화면 단위 `.vue` 파일에서 `<style scoped lang="scss">` 로 제한.
-- 색상 토큰을 재사용하려면 `@vmscloud/moz-ui-components` 의 SCSS 변수/믹스인이 있는 경우 참조. 공유 스타일은 `frontend/src/styles/` 같은 별도 위치에 두는 패턴도 가능.
+- 색상 토큰을 재사용하려면 `@vmscloud/moz-ui-components-core/styles/default` 가 정의하는 `--moz-color-*` 등 CSS 변수를 참조. 공유 스타일은 `frontend/src/styles/` 같은 별도 위치에 두는 패턴도 가능.
 
 ## 권장 폴더 구성 복습
 

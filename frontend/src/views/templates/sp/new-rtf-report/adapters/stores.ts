@@ -8,6 +8,7 @@ import { api, getProjectId } from "@/api/client";
 import { useHostData } from "@/composables/useHostStores";
 import { computed, effectScope, reactive, ref, watch } from "vue";
 import dayjs from "dayjs";
+import type { MaskConfig } from "@vmscloud/moz-ui-grid-vue";
 
 // ── Base URLs ──
 const CUSTOM_BASE = () => `/api/custom/backend/${getProjectId()}`;
@@ -291,7 +292,28 @@ export function useProjectInfoStore() {
     ),
 
     /**
-     * formatGrid — Wijmo 그리드 컬럼 포맷 문자열 반환
+     * maskGrid — MozGrid 필드 mask 반환 (formatGrid 와 같은 type 키를 쓴다)
+     */
+    maskGrid(type: string): MaskConfig | undefined {
+      switch (type) {
+        case "qty":
+        case "aggregate":
+          return { type: "numeric", pattern: "#,##0.##" };
+        case "ratio":
+          return { type: "numeric", pattern: "#,##0.#", suffix: "%" };
+        case "priority":
+          return { type: "numeric", pattern: "0" };
+        case "date":
+          return { type: "date", pattern: dateFormat.value };
+        case "dateTime":
+          return { type: "date", pattern: `${dateFormat.value} HH:mm:ss` };
+        default:
+          return undefined;
+      }
+    },
+
+    /**
+     * formatGrid — 엑셀 다운로드 column_format 용 포맷 문자열 반환
      */
     formatGrid(type: string): string {
       switch (type) {

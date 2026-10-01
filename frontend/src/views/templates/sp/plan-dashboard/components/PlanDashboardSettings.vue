@@ -49,62 +49,32 @@
               />
             </div>
           </div>
-          <ExtendFlexGrid
+          <MozGrid
             style="flex: 1"
-            :alternatingRowStep="0"
             class="rtf-summary-grid"
-            :itemsSource="matrixRows"
+            :coreConfig="rtfGridConfig"
             :use-tool-box="false"
             :use-extend-footer="false"
             :useContextMenu="false"
-            :initialized="onRtfGridInitialized"
-            :formatItem="rtfGridFormatItem"
+            @ready="onRtfGridReady"
           >
-            <WjFlexGridColumn
-              binding="category"
-              :header="t('text-type')"
-              :width="125"
-              :isReadOnly="true"
-              align="center"
-            />
-            <WjFlexGridColumn
-              binding="planType"
-              :header="t('text-plan_type')"
-              :width="130"
-              :isReadOnly="true"
-              align="center"
-            />
-            <WjFlexGridColumn
-              binding="apply_early"
-              header="Early"
-              :width="120"
-              align="center"
-            />
-            <WjFlexGridColumn
-              binding="apply_on_time"
-              header="On-time"
-              :width="120"
-              align="center"
-            />
-            <WjFlexGridColumn
-              binding="apply_late"
-              header="Late"
-              :width="120"
-              align="center"
-            />
-            <WjFlexGridColumn
-              binding="apply_short"
-              header="Short"
-              :width="120"
-              align="center"
-            />
-            <WjFlexGridColumn
-              binding="apply_excluded"
-              :header="t('text-excluded')"
-              :width="120"
-              align="center"
-            />
-          </ExtendFlexGrid>
+            <CellTemplate
+              v-for="binding in radioColumns"
+              :key="binding"
+              :field="binding"
+              #default="{ rowData }"
+            >
+              <label class="custom-radio">
+                <input
+                  type="radio"
+                  :name="`apply-radio-${rowData.category}-${rowData.planType}`"
+                  :checked="rowData.value === valueMap[binding]"
+                  @change="onRtfRadioChange(rowData.planType as string, binding)"
+                />
+                <span></span>
+              </label>
+            </CellTemplate>
+          </MozGrid>
         </div>
       </template>
 
@@ -374,16 +344,9 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from "vue";
 import { useTranslation } from "i18next-vue";
-import { Popup, Radio, Select, Tab } from "@vmscloud/moz-ui-components";
-import { ExtendFlexGrid } from "@vmscloud/moz-wijmo-grid";
-import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
-import {
-  type FlexGrid,
-  CellType,
-  SelectionMode,
-  AllowMerging,
-} from "@vmscloud/moz-wijmo-grid/wijmo.grid";
-import type { FormatItemEventArgs } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
+import { Popup, Radio, Select, Tab } from "@vmscloud/moz-ui-components-vue";
+import { CellTemplate, MozGrid } from "@vmscloud/moz-ui-grid-vue";
+import type { MozGridCoreProps, PureSheet } from "@vmscloud/moz-ui-grid-vue";
 import { fetchSettings, saveSettings } from "../planDashboard";
 
 const props = defineProps<{
@@ -496,7 +459,7 @@ const moveOperGroupOptionDown = () => {
 };
 
 // Track original values for change detection
-// === RTF Grid: formatItem + initialized (원본 동일) ===
+// === RTF Grid: 라디오 셀 + 구분 컬럼 병합 ===
 
 const radioColumns = [
   "apply_early",
@@ -513,37 +476,40 @@ const valueMap: Record<string, string> = {
   apply_excluded: "EXCLUDED",
 };
 
-const rtfGridFormatItem = (s: FlexGrid, e: FormatItemEventArgs) => {
-  if (e.panel.cellType === CellType.Cell) {
-    const col = s.columns[e.col];
-    const binding = col?.binding || "";
-    if (radioColumns.includes(binding)) {
-      const row = s.rows[e.row].dataItem;
-      const checked = row.value === valueMap[binding];
-      e.cell.innerHTML = `
-        <label class="custom-radio">
-          <input type="radio" name="apply-radio-${row.category}-${row.planType}" ${checked ? "checked" : ""} />
-          <span></span>
-        </label>
-      `;
-      e.cell.querySelector("input")?.addEventListener("change", () => {
-        // 해당 행의 value를 변경
-        row.value = valueMap[binding];
-        // 그리드 갱신
-        s.invalidate();
-      });
-    }
-  }
-  // planType 컬럼 오른쪽 경계선
-  if (s.columns[e.col]?.binding === "planType") {
-    e.cell.classList.add("rtf-grid-border-right");
-  }
+// matrixRows 가 바뀌면 data 가 다시 만들어져 라디오 체크 상태가 갱신된다.
+const rtfGridConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: ["planType"],
+  cellSelection: { mode: "none" },
+  data: matrixRows.map((row) => ({ ...row })),
+  fields: [
+    { id: "category", header: t("text-type"), dataType: "string", width: 125, readonly: true, align: "center" },
+    // planType 컬럼 오른쪽 경계선
+    {
+      id: "planType",
+      header: t("text-plan_type"),
+      dataType: "string",
+      width: 130,
+      readonly: true,
+      align: "center",
+      cellAttributes: { class: "rtf-grid-border-right" },
+    },
+    { id: "apply_early", header: "Early", dataType: "string", width: 120, align: "center" },
+    { id: "apply_on_time", header: "On-time", dataType: "string", width: 120, align: "center" },
+    { id: "apply_late", header: "Late", dataType: "string", width: 120, align: "center" },
+    { id: "apply_short", header: "Short", dataType: "string", width: 120, align: "center" },
+    { id: "apply_excluded", header: t("text-excluded"), dataType: "string", width: 120, align: "center" },
+  ],
+}));
+
+const onRtfRadioChange = (planType: string, binding: string) => {
+  // 해당 행의 value를 변경
+  const row = matrixRows.find((r) => r.planType === planType);
+  if (row) row.value = valueMap[binding];
 };
 
-const onRtfGridInitialized = (flexGrid: FlexGrid) => {
-  flexGrid.selectionMode = SelectionMode.None;
-  flexGrid.allowMerging = AllowMerging.Cells;
-  flexGrid.columns[0].allowMerging = true;
+const onRtfGridReady = (grid: PureSheet) => {
+  grid.setMergeConfig({ type: "content", columns: ["category"] });
 };
 
 // === 원본 설정 추적 ===

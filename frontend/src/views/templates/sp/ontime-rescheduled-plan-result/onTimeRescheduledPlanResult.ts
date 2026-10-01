@@ -175,6 +175,14 @@ export interface FreezeExecuteParams {
   description: string;
 }
 
+// ===== Grid Helpers =====
+
+/** 그리드 행 식별 키 — 응답 데이터에 고유 키가 없어 행 순번을 부여한다 */
+export const GRID_ROW_KEY = "__rowKey";
+
+export const withRowKey = <T extends object>(rows: T[] | null | undefined) =>
+  (rows ?? []).map((row, index) => ({ ...row, [GRID_ROW_KEY]: index }));
+
 // ===== API Functions =====
 
 // --- Replan RTF APIs ---

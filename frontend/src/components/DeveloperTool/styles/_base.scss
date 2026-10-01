@@ -2,12 +2,16 @@
 // Base Styles - Aleatorik UI APS
 // =============================================================================
 
+// moz-ui 컴포넌트 스타일은 @layer moz 에 있다. 레이어 밖 규칙은 우선순위와 무관하게 레이어 안 규칙을 이기므로,
+// 이 리셋은 reset 레이어에 넣는다. reset < moz 순서는 src/styles/layer-order.css 가 가장 먼저 선언한다.
+
 // -----------------------------------------------------------------------------
 // 1. External Font Imports
 // -----------------------------------------------------------------------------
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100;300;400;500;700;900&family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap');
 
+@layer reset {
 // -----------------------------------------------------------------------------
 // 2. Local Font Definitions
 // -----------------------------------------------------------------------------
@@ -511,4 +515,5 @@ button {
   padding-top: 0;
   overflow: auto;
   overflow-x: hidden;
+}
 }

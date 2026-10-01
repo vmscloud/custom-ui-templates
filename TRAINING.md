@@ -82,7 +82,7 @@ custom-ui-templates/
 │       │   └── useHostStores.ts  ← inject 기반 호스트 데이터 접근
 │       ├── components/
 │       │   └── DeveloperTool/    ← 개발 모드 호스트 시뮬레이터
-│       ├── shims/                ← @vmscloud 내부 경로 심
+│       ├── shims/                ← 호스트 내부 경로 심 (moz-shared) · 그리드 유틸 (grid)
 │       ├── plugins/
 │       │   └── i18n.ts           ← 다국어 (ko/en/zh/jp)
 │       ├── router/
@@ -90,7 +90,7 @@ custom-ui-templates/
 │       └── views/templates/      ← ★ 비즈니스 화면들
 │           ├── basic/            ← 예제 (ItemMaster, HostInfo)
 │           ├── chart/            ← ECharts 예제
-│           ├── grid/             ← Wijmo 그리드 예제
+│           ├── grid/             ← MozGrid 예제 (ProductGrid — 그리드 작성 기준)
 │           ├── dm/               ← 수요 관련
 │           ├── pe/               ← 계획 재실행
 │           └── sp/               ← 스케줄링/계획 (메인 도메인)
@@ -396,9 +396,9 @@ views/templates/sp/rtf-report/
 
 | 패키지                           | 역할                                        |
 | ----------------------------- | ----------------------------------------- |
-| `@vmscloud/moz-ui-components` | UI 컴포넌트 (Controller, Popup, EmptyState 등) |
-| `@vmscloud/moz-wijmo-grid`    | Wijmo 기반 ExtendFlexGrid                   |
-| `@vmscloud/moz-ui-chart`      | ECharts 차트 래퍼                             |
+| `@vmscloud/moz-ui-components-vue` | UI 컴포넌트 (Controller, Popup, EmptyState 등) |
+| `@vmscloud/moz-ui-grid-vue`       | 그리드 `MozGrid` (일반·피벗 공용)              |
+| `@vmscloud/moz-ui-chart-vue`      | ECharts 차트 래퍼                             |
 | `@tanstack/vue-query`         | 서버 상태 관리                                  |
 | `gojs`                        | BomMap 다이어그램                              |
 | `dayjs`                       | 날짜 처리                                     |
@@ -413,9 +413,9 @@ APS 호스트 코드의 내부 경로를 리모트에서도 사용할 수 있도
 // vite.config.ts resolve.alias
 "@moz-shared/icons"              → src/shims/moz-shared/icons/
 "@moz-shared/utils"              → src/shims/moz-shared/utils.ts
-"@vmscloud/moz-wijmo-grid/utils" → src/shims/moz-wijmo-grid/utils.ts
-"@vmscloud/moz-wijmo-grid/store" → src/shims/moz-wijmo-grid/store.ts
 ```
+
+그리드 공용 유틸·엑셀 다운로드는 별칭 없이 `@/shims/grid/utils`, `@/shims/grid/store`, `@/shims/grid/excel` 로 import 합니다.
 
 ---
 
@@ -439,7 +439,7 @@ APS 호스트 코드의 내부 경로를 리모트에서도 사용할 수 있도
 5. Service → QueryExecutorAdapter.execute_direct_query()
 6. Adapter → HTTP POST → Query Executor 서비스 → Trino → Iceberg
 7. 결과 반환 → { success: true, count: N, data: [...] }
-8. Vue → ExtendFlexGrid에 데이터 바인딩
+8. Vue → MozGrid 의 `coreConfig.data` 에 데이터 바인딩
 ```
 
 ---
@@ -574,11 +574,10 @@ export function useMyFeature() {
     >
     </Controller>
     <section class="content-section">
-      <ExtendFlexGrid
+      <MozGrid
         name="myFeatureMain"
-        :itemsSource="data"
+        :coreConfig="coreConfig"
         height="100%"
-        :isReadOnly="true"
         :loading="loading"
       />
     </section>
@@ -586,13 +585,26 @@ export function useMyFeature() {
 </template>
 
 <script setup lang="ts">
-import { Controller } from "@vmscloud/moz-ui-components";
-import { ExtendFlexGrid } from "@vmscloud/moz-wijmo-grid";
+import { computed } from "vue";
+import { Controller } from "@vmscloud/moz-ui-components-vue";
+import { MozGrid } from "@vmscloud/moz-ui-grid-vue";
+import type { MozGridCoreProps } from "@vmscloud/moz-ui-grid-vue";
 import { useHostPlanCycle } from "@/composables/useHostStores";
 import { useMyFeature } from "./myFeature";
 
 const { planVer } = useHostPlanCycle();
 const { data, loading, loadData } = useMyFeature();
+
+// 컬럼은 fields 로 선언한다. 고유 키가 없으면 행 순번(_rowKey)을 keyFields 로 쓴다(키 중복 시 오류).
+const coreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: ["_rowKey"],
+  data: data.value.map((row, idx) => ({ ...row, _rowKey: idx })),
+  fields: [
+    { id: "item_id", header: "품목", dataType: "string", width: 140 },
+    { id: "qty", header: "수량", dataType: "number", width: 120, mask: { type: "numeric", pattern: "#,##0" } },
+  ],
+}));
 
 async function handleSearch() {
   if (planVer.value) await loadData(planVer.value);
@@ -631,7 +643,7 @@ pnpm build                       # vue-tsc 타입체크 + 빌드
 pnpm dev:watch                   # 빌드 + watch (정적 리모트)
 
 # 배포
-.\deploy-custom-ui.ps1 -Service all -GithubToken $env:GITHUB_TOKEN
+.\deploy-custom-ui.ps1 -Service all
 .\deploy-custom-ui.ps1 -Service backend    # 백엔드만
 .\deploy-custom-ui.ps1 -Service frontend   # 프론트엔드만
 ```

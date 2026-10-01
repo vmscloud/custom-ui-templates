@@ -14,7 +14,7 @@ Mozart Cloud APS 위에 얹히는 **커스텀 UI 리모트 앱**과 **전용 Fas
 | 05 | [백엔드 가이드](./05-backend-guide.md) | FastAPI 구조, 서비스·어댑터·SQL 템플릿 |
 | 06 | [새 페이지 만들기](./06-creating-a-page.md) | 처음부터 하나의 화면 + API를 완성하는 실전 절차 |
 | 07 | [데이터 소스 선택](./07-data-sources.md) | PG / Trino / APS Host API를 언제 어떻게 쓰나 |
-| 08 | [UI 패턴](./08-ui-patterns.md) | Wijmo 그리드·Controller·팝업·필터 패턴 |
+| 08 | [UI 패턴](./08-ui-patterns.md) | MozGrid·Controller·팝업·필터 패턴 |
 | 09 | [i18n · UOM · 날짜](./09-i18n-uom-datetime.md) | 번역, 수량 단위, Dayjs 규칙 |
 | 10 | [디버깅 가이드](./10-debugging.md) | 로그·네트워크·응답 검증 팁 |
 | 11 | [레퍼런스](./11-reference.md) | 공용 훅·아이콘·환경변수·경로 한 장 요약 |
@@ -31,8 +31,8 @@ Mozart Cloud APS 위에 얹히는 **커스텀 UI 리모트 앱**과 **전용 Fas
 ## 반복 강조하는 원칙
 
 1. **Host 값에 절대 섣불리 의존하지 않는다.** `planVer` 같은 주입 값은 `""` → 실제 값으로 바뀌는 타이밍이 존재합니다. 모든 API 호출에는 필요값 가드를 넣으세요.
-2. **정밀도는 표시 단에서 맞춘다.** 숫자는 백엔드에서 원시 `double`을 그대로 내려주고, 화면은 Wijmo `format="n2"` 같은 포맷 지시로 반올림합니다.
-3. **UTC 기준이 아닌 표시 기준의 날짜는 `Dayjs`로 통일.** `Date` 객체를 Wijmo 입력 컴포넌트에 넘기면 `.format`, `.add` 호출에서 런타임 에러가 납니다.
+2. **정밀도는 표시 단에서 맞춘다.** 숫자는 백엔드에서 원시 `double`을 그대로 내려주고, 화면은 MozGrid 필드의 `mask`(`{ type: "numeric", pattern: "#,##0.00" }` 등)로 반올림합니다.
+3. **UTC 기준이 아닌 표시 기준의 날짜는 `Dayjs`로 통일.** `Date` 와 `Dayjs` 를 섞어 쓰면 `.format`, `.add` 호출에서 런타임 에러가 납니다.
 4. **i18n 키는 `t()` 로만.** `<template>` 이든 `<script>` 든 문자열 리터럴로 UI 라벨을 박지 않습니다.
 5. **URL → localStorage → defaultValue 순의 "선호값 체인"을 재사용.** 대표 예가 `useQtyUomQuery`. 사용자 설정을 덧씌우는 방식으로 만들면 Host 통합과 일관됩니다.
 
@@ -50,6 +50,7 @@ custom-ui-templates/
 │       ├── composables/            ← useHostStores, useQtyUomQuery 등 공용 훅
 │       ├── api/client.ts           ← axios + projectId 리졸버
 │       ├── shims/moz-shared/       ← 공용 아이콘·유틸 shim
+│       ├── shims/grid/             ← 그리드 유틸·엑셀 다운로드 shim
 │       ├── lang/                   ← i18n 정적 JSON
 │       └── plugins/i18n.ts         ← i18next 세팅
 │

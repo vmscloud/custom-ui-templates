@@ -496,32 +496,27 @@ export function use{PascalCase}() {
       </div>
 
       <div v-else class="grid-container">
-        <ExtendFlexGrid
+        <MozGrid
           name="{camelCase}Main"
-          :itemsSource="data"
+          :coreConfig="coreConfig"
           height="100%"
-          :isReadOnly="true"
           :loading="loading"
-          :setContextMenuProps="{
-            useFlexGridSetting: true,
+          :contextMenuConfig="{
             useFilter: true,
             useExportExcel: true,
           }"
-        >
-          <!-- 그리드 컬럼을 여기에 추가하세요 -->
-          <!-- <WjFlexGridColumn binding="colName" header="컬럼명" /> -->
-        </ExtendFlexGrid>
+        />
       </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch } from "vue";
+import { computed, onMounted, watch } from "vue";
 import { useTranslation } from "i18next-vue";
-import { Controller, EmptyState } from "@vmscloud/moz-ui-components";
-import { ExtendFlexGrid } from "@vmscloud/moz-wijmo-grid";
-// import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
+import { Controller, EmptyState } from "@vmscloud/moz-ui-components-vue";
+import { MozGrid } from "@vmscloud/moz-ui-grid-vue";
+import type { MozGridCoreProps } from "@vmscloud/moz-ui-grid-vue";
 import { useHostPlanCycle } from "@/composables/useHostStores";
 import { use{PascalCase} } from "./{camelCase}";
 
@@ -536,6 +531,22 @@ const {
   loadData,
   reset,
 } = use{PascalCase}();
+
+// 그리드 설정 — 컬럼은 fields, 행 식별자는 keyFields 로 선언한다.
+// 키가 중복되면 MozGrid 가 오류를 내므로, 고유 키 컬럼이 없으면 행 순번(_rowKey)을 붙여 키로 쓴다.
+// 고유 키 컬럼이 있으면 keyFields: ["<키 컬럼>"] 으로 바꾸고 _rowKey 매핑을 지운다.
+// 숫자·날짜 표시는 format 문자열이 아니라 mask 로 지정한다.
+const coreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: ["_rowKey"],
+  data: data.value.map((row, idx) => ({ ...row, _rowKey: idx })),
+  fields: [
+    // 그리드 컬럼을 여기에 추가하세요
+    // { id: "colName", header: t("text-col_name"), dataType: "string", width: 120 },
+    // { id: "qty", header: t("text-qty"), dataType: "number", width: 120, mask: { type: "numeric", pattern: "#,##0.00" } },
+    // { id: "due_date", header: t("text-due_date"), dataType: "date", width: 120, mask: { type: "date", pattern: "YYYY-MM-DD" } },
+  ],
+}));
 
 async function handleSearch() {
   if (!planVer.value) return;
@@ -691,7 +702,7 @@ GET /api/custom/backend/{project_id}/{kebab-case}/main?planVer=...
 
 ### TODO
 - [ ] SQL 쿼리 작성 (queries 파일)
-- [ ] 그리드 컬럼 정의 (vue 파일)
+- [ ] 그리드 컬럼 정의 (vue 파일의 `coreConfig.fields`) · `keyFields` 고유성 확인
 - [ ] Pydantic 스키마 필드 추가
 ```
 

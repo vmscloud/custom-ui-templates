@@ -90,7 +90,7 @@ import {
   Radio,
   EmptyState,
   Controller,
-} from "@vmscloud/moz-ui-components";
+} from "@vmscloud/moz-ui-components-vue";
 import { useHostNavigations } from "@/composables/useHostStores";
 import { useDemandDistribution } from "./demandDistribution";
 import type { DemandDistributionData } from "./demandDistribution";

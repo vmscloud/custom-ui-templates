@@ -23,7 +23,7 @@
   </ContextMenu>
 </template>
 <script setup lang="ts">
-import { ContextMenu } from '@vmscloud/moz-ui-components';
+import { ContextMenu } from '@vmscloud/moz-ui-components-vue';
 import { ContextPosition } from '@moz-shared/types';
 import { debounce, throttle } from 'es-toolkit';
 import * as go from 'gojs';

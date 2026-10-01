@@ -1,205 +1,28 @@
 <template>
   <div class="rtf-report-detail">
     <!-- Main Detail Grid -->
-    <ExtendFlexGrid
+    <MozGrid
       name="rtfReportDetail"
-      :itemsSource="data"
+      :coreConfig="coreConfig"
       height="100%"
-      :isReadOnly="true"
-      allowSorting="None"
-      :initialized="onInitialized"
-      :selectionChanged="onSelectionChanged"
-      :formatItem="onFormatItem"
       :loading="loading"
       :use-tool-box="false"
-      :setContextMenuProps="{
-        useFlexGridSetting: true,
-        useFilter: true,
-        useExportExcel: true,
-        customMenu: contextMenuItems,
-      }"
-    >
-      <!-- 기본 컬럼 -->
-      <WjFlexGridColumn binding="demandID" header="수요 ID" :width="100" />
-      <WjFlexGridColumn binding="custID" header="고객" :width="100" />
-      <WjFlexGridColumn
-        binding="onTimeRatio"
-        header="On-Time %"
-        :width="85"
-        align="right"
-      />
-      <WjFlexGridColumn
-        binding="lateRatio"
-        header="Late %"
-        :width="75"
-        align="right"
-      />
-      <WjFlexGridColumn
-        binding="rtfRatio"
-        header="RTF %"
-        :width="75"
-        align="right"
-      />
-      <WjFlexGridColumn
-        binding="_short_detail"
-        header="상세"
-        :width="72"
-        align="center"
-        :isReadOnly="true"
-      />
-      <WjFlexGridColumn
-        binding="itemGroupID"
-        header="제품 그룹"
-        :width="100"
-      />
-      <WjFlexGridColumn binding="itemID" header="제품 ID" :width="100" />
-      <WjFlexGridColumn binding="itemName" header="제품명" :width="120" />
-      <WjFlexGridColumn
-        binding="dueWeek"
-        header="납기 주차"
-        :width="90"
-        align="center"
-      />
-      <WjFlexGridColumn binding="dueDate" header="납기일" :width="100" />
-      <WjFlexGridColumn
-        binding="demandQty"
-        header="수요량"
-        :width="90"
-        align="right"
-        format="n0"
-      />
-      <WjFlexGridColumn
-        binding="onTimeQty"
-        header="On-Time 수량"
-        :width="100"
-        align="right"
-        format="n0"
-      />
-      <WjFlexGridColumn
-        binding="lateQty"
-        header="Late 수량"
-        :width="90"
-        align="right"
-        format="n0"
-      />
-      <WjFlexGridColumn
-        binding="rtfQty"
-        header="RTF 수량"
-        :width="90"
-        align="right"
-        format="n0"
-      />
-      <WjFlexGridColumn
-        binding="shortQty"
-        header="Short 수량"
-        :width="90"
-        align="right"
-        format="n0"
-      />
-      <WjFlexGridColumn
-        binding="qtyUom"
-        header="단위"
-        :width="60"
-        :visible="false"
-      />
-      <WjFlexGridColumn
-        binding="demand_type"
-        header="수요 유형"
-        :width="90"
-        :visible="false"
-      />
-      <WjFlexGridColumn
-        binding="item_type"
-        header="제품 유형"
-        :width="90"
-        :visible="false"
-      />
-      <WjFlexGridColumn
-        binding="prod_type"
-        header="생산 유형"
-        :width="90"
-        :visible="false"
-      />
-      <WjFlexGridColumn
-        binding="item_size_type"
-        header="제품 크기"
-        :width="90"
-        :visible="false"
-      />
-      <WjFlexGridColumn
-        binding="item_spec"
-        header="제품 사양"
-        :width="100"
-        :visible="false"
-      />
-
-      <!-- 동적 속성 컬럼 -->
-      <WjFlexGridColumn
-        v-for="col in propColumns"
-        :key="col.columnName"
-        :binding="col.columnName"
-        :header="col.displayText"
-        :width="120"
-        :visible="false"
-      />
-    </ExtendFlexGrid>
+      :use-sort="false"
+      :contextMenuConfig="contextMenuConfig"
+      @cell:click="onCellClick"
+      @contextmenu="onContextMenu"
+    />
 
     <!-- Short 사유 팝업 -->
     <Popup v-model:visible="shortPopupVisible" title="Short 사유 상세">
       <template #default>
         <div class="popup-grid-wrapper">
-          <ExtendFlexGrid
+          <MozGrid
             name="rtfShortReasonGrid"
-            :itemsSource="shortData"
+            :coreConfig="shortCoreConfig"
             height="100%"
-            :isReadOnly="true"
             :use-tool-box="false"
-          >
-            <WjFlexGridColumn
-              binding="shortType"
-              header="부족 유형"
-              :width="100"
-              align="center"
-            />
-            <WjFlexGridColumn
-              binding="shortCategory"
-              header="부족 분류"
-              :width="150"
-            />
-            <WjFlexGridColumn
-              binding="shortReason"
-              header="부족 사유"
-              :width="200"
-            />
-            <WjFlexGridColumn
-              binding="shortQty"
-              header="부족 수량"
-              :width="100"
-              align="right"
-              format="n0"
-            />
-            <WjFlexGridColumn
-              binding="qtyUom"
-              header="단위"
-              :width="60"
-              :visible="false"
-            />
-            <WjFlexGridColumn
-              binding="shortDetailInfo"
-              header="부족 상세 정보"
-              :width="300"
-            />
-            <WjFlexGridColumn
-              binding="isbID"
-              header="ISB 코드"
-              :width="300"
-            />
-            <WjFlexGridColumn
-              binding="bomID"
-              header="BOM 코드"
-              :width="300"
-            />
-          </ExtendFlexGrid>
+          />
         </div>
       </template>
       <template #footer>
@@ -211,55 +34,12 @@
     <Popup v-model:visible="itemPropsPopupVisible" title="제품 속성 상세">
       <template #default>
         <div class="popup-grid-wrapper">
-          <ExtendFlexGrid
+          <MozGrid
             name="rtfItemPropsGrid"
-            :itemsSource="itemPropsData"
+            :coreConfig="itemPropsCoreConfig"
             height="100%"
-            :isReadOnly="true"
             :use-tool-box="false"
-          >
-            <WjFlexGridColumn binding="itemID" header="제품 ID" :width="120" />
-            <WjFlexGridColumn
-              binding="item_type"
-              header="제품 유형"
-              :width="100"
-            />
-            <WjFlexGridColumn
-              binding="itemName"
-              header="제품명"
-              :width="150"
-            />
-            <WjFlexGridColumn
-              binding="item_group"
-              header="제품 그룹"
-              :width="100"
-            />
-            <WjFlexGridColumn
-              binding="item_priority"
-              header="우선순위"
-              :width="80"
-            />
-            <WjFlexGridColumn
-              binding="procurement_type"
-              header="조달 유형"
-              :width="100"
-            />
-            <WjFlexGridColumn
-              binding="prod_type"
-              header="생산 유형"
-              :width="100"
-            />
-            <WjFlexGridColumn
-              binding="item_size"
-              header="제품 크기"
-              :width="80"
-            />
-            <WjFlexGridColumn
-              binding="item_spec"
-              header="제품 사양"
-              :width="120"
-            />
-          </ExtendFlexGrid>
+          />
         </div>
       </template>
       <template #footer>
@@ -271,76 +51,12 @@
     <Popup v-model:visible="demandRecordPopupVisible" title="수요 레코드 상세">
       <template #default>
         <div class="popup-grid-wrapper">
-          <ExtendFlexGrid
+          <MozGrid
             name="rtfDemandRecordGrid"
-            :itemsSource="demandRecordData"
+            :coreConfig="demandRecordCoreConfig"
             height="100%"
-            :isReadOnly="true"
             :use-tool-box="false"
-          >
-            <WjFlexGridColumn
-              binding="demandID"
-              header="수요 ID"
-              :width="120"
-            />
-            <WjFlexGridColumn
-              binding="itemID"
-              header="제품 ID"
-              :width="120"
-            />
-            <WjFlexGridColumn
-              binding="site_id"
-              header="사이트 ID"
-              :width="100"
-            />
-            <WjFlexGridColumn
-              binding="buffer_id"
-              header="버퍼 ID"
-              :width="100"
-            />
-            <WjFlexGridColumn
-              binding="dueDate"
-              header="납기일"
-              :width="110"
-            />
-            <WjFlexGridColumn
-              binding="demandQty"
-              header="수요량"
-              :width="90"
-              align="right"
-              format="n0"
-            />
-            <WjFlexGridColumn
-              binding="demand_priority"
-              header="우선순위"
-              :width="80"
-            />
-            <WjFlexGridColumn
-              binding="custID"
-              header="고객 ID"
-              :width="100"
-            />
-            <WjFlexGridColumn
-              binding="demand_type"
-              header="수요 유형"
-              :width="100"
-            />
-            <WjFlexGridColumn
-              binding="max_lateness_day"
-              header="최대 지연일"
-              :width="90"
-            />
-            <WjFlexGridColumn
-              binding="max_earliness_day"
-              header="최대 선행일"
-              :width="90"
-            />
-            <WjFlexGridColumn
-              binding="demand_group"
-              header="수요 그룹"
-              :width="100"
-            />
-          </ExtendFlexGrid>
+          />
         </div>
       </template>
       <template #footer>
@@ -351,14 +67,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { ExtendFlexGrid, type ExtendGrid } from "@vmscloud/moz-wijmo-grid";
-import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
-import {
-  type FlexGrid,
-  GroupRow,
-} from "@vmscloud/moz-wijmo-grid/wijmo.grid";
-import { Popup, Button } from "@vmscloud/moz-ui-components";
+import { computed, ref } from "vue";
+import { MozGrid } from "@vmscloud/moz-ui-grid-vue";
+import type {
+  FieldDef,
+  IContextMenuConfig,
+  MaskConfig,
+  MozGridCoreProps,
+} from "@vmscloud/moz-ui-grid-vue";
+import { Popup, Button } from "@vmscloud/moz-ui-components-vue";
+import { GRID_ROW_KEY, withRowKey } from "./rtfReport";
 import type { RtfDetailData, RtfShortData, PropColumn } from "./rtfReport";
 
 // === Props & Emits ===
@@ -374,7 +92,7 @@ interface Props {
   demandRecordData: any[];
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 const emit = defineEmits<{
   (e: "demand-selected", demandID: string): void;
   (e: "load-short", demandID: string): void;
@@ -384,7 +102,6 @@ const emit = defineEmits<{
 
 // === Local State ===
 
-const grid = ref<FlexGrid>();
 const selectedDemandId = ref("");
 const selectedItemId = ref("");
 const shortPopupVisible = ref(false);
@@ -393,48 +110,169 @@ const demandRecordPopupVisible = ref(false);
 
 // === Context Menu ===
 
-const contextMenuItems = [
-  {
-    align: 0,
-    header: "제품 속성 보기",
-    cmd: "openItemProps",
-    clicked: () => {
-      if (selectedItemId.value) {
-        emit("load-item-props", selectedItemId.value);
-        itemPropsPopupVisible.value = true;
-      }
+const contextMenuConfig: IContextMenuConfig = {
+  useFilter: true,
+  useExportExcel: true,
+  customMenu: [
+    {
+      id: "openItemProps",
+      label: "제품 속성 보기",
+      handler: () => {
+        if (selectedItemId.value) {
+          emit("load-item-props", selectedItemId.value);
+          itemPropsPopupVisible.value = true;
+        }
+      },
     },
-    active: () => !!selectedItemId.value,
-  },
-  {
-    align: 0,
-    header: "수요 레코드 보기",
-    cmd: "openDemandRecord",
-    clicked: () => {
-      if (selectedDemandId.value) {
-        emit("load-demand-record", selectedDemandId.value);
-        demandRecordPopupVisible.value = true;
-      }
+    {
+      id: "openDemandRecord",
+      label: "수요 레코드 보기",
+      handler: () => {
+        if (selectedDemandId.value) {
+          emit("load-demand-record", selectedDemandId.value);
+          demandRecordPopupVisible.value = true;
+        }
+      },
     },
-    active: () => !!selectedDemandId.value,
-  },
-];
+  ],
+};
 
-// === Grid Initialization ===
+// === Formatting ===
 
-function onInitialized(flexGrid: FlexGrid, _extendGrid: ExtendGrid) {
-  grid.value = flexGrid;
-}
+// 수량은 toLocaleString 과 같은 표시, 비율은 소수 1자리 + %
+const QTY_MASK: MaskConfig = { type: "numeric", pattern: "#,##0.###" };
+const RATIO_MASK: MaskConfig = { type: "numeric", pattern: "#,##0.#", suffix: "%" };
+const N0_MASK: MaskConfig = { type: "numeric", pattern: "#,##0" };
 
-// === Selection Changed ===
+// "상세 보기" 링크 — 클릭은 cell:click 에서 처리한다
+const renderDetailLink = () => {
+  const span = document.createElement("span");
+  span.className = "detail-link";
+  span.textContent = "상세 보기";
+  return span;
+};
 
-function onSelectionChanged(s: FlexGrid, e: any) {
-  if (!s || e.row < 0) return;
+// Row-level conditional formatting (applied to entire row)
+const formatRow = (info: any) => {
+  if (info.type !== "data") return;
+  const item = info.ctx.data as RtfDetailData;
+  const isShort = item.rtfRatio < 100;
+  info.ctx.rowElement.classList.toggle("ratio-short", isShort);
+  info.ctx.rowElement.classList.toggle(
+    "ratio-late",
+    !isShort && item.rtfRatio === 100 && item.lateRatio > 0,
+  );
+};
 
-  const row = s.rows[e.row];
-  if (!row || row instanceof GroupRow) return;
+// === Grid Config ===
 
-  const dataItem = (row as any).dataItem as RtfDetailData;
+const coreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: [GRID_ROW_KEY],
+  data: withRowKey(props.data),
+  formatRow,
+  fields: [
+    // 기본 컬럼
+    { id: "demandID", header: "수요 ID", dataType: "string", width: 100 },
+    { id: "custID", header: "고객", dataType: "string", width: 100 },
+    { id: "onTimeRatio", header: "On-Time %", dataType: "number", width: 85, align: "right", mask: RATIO_MASK },
+    { id: "lateRatio", header: "Late %", dataType: "number", width: 75, align: "right", mask: RATIO_MASK },
+    {
+      id: "rtfRatio",
+      header: "RTF %",
+      dataType: "number",
+      width: 75,
+      align: "right",
+      mask: RATIO_MASK,
+      // RTF ratio font color for shortage
+      cellAttributes: ({ value }: { value: unknown }) =>
+        typeof value === "number" && value < 100 ? { class: "ratio-short-font" } : undefined,
+    },
+    { id: "_short_detail", header: "상세", dataType: "string", width: 72, align: "center", cellRenderer: renderDetailLink },
+    { id: "itemGroupID", header: "제품 그룹", dataType: "string", width: 100 },
+    { id: "itemID", header: "제품 ID", dataType: "string", width: 100 },
+    { id: "itemName", header: "제품명", dataType: "string", width: 120 },
+    { id: "dueWeek", header: "납기 주차", dataType: "string", width: 90, align: "center" },
+    { id: "dueDate", header: "납기일", dataType: "string", width: 100 },
+    { id: "demandQty", header: "수요량", dataType: "number", width: 90, align: "right", mask: QTY_MASK },
+    { id: "onTimeQty", header: "On-Time 수량", dataType: "number", width: 100, align: "right", mask: QTY_MASK },
+    { id: "lateQty", header: "Late 수량", dataType: "number", width: 90, align: "right", mask: QTY_MASK },
+    { id: "rtfQty", header: "RTF 수량", dataType: "number", width: 90, align: "right", mask: QTY_MASK },
+    { id: "shortQty", header: "Short 수량", dataType: "number", width: 90, align: "right", mask: QTY_MASK },
+    { id: "qtyUom", header: "단위", dataType: "string", width: 60, hidden: true },
+    { id: "demand_type", header: "수요 유형", dataType: "string", width: 90, hidden: true },
+    { id: "item_type", header: "제품 유형", dataType: "string", width: 90, hidden: true },
+    { id: "prod_type", header: "생산 유형", dataType: "string", width: 90, hidden: true },
+    { id: "item_size_type", header: "제품 크기", dataType: "string", width: 90, hidden: true },
+    { id: "item_spec", header: "제품 사양", dataType: "string", width: 100, hidden: true },
+    // 동적 속성 컬럼
+    ...props.propColumns.map<FieldDef>((col) => ({
+      id: col.columnName,
+      header: col.displayText,
+      dataType: "string",
+      width: 120,
+      hidden: true,
+    })),
+  ],
+}));
+
+const shortCoreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: [GRID_ROW_KEY],
+  data: withRowKey(props.shortData),
+  fields: [
+    { id: "shortType", header: "부족 유형", dataType: "string", width: 100, align: "center" },
+    { id: "shortCategory", header: "부족 분류", dataType: "string", width: 150 },
+    { id: "shortReason", header: "부족 사유", dataType: "string", width: 200 },
+    { id: "shortQty", header: "부족 수량", dataType: "number", width: 100, align: "right", mask: N0_MASK },
+    { id: "qtyUom", header: "단위", dataType: "string", width: 60, hidden: true },
+    { id: "shortDetailInfo", header: "부족 상세 정보", dataType: "string", width: 300 },
+    { id: "isbID", header: "ISB 코드", dataType: "string", width: 300 },
+    { id: "bomID", header: "BOM 코드", dataType: "string", width: 300 },
+  ],
+}));
+
+const itemPropsCoreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: [GRID_ROW_KEY],
+  data: withRowKey(props.itemPropsData),
+  fields: [
+    { id: "itemID", header: "제품 ID", dataType: "string", width: 120 },
+    { id: "item_type", header: "제품 유형", dataType: "string", width: 100 },
+    { id: "itemName", header: "제품명", dataType: "string", width: 150 },
+    { id: "item_group", header: "제품 그룹", dataType: "string", width: 100 },
+    { id: "item_priority", header: "우선순위", dataType: "string", width: 80 },
+    { id: "procurement_type", header: "조달 유형", dataType: "string", width: 100 },
+    { id: "prod_type", header: "생산 유형", dataType: "string", width: 100 },
+    { id: "item_size", header: "제품 크기", dataType: "string", width: 80 },
+    { id: "item_spec", header: "제품 사양", dataType: "string", width: 120 },
+  ],
+}));
+
+const demandRecordCoreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: [GRID_ROW_KEY],
+  data: withRowKey(props.demandRecordData),
+  fields: [
+    { id: "demandID", header: "수요 ID", dataType: "string", width: 120 },
+    { id: "itemID", header: "제품 ID", dataType: "string", width: 120 },
+    { id: "site_id", header: "사이트 ID", dataType: "string", width: 100 },
+    { id: "buffer_id", header: "버퍼 ID", dataType: "string", width: 100 },
+    { id: "dueDate", header: "납기일", dataType: "string", width: 110 },
+    { id: "demandQty", header: "수요량", dataType: "number", width: 90, align: "right", mask: N0_MASK },
+    { id: "demand_priority", header: "우선순위", dataType: "string", width: 80 },
+    { id: "custID", header: "고객 ID", dataType: "string", width: 100 },
+    { id: "demand_type", header: "수요 유형", dataType: "string", width: 100 },
+    { id: "max_lateness_day", header: "최대 지연일", dataType: "string", width: 90 },
+    { id: "max_earliness_day", header: "최대 선행일", dataType: "string", width: 90 },
+    { id: "demand_group", header: "수요 그룹", dataType: "string", width: 100 },
+  ],
+}));
+
+// === Selection ===
+
+function onCellClick(e: any) {
+  const dataItem = e?.row as RtfDetailData | undefined;
   if (!dataItem) return;
 
   selectedDemandId.value = dataItem.demandID ?? "";
@@ -443,73 +281,19 @@ function onSelectionChanged(s: FlexGrid, e: any) {
   if (dataItem.demandID) {
     emit("demand-selected", dataItem.demandID);
   }
-}
-
-// === FormatItem ===
-
-const QTY_BINDINGS = [
-  "demandQty",
-  "onTimeQty",
-  "lateQty",
-  "rtfQty",
-  "shortQty",
-];
-const RATIO_BINDINGS = ["onTimeRatio", "lateRatio", "rtfRatio"];
-
-function onFormatItem(s: FlexGrid, e: any) {
-  if (e.panel !== s.cells) return;
-
-  const row = s.rows[e.row];
-  if (!row || row instanceof GroupRow) return;
-
-  const dataItem = (row as any).dataItem as RtfDetailData;
-  if (!dataItem) return;
-
-  const binding = s.columns[e.col]?.binding;
-  if (!binding) return;
 
   // "상세 보기" clickable link
-  if (binding === "_short_detail") {
-    e.cell.innerHTML =
-      '<span class="detail-link" style="color:#4568e0;text-decoration:underline;cursor:pointer;">상세 보기</span>';
-    if (!e.cell.dataset.clickBound) {
-      e.cell.dataset.clickBound = "1";
-      e.cell.addEventListener("click", () => {
-        if (dataItem.demandID) {
-          emit("load-short", dataItem.demandID);
-          shortPopupVisible.value = true;
-        }
-      });
-    }
+  if (e.columnId === "_short_detail" && dataItem.demandID) {
+    emit("load-short", dataItem.demandID);
+    shortPopupVisible.value = true;
   }
+}
 
-  // Quantity formatting
-  if (QTY_BINDINGS.includes(binding)) {
-    const val = dataItem[binding];
-    if (val != null) e.cell.innerText = Number(val).toLocaleString();
-  }
-
-  // Ratio formatting with %
-  if (RATIO_BINDINGS.includes(binding)) {
-    const val = dataItem[binding];
-    if (val != null) {
-      e.cell.innerText =
-        Number(val).toLocaleString(undefined, { maximumFractionDigits: 1 }) +
-        "%";
-    }
-  }
-
-  // Row-level conditional formatting (applied to entire row)
-  if (dataItem.rtfRatio < 100) {
-    e.cell.classList.add("ratio-short");
-  } else if (dataItem.rtfRatio === 100 && dataItem.lateRatio > 0) {
-    e.cell.classList.add("ratio-late");
-  }
-
-  // RTF ratio font color for shortage
-  if (binding === "rtfRatio" && dataItem.rtfRatio < 100) {
-    e.cell.classList.add("ratio-short-font");
-  }
+// 우클릭한 행을 컨텍스트 메뉴 대상으로 잡는다
+function onContextMenu(e: any) {
+  if (e?.area !== "cell" || !e.rowData) return;
+  selectedDemandId.value = e.rowData.demandID ?? "";
+  selectedItemId.value = e.rowData.itemID ?? "";
 }
 </script>
 
@@ -527,29 +311,24 @@ function onFormatItem(s: FlexGrid, e: any) {
   min-height: 300px;
 }
 
+:deep(.detail-link) {
+  color: #4568e0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 // Short (RTF < 100%) — light red background
-:deep(.ratio-short) {
+:deep(.ratio-short .ps-cell) {
   background-color: #f6d5d5 !important;
 }
 
 // Late (RTF = 100% & Late > 0) — light orange background
-:deep(.ratio-late) {
+:deep(.ratio-late .ps-cell) {
   background-color: #fde6c8 !important;
 }
 
 // Red font for shortage ratio
 :deep(.ratio-short-font) {
-  span,
-  & {
-    color: #dc5a5a !important;
-  }
-}
-
-// Selected state override
-:deep(.ratio-short.wj-state-multi-selected),
-:deep(.ratio-short.wj-state-active),
-:deep(.ratio-late.wj-state-multi-selected),
-:deep(.ratio-late.wj-state-active) {
-  background-color: #eae0ec !important;
+  color: #dc5a5a !important;
 }
 </style>

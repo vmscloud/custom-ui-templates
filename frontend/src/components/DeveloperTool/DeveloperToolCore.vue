@@ -87,7 +87,7 @@ import {routes} from "@/router";
 import {getAvailableViews} from "@/expose.ts";
 import {RouteRecordRaw, useRouter} from "vue-router";
 import DeveloperToolSetting from "@/components/DeveloperTool/DeveloperToolSetting.vue";
-import {Button, TreeSelect} from "@vmscloud/moz-ui-components";
+import {Button, TreeSelect} from "@vmscloud/moz-ui-components-vue";
 import {HOST_DATA_KEY} from "@/composables/useHostStores.ts";
 import { setProjectIdResolver } from "@/api/client";
 import { useDeveloperTool } from "./DeveloperTool.ts";

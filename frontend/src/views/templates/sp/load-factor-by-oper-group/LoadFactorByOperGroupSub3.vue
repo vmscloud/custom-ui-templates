@@ -1,24 +1,18 @@
 <template>
   <div class="moz-frame-for-outer-control" style="padding: 0px">
-    <!-- v-show를 감싸는 div에 적용하여 ExtendFlexGrid 내부 CSS가 display: none을 override하지 못하게 함 -->
+    <!-- v-show를 감싸는 div에 적용하여 그리드 내부 CSS가 display: none을 override하지 못하게 함 -->
     <div v-show="showGrid" class="grid-wrapper">
-      <ExtendFlexGrid
+      <MozGrid
         height="100%"
         name="LoadFactorByOperGroupDetail"
-        :useMerge="['oper_group_id', 'str_date']"
-        :autoGenerateColumns="false"
-        :alternatingRowStep="0"
-        :itemsSource="detailDataSource"
-        :initialized="onInitialized"
-        :isReadOnly="true"
-        :validateKey="'none'"
-        :setContextMenuProps="{
-          useGroupColumn: false,
+        :coreConfig="coreConfig"
+        :contextMenuConfig="{
           useViewSelectColumn: false,
           useBulkEditColumn: false,
           useExportExcel: false,
           useExportImport: false,
         }"
+        @ready="onReady"
       >
         <template #tool-items>
           <div @click="handleZoomClick" class="zoom-button">
@@ -26,78 +20,7 @@
             <IconCollapseArrow v-else />
           </div>
         </template>
-
-        <WjFlexGridColumn
-          :width="160"
-          binding="oper_group_id"
-          :header="t('text-isu_oper_group_id')"
-        />
-        <WjFlexGridColumn
-          :width="120"
-          binding="str_date"
-          :header="t('text-isu_str_date')"
-        />
-        <WjFlexGridColumn
-          :width="120"
-          binding="capa"
-          :header="t('text-isu_capa')"
-        />
-        <WjFlexGridColumn
-          :width="120"
-          binding="str_qty"
-          :header="t('text-isu_str_qty')"
-        />
-        <WjFlexGridColumn
-          :width="120"
-          binding="outer_str_area"
-          :header="t('text-isu_outer_str_area')"
-        />
-        <WjFlexGridColumn
-          :width="120"
-          binding="inner_str_area"
-          :header="t('text-isu_inner_str_area')"
-        />
-        <WjFlexGridColumn
-          :width="120"
-          binding="str_rate"
-          :header="t('text-isu_str_rate')"
-        />
-        <WjFlexGridColumn
-          :width="120"
-          binding="floor_number"
-          :header="t('text-isu_floor_number')"
-        />
-        <WjFlexGridColumn
-          :width="140"
-          binding="item_id"
-          :header="t('text-isu_item_id')"
-        />
-        <WjFlexGridColumn
-          :width="140"
-          binding="item_group_id"
-          :header="t('text-isu_item_group_id')"
-        />
-        <WjFlexGridColumn
-          :width="140"
-          binding="demand_id"
-          :header="t('text-isu_demand_id')"
-        />
-        <WjFlexGridColumn
-          :width="120"
-          binding="due_date"
-          :header="t('text-isu_due_date')"
-        />
-        <WjFlexGridColumn
-          :width="120"
-          binding="aps_due_date"
-          :header="t('text-isu_aps_due_date')"
-        />
-        <WjFlexGridColumn
-          :width="120"
-          binding="oper_id"
-          :header="t('text-isu_oper_id')"
-        />
-      </ExtendFlexGrid>
+      </MozGrid>
     </div>
     <div
       v-show="!showGrid"
@@ -112,12 +35,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { EmptyState } from "@vmscloud/moz-ui-components";
-import { ExtendFlexGrid, type ExtendGrid } from "@vmscloud/moz-wijmo-grid";
-import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
-import { type FlexGrid } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
+import { EmptyState } from "@vmscloud/moz-ui-components-vue";
+import { MozGrid } from "@vmscloud/moz-ui-grid-vue";
+import type { GridChrome, MozGridCoreProps, PureSheet } from "@vmscloud/moz-ui-grid-vue";
 import { useTranslation } from "i18next-vue";
-import { computed, ref } from "vue";
+import { computed, shallowRef } from "vue";
 import IconExpandArrow from "./assets/IconExpandArrow.vue";
 import IconCollapseArrow from "./assets/IconCollapseArrow.vue";
 
@@ -126,8 +48,9 @@ import IconCollapseArrow from "./assets/IconCollapseArrow.vue";
  */
 const { t } = useTranslation(); // 다국어
 
-const grid = ref<FlexGrid | null>(null); // Wijmo grid
-const extendGrid = ref<ExtendGrid | null>(null); // Wijmo grid 확장 기능
+// 그리드 인스턴스는 깊은 반응성이 필요 없다(ref 로 감싸면 TS2589).
+const grid = shallowRef<PureSheet | null>(null); // 코어 그리드
+const chrome = shallowRef<GridChrome | null>(null); // 그리드 래퍼(툴박스·컨텍스트 메뉴 등)
 
 // ===== Props & Emits =====
 const props = defineProps<{
@@ -146,15 +69,40 @@ const showGrid = computed(
   () => !!props.clickedSeriesData && !!props.detailDataSource.length,
 );
 
+// 그리드 설정 — 상세 데이터에는 고유 키가 없어 행 순번(__rowKey)을 키로 쓴다.
+const coreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: ["__rowKey"],
+  data: props.detailDataSource.map((row, idx) => ({ ...row, __rowKey: idx })),
+  fields: [
+    { id: "oper_group_id", header: t("text-isu_oper_group_id"), dataType: "string", width: 160, readonly: true },
+    { id: "str_date", header: t("text-isu_str_date"), dataType: "string", width: 120, readonly: true },
+    { id: "capa", header: t("text-isu_capa"), dataType: "number", width: 120, readonly: true },
+    { id: "str_qty", header: t("text-isu_str_qty"), dataType: "number", width: 120, readonly: true },
+    { id: "outer_str_area", header: t("text-isu_outer_str_area"), dataType: "number", width: 120, readonly: true },
+    { id: "inner_str_area", header: t("text-isu_inner_str_area"), dataType: "number", width: 120, readonly: true },
+    { id: "str_rate", header: t("text-isu_str_rate"), dataType: "number", width: 120, readonly: true },
+    { id: "floor_number", header: t("text-isu_floor_number"), dataType: "number", width: 120, readonly: true },
+    { id: "item_id", header: t("text-isu_item_id"), dataType: "string", width: 140, readonly: true },
+    { id: "item_group_id", header: t("text-isu_item_group_id"), dataType: "string", width: 140, readonly: true },
+    { id: "demand_id", header: t("text-isu_demand_id"), dataType: "string", width: 140, readonly: true },
+    { id: "due_date", header: t("text-isu_due_date"), dataType: "string", width: 120, readonly: true },
+    { id: "aps_due_date", header: t("text-isu_aps_due_date"), dataType: "string", width: 120, readonly: true },
+    { id: "oper_id", header: t("text-isu_oper_id"), dataType: "string", width: 120, readonly: true },
+  ],
+}));
+
 // ✅ 확대 버튼 클릭 핸들러
 const handleZoomClick = () => {
   emit("update:isZoomedSub3", !props.isZoomedSub3);
 };
 
 // GRID INITIALIZE
-const onInitialized = (flexGrid: FlexGrid, _extendGrid: ExtendGrid) => {
-  grid.value = flexGrid;
-  extendGrid.value = _extendGrid;
+const onReady = (_grid: PureSheet, _chrome: GridChrome) => {
+  grid.value = _grid;
+  chrome.value = _chrome;
+  // 구분·일자 컬럼은 인접한 같은 값끼리 병합 (원본 useMerge)
+  _grid.setMergeConfig({ type: "content", columns: ["oper_group_id", "str_date"] });
 };
 </script>
 <style lang="scss" scoped>

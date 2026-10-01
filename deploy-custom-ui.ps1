@@ -5,7 +5,6 @@
     [string]$Tag = "custom",
     [string]$HostIP = "203.231.40.243",
     [int]$RegistryPort = 6007,
-    [string]$GithubToken = $env:GITHUB_TOKEN,
     [switch]$NoCache
 )
 
@@ -18,49 +17,23 @@ function Invoke-DockerBuild {
     param(
         [Parameter(Mandatory)] [string]$Image,
         [Parameter(Mandatory)] [string]$Context,
-        [switch]$NoCache,
-        [string]$TokenFile
+        [switch]$NoCache
     )
 
     if ($script:IsPwsh7) {
         $buildArgs = @("build")
         if ($NoCache) { $buildArgs += "--no-cache" }
-        if ($TokenFile) { $buildArgs += @("--secret", "id=npm_token,src=$TokenFile") }
         $buildArgs += @("-t", $Image, $Context)
         & docker @buildArgs
         return
     }
 
     # PowerShell 5.x: 각 플래그 조합별 명시 호출
-    if ($NoCache -and $TokenFile) {
-        docker build --no-cache --secret "id=npm_token,src=$TokenFile" -t $Image $Context
-    } elseif ($NoCache) {
+    if ($NoCache) {
         docker build --no-cache -t $Image $Context
-    } elseif ($TokenFile) {
-        docker build --secret "id=npm_token,src=$TokenFile" -t $Image $Context
     } else {
         docker build -t $Image $Context
     }
-}
-
-function Resolve-FrontendToken {
-    param(
-        [string]$ExplicitToken,
-        [Parameter(Mandatory)] [string]$ContextDir
-    )
-
-    if ($ExplicitToken) { return $ExplicitToken }
-
-    $npmrcPath = Join-Path $ContextDir ".npmrc"
-    if (Test-Path $npmrcPath) {
-        $npmrcContent = Get-Content $npmrcPath -Raw
-        $m = [regex]::Match($npmrcContent, '_authToken=(.+)')
-        if ($m.Success) {
-            Write-Host "  (Using token from $npmrcPath)" -ForegroundColor DarkGray
-            return $m.Groups[1].Value.Trim()
-        }
-    }
-    return $null
 }
 
 function Write-DeployError {
@@ -164,38 +137,7 @@ foreach ($svc in $targets) {
     # Build
     $step++
     Write-Host "[$step/$totalSteps] Building $svc -> $fullImage" -ForegroundColor Yellow
-    if ($svc -eq "frontend") {
-        $token = Resolve-FrontendToken -ExplicitToken $GithubToken -ContextDir $cfg.context
-        if (-not $token) {
-            $npmrcPath = Join-Path $cfg.context ".npmrc"
-            Write-DeployError `
-                -Title "GitHub Packages 토큰을 찾을 수 없습니다" `
-                -Details @(
-                    "검색 위치 1: 환경변수 `$env:GITHUB_TOKEN (현재 비어있음)",
-                    "검색 위치 2: $npmrcPath ($(if (Test-Path $npmrcPath) { '_authToken 항목 없음' } else { '파일 없음' }))",
-                    "frontend 이미지는 @vms-solutions GitHub Packages npm 레지스트리 접근이 필요합니다."
-                ) `
-                -Fixes @(
-                    "임시로 현재 세션에 토큰 주입:  `$env:GITHUB_TOKEN = 'ghp_xxx...'",
-                    "영구 저장 (권장): frontend\.npmrc 파일에 다음 라인 추가`n     //npm.pkg.github.com/:_authToken=ghp_xxx...",
-                    "또는 스크립트 실행 시 직접 전달:  .\deploy-custom-ui.ps1 -GithubToken 'ghp_xxx...'"
-                ) `
-                -Hints @(
-                    "토큰 발급: GitHub > Settings > Developer settings > Personal access tokens (classic)",
-                    "필요 권한: read:packages (최소), write:packages (퍼블리시 시)"
-                )
-            exit 1
-        }
-        $tokenFile = [System.IO.Path]::GetTempFileName()
-        try {
-            [System.IO.File]::WriteAllText($tokenFile, $token)
-            Invoke-DockerBuild -Image $fullImage -Context $cfg.context -NoCache:$NoCache -TokenFile $tokenFile
-        } finally {
-            Remove-Item $tokenFile -Force -ErrorAction SilentlyContinue
-        }
-    } else {
-        Invoke-DockerBuild -Image $fullImage -Context $cfg.context -NoCache:$NoCache
-    }
+    Invoke-DockerBuild -Image $fullImage -Context $cfg.context -NoCache:$NoCache
     if ($LASTEXITCODE -ne 0) {
         $buildExitCode = $LASTEXITCODE
         $commonCauses = @(
@@ -205,8 +147,7 @@ foreach ($svc in $targets) {
             "디스크 공간 부족 또는 BuildKit 캐시 손상"
         )
         if ($svc -eq "frontend") {
-            $commonCauses += "GitHub Packages 토큰 만료/권한 부족 (read:packages 필요)"
-            $commonCauses += "npm 의존성 resolve 실패 (package-lock.json 불일치)"
+            $commonCauses += "npm 의존성 resolve 실패 (pnpm-lock.yaml 불일치 또는 npm 레지스트리 접근 불가)"
         }
         Write-DeployError `
             -Title "$svc 이미지 빌드 실패 (docker build exit=$buildExitCode)" `

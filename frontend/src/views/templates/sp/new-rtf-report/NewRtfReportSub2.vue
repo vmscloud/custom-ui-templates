@@ -1,268 +1,21 @@
 <template>
-  <ExtendFlexGrid
+  <MozGrid
     :name="t(`${currentMenu.menuName}-sub2-summary`)"
     :id="`${currentMenu.menuName}-sub2-summary-id`"
     class="moz-readonly-grid rtf-report-sub2"
     style="width: var(--parents-main-width); height: 100%"
-    :emptyState="{
-      isLoading: !load.loading,
-    }"
-    :itemsSource="detailDataSource"
-    :initialized="onInitialized"
-    :selectionChanged="onSelectionChanged"
-    :formatItem="formatItem"
-    :isReadOnly="true"
-    :allowSorting="'None'"
-    :setContextMenuProps="{
-      useFlexGridSetting: true,
-      useFilter: true,
-      useExportExcel: true,
-      customMenu: [
-        {
-          align: 0,
-          header: t(`text-view-item-additional-prop`),
-          cmd: 'oponView',
-          clicked: (res: any) => {
-            if (!open) {
-              modalOpen(selectedCellPosition.left, selectedCellPosition.top + selectedCellPosition.height + 5);
-            }
-          },
-          active: (res: any) => {
-            if (res?.hitTest.cellType === 2) {
-              return false;
-            }
-            return true;
-          },
-        },
-        {
-          align: 0,
-          header: t('text-open-demand-info-detail-view'),
-          cmd: 'openDemandInfo',
-          clicked: (res: any) => {
-            if (!demandOpen) {
-              demandModalOpen(selectedCellPosition.left, selectedCellPosition.top + selectedCellPosition.height + 5);
-            }
-          },
-          active: (res: any) => {
-            if (res?.hitTest.cellType === 2) {
-              return false;
-            }
-            return true;
-          },
-        },
-        { align: 0, header: '-' },
-      ],
-      onExportOriginalData: () =>
-        downloadBigData({
-          /**
-           * @todo 백엔드 API 스네이크 케이스로 받고 변환처리하는 로직 제거
-           * 서버에서 받는 케이스가 안 맞아서 `excelModule.createColumnMapForExport(grid as FlexGrid)`으로 처리 불가능 함
-           */
-          column_map: camelToSnake(
-            propColumnsModule.parseExcel(excelModule.createColumnMapForExport(grid as FlexGrid)),
-          ),
-          file_name: `${t(`${menuModule.currentMenu.menuName}`)}_${detailLoadParams.planVer}`,
-          data_method: 'POST',
-          data_parameter: JSON.stringify(detailLoadParams),
-          api_key: detailApiKey,
-        }),
-    }"
-    :onInitializeRowData="
-      () => {
-        return { isAdded: true };
-      }
-    "
+    :coreConfig="detailCoreConfig"
+    :contextMenuConfig="detailContextMenuConfig"
     :use-tool-box="true"
-    :isToolBoxExpanded="false"
-    ref="gridRef"
     :loading="detailQuery.isFetching.value || mainQuery.isFetching.value"
-    :use-preset="true"
+    @ready="onReady"
+    @cell:click="onCellClick"
+    @contextmenu="onContextMenu"
   >
-    <ExtendGridContextOpenNewTab
-      :route="
-        (item: any) => {
-          return {
-            path: `/sp/ProdPlanByOper`,
-            query: {
-              planCycle: mainLoadParams.planCycleID,
-              planVer: mainLoadParams.planVer,
-              fromDate: fromDate?.format('YYYY-MM-DD') ?? '',
-              toDate: toDate?.format('YYYY-MM-DD') ?? '',
-              [`buffer[A]`]: 'All',
-              [`itemGroup[+]`]: `${[item?.itemGroupID]}`,
-              [`item[+]`]: `${[item?.itemID]}`,
-            },
-          };
-        }
-      "
-      :disabled="
-        (item: any) => {
-          return !(item?.itemID || item?.itemGroup);
-        }
-      "
-      :label="t('text-context-open_prod_plan_by_oper')"
-    />
-    <ExtendGridContextOpenNewTab
-      :route="
-        (item: any) => {
-          return {
-            path: `/dm/Demand`,
-            query: {
-              planCycle: mainLoadParams.planCycleID,
-              planVer: mainLoadParams.planVer,
-              [`item[+]`]: `${[item?.itemID]}`,
-              [`demandVer[+]`]: `${[demandVer]}`,
-            },
-          };
-        }
-      "
-      :disabled="
-        (item: any) => {
-          return !item?.itemID;
-        }
-      "
-      :label="t('text-context-open_demand')"
-    />
-    <ExtendGridContextOpenNewTab
-      :route="
-        (item: any) => {
-          return {
-            path: `/sp/BomMapPlanView`,
-            query: {
-              planCycle: mainLoadParams.planCycleID,
-              planVer: mainLoadParams.planVer,
-              demandItemID: item?.itemID,
-              demandID: item?.demandID,
-            },
-          };
-        }
-      "
-      :disabled="
-        (item: any) => {
-          return !(item?.demandItemID || item?.itemID || item?.demandID);
-        }
-      "
-      :label="t('text-context-open_bom_map_plan_view')"
-    />
-    <ExtendGridContextOpenNewTab
-      :route="
-        (item: any) => {
-          return {
-            path: `/sp/FgsStockInPlan`,
-            query: {
-              planCycle: mainLoadParams.planCycleID,
-              planVer: mainLoadParams.planVer,
-              fromDate: fromDate?.format('YYYY-MM-DD') ?? '',
-              toDate: toDate?.format('YYYY-MM-DD') ?? '',
-              [`item[+]`]: item?.itemID,
-              [`itemGroup[+]`]: `${[item?.itemGroupID]}`,
-            },
-          };
-        }
-      "
-      :disabled="
-        (item: any) => {
-          return !(item?.demandItemID || item?.itemID || item?.demandID);
-        }
-      "
-      :label="t('text-context-open_fgs_prod_plan')"
-    />
-    <WjFlexGridColumn binding="demandID" :header="t('text-demand_id')" :width="80" align="left" />
-    <WjFlexGridColumn binding="custID" :header="t('text-cust_name')" :width="80" />
-    <WjFlexGridColumn
-      :width="getWidthByKey('N2')"
-      binding="onTimeRatio"
-      :header="t('text-on_time_ratio')"
-      dataType="Number"
-      align="right"
-      :format="projectModule.formatGrid('ratio')"
-    />
-    <WjFlexGridColumn
-      :width="getWidthByKey('N2')"
-      binding="lateRatio"
-      :header="t('text-late_ratio')"
-      dataType="Number"
-      align="right"
-      :format="projectModule.formatGrid('ratio')"
-    />
-    <WjFlexGridColumn
-      :width="getWidthByKey('N2')"
-      binding="rtfRatio"
-      :header="t('text-rtf_ratio')"
-      dataType="Number"
-      align="right"
-      :format="projectModule.formatGrid('ratio')"
-    />
-    <WjFlexGridColumn binding="showDetailCol" :header="t('text-simple_short_reason')" :width="getWidthByKey('N2')" />
-    <WjFlexGridColumn binding="itemGroupID" :header="t('text-item_group')" dataType="String" />
-    <WjFlexGridColumn binding="itemID" :header="t('text-item_id')" dataType="String" />
-    <WjFlexGridColumn binding="itemName" :header="t('text-item_name')" dataType="String" />
-    <WjFlexGridColumn binding="dueWeek" :header="t('text-due_week')" dataType="String" align="center" />
-    <WjFlexGridColumn :width="getWidthByKey('S2')" binding="dueDate" :header="t('text-due_date')" dataType="String" />
-    <WjFlexGridColumn
-      :width="getWidthByKey('N2')"
-      binding="demandQty"
-      :header="t('text-demand_qty')"
-      dataType="Number"
-      align="right"
-      :format="projectModule.formatGrid('qty')"
-    />
-    <WjFlexGridColumn
-      :width="getWidthByKey('N2')"
-      binding="onTimeQty"
-      :header="t('text-on_time_qty')"
-      dataType="Number"
-      :format="projectModule.formatGrid('qty')"
-      align="right"
-    />
-    <WjFlexGridColumn
-      :width="getWidthByKey('N2')"
-      binding="lateQty"
-      :header="t('text-late_qty')"
-      dataType="Number"
-      :format="projectModule.formatGrid('qty')"
-      align="right"
-    />
-    <WjFlexGridColumn
-      :width="getWidthByKey('N2')"
-      binding="rtfQty"
-      :header="t('text-rtf_qty')"
-      dataType="Number"
-      :format="projectModule.formatGrid('qty')"
-      align="right"
-    />
-    <WjFlexGridColumn
-      :width="getWidthByKey('N2')"
-      binding="shortQty"
-      :header="t('text-short_qty')"
-      dataType="Number"
-      :format="projectModule.formatGrid('qty')"
-      align="right"
-    />
-    <WjFlexGridColumn
-      binding="qtyUom"
-      :header="t('text-qty_uom')"
-      dataType="String"
-      align="left"
-      :width="90"
-      :visible="false"
-    />
-    <WjFlexGridColumn binding="demand_type" :header="t('text-demand_type')" dataType="String" :visible="false" />
-    <WjFlexGridColumn binding="item_type" :header="t('text-item_type')" dataType="String" :visible="false" />
-    <WjFlexGridColumn binding="prod_type" :header="t('text-prod_type')" dataType="String" :visible="false" />
-    <WjFlexGridColumn binding="item_size_type" :header="t('text-item_size_type')" dataType="String" :visible="false" />
-    <WjFlexGridColumn binding="item_spec" :header="t('text-item_spec')" dataType="String" :visible="false" />
-
-    <WjFlexGridColumn
-      v-for="(col, idx) in propColumns"
-      :binding="col.binding"
-      :header="propHeaders[idx]"
-      dataType="String"
-      :width="120"
-      align="left"
-      :visible="false"
-    ></WjFlexGridColumn>
-  </ExtendFlexGrid>
+    <CellTemplate field="showDetailCol">
+      <span class="cs-link" @click="popup = true">{{ '상세 보기' }}</span>
+    </CellTemplate>
+  </MozGrid>
 
   <PlanByProdPop
     :showDetail="localState.showDetail"
@@ -324,20 +77,13 @@
         </Pane>
         <Pane size="30%" max-size="90%">
           <div v-if="!bomNetworkQuery.isFetching.value && bomNetworkInfos?.length" class="grid-sort-reason">
-            <ExtendFlexGrid
-              :height="'100%'"
+            <MozGrid
+              height="100%"
               class="moz-readonly-grid"
               :id="`${currentMenu.menuName}-sub2-short-info-modal-id`"
               :name="t(`${currentMenu.menuName}`) + '-sub2-short-info-modal'"
-              :use-preset="true"
-              :itemsSource="shortDataSource"
-              :initialized="onInitialized"
-              :formatItem="formatItem"
-              :isReadOnly="true"
-              :allowSorting="'None'"
-              :setContextMenuProps="{
-                useFlexGridSetting: false,
-                useGroupColumn: false,
+              :coreConfig="shortCoreConfig"
+              :contextMenuConfig="{
                 useViewSelectColumn: true,
                 useExportExcel: true,
                 useFilter: false,
@@ -351,70 +97,29 @@
                   }),
               }"
               :use-tool-box="false"
-              :empty-state="{
-                isLoading: shortQuery.isFetching.value,
+              :emptyState="{
                 contentMsg: '',
               }"
               :loading="shortQuery.isFetching.value"
             >
-              <WjFlexGridColumn
-                :width="getWidthByKey('S3')"
-                binding="shortType"
-                :header="t('text-short_type')"
-                align="center"
-              />
-              <WjFlexGridColumn
-                :width="getWidthByKey('S2')"
-                binding="shortCategory"
-                :header="t('text-short_category')"
-              />
-              <WjFlexGridColumn :width="getWidthByKey('DF')" binding="shortReason" :header="t('text-short_reason')">
-                <WjFlexGridCellTemplate cellType="Cell" v-slot="cell">
-                  <span
-                    class="wj-cell-text"
-                    v-tooltip="{
-                      text: t(`desc-${cell?.item?.shortType}-${cell?.item?.shortCategory}-${cell?.item?.shortReason}`),
-                    }"
-                    >{{
-                      convertToInternationalization(cell?.item?.shortReason, 'short', [
-                        'LackOfResourceCapacity',
-                        'LateReleaseLot',
-                        'InvalidBuffer',
-                        'InvalidCustomer',
-                        'InvalidItem',
-                        'InvalidSite',
-                      ])
-                    }}</span
-                  >
-                </WjFlexGridCellTemplate>
-              </WjFlexGridColumn>
-              <WjFlexGridColumn
-                :width="getWidthByKey('N2')"
-                binding="shortQty"
-                :header="t('text-short_qty')"
-                dataType="Number"
-                :format="projectModule.formatGrid('qty')"
-                align="right"
-              />
-              <WjFlexGridColumn
-                binding="qtyUom"
-                :header="t('text-qty_uom')"
-                dataType="String"
-                align="left"
-                :width="90"
-                :visible="false"
-              />
-              <WjFlexGridColumn
-                :width="getWidthByKey('S1')"
-                binding="shortDetailInfo"
-                :header="t('text-short_detail_info')"
-              />
-              <WjFlexGridColumn :width="getWidthByKey('S1')" binding="isbID" :header="t('text-isb_id')" />
-              <WjFlexGridColumn :width="getWidthByKey('S1')" binding="bomID" :header="t('text-bom_id')" />
-              <WjFlexGridColumn :width="getWidthByKey('S1')" binding="routingID" :header="t('text-routing_id')" />
-              <WjFlexGridColumn :width="getWidthByKey('DF')" binding="operID" :header="t('text-oper_id')" />
-              <WjFlexGridColumn :width="getWidthByKey('DF')" binding="resID" :header="t('text-res_id')" />
-            </ExtendFlexGrid>
+              <CellTemplate field="shortReason" #default="{ rowData }">
+                <span
+                  v-tooltip="{
+                    text: t(`desc-${rowData?.shortType}-${rowData?.shortCategory}-${rowData?.shortReason}`),
+                  }"
+                  >{{
+                    convertToInternationalization(String(rowData?.shortReason ?? ''), 'short', [
+                      'LackOfResourceCapacity',
+                      'LateReleaseLot',
+                      'InvalidBuffer',
+                      'InvalidCustomer',
+                      'InvalidItem',
+                      'InvalidSite',
+                    ])
+                  }}</span
+                >
+              </CellTemplate>
+            </MozGrid>
           </div>
         </Pane>
       </SplitPane>
@@ -428,59 +133,24 @@
     <!-- 컨텐츠 슬롯 -->
     <template #content>
       <div class="info-modal-content-wrapper">
-        <ExtendFlexGrid
+        <MozGrid
           height="100%"
           :id="`${t(currentMenu.menuName)}-item-info-modal-id`"
           :name="`${t(currentMenu.menuName)}-item-info-modal-name`"
-          :autoGenerateColumns="false"
-          :alternatingRowStep="0"
-          :itemsSource="selectedItemInfo"
-          :initialized="onItemInfoInitialized"
-          :isReadOnly="true"
+          :coreConfig="itemInfoCoreConfig"
           :emptyState="{
-            isLoading: itemDetailQuery.isFetching.value,
             contentMsg: '',
           }"
           :use-tool-box="true"
           :loading="itemDetailQuery.isFetching.value"
           :use-sort="true"
-          :use-preset="true"
-          :setContextMenuProps="{
-            useGroupColumn: false,
+          :contextMenuConfig="{
             useViewSelectColumn: true,
             useBulkEditColumn: false,
             useExportExcel: false,
             useExportImport: currentMenu?.isWrite,
           }"
-        >
-          <WjFlexGridColumn :width="150" binding="item_id" :header="t('text-item_id')" :isRequired="true" />
-          <WjFlexGridColumn :width="getWidthByKey('S3')" binding="item_type" :header="t('text-item_type')" />
-          <WjFlexGridColumn :width="150" binding="item_name" :header="t('text-item_name')" />
-          <WjFlexGridColumn :width="getWidthByKey('S2')" binding="item_group" :header="t('text-item_group')" />
-          <WjFlexGridColumn :width="getWidthByKey('S1')" binding="description" :header="t('text-description')" />
-          <WjFlexGridColumn
-            :width="getWidthByKey('N2')"
-            binding="item_priority"
-            :header="t('text-item_priority')"
-            dataType="Number"
-            align="right"
-          />
-          <WjFlexGridColumn
-            :width="getWidthByKey('S3')"
-            binding="procurement_type"
-            :header="t('text-procurement_type')"
-          />
-          <WjFlexGridColumn :width="getWidthByKey('S3')" binding="prod_type" :header="t('text-prod_type')" />
-          <WjFlexGridColumn :width="getWidthByKey('S3')" binding="item_size" :header="t('text-item_size')" />
-          <WjFlexGridColumn :width="getWidthByKey('S3')" binding="item_spec" :header="t('text-item_spec')" />
-          <WjFlexGridColumn
-            v-for="col in selectedItemColumnHeaders"
-            :width="150"
-            :binding="`${col}`"
-            :header="t(col)"
-            :cssClass="'master-prop-col'"
-          />
-        </ExtendFlexGrid>
+        />
       </div>
     </template>
   </InfoModal>
@@ -492,181 +162,44 @@
     </template>
     <template #content>
       <div class="demand-modal-content-wrapper">
-        <ExtendFlexGrid
+        <MozGrid
           height="100%"
           :id="`${t(currentMenu.menuName)}-demand-info-modal-id`"
           :name="`${t(currentMenu.menuName)}-demand-info-modal`"
-          :use-preset="true"
-          :autoGenerateColumns="false"
-          :alternatingRowStep="0"
-          :itemsSource="demandInfoSource"
-          :initialized="onDemandInfoInitialized"
-          :emptyState="{
-            isLoading: false,
-          }"
-          :isReadOnly="true"
-          :validateKey="'none'"
-          :setContextMenuProps="{
-            useGroupColumn: false,
+          :coreConfig="demandInfoCoreConfig"
+          :contextMenuConfig="{
             useViewSelectColumn: false,
             useBulkEditColumn: false,
             useExportExcel: false,
             useExportImport: false,
           }"
           :loading="false"
-        >
-          <WjFlexGridColumn
-            :width="getWidthByKey('S2')"
-            binding="demand_id"
-            :header="t('text-demand_id')"
-            :isRequired="true"
-          />
-          <WjFlexGridColumn
-            :width="getWidthByKey('DF')"
-            binding="item_id"
-            :header="t('text-item_id')"
-            :isRequired="true"
-          />
-          <WjFlexGridColumn
-            :width="getWidthByKey('S2')"
-            binding="site_id"
-            :header="t('text-site_id')"
-            :isRequired="true"
-          />
-          <WjFlexGridColumn
-            :width="getWidthByKey('S2')"
-            binding="buffer_id"
-            :header="t('text-buffer_id')"
-            :isRequired="true"
-          />
-          <WjFlexGridColumn
-            :width="getWidthByKey('D2')"
-            binding="due_date"
-            :header="t('text-due_date')"
-            dataType="Date"
-            format="yyyy-MM-dd"
-            align="center"
-            :isRequired="true"
-          />
-          <WjFlexGridColumn
-            :width="getWidthByKey('D1')"
-            binding="due_datetime"
-            :header="t('text-due_datetime')"
-            dataType="Date"
-            format="yyyy-MM-dd HH:mm:ss"
-            align="center"
-          />
-          <!-- mask="99:99:99" -->
-          <WjFlexGridColumn
-            :width="getWidthByKey('N2')"
-            binding="demand_qty"
-            :header="t('text-demand_qty')"
-            dataType="Number"
-            align="right"
-          />
-          <WjFlexGridColumn
-            :width="getWidthByKey('N2')"
-            binding="demand_priority"
-            :header="t('text-demand_priority')"
-            dataType="Number"
-            align="right"
-          />
-          <WjFlexGridColumn :width="getWidthByKey('S2')" binding="cust_id" :header="t('text-cust_id')" />
-          <WjFlexGridColumn :width="getWidthByKey('S3')" binding="demand_type" :header="t('text-demand_type')" />
-          <WjFlexGridColumn
-            :width="getWidthByKey('N2')"
-            binding="max_lateness_day"
-            :header="t('text-max_lateness_day')"
-            dataType="Number"
-            align="right"
-          />
-          <WjFlexGridColumn
-            :width="getWidthByKey('N2')"
-            binding="max_earliness_day"
-            :header="t('text-max_earliness_day')"
-            dataType="Number"
-            align="right"
-          />
-          <WjFlexGridColumn :width="getWidthByKey('S2')" binding="demand_group" :header="t('text-demand_group')" />
-          <WjFlexGridColumn
-            :width="getWidthByKey('S2')"
-            binding="final_item_buffer_id"
-            :header="t('text-final_item_buffer_id')"
-          />
-          <WjFlexGridColumn :width="getWidthByKey('S1')" binding="description" :header="t('text-description')" />
-          <!-- <WjFlexGridColumn
-            v-for="col in propColumns"
-            :binding="col.binding"
-            :header="col.header"
-            :dataType="col.dataType"
-            :width="col.width"
-            :align="col.align"
-          ></WjFlexGridColumn> -->
-          <WjFlexGridColumn
-            :width="getWidthByKey('S2')"
-            binding="legacy_data_version"
-            :header="t('text-legacy_data_version')"
-            :isReadOnly="true"
-            :visible="false"
-          />
-          <WjFlexGridColumn
-            :width="getWidthByKey('S2')"
-            binding="interfaced_from"
-            :header="t('text-interfaced_from')"
-            :isReadOnly="true"
-            :visible="false"
-          />
-
-          <WjFlexGridColumn
-            :width="getWidthByKey('D1')"
-            binding="create_datetime"
-            :header="t('text-create_datetime')"
-            dataType="Date"
-            format="yyyy-MM-dd HH:mm:ss"
-            align="center"
-            :isReadOnly="true"
-          />
-          <WjFlexGridColumn
-            :width="getWidthByKey('S2')"
-            binding="create_user_id"
-            :header="t('text-create_user_id')"
-            :isReadOnly="true"
-          />
-          <WjFlexGridColumn
-            :width="getWidthByKey('D1')"
-            binding="update_datetime"
-            :header="t('text-update_datetime')"
-            dataType="Date"
-            format="yyyy-MM-dd HH:mm:ss"
-            align="center"
-            :isReadOnly="true"
-          />
-          <WjFlexGridColumn
-            :width="getWidthByKey('S2')"
-            binding="update_user_id"
-            :header="t('text-update_user_id')"
-            :isReadOnly="true"
-          />
-        </ExtendFlexGrid>
+        />
         <!-- 수요 정보용 그리드나 다른 컨텐츠 -->
       </div>
     </template>
   </InfoModal>
 </template>
 <script setup lang="ts">
-import ExtendGridContextOpenNewTab from './components/ExtendGridContextOpenNewTab.vue';
+import { createOpenNewTabMenu, useGridContextTarget } from './components/gridContextMenu';
 import { useInfoModalStore } from './components/InfoModal';
 import InfoModal from './components/InfoModal.vue';
 import { downloadBigData, useMenuStore, usePlanCycleStore } from './adapters/stores';
 import { useLoadStore, useProjectInfoStore } from './adapters/stores';
-import { convertToInternationalization } from './adapters/utils';
+import { convertToInternationalization, ROW_KEY, withRowKey } from './adapters/utils';
 import BomMapInterface from './components/bom-map/BomMapInterface.vue';
-import { FlexGrid, FormatItemEventArgs, GroupRow } from '@vmscloud/moz-wijmo-grid/wijmo.grid';
-import { WjFlexGridCellTemplate, WjFlexGridColumn } from '@vmscloud/moz-wijmo-grid/wijmo.vue2.grid';
-import { EmptyState, Pane, Popup, SplitPane } from '@vmscloud/moz-ui-components';
-import { ExtendFlexGrid, type ExtendGrid } from '@vmscloud/moz-wijmo-grid';
-import { useExcelStore } from '@vmscloud/moz-wijmo-grid/store';
-import { getWidthByKey, isDataCell } from '@vmscloud/moz-wijmo-grid/utils';
+import { CellTemplate, MozGrid } from '@vmscloud/moz-ui-grid-vue';
+import type {
+  FieldDef,
+  GridChrome,
+  IContextMenuConfig,
+  MaskConfig,
+  MozGridCoreProps,
+  PureSheet,
+} from '@vmscloud/moz-ui-grid-vue';
+import { EmptyState, Pane, Popup, SplitPane } from '@vmscloud/moz-ui-components-vue';
+import { useExcelStore } from '@/shims/grid/store';
+import { getWidthByKey } from '@/shims/grid/utils';
 import { camelToSnake, showMessage } from '@moz-shared/utils';
 import { useQueryClient } from '@tanstack/vue-query';
 import { debounce } from 'es-toolkit';
@@ -773,9 +306,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', updateWindowWidth);
 });
 
-const grid = ref<FlexGrid | null>(null); // Wijmo grid
-const extendGrid = ref<ExtendGrid | null>(null); // Wijmo grid
-const gridRef = ref();
+const grid = shallowRef<PureSheet | null>(null); // 코어 그리드
 const localState: {
   showDetail: boolean;
   selectedItem: any;
@@ -785,6 +316,7 @@ const localState: {
 });
 const detailDataSource = shallowRef<any[]>([]);
 const selectedCellPosition = ref<any>();
+const { target: contextTarget, onContextMenu: onGridContextMenu } = useGridContextTarget();
 
 /**
  * INITIALIZE
@@ -794,50 +326,190 @@ onMounted(() => {
 });
 
 // GRID INITIALIZE
-const onInitialized = (flexGrid: FlexGrid, _extendGrid: ExtendGrid) => {
-  grid.value = flexGrid;
-  extendGrid.value = _extendGrid;
-
-  grid.value.loadedRows.addHandler(async () => {
-    await nextTick(() => {
-      if (grid.value) {
-        grid.value.collapseGroupsToLevel(0);
-      }
-    });
-  });
+const onReady = (pureSheet: PureSheet, _chrome: GridChrome) => {
+  grid.value = pureSheet;
 };
 
-const onSelectionChanged = debounce((s: FlexGrid, e: any) => {
-  const { row, col } = s.selection;
-
-  if (row < 0 || col < 0) {
+const onSelectionChanged = debounce((dataItem: any, cellElement?: HTMLElement | null) => {
+  if (!dataItem) {
     demandID.value = '';
   } else {
-    const dataItem = e.getRow().dataItem;
     demandID.value = dataItem.demandID;
     detailItemId.value = dataItem.itemID;
 
     // 선택된 셀의 DOM 요소와 위치 정보 얻기
-    const cellElement = s.getCellBoundingRect(row, col);
     if (cellElement) {
-      selectedCellPosition.value = cellElement;
+      selectedCellPosition.value = cellElement.getBoundingClientRect();
     }
   }
 
   refSub3.value?.onLoad();
 }, 300);
 
-const onItemInfoInitialized = (_s: FlexGrid, _e: any) => {};
+const onCellClick = (payload: any) => {
+  const cellElement = (payload?.event?.target as HTMLElement | undefined)?.closest?.('.ps-cell') as HTMLElement | null;
+  onSelectionChanged(payload?.row, cellElement);
+};
 
-const onDemandInfoInitialized = (_s: FlexGrid, _e: any) => {};
+const onContextMenu = (payload: any) => {
+  onGridContextMenu(payload);
+  // 우클릭한 셀 기준으로 정보 모달을 띄운다 (옛 그리드는 우클릭 시 셀이 선택됐다)
+  if (contextTarget.value.cell?.rect) {
+    selectedCellPosition.value = contextTarget.value.cell.rect;
+  }
+};
+
+const isHeaderTarget = () => contextTarget.value.cell?.area !== 'cell';
+
+const openNewTabMenus = [
+  createOpenNewTabMenu(
+    'openProdPlanByOper',
+    {
+      route: (item: any) => {
+        return {
+          path: `/sp/ProdPlanByOper`,
+          query: {
+            planCycle: mainLoadParams.value.planCycleID,
+            planVer: mainLoadParams.value.planVer,
+            fromDate: fromDate.value?.format('YYYY-MM-DD') ?? '',
+            toDate: toDate.value?.format('YYYY-MM-DD') ?? '',
+            [`buffer[A]`]: 'All',
+            [`itemGroup[+]`]: `${[item?.itemGroupID]}`,
+            [`item[+]`]: `${[item?.itemID]}`,
+          },
+        };
+      },
+      disabled: (item: any) => {
+        return !(item?.itemID || item?.itemGroup);
+      },
+      label: t('text-context-open_prod_plan_by_oper'),
+    },
+    () => contextTarget.value,
+  ),
+  createOpenNewTabMenu(
+    'openDemand',
+    {
+      route: (item: any) => {
+        return {
+          path: `/dm/Demand`,
+          query: {
+            planCycle: mainLoadParams.value.planCycleID,
+            planVer: mainLoadParams.value.planVer,
+            [`item[+]`]: `${[item?.itemID]}`,
+            [`demandVer[+]`]: `${[demandVer.value]}`,
+          },
+        };
+      },
+      disabled: (item: any) => {
+        return !item?.itemID;
+      },
+      label: t('text-context-open_demand'),
+    },
+    () => contextTarget.value,
+  ),
+  createOpenNewTabMenu(
+    'openBomMapPlanView',
+    {
+      route: (item: any) => {
+        return {
+          path: `/sp/BomMapPlanView`,
+          query: {
+            planCycle: mainLoadParams.value.planCycleID,
+            planVer: mainLoadParams.value.planVer,
+            demandItemID: item?.itemID,
+            demandID: item?.demandID,
+          },
+        };
+      },
+      disabled: (item: any) => {
+        return !(item?.demandItemID || item?.itemID || item?.demandID);
+      },
+      label: t('text-context-open_bom_map_plan_view'),
+    },
+    () => contextTarget.value,
+  ),
+  createOpenNewTabMenu(
+    'openFgsStockInPlan',
+    {
+      route: (item: any) => {
+        return {
+          path: `/sp/FgsStockInPlan`,
+          query: {
+            planCycle: mainLoadParams.value.planCycleID,
+            planVer: mainLoadParams.value.planVer,
+            fromDate: fromDate.value?.format('YYYY-MM-DD') ?? '',
+            toDate: toDate.value?.format('YYYY-MM-DD') ?? '',
+            [`item[+]`]: item?.itemID,
+            [`itemGroup[+]`]: `${[item?.itemGroupID]}`,
+          },
+        };
+      },
+      disabled: (item: any) => {
+        return !(item?.demandItemID || item?.itemID || item?.demandID);
+      },
+      label: t('text-context-open_fgs_prod_plan'),
+    },
+    () => contextTarget.value,
+  ),
+];
+
+const detailContextMenuConfig = computed<IContextMenuConfig>(() => ({
+  useFilter: true,
+  useExportExcel: true,
+  customMenu: [
+    {
+      id: 'openView',
+      label: t(`text-view-item-additional-prop`),
+      handler: () => {
+        if (isHeaderTarget()) return;
+        if (!open.value && selectedCellPosition.value) {
+          modalOpen(
+            selectedCellPosition.value.left,
+            selectedCellPosition.value.top + selectedCellPosition.value.height + 5,
+          );
+        }
+      },
+    },
+    {
+      id: 'openDemandInfo',
+      label: t('text-open-demand-info-detail-view'),
+      handler: () => {
+        if (isHeaderTarget()) return;
+        if (!demandOpen.value && selectedCellPosition.value) {
+          demandModalOpen(
+            selectedCellPosition.value.left,
+            selectedCellPosition.value.top + selectedCellPosition.value.height + 5,
+          );
+        }
+      },
+    },
+    { id: 'sep-open-view', label: '', separator: true },
+    ...openNewTabMenus,
+  ],
+  onExportOriginalData: () =>
+    downloadBigData({
+      /**
+       * @todo 백엔드 API 스네이크 케이스로 받고 변환처리하는 로직 제거
+       * 서버에서 받는 케이스가 안 맞아서 `createColumnMapForExport(coreConfig.fields)`로 처리 불가능 함
+       */
+      column_map: camelToSnake(
+        propColumnsModule.parseExcel(
+          // 현재 표시 중인 컬럼만 내보내도록 런타임 컬럼 상태(visible)를 넘긴다
+          excelModule.createColumnMapForExport(grid.value?.columns.getAll() ?? detailCoreConfig.value.fields),
+        ),
+      ),
+      file_name: `${t(`${menuModule.currentMenu.menuName}`)}_${detailLoadParams.value.planVer}`,
+      data_method: 'POST',
+      data_parameter: JSON.stringify(detailLoadParams.value),
+      api_key: detailApiKey,
+    }),
+}));
 
 /**
  * @description 하나의 tick 사이클에서 처리되어야 함. 전체 목록을 기록하는 과정이 있어야 prop 컬럼들에 대해서 채번이 가능해짐.
  * 갱신에 반응함. 그래서 고정된 문자열 배열로 처리해야 함.
  */
 const propHeaders = computed(() => {
-  if (!grid.value) return [];
-
   const result: string[] = [
     t('text-demand_id'),
     t('text-cust_name'),
@@ -862,38 +534,8 @@ const propHeaders = computed(() => {
     t('text-item_spec'),
   ];
 
-  // const columns = [
-  //   t('text-demand_id'),
-  //   t('text-cust_name'),
-  //   t('text-on_time_ratio'),
-  //   t('text-late_ratio'),
-  //   t('text-rtf_ratio'),
-  //   t('text-item_group'),
-  //   t('text-item_id'),
-  //   t('text-item_name'),
-  //   t('text-due_week'),
-  //   t('text-due_date'),
-  //   t('text-demand_qty'),
-  //   t('text-on_time_qty'),
-  //   t('text-late_qty'),
-  //   t('text-rtf_qty'),
-  //   t('text-short_qty'),
-  //   t('text-qty_uom'),
-  //   t('text-demand_type'),
-  //   t('text-item_type'),
-  //   t('text-prod_type'),
-  //   t('text-item_size_type'),
-  //   t('text-item_spec'),
-  // ];
-
-  // propColumns의 binding 목록 (prop 컬럼 식별용)
-  const propBindings = new Set(propColumns.value.map((col) => col.binding));
-
-  // prop 컬럼이 아닌 일반 컬럼의 header만 수집 (갱신 시 기존 prop 컬럼 제외)
-  const existingHeaders = grid.value?.columns
-    .filter((col) => !propBindings.has(col.binding ?? ''))
-    .map((col) => col.header)
-    .filter(Boolean) as string[];
+  // prop 컬럼이 아닌 일반 컬럼의 header (갱신 시 기존 prop 컬럼 제외)
+  const existingHeaders = [...result, t('text-simple_short_reason')];
 
   propColumns.value.forEach((prop) => {
     // 정규식 특수문자 이스케이프
@@ -915,87 +557,239 @@ const propHeaders = computed(() => {
   return result;
 });
 
-const formatItem = (s: FlexGrid, e: FormatItemEventArgs) => {
-  if (!isDataCell(s, e)) return;
-  if (e.getRow() instanceof GroupRow) return;
+const qtyFields = ['rtfQty', 'demandQty', 'onTimeQty', 'shortQty', 'lateQty'];
+const ratioFields = ['rtfRatio', 'onTimeRatio', 'lateRatio'];
 
-  const item = e.getRow()?.dataItem;
-  const col = e.getColumn().binding as
-    | 'demandID'
-    | 'custID'
-    | 'onTimeRatio'
-    | 'lateRatio'
-    | 'rtfRatio'
-    | 'itemGroupID'
-    | 'itemID'
-    | 'itemName'
-    | 'itemName'
-    | 'dueWeek'
-    | 'dueDate'
-    | 'demandQty'
-    | 'onTimeQty'
-    | 'lateQty'
-    | 'rtfQty'
-    | 'shortQty'
-    | 'showDetailCol';
-  const cell = e.cell.querySelector('span') != null ? e.cell.querySelector('span') : e.cell;
-  if (!cell) return;
-
-  switch (col) {
-    case 'rtfQty':
-    case 'demandQty':
-    case 'onTimeQty':
-    case 'shortQty':
-    case 'lateQty':
-      cell.textContent = item[col].toLocaleString();
-      break;
-
-    case 'rtfRatio':
-    case 'onTimeRatio':
-    case 'lateRatio':
-      cell.textContent = `${item[col]}%`;
-      break;
-    case 'showDetailCol':
-      cell.textContent = `${'상세 보기'}`;
-      cell.style.cursor = 'pointer';
-      cell.style.color = '#4568e0';
-      cell.style.textDecoration = 'underline';
-      cell.addEventListener('click', () => {
-        popup.value = true;
-      });
-      break;
-    default:
-      break;
+/**
+ * short이 그리드 표시 우선순위에 더 중요해서 다음과 같이 분기처리함
+ */
+const ratioCellAttributes = ({ row: rowData, columnId }: { row: any; columnId: string }) => {
+  const classes: string[] = [];
+  if (rowData?.rtfRatio < 100) {
+    classes.push('ratio-short');
+    if (columnId === 'rtfRatio') classes.push('ratio-short-font');
   }
-
-  // short이 그리드 표시 우선순위에 더 중요해서 다음과 같이 분기처리함
-  if (item.rtfRatio < 100) {
-    e.cell.classList.add('ratio-short');
+  if (rowData?.rtfRatio === 100 && rowData?.lateRatio > 0) {
+    classes.push('ratio-late');
   }
-  if (item.rtfRatio === 100 && item.lateRatio > 0) {
-    e.cell.classList.add('ratio-late');
-  }
-
-  switch (col) {
-    // case "SHORT_QTY":
-    //   if (item.RTF_RATIO < 100) {
-    //     const cell = e.cell.querySelector("span") != null ? e.cell.querySelector("span") : e.cell;
-    //     cell.textContent = "0";
-    //   }
-    //   break;
-    case 'rtfRatio':
-      if (item.rtfRatio < 100) {
-        e.cell.classList.add('ratio-short-font');
-      }
-      break;
-    default:
-      break;
-  }
-
-  // if (col === 'lateQty' && e.cell.innerText === '-0') {
-  //   e.cell.innerText = '0';
-  // }
+  return classes.length ? { class: classes.join(' ') } : undefined;
 };
+
+const ratioMask = {
+  type: 'function' as const,
+  formatter: (value: unknown) => (value === null || value === undefined ? '' : `${value}%`),
+};
+
+const detailCoreConfig = computed<MozGridCoreProps>(() => {
+  const qtyMask: MaskConfig = { type: 'numeric', pattern: '#,##0.###' };
+  const field = (id: string, header: string, extra: Partial<FieldDef> = {}): FieldDef => ({
+    id,
+    header,
+    dataType: 'string',
+    sortable: false,
+    cellAttributes: ratioCellAttributes,
+    ...(qtyFields.includes(id) ? { dataType: 'number', align: 'right', mask: qtyMask } : {}),
+    ...(ratioFields.includes(id) ? { dataType: 'number', align: 'right', mask: ratioMask } : {}),
+    ...extra,
+  });
+
+  return {
+    mode: 'flat',
+    keyFields: [ROW_KEY],
+    data: detailDataSource.value,
+    fields: [
+      field('demandID', t('text-demand_id'), { width: 80, align: 'left' }),
+      field('custID', t('text-cust_name'), { width: 80 }),
+      field('onTimeRatio', t('text-on_time_ratio'), { width: getWidthByKey('N2') }),
+      field('lateRatio', t('text-late_ratio'), { width: getWidthByKey('N2') }),
+      field('rtfRatio', t('text-rtf_ratio'), { width: getWidthByKey('N2') }),
+      field('showDetailCol', t('text-simple_short_reason'), { width: getWidthByKey('N2') }),
+      field('itemGroupID', t('text-item_group')),
+      field('itemID', t('text-item_id')),
+      field('itemName', t('text-item_name')),
+      field('dueWeek', t('text-due_week'), { align: 'center' }),
+      field('dueDate', t('text-due_date'), { width: getWidthByKey('S2') }),
+      field('demandQty', t('text-demand_qty'), { width: getWidthByKey('N2') }),
+      field('onTimeQty', t('text-on_time_qty'), { width: getWidthByKey('N2') }),
+      field('lateQty', t('text-late_qty'), { width: getWidthByKey('N2') }),
+      field('rtfQty', t('text-rtf_qty'), { width: getWidthByKey('N2') }),
+      field('shortQty', t('text-short_qty'), { width: getWidthByKey('N2') }),
+      field('qtyUom', t('text-qty_uom'), { align: 'left', width: 90, hidden: true }),
+      field('demand_type', t('text-demand_type'), { hidden: true }),
+      field('item_type', t('text-item_type'), { hidden: true }),
+      field('prod_type', t('text-prod_type'), { hidden: true }),
+      field('item_size_type', t('text-item_size_type'), { hidden: true }),
+      field('item_spec', t('text-item_spec'), { hidden: true }),
+      ...propColumns.value.map((col, idx) =>
+        field(col.binding, propHeaders.value[idx], { width: 120, align: 'left', hidden: true }),
+      ),
+    ],
+  };
+});
+
+const shortCoreConfig = computed<MozGridCoreProps>(() => {
+  const fields: FieldDef[] = [
+    { id: 'shortType', header: t('text-short_type'), dataType: 'string', width: getWidthByKey('S3'), align: 'center' },
+    { id: 'shortCategory', header: t('text-short_category'), dataType: 'string', width: getWidthByKey('S2') },
+    { id: 'shortReason', header: t('text-short_reason'), dataType: 'string', width: getWidthByKey('DF') },
+    {
+      id: 'shortQty',
+      header: t('text-short_qty'),
+      dataType: 'number',
+      width: getWidthByKey('N2'),
+      align: 'right',
+      mask: { type: 'numeric', pattern: '#,##0.###' },
+    },
+    { id: 'qtyUom', header: t('text-qty_uom'), dataType: 'string', align: 'left', width: 90, hidden: true },
+    { id: 'shortDetailInfo', header: t('text-short_detail_info'), dataType: 'string', width: getWidthByKey('S1') },
+    { id: 'isbID', header: t('text-isb_id'), dataType: 'string', width: getWidthByKey('S1') },
+    { id: 'bomID', header: t('text-bom_id'), dataType: 'string', width: getWidthByKey('S1') },
+    { id: 'routingID', header: t('text-routing_id'), dataType: 'string', width: getWidthByKey('S1') },
+    { id: 'operID', header: t('text-oper_id'), dataType: 'string', width: getWidthByKey('DF') },
+    { id: 'resID', header: t('text-res_id'), dataType: 'string', width: getWidthByKey('DF') },
+  ];
+
+  return {
+    mode: 'flat',
+    keyFields: [ROW_KEY],
+    data: shortDataSource.value,
+    fields: fields.map((field) => ({ ...field, sortable: false })),
+  };
+});
+
+const itemInfoCoreConfig = computed<MozGridCoreProps>(() => ({
+  mode: 'flat',
+  keyFields: [ROW_KEY],
+  data: selectedItemInfo.value,
+  fields: [
+    { id: 'item_id', header: t('text-item_id'), dataType: 'string', width: 150 },
+    { id: 'item_type', header: t('text-item_type'), dataType: 'string', width: getWidthByKey('S3') },
+    { id: 'item_name', header: t('text-item_name'), dataType: 'string', width: 150 },
+    { id: 'item_group', header: t('text-item_group'), dataType: 'string', width: getWidthByKey('S2') },
+    { id: 'description', header: t('text-description'), dataType: 'string', width: getWidthByKey('S1') },
+    {
+      id: 'item_priority',
+      header: t('text-item_priority'),
+      dataType: 'number',
+      width: getWidthByKey('N2'),
+      align: 'right',
+    },
+    { id: 'procurement_type', header: t('text-procurement_type'), dataType: 'string', width: getWidthByKey('S3') },
+    { id: 'prod_type', header: t('text-prod_type'), dataType: 'string', width: getWidthByKey('S3') },
+    { id: 'item_size', header: t('text-item_size'), dataType: 'string', width: getWidthByKey('S3') },
+    { id: 'item_spec', header: t('text-item_spec'), dataType: 'string', width: getWidthByKey('S3') },
+    ...selectedItemColumnHeaders.value.map((col): FieldDef => ({
+      id: `${col}`,
+      header: t(col),
+      dataType: 'string',
+      width: 150,
+      cellAttributes: { class: 'master-prop-col' },
+    })),
+  ],
+}));
+
+const demandInfoCoreConfig = computed<MozGridCoreProps>(() => {
+  const dateMask: MaskConfig = { type: 'date', pattern: 'YYYY-MM-DD' };
+  const dateTimeMask: MaskConfig = { type: 'date', pattern: 'YYYY-MM-DD HH:mm:ss' };
+
+  return {
+    mode: 'flat',
+    keyFields: [ROW_KEY],
+    data: demandInfoSource.value,
+    fields: [
+      { id: 'demand_id', header: t('text-demand_id'), dataType: 'string', width: getWidthByKey('S2') },
+      { id: 'item_id', header: t('text-item_id'), dataType: 'string', width: getWidthByKey('DF') },
+      { id: 'site_id', header: t('text-site_id'), dataType: 'string', width: getWidthByKey('S2') },
+      { id: 'buffer_id', header: t('text-buffer_id'), dataType: 'string', width: getWidthByKey('S2') },
+      {
+        id: 'due_date',
+        header: t('text-due_date'),
+        dataType: 'date',
+        width: getWidthByKey('D2'),
+        align: 'center',
+        mask: dateMask,
+      },
+      {
+        id: 'due_datetime',
+        header: t('text-due_datetime'),
+        dataType: 'date',
+        width: getWidthByKey('D1'),
+        align: 'center',
+        mask: dateTimeMask,
+      },
+      {
+        id: 'demand_qty',
+        header: t('text-demand_qty'),
+        dataType: 'number',
+        width: getWidthByKey('N2'),
+        align: 'right',
+      },
+      {
+        id: 'demand_priority',
+        header: t('text-demand_priority'),
+        dataType: 'number',
+        width: getWidthByKey('N2'),
+        align: 'right',
+      },
+      { id: 'cust_id', header: t('text-cust_id'), dataType: 'string', width: getWidthByKey('S2') },
+      { id: 'demand_type', header: t('text-demand_type'), dataType: 'string', width: getWidthByKey('S3') },
+      {
+        id: 'max_lateness_day',
+        header: t('text-max_lateness_day'),
+        dataType: 'number',
+        width: getWidthByKey('N2'),
+        align: 'right',
+      },
+      {
+        id: 'max_earliness_day',
+        header: t('text-max_earliness_day'),
+        dataType: 'number',
+        width: getWidthByKey('N2'),
+        align: 'right',
+      },
+      { id: 'demand_group', header: t('text-demand_group'), dataType: 'string', width: getWidthByKey('S2') },
+      {
+        id: 'final_item_buffer_id',
+        header: t('text-final_item_buffer_id'),
+        dataType: 'string',
+        width: getWidthByKey('S2'),
+      },
+      { id: 'description', header: t('text-description'), dataType: 'string', width: getWidthByKey('S1') },
+      {
+        id: 'legacy_data_version',
+        header: t('text-legacy_data_version'),
+        dataType: 'string',
+        width: getWidthByKey('S2'),
+        hidden: true,
+      },
+      {
+        id: 'interfaced_from',
+        header: t('text-interfaced_from'),
+        dataType: 'string',
+        width: getWidthByKey('S2'),
+        hidden: true,
+      },
+      {
+        id: 'create_datetime',
+        header: t('text-create_datetime'),
+        dataType: 'date',
+        width: getWidthByKey('D1'),
+        align: 'center',
+        mask: dateTimeMask,
+      },
+      { id: 'create_user_id', header: t('text-create_user_id'), dataType: 'string', width: getWidthByKey('S2') },
+      {
+        id: 'update_datetime',
+        header: t('text-update_datetime'),
+        dataType: 'date',
+        width: getWidthByKey('D1'),
+        align: 'center',
+        mask: dateTimeMask,
+      },
+      { id: 'update_user_id', header: t('text-update_user_id'), dataType: 'string', width: getWidthByKey('S2') },
+    ],
+  };
+});
 
 const onloadDetail = async () => {
   saveDetailParams();
@@ -1006,11 +800,12 @@ const onloadDetail = async () => {
 
   if (detailQuery.isSuccess.value) {
     if (detailQuery.data.value?.length) {
-      detailDataSource.value = toRaw(detailQuery.data.value).map((elem: any) => {
+      detailDataSource.value = toRaw(detailQuery.data.value).map((elem: any, idx: number) => {
         propColumnsModule.parseFlex(elem);
         const [date, rangeStart, rangeEnd] = elem.dueDate.split(' ');
         return {
           ...elem,
+          [ROW_KEY]: idx,
           dueWeek: projectModule.convertToFormat('dateWeek', elem.dueWeek),
           dueDate: `${projectModule.convertToFormat('date', date)} ${rangeStart} ${rangeEnd}`,
         };
@@ -1073,7 +868,7 @@ watchEffect(
   () => {
     if (shortQuery.isSuccess.value) {
       if (shortQuery.data.value) {
-        shortDataSource.value = toRaw(shortQuery.data.value);
+        shortDataSource.value = withRowKey(toRaw(shortQuery.data.value));
       } else {
         shortDataSource.value = [];
       }
@@ -1115,7 +910,7 @@ watchEffect(
         });
 
         nextTick(() => {
-          selectedItemInfo.value = [toRaw(itemDetailQuery.data.value)];
+          selectedItemInfo.value = withRowKey([toRaw(itemDetailQuery.data.value)]);
         });
       } else {
         selectedItemColumnHeaders.value = [];
@@ -1138,7 +933,7 @@ watchEffect(
     if (planVer.value && demandDetailQuery.isSuccess.value) {
       if (demandDetailQuery.data.value) {
         nextTick(() => {
-          demandInfoSource.value = toRaw(demandDetailQuery.data.value);
+          demandInfoSource.value = withRowKey(toRaw(demandDetailQuery.data.value));
         });
       } else {
         demandInfoSource.value = [];
@@ -1154,7 +949,7 @@ watchEffect(
 
 /**
  * @todo 백엔드 API 스네이크 케이스로 받고 하드코딩된 로직 제거
- * 서버에서 받는 케이스가 안 맞아서 `excelModule.createColumnMapForExport(grid as FlexGrid)`으로 처리 불가능 함
+ * 서버에서 받는 케이스가 안 맞아서 `createColumnMapForExport(coreConfig.fields)`로 처리 불가능 함
  */
 const COLUMN_MAP = {
   short_type: {
@@ -1236,77 +1031,25 @@ const itemInfoHeaderText = computed(() => `제품 정보 보기`);
 defineExpose({ onLoad, resetDetailDataSource });
 </script>
 <style lang="scss">
-.moz-readonly-grid.rtf-report-sub2.wj-flexgrid .wj-cells .wj-row {
-  &:nth-child(n) {
-    .wj-cell.ratio-short {
-      // 흰 배경일때 ratio-short 일때
-      background-color: #f6d5d5 !important;
+.moz-readonly-grid.rtf-report-sub2 {
+  .ps-cell.ratio-short {
+    background-color: #f6d5d5;
+  }
 
-      // 그 상태에서 clicked 했을때
-      &.aleatorik-clicked-state {
-        background-color: #eae0ec !important;
-      }
-    }
+  .ps-cell.ratio-late {
+    background-color: #fde6c8;
+  }
 
-    .wj-cell.ratio-late {
-      // 흰 배경일때 ratio-late 일때
-      background-color: #fde6c8 !important;
-
-      // 그 상태에서 clicked 했을때
-      &.aleatorik-clicked-state {
-        background-color: #eae0ec !important;
-      }
+  .ps-row:hover,
+  .ps-row.ps-selected {
+    .ps-cell.ratio-short,
+    .ps-cell.ratio-late {
+      background-color: #d4cde8;
     }
   }
 
-  &:nth-child(2n) {
-    .wj-cell.ratio-short {
-      // 파란 배경에서 ratio-short 일때
-      background-color: #f1d0d4 !important;
-
-      &.aleatorik-clicked-state {
-        background-color: #e5daea !important;
-      }
-    }
-
-    .wj-cell.ratio-late {
-      // 파란 배경에서 ratio-late 일때
-      background-color: #f8e1c7 !important;
-
-      &.aleatorik-clicked-state {
-        background-color: #e5daea !important;
-      }
-    }
-  }
-
-  .wj-cell.ratio-short:not(.wj-header) {
-    &.wj-state-multi-selected,
-    &.wj-state-active {
-      background-color: #d4cde8 !important;
-    }
-  }
-
-  &:hover {
-    .wj-cell.ratio-short:not(.wj-header) {
-      background-color: #d4cde8 !important;
-    }
-  }
-
-  .wj-cell.ratio-late:not(.wj-header) {
-    &.wj-state-multi-selected,
-    &.wj-state-active {
-      background-color: #d4cde8 !important;
-    }
-  }
-
-  &:hover {
-    .wj-cell.ratio-late:not(.wj-header) {
-      background-color: #d4cde8 !important;
-    }
-  }
-
-  .ratio-short-font span {
-    color: #dc5a5a !important;
+  .ps-cell.ratio-short-font {
+    color: #dc5a5a;
   }
 }
 

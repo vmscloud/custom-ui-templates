@@ -155,40 +155,24 @@
   <div class="moz-frame-for-outer-control">
     <SplitPane horizontal>
       <Pane size="60%" min-size="30%">
-        <div class="re-execute-pane">
-          <ExtendPivotGrid
-            v-memo="[pivotDataSource, valueFields]"
-            :name="`re-execute-plan-pivot`"
-            :id="`re-execute-plan-pivot-id`"
-            :emptyState="{ isLoading: false }"
-            class="prod-plan-ins-main"
-            ref="extendPivot"
-            height="100%"
-            :itemsSource="pivotDataSource"
-            :engine-option="{
-              fields: fields,
-              rowFields: rowFields,
-              columnFields: columnFields,
-              valueFields: valueFields,
-              showRowTotals: dataState.showRowTotals,
-              showColumnTotals: dataState.showColumnTotals,
-              showZeros: dataState.showZeros,
-              totalsBeforeData: dataState.totalsBeforeData,
-            }"
-            :initialized="pivotOnInitialized"
-            :panel-on-update="updateView"
-            :formatItem="pivotFormatItem"
-            :pivotRef="extendPivot"
-            :usePivotChart="false"
-            :use-tool-box-setting="false"
-            :loading="false"
-            :use-tool-box="false"
-            :use-preset="true"
-          >
-          </ExtendPivotGrid>
-          <!-- ExtendPivotGrid 내장 loading overlay 는 v-memo 에 갇혀 false 로 갱신 안 됨 →
-               내장은 항상 off 로 고정하고, fetch + PivotEngine 집계 전 구간을 v-memo 밖
-               overlay 로 커버. -->
+        <div ref="pivotPaneRef" class="re-execute-pane">
+          <!-- 원본은 월 헤더 셀에 단위를 붙였다. 피벗 헤더에는 열 필드명 셀이 없어 그리드 위에 표시한다. -->
+          <div class="pivot-uom-label">{{ uomLabel }}</div>
+          <div class="pivot-grid-wrapper">
+            <MozGrid
+              name="re-execute-plan-pivot"
+              class="prod-plan-ins-main"
+              :coreConfig="pivotConfig"
+              height="100%"
+              :useToolBox="false"
+              :useToolBoxSetting="false"
+              :loading="false"
+              @ready="pivotOnReady"
+              @data:loaded="onPivotDataLoaded"
+              @cell:click="onPivotCellClick"
+            />
+          </div>
+          <!-- 그리드 내장 loading 은 끄고, fetch + 피벗 집계 전 구간을 overlay 로 커버. -->
           <div v-if="isPivotRendering" class="pivot-rendering-overlay">
             <div class="pivot-rendering-spinner"></div>
             <div class="pivot-rendering-text">{{ t('text-loading') || '로딩 중...' }}</div>
@@ -196,133 +180,20 @@
         </div>
       </Pane>
       <Pane size="40%" min-size="30%">
-        <div class="modify-demand-pane">
-          <ExtendFlexGrid
-            style="width: 100%; height: 100%"
-            :id="'re-execute-plan-extend-grid-id'"
-            :name="'re-execute-plan-extend-grid'"
-            :use-preset="true"
-            :autoGenerateColumns="false"
-            :alternatingRowStep="0"
-            :itemsSource="sharedDataSource"
-            :initialized="onInitialized"
-            :emptyState="{
-              isLoading: getDemandSourceIsPending,
-            }"
-            :validateKey="'none'"
-            :dataKey="gridKeys"
-            :setContextMenuProps="{
-              useGroupColumn: true,
-              useViewSelectColumn: true,
-              useBulkEditColumn: {
-                max_lateness_day: {
-                  min: 0,
-                  step: 1,
-                },
-                max_earliness_day: {
-                  min: 0,
-                  step: 1,
-                },
-              },
-            }"
-            :onInitializeRowData="
-              () => {
-                return { isAdded: true };
-              }
-            "
+        <div ref="demandPaneRef" class="modify-demand-pane">
+          <MozGrid
+            class="demand-grid"
+            name="re-execute-plan-extend-grid"
+            :coreConfig="demandGridConfig"
+            height="100%"
             :loading="getDemandSourceIsPending"
-            :cellEditEnded="onMainCellEditEnded"
-            :use-tool-box="true"
-            :is-tool-box-expanded="false"
-          >
-            <WjFlexGridColumn
-              :width="120"
-              binding="demand_id"
-              :header="t('text-demand_id')"
-              :isRequired="true"
-            />
-            <WjFlexGridColumn
-              :width="150"
-              binding="item_id"
-              :header="t('text-item_id')"
-              :isRequired="true"
-            />
-            <WjFlexGridColumn
-              :width="120"
-              binding="site_id"
-              :header="t('text-site_id')"
-              :isRequired="true"
-            />
-            <WjFlexGridColumn
-              :width="120"
-              binding="buffer_id"
-              :header="t('text-buffer_id')"
-              :isRequired="true"
-            />
-            <WjFlexGridColumn
-              :width="120"
-              binding="due_date"
-              :header="t('text-due_date')"
-              dataType="Date"
-              format="yyyy-MM-dd"
-              align="center"
-              :isRequired="true"
-            />
-            <WjFlexGridColumn
-              :width="160"
-              binding="due_datetime"
-              :header="t('text-due_datetime')"
-              dataType="Date"
-              format="yyyy-MM-dd HH:mm:ss"
-              align="center"
-            />
-            <WjFlexGridColumn
-              :width="100"
-              binding="demand_qty"
-              :header="t('text-demand_qty')"
-              dataType="Number"
-              align="right"
-            />
-            <WjFlexGridColumn
-              :width="100"
-              binding="demand_priority"
-              :header="t('text-demand_priority')"
-              dataType="Number"
-              align="right"
-            />
-            <WjFlexGridColumn :width="120" binding="cust_id" :header="t('text-cust_id')" />
-            <WjFlexGridColumn :width="120" binding="demand_type" :header="t('text-demand_type')" />
-            <WjFlexGridColumn
-              :width="120"
-              binding="max_lateness_day"
-              :header="t('text-max_lateness_day')"
-              dataType="Number"
-              align="right"
-            />
-            <WjFlexGridColumn
-              :width="120"
-              binding="max_earliness_day"
-              :header="t('text-max_earliness_day')"
-              dataType="Number"
-              align="right"
-            />
-            <WjFlexGridColumn :width="120" binding="demand_group" :header="t('text-demand_group')" />
-            <WjFlexGridColumn
-              :width="120"
-              binding="final_item_buffer_id"
-              :header="t('text-final_item_buffer_id')"
-            />
-            <WjFlexGridColumn :width="100" binding="description" :header="t('text-description')" />
-            <WjFlexGridColumn
-              v-for="col in propColumns"
-              :key="col.binding"
-              :binding="col.binding"
-              :header="col.header"
-              :dataType="col.dataType"
-              :width="col.width"
-              :align="col.align"
-            ></WjFlexGridColumn>
-          </ExtendFlexGrid>
+            :contextMenuConfig="{
+              useViewSelectColumn: true,
+              useBulkEditColumn: true,
+            }"
+            @ready="onDemandGridReady"
+            @data:loaded="onDemandDataLoaded"
+          />
         </div>
       </Pane>
     </SplitPane>
@@ -332,8 +203,9 @@
     v-if="isOpen"
     :visible="isOpen"
     :popupDataSource="(useReExecutePlan.popupDataSource.value as any[]) || []"
-    :demandSource="(useReExecutePlan.demandSource.value as any[]) || []"
+    :demandSource="(useReExecutePlan.mergedDemandSource.value as any[]) || []"
     :alwaysEditedData="(useReExecutePlan.alwaysEditedData.value as any[]) || []"
+    :editedDemandFields="useReExecutePlan.editedDemandFields.value"
     :propColumns="useReExecutePlan.propColumns.value"
     :executionFlowSource="useReExecutePlan.executionFlowSource.value"
     :scenarioList="useReExecutePlan.scenarioList.value"
@@ -354,6 +226,7 @@
     "
     @close="closeReExecute"
     @update:visible="(v: boolean) => { if (!v) closeReExecute(); }"
+    @demand-edited="onPopupDemandEdited"
   />
 
   <Popup :title="t('버전 정보')" :width="290" preset="check" :onConfirm="closeVerInfo" v-model:visible="verInfoIsOpen">
@@ -380,27 +253,22 @@ import {
   Radio,
   Select,
   SplitPane,
-} from "@vmscloud/moz-ui-components";
-import { DataType } from "@vmscloud/moz-wijmo-grid/wijmo";
-import { FlexGrid } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
-import { PivotGrid, ShowTotals } from "@vmscloud/moz-wijmo-grid/wijmo.olap";
-import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
-import { ExtendFlexGrid, ExtendPivotGrid } from "@vmscloud/moz-wijmo-grid";
-import type { ExtendGrid } from "@vmscloud/moz-wijmo-grid";
+} from "@vmscloud/moz-ui-components-vue";
+import { MozGrid } from "@vmscloud/moz-ui-grid-vue";
+import type { CellAttributesFn, GridChrome, MozGridCoreProps, PureSheet } from "@vmscloud/moz-ui-grid-vue";
 import { useTranslation } from "i18next-vue";
 import {
   computed,
   nextTick,
   onBeforeUnmount,
   onMounted,
-  reactive,
-  type Ref,
   ref,
+  shallowRef,
   watch,
 } from "vue";
 import { useHostPlanCycle, useHostNavigations } from "@/composables/useHostStores";
 import { IconLineEdit, IconReExecute } from "@moz-shared/icons";
-import { useReExecutePlanQuery } from "./reExecutePlan";
+import { buildDemandFields, useReExecutePlanQuery } from "./reExecutePlan";
 import ReExecutePlanPop from "./ReExecutePlanPop.vue";
 
 const { t } = useTranslation(); // 다국어
@@ -437,19 +305,9 @@ const {
   pivotDataSource,
   fullDataSource,
 
-  // 공유 CollectionView 관련
-  sharedCollectionView,
-  initializeSharedCollectionView,
-  sharedDataSource,
-
-  // 그리드 참조 공유
-  mainGrid,
-  popupGrid,
-
-  // ExtendGrid 인스턴스 공유
-  mainExtendGrid,
-  popupExtendGrid,
-  updateTrigger,
+  // 수요 그리드 변경 추적
+  syncDemandChanges,
+  mergedDemandSource,
 
   // 계획 재실행 pop
   isOpen,
@@ -459,7 +317,6 @@ const {
   onLoad,
   isPageFetching,
   loadParams,
-  mainQueryIsPending,
   isPivotRendering,
 
   loadDemandSource,
@@ -488,397 +345,299 @@ const {
 // 피봇 셀 선택 상태 관리
 const isPivotCellSelected = ref(false);
 
-// 현재 적용된 필터 함수 보존
-let currentFilterFunction: ((item: any) => boolean) | null = null;
+// 피벗 셀 선택으로 거는 수요 그리드 필터의 그룹 키. 사용자가 건 컬럼 필터와 별도로 관리된다.
+const PIVOT_SELECTION_FILTER_KEY = "pivotSelection";
 
 // 피봇 셀 선택 해제 함수
 const clearPivotSelection = () => {
   isPivotCellSelected.value = false;
   selectedDemandList.value = [];
-  currentFilterFunction = null;
 
-  if (pivot.value) {
-    pivot.value.select(-1, -1);
-  }
+  pivotGrid.value?.cells.clearCellSelection();
 
-  if (grid.value && extendGrid.value) {
-    applyDemandFilter();
-  }
+  applyDemandFilter();
 };
 
-// demandSource에 직접 필터링 적용
-const applyDemandFilter = () => {
-  if (!grid.value || !extendGrid.value) {
+// 피벗에서 고른 수요(demand_id)만 수요 그리드에 남긴다.
+const applyDemandFilter = async () => {
+  const grid = demandGrid.value;
+  if (!grid) {
     return;
   }
 
-  const currentCV = grid.value.collectionView;
-  if (!currentCV) {
-    return;
-  }
-
-  const filterProtectionKey = "_filterProtectionAdded";
-  if (!(currentCV as any)[filterProtectionKey]) {
-    currentCV.collectionChanged.addHandler(() => {
-      if (isPivotCellSelected.value && selectedDemandList.value?.length > 0 && !currentCV.filter) {
-        setTimeout(() => {
-          if (isPivotCellSelected.value && !currentCV.filter) {
-            currentCV.filter = (item: any) => selectedDemandList.value.includes(item.demand_id);
-            currentCV.refresh();
-          }
-        }, 50);
-      }
-    });
-    (currentCV as any)[filterProtectionKey] = true;
-  }
-
-  if (!isPivotCellSelected.value || !selectedDemandList.value || selectedDemandList.value.length === 0) {
-    currentCV.filter = null;
-    currentFilterFunction = null;
-  } else {
-    currentFilterFunction = (item: any) => selectedDemandList.value.includes(item.demand_id);
-    currentCV.filter = currentFilterFunction;
-  }
-
-  currentCV.refresh();
-
-  nextTick(() => {
-    if (grid.value) {
-      grid.value.scrollIntoView(0, 0);
-      grid.value.select(-1, -1);
-      grid.value.invalidate();
-      grid.value.refresh();
-
-      setTimeout(() => {
-        if (grid.value) {
-          grid.value.scrollIntoView(0, 0);
-          grid.value.invalidate();
+  const demandIDs = selectedDemandList.value ?? [];
+  await grid.setFilterGroup(
+    PIVOT_SELECTION_FILTER_KEY,
+    isPivotCellSelected.value && demandIDs.length > 0
+      ? {
+          type: "values",
+          priority: 0,
+          applied: true,
+          states: [{ id: "demand_id", operator: "in", filterValue: demandIDs, sequence: 0 }],
         }
-      }, 50);
-    }
-  });
+      : null,
+  );
+
+  grid.scrollToRow(0);
+  grid.cells.clearCellSelection();
 };
 
-// ExtendGrid
-const grid = ref<FlexGrid | null>(null);
-const extendGrid = ref<any>();
-const gridKeys: string[] = ["demand_id"];
+// 수요 그리드
+const demandGrid = shallowRef<PureSheet | null>(null);
+const demandPaneRef = ref<HTMLElement | null>(null);
 
-const extendPivot = ref();
-const pivot = ref();
+const demandGridConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: ["demand_id"],
+  editable: true,
+  data: demandSource.value ?? [],
+  fields: buildDemandFields(t, propColumns.value, "main"),
+}));
 
-const fields = computed(() => {
-  const defaultFields: any[] = [
-    {
-      binding: "plan_type",
-      header: t("text-plan_type"),
-      dataType: DataType.String,
-      align: "left",
-    },
-    {
-      binding: "oper_group_id",
-      header: t("text-oper_group_id"),
-      dataType: DataType.String,
-      align: "left",
-    },
-    {
-      binding: "item_group_id",
-      header: t("text-item_group_id"),
-      dataType: DataType.String,
-      align: "left",
-    },
-    {
-      binding: "aggr_value",
-      header: t("text-aggr_value"),
-      dataType: DataType.String,
-      align: "left",
-    },
-    {
-      binding: "buffer_id",
-      header: t("text-buffer_id"),
-      dataType: DataType.String,
-      align: "left",
-    },
-    {
-      binding: "oper_id",
-      header: t("text-oper_id"),
-      dataType: DataType.String,
-      align: "left",
-    },
-    {
-      binding: "date",
-      header: t("text-date"),
-      dataType: DataType.String,
-      align: "left",
-    },
-    {
-      binding: "week",
-      header: t("text-week"),
-      dataType: DataType.String,
-      align: "left",
-    },
-    {
-      binding: "month",
-      header: t("text-month"),
-      dataType: DataType.String,
-      align: "left",
-    },
-    {
-      binding: "qty",
-      header: t("text-sum"),
-      dataType: DataType.Number,
-      align: "right",
-      format: "n2",
-    },
-  ] satisfies any[];
-
-  return defaultFields;
-});
-
-const rowFields = computed(() => [
-  t("text-oper_group_id"),
-  t("text-aggr_value"),
-  t("text-plan_type"),
-]);
-
-const columnFields: Ref<string[]> = ref([t("text-month"), t("text-week"), t("text-date")]);
-const valueFields: Ref<string[]> = ref([t("text-sum")]);
-
-const dataState: {
-  menuName: string;
-  showRowTotals: ShowTotals;
-  showColumnTotals: ShowTotals;
-  showZeros: boolean;
-  totalsBeforeData: boolean;
-} = reactive({
-  menuName: "",
-  showRowTotals: ShowTotals.None,
-  showColumnTotals: ShowTotals.GrandTotals,
-  showZeros: false,
-  totalsBeforeData: false,
-});
-
-const onInitialized = (flexGrid: FlexGrid, _extendGrid: ExtendGrid) => {
-  grid.value = flexGrid;
-  extendGrid.value = _extendGrid;
-
-  mainGrid.value = flexGrid;
-  mainExtendGrid.value = _extendGrid;
-
-  if (demandSource.value && demandSource.value.length > 0) {
-    initializeSharedCollectionView();
-  }
-
-  flexGrid.addEventListener(flexGrid.hostElement, "click", onFlexGridClick);
-  flexGrid.addEventListener(flexGrid.hostElement, "mousedown", onFlexGridInteraction);
-  flexGrid.addEventListener(flexGrid.hostElement, "keydown", onFlexGridInteraction);
-
-  flexGrid.selectionChanged.addHandler(() => {
-    setTimeout(checkAndRestoreFilter, 10);
-  });
-
-  flexGrid.updatedView.addHandler(() => {
-    setTimeout(checkAndRestoreFilter, 10);
-  });
-
-  flexGrid.loadedRows.addHandler(() => {
-    if (_extendGrid && (_extendGrid as any).groupPanel) {
-      (_extendGrid as any).groupPanel.hostElement.style.display = "";
-    }
-  });
-
-  grid.value.loadedRows.addHandler(async () => {
-    await nextTick(() => {
-      if (grid.value) {
-        grid.value.collapseGroupsToLevel(0);
-      }
-    });
-  });
+const onDemandGridReady = (grid: PureSheet, chrome: GridChrome) => {
+  demandGrid.value = grid;
+  // 셀 편집·일괄 편집·행 추가/삭제가 모두 changes:changed 로 모인다.
+  chrome.on("changes:changed", () => syncDemandChanges(grid));
+  syncDemandChanges(grid);
 };
 
-watch(demandSource, async () => {
-  initializeSharedCollectionView();
-});
-
-const localState: {
-  masterSelectedRow: any;
-  collapsibleSubtotals: boolean;
-} = reactive({
-  masterSelectedRow: null,
-  collapsibleSubtotals: true,
-});
-
-const toggleCollapsibleSubtotals = () => {
-  if (pivot.value) {
-    pivot.value.collapsibleSubtotals = localState.collapsibleSubtotals;
-
-    if (localState.collapsibleSubtotals) {
-      dataState.showRowTotals = ShowTotals.None;
-      dataState.showColumnTotals = ShowTotals.Subtotals;
-
-      if (pivot.value.engine) {
-        pivot.value.engine.showRowTotals = ShowTotals.None;
-        pivot.value.engine.showColumnTotals = ShowTotals.Subtotals;
-      }
-    } else {
-      dataState.showRowTotals = ShowTotals.None;
-      dataState.showColumnTotals = ShowTotals.GrandTotals;
-
-      if (pivot.value.engine) {
-        pivot.value.engine.showRowTotals = ShowTotals.None;
-        pivot.value.engine.showColumnTotals = ShowTotals.GrandTotals;
-      }
-    }
-
-    pivot.value.invalidate();
-
-    const collapse = () => {
-      (pivot.value as PivotGrid).collapseColumnsToLevel(2);
-      (pivot.value as PivotGrid).collectionView?.collectionChanged.removeHandler(collapse);
-    };
-    (pivot.value as PivotGrid).collectionView?.collectionChanged.addHandler(collapse);
+// 원본은 행을 다시 그릴 때마다 그룹을 0레벨까지 접었다.
+const onDemandDataLoaded = () => {
+  const grid = demandGrid.value;
+  if (grid?.rowGroup.getConfig()) {
+    grid.rowGroup.collapseAll();
   }
 };
 
-// 필터 상태 체크 및 복원
-const checkAndRestoreFilter = () => {
-  if (!isPivotCellSelected.value || !selectedDemandList.value?.length || !grid.value?.collectionView) {
-    return;
-  }
-
-  const currentCV = grid.value.collectionView;
-  const currentFilter = currentCV.filter;
-
-  if (!currentFilter && currentFilterFunction) {
-    currentCV.filter = currentFilterFunction;
-    currentCV.refresh();
-  }
+const isSameValue = (a: unknown, b: unknown) => {
+  if (a == null && b == null) return true;
+  if (a instanceof Date && b instanceof Date) return a.getTime() === b.getTime();
+  return a === b;
 };
 
-const onFlexGridClick = (_e: MouseEvent) => {
-  setTimeout(checkAndRestoreFilter, 5);
-};
+// 팝업 그리드에서 고친 값을 메인 수요 그리드의 변경 추적에 반영한다.
+//   메인 그리드가 변경의 기준이므로 수정 건수·수정 데이터·재실행 요청이 모두 이 값을 따른다.
+const onPopupDemandEdited = async (rows: Record<string, any>[]) => {
+  const grid = demandGrid.value;
+  if (!grid) return;
 
-const onFlexGridInteraction = (_e: Event) => {
-  setTimeout(checkAndRestoreFilter, 5);
-};
-
-// ExtendFlexGrid 내부 상태 동기화 함수
-const syncExtendGridStates = (sourceExtendGrid: any, targetExtendGrid: any) => {
-  try {
-    sourceExtendGrid.originalDataMap.forEach((value: any, key: string) => {
-      if (!targetExtendGrid.originalDataMap.has(key)) {
-        targetExtendGrid.originalDataMap.set(key, new Map(value));
-      } else {
-        const targetMap = targetExtendGrid.originalDataMap.get(key);
-        value.forEach((colValue: any, colKey: string) => {
-          targetMap.set(colKey, colValue);
-        });
-      }
-    });
-
-    sourceExtendGrid.updated.forEach((value: any, key: string) => {
-      targetExtendGrid.updated.set(key, value);
-    });
-
-    sourceExtendGrid.added.forEach((value: any, key: string) => {
-      targetExtendGrid.added.set(key, value);
-    });
-
-    sourceExtendGrid.removed.forEach((value: any, key: string) => {
-      targetExtendGrid.removed.set(key, value);
-    });
-  } catch (error) {
-    console.error("ExtendFlexGrid 상태 동기화 에러:", error);
-  }
-};
-
-// 메인 그리드 셀 편집 완료 이벤트
-const onMainCellEditEnded = (_sender: any, _e: any) => {
-  if (isOpen.value && popupGrid.value && extendGrid.value) {
-    try {
-      const sourceExtendGrid = mainExtendGrid.value;
-
-      if (popupExtendGrid.value) {
-        syncExtendGridStates(sourceExtendGrid, popupExtendGrid.value);
-
-        const scrollTop = popupGrid.value.scrollPosition?.y || 0;
-        const scrollLeft = popupGrid.value.scrollPosition?.x || 0;
-
-        popupGrid.value.invalidate();
-        popupGrid.value.refresh();
-
-        setTimeout(() => {
-          if (popupGrid.value) {
-            popupGrid.value.scrollPosition = { x: scrollLeft, y: scrollTop };
-          }
-        }, 10);
-      } else {
-        console.warn("[메인] 팝업 ExtendFlexGrid 인스턴스를 찾을 수 없음");
-      }
-    } catch (error) {
-      console.error("[메인] 팝업 그리드 동기화 에러:", error);
+  const current = new Map<string, any>(
+    mergedDemandSource.value.map((item: any) => [String(item?.demand_id), item]),
+  );
+  for (const row of rows) {
+    const rowId = row?.demand_id;
+    const target = current.get(String(rowId));
+    if (rowId == null || !target) continue;
+    for (const [field, value] of Object.entries(row)) {
+      if (field.startsWith("__") || isSameValue(target[field], value)) continue;
+      await grid.changes.updateCellById(String(rowId), field, value as any);
     }
   }
-
-  nextTick(() => {
-    updateTrigger.value++;
-  });
 };
 
 // 팝업 열기 함수
 const openReExecute = () => {
   originalOpen();
-
-  nextTick(() => {
-    setTimeout(() => {
-      if (mainExtendGrid.value && popupExtendGrid.value) {
-        try {
-          syncExtendGridStates(mainExtendGrid.value, popupExtendGrid.value);
-
-          if (popupGrid.value) {
-            popupGrid.value.invalidate();
-            popupGrid.value.refresh();
-
-            setTimeout(() => {
-              if (popupGrid.value) {
-                popupGrid.value.scrollPosition = { x: 0, y: 0 };
-              }
-            }, 10);
-          }
-        } catch (error) {
-          console.error("[팝업 열기] 상태 동기화 에러:", error);
-        }
-      }
-    }, 100);
-  });
 };
 
 const closeReExecute = () => {
   useReExecutePlan.close();
 };
 
-const pivotOnInitialized = (pivotGrid: PivotGrid) => {
-  pivot.value = pivotGrid;
+// ─────────────────────────────────────────────────────────────────
+// 피벗 그리드
+//   행: 공정그룹 / 집계값 / 계획구분, 열: 월 / 주 / 일, 값: 수량 합계.
+//   열 소계·총합계를 표시하고, 행 합계는 표시하지 않는다(원본 ShowTotals 설정과 동일).
+// ─────────────────────────────────────────────────────────────────
+const pivotGrid = shallowRef<PureSheet | null>(null);
+const pivotPaneRef = ref<HTMLElement | null>(null);
 
-  pivotGrid.allowDragging = 0;
-  pivotGrid.selectionMode = 2;
+// 피벗 컬럼 ID 는 열 필드 값 경로 + 값 필드를 이 구분자로 잇는다(예: 월␞주␞일␞qty).
+const PIVOT_COL_SEP = "\u001E";
+const PIVOT_SUBTOTAL_KEY = "__subtotal__";
+const PIVOT_GRANDTOTAL_KEY = "__grandtotal__";
 
-  pivotGrid.addEventListener(pivotGrid.hostElement, "click", onPivotCellClick);
+const RE_DATE = /^\d{4}-\d{2}-\d{2}$/;
+const RE_LEADING_DIGIT_PREFIX = /^\d+_/;
+const NUMBER_FMT = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
 
-  document.addEventListener("click", onDocumentClick);
-
-  pivotGrid.loadedRows.addHandler(onPivotLoadedRows);
+// 컬럼 ID → 소계 여부·소계 범위(월/주 경로)·일자. 컬럼 수만큼만 계산되도록 캐시한다.
+type PivotColumnMeta = { isTotal: boolean; scope: string[]; date: string | null };
+const pivotColumnMetaCache = new Map<string, PivotColumnMeta>();
+const getPivotColumnMeta = (columnId: string): PivotColumnMeta => {
+  let meta = pivotColumnMetaCache.get(columnId);
+  if (!meta) {
+    const path = columnId.split(PIVOT_COL_SEP).slice(0, -1);
+    const totalIndex = path.findIndex((p) => p === PIVOT_SUBTOTAL_KEY || p === PIVOT_GRANDTOTAL_KEY);
+    const isTotal = totalIndex >= 0;
+    const date = !isTotal && RE_DATE.test(path[2] ?? "") ? path[2] : null;
+    meta = { isTotal, scope: isTotal ? path.slice(0, totalIndex) : path, date };
+    pivotColumnMetaCache.set(columnId, meta);
+  }
+  return meta;
 };
 
-const onPivotLoadedRows = () => {
-  // 컬럼 구성이 바뀌면 캐시 무효화. loadedRows 는 한 번의 재집계 후 호출.
-  columnHeaderDateCache.clear();
+const isDiffRow = (rowData?: Record<string, any>) => String(rowData?.plan_type ?? "").includes("DIFF");
 
-  toggleCollapsibleSubtotals();
-  // Wijmo 가 행 집계 → 렌더 완료한 시점. 한 프레임 뒤에 스피너 내림.
-  //   바로 내리면 셀 formatItem 첫 패스가 스피너 해제 이후 메인 스레드를 잡아먹어
-  //   체감상 여전히 멈춤처럼 보일 수 있어 rAF 로 다음 프레임까지 양보.
+// DIFF 행의 일자 셀 목록(일자 오름차순). 행 객체마다 한 번만 만든다.
+type DiffLeaf = { weekPath: string; date: string; value: unknown };
+const diffLeafCache = new WeakMap<object, DiffLeaf[]>();
+const getDiffLeaves = (rowData: Record<string, any>) => {
+  let leaves = diffLeafCache.get(rowData);
+  if (!leaves) {
+    leaves = [];
+    for (const key of Object.keys(rowData)) {
+      if (!key.includes(PIVOT_COL_SEP)) continue;
+      const meta = getPivotColumnMeta(key);
+      if (meta.isTotal || !meta.date) continue;
+      leaves.push({ weekPath: meta.scope.slice(0, 2).join(PIVOT_COL_SEP), date: meta.date, value: rowData[key] });
+    }
+    leaves.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+    diffLeafCache.set(rowData, leaves);
+  }
+  return leaves;
+};
+
+// DIFF(누적) 행의 소계·총합계는 합계 대신 마지막 값을 보여준다.
+//   - 월 소계·총합계: 행 전체에서 가장 마지막 일자의 값
+//   - 주 소계: 그 주까지(왼쪽) 일자 중 0 이 아닌 마지막 값, 없으면 마지막 숫자 값
+const resolveDiffValue = (rowData: Record<string, any> | undefined, columnId: string | undefined) => {
+  if (!rowData || !columnId || !isDiffRow(rowData)) return null;
+  const meta = getPivotColumnMeta(columnId);
+  if (!meta.isTotal) return null;
+
+  const leaves = getDiffLeaves(rowData);
+  if (meta.scope.length < 2) {
+    const last = leaves[leaves.length - 1]?.value;
+    return typeof last === "number" ? last : null;
+  }
+
+  const weekPath = meta.scope.slice(0, 2).join(PIVOT_COL_SEP);
+  const candidates = leaves.filter((leaf) => leaf.weekPath <= weekPath).reverse();
+  const nonZero = candidates.find((leaf) => typeof leaf.value === "number" && !isNaN(leaf.value) && leaf.value !== 0);
+  const anyNumber = nonZero ?? candidates.find((leaf) => typeof leaf.value === "number" && !isNaN(leaf.value));
+  return anyNumber ? (anyNumber.value as number) : null;
+};
+
+const resolveQtyValue = (value: unknown, rowData?: Record<string, any>, columnId?: string) => {
+  const diffValue = resolveDiffValue(rowData, columnId);
+  return diffValue ?? value;
+};
+
+const formatQty = (value: unknown, rowData?: Record<string, any>, columnId?: string) => {
+  const shown = resolveQtyValue(value, rowData, columnId);
+  if (shown === null || shown === undefined || shown === "") return "";
+  const n = Number(shown);
+  if (isNaN(n)) return String(shown);
+  return NUMBER_FMT.format(Math.round(n * 100) / 100);
+};
+
+// 셀 클래스: 음수 / 주 소계·그 외 소계 배경 / 실적 기간 일자 하이라이트
+const qtyCellAttributes: CellAttributesFn = ({ value, row, columnId }) => {
+  const classes: string[] = [];
+  const shown = Number(resolveQtyValue(value, row, columnId));
+  if (!isNaN(shown) && shown < 0) {
+    classes.push("negative-number");
+  }
+
+  const meta = getPivotColumnMeta(columnId);
+  if (meta.isTotal) {
+    classes.push(meta.scope.length === 2 ? "pivot-week-total" : "pivot-total");
+  } else if (meta.date && actStartDate.value && actEndDate.value) {
+    if (meta.date >= actStartDate.value && meta.date <= actEndDate.value) {
+      classes.push("date-range-highlight");
+    }
+  }
+  return classes.length ? { class: classes.join(" ") } : undefined;
+};
+
+// 집계 기준(summaryType)에 맞춘 집계값 헤더
+const aggrValueHeader = computed(() => {
+  const agg = loadParams.value.aggregateType;
+  if (agg === "itemGroup") return t("text-item_group");
+  if (agg === "demandType") return t("text-demand_type");
+  if (agg === "region") return t("text-upper-region");
+  if (agg === "cust") return t("text-upper-customer");
+  return t("text-aggr_value");
+});
+
+const uomLabel = computed(() => (loadParams.value.uomType === "DEFAULT" ? "(단위: EA)" : "(단위: m²)"));
+
+const pivotConfig = computed<MozGridCoreProps>(() => ({
+  mode: "pivot",
+  data: pivotDataSource.value,
+  rowFields: [
+    { field: "oper_group_id", header: t("text-oper_group_id"), dataType: "string" },
+    { field: "aggr_value", header: aggrValueHeader.value, dataType: "string" },
+    { field: "plan_type", header: t("text-plan_type"), dataType: "string" },
+  ],
+  columnFields: [
+    { field: "month", header: t("text-month"), dataType: "string" },
+    { field: "week", header: t("text-week"), dataType: "string" },
+    { field: "date", header: t("text-date"), dataType: "string" },
+  ],
+  valueFields: [
+    {
+      field: "qty",
+      header: t("text-sum"),
+      aggregate: "sum",
+      dataType: "number",
+      align: "right",
+      mask: { type: "function", formatter: formatQty },
+      cellAttributes: qtyCellAttributes,
+    },
+  ],
+  showRowSubTotals: false,
+  showRowGrandTotals: false,
+  showColumnSubTotals: true,
+  showColumnGrandTotals: true,
+  showZeros: false,
+}));
+
+// 계획구분 값의 정렬용 접두어(1_ / 2_ / 3_)를 떼고, DIFF 는 누적임을 표시한다.
+const toPlanTypeLabel = (value: string) => {
+  const label = value.replace(RE_LEADING_DIGIT_PREFIX, "");
+  return label === "DIFF" ? "DIFF(cum)" : label;
+};
+
+const replaceCellText = (element: HTMLElement, from: string, to: string) => {
+  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (node.nodeValue?.trim() === from) {
+      node.nodeValue = to;
+      return;
+    }
+  }
+};
+
+const pivotOnReady = (grid: PureSheet) => {
+  pivotGrid.value = grid;
+
+  grid.formatRow.addHandler("planTypeLabel", (info: any) => {
+    if (info.type !== "data") return;
+    const cell = info.ctx.cells["plan_type"];
+    if (!cell || cell.value == null) return;
+    const raw = String(cell.value);
+    const label = toPlanTypeLabel(raw);
+    if (label !== raw) {
+      replaceCellText(cell.element, raw, label);
+    }
+  });
+};
+
+// 같은 조회 결과로 접기를 반복하지 않도록 마지막으로 접은 데이터를 기억한다.
+let collapsedPivotData: unknown = null;
+
+const onPivotDataLoaded = async () => {
+  // 원본과 같이 주 단위까지만 펼친다(일자 열은 접어 주 소계로 표시).
+  if (pivotGrid.value && pivotDataSource.value.length && collapsedPivotData !== pivotDataSource.value) {
+    collapsedPivotData = pivotDataSource.value;
+    await pivotGrid.value.pivot.collapseColumnAtLevel(1);
+  }
+  // 피벗 집계·렌더가 끝난 시점. 한 프레임 뒤에 스피너 내림.
   if (isPivotRendering.value) {
     requestAnimationFrame(() => {
       isPivotRendering.value = false;
@@ -888,19 +647,16 @@ const onPivotLoadedRows = () => {
 
 // 문서 전체 클릭 이벤트 (피봇 그리드 외부 클릭 감지)
 const onDocumentClick = (e: MouseEvent) => {
-  if (!pivot.value) return;
+  if (!pivotGrid.value) return;
 
   if (!e.isTrusted) {
     return;
   }
 
-  const pivotElement = pivot.value.hostElement;
+  const pivotElement = pivotPaneRef.value;
   const target = e.target as Element;
 
-  const flexGridElement = grid.value?.hostElement;
-  const isFlexGridClick = flexGridElement && flexGridElement.contains(target);
-
-  const isModifyDemandPaneClick = target.closest(".modify-demand-pane");
+  const isModifyDemandPaneClick = demandPaneRef.value?.contains(target) || target.closest(".modify-demand-pane");
 
   const isUIComponentClick =
     target.closest(".moz-button") ||
@@ -919,7 +675,6 @@ const onDocumentClick = (e: MouseEvent) => {
     target.closest(".popup-overlay");
 
   const isExceptionArea =
-    isFlexGridClick ||
     isModifyDemandPaneClick ||
     isUIComponentClick ||
     (isReExecutePopupOpen && isReExecutePopupClick);
@@ -934,411 +689,42 @@ const onDocumentClick = (e: MouseEvent) => {
   }
 };
 
-// 피봇 그리드 셀 클릭 이벤트 핸들러
-const onPivotCellClick = (e: MouseEvent) => {
-  if (!pivot.value) return;
-
-  const hitTest = pivot.value.hitTest(e);
-
-  if (hitTest.cellType === 1 || hitTest.cellType === 3) {
-    const row = hitTest.row;
-    getRowDataWithTotalFilter(row);
-  }
+// 피봇 그리드 셀 클릭 이벤트 핸들러 — 데이터·행 헤더 셀 모두 해당 행 기준으로 처리
+const onPivotCellClick = (payload: unknown) => {
+  const row = (payload as { row?: Record<string, any> } | undefined)?.row;
+  if (!row || row.__pivotType !== "data") return;
+  getRowDataWithTotalFilter(row);
 };
 
-// 특정 행의 모든 데이터 중 date가 TOTAL인 것만 필터링하는 함수
-const getRowDataWithTotalFilter = (rowIndex: number) => {
-  if (!pivot.value) return;
+const PIVOT_ROW_KEYS = ["oper_group_id", "aggr_value", "plan_type"];
+const TOTAL_MATCH_KEYS = ["aggr_value", "buffer_id", "plan_type"];
 
-  const pivotGrid = pivot.value;
-
+// 클릭한 피벗 행의 date 가 TOTAL 인 원본 행에서 demandIDs 를 찾아 수요 그리드를 거른다.
+const getRowDataWithTotalFilter = (pivotRow: Record<string, any>) => {
   try {
-    const pivotRow = pivotGrid.rows[rowIndex];
-
-    if (pivotRow && pivotRow.dataItem) {
-      const dataItem = pivotRow.dataItem;
-      const totalData: any[] = [];
-
-      Object.keys(dataItem).forEach((key) => {
-        if (key.includes("TOTAL")) {
-          const totalInfo = {
-            key,
-            value: dataItem[key],
-            parsedKey: key.split(";"),
-          };
-
-          const parsedData: any = {};
-          totalInfo.parsedKey.forEach((part) => {
-            if (part.includes(":")) {
-              const [fieldName, fieldValue] = part.split(":");
-              parsedData[fieldName] = fieldValue;
-            }
-          });
-
-          totalData.push({
-            originalKey: key,
-            value: totalInfo.value,
-            date: parsedData["날짜"] || "TOTAL",
-            qty: parsedData["수량"] || "0",
-            ...parsedData,
-          });
-        }
-      });
-
-      const itemKey = "_item";
-      if (dataItem.$rowKey && dataItem.$rowKey[itemKey]) {
-        totalData.forEach((item) => {
-          item.rowKeyInfo = dataItem.$rowKey[itemKey];
-        });
-      }
-
-      const sourceData = fullDataSource.value || [];
-
-      let sourceTotalData: any[] = [];
-
-      if (dataItem.$rowKey && dataItem?.$rowKey?.[itemKey]) {
-        const rowKeyInfo = dataItem?.$rowKey?.[itemKey];
-        const keyFieldsToMatch = ["aggr_value", "buffer_id", "plan_type"];
-
-        sourceTotalData = sourceData.filter((item: any) => {
-          if (item.date !== "TOTAL") return false;
-
-          return keyFieldsToMatch.every((key) => {
-            const rowValue = rowKeyInfo[key];
-            const itemValue = item[key];
-
-            if (rowValue == null && itemValue == null) return true;
-            if ((rowValue == null) !== (itemValue == null)) return false;
-            return rowValue === itemValue;
-          });
-        });
-
-        if (sourceTotalData.length > 0 && sourceTotalData[0].demandIDs) {
-          selectedDemandList.value = sourceTotalData[0].demandIDs;
-          isPivotCellSelected.value = true;
-          applyDemandFilter();
-        } else {
-          clearPivotSelection();
-        }
-      } else {
-        sourceTotalData = sourceData.filter((item: any) => item.date === "TOTAL");
-      }
-
-      if (totalData.length > 0) {
-        // totalData found
-      } else {
-        console.warn("date가 TOTAL인 데이터를 찾을 수 없습니다.");
-      }
-    } else {
+    // 피벗 행을 이루는 첫 원본 행(행 키 정보). buffer_id 처럼 행 필드가 아닌 값은 여기서 얻는다.
+    const rowKeyInfo = pivotDataSource.value.find((item: any) =>
+      PIVOT_ROW_KEYS.every((key) => isSameValue(item[key], pivotRow[key])),
+    );
+    if (!rowKeyInfo) {
       console.warn("행 데이터를 찾을 수 없습니다.");
+      return;
+    }
+
+    const sourceTotalData = (fullDataSource.value || []).filter(
+      (item: any) =>
+        item.date === "TOTAL" && TOTAL_MATCH_KEYS.every((key) => isSameValue(rowKeyInfo[key], item[key])),
+    );
+
+    if (sourceTotalData.length > 0 && sourceTotalData[0].demandIDs) {
+      selectedDemandList.value = sourceTotalData[0].demandIDs;
+      isPivotCellSelected.value = true;
+      applyDemandFilter();
+    } else {
+      clearPivotSelection();
     }
   } catch (error) {
     console.error("행 데이터 처리 실패:", error);
-  }
-};
-
-// ─────────────────────────────────────────────────────────────────
-// pivotFormatItem 최적화: 셀마다 호출되므로 가능한 한 캐시/조기탈출.
-//   - RE_* : regex 를 매 호출마다 컴파일하지 않도록 모듈 스코프로 승격
-//   - NUMBER_FMT : toLocaleString(옵션) 대신 Intl.NumberFormat 한 인스턴스 재사용
-//   - columnHeaderDateCache : 컬럼 헤더 → 날짜 문자열 Map. pivot loadedRows 마다 초기화.
-// ─────────────────────────────────────────────────────────────────
-const RE_DATE = /(\d{4}-\d{2}-\d{2})/;
-const RE_TEXT_DATE = /text-date:(\d{4}-\d{2}-\d{2})/;
-const RE_KO_DATE = /날짜:(\d{4}-\d{2}-\d{2})/;
-const RE_LEADING_DIGIT_PREFIX = /^\d+_/;
-const NUMBER_FMT = new Intl.NumberFormat("en-US", {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-});
-const columnHeaderDateCache = new Map<number, string | null>();
-
-const pivotFormatItem = (s: PivotGrid, e: any) => {
-  const onCells = e.panel === s.cells;
-
-  // 1) 셀 패널에서만: DIFF 행 특수 표시
-  if (onCells) {
-    const row = s.rows[e.row];
-    const dataItem = row?.dataItem;
-    if (dataItem) {
-      const isDiffRow = isDiffRowCheck(dataItem);
-      if (isDiffRow) {
-        const isTextWeekSubtotal = isTextWeekSubtotalCheck(s, e);
-        const isGrandTotal = isGrandTotalCheck(s, e);
-        let lastValue: number | null = null;
-        if (isTextWeekSubtotal || isGrandTotal) {
-          lastValue = findLastValueInAllData(dataItem);
-        } else {
-          const isTextSumColumn = isTextSumColumnCheck(s, e);
-          const isNotDataColumn = isNotDataColumnCheck(s, e);
-          if (isTextSumColumn && isNotDataColumn) {
-            lastValue = findLastValueInSum(s, e);
-          }
-        }
-        if (lastValue !== null) {
-          const rounded = Math.round(lastValue * 100) / 100;
-          e.cell.textContent = NUMBER_FMT.format(rounded);
-        }
-      }
-    }
-  }
-
-  // 2) 셀 패널 + act 기간 지정 시 날짜 범위 하이라이트
-  if (onCells && actStartDate.value && actEndDate.value) {
-    let cached = columnHeaderDateCache.get(e.col);
-    if (cached === undefined) {
-      const header = s.columns[e.col]?.header ?? "";
-      const m = header.match(RE_DATE);
-      cached = m ? m[1] : null;
-      columnHeaderDateCache.set(e.col, cached);
-    }
-    if (cached) {
-      if (cached >= actStartDate.value && cached <= actEndDate.value) {
-        e.cell.style.backgroundColor = "#357e631a";
-      } else if (e.cell.style.backgroundColor) {
-        e.cell.style.backgroundColor = "";
-        e.cell.classList.remove("date-range-highlight");
-      }
-    }
-  }
-
-  // 3) 셀 텍스트 기반 후처리
-  const text = e.cell.textContent;
-  if (text) {
-    // 첫 글자가 숫자/쉼표/-/. 일 때만 Number 파싱 시도 (대부분 셀은 문자라 빠르게 건너뜀)
-    const first = text.charCodeAt(0);
-    const maybeNumber =
-      (first >= 48 && first <= 57) || first === 45 || first === 46;
-    if (maybeNumber) {
-      const n = Number(text.replace(/,/g, ""));
-      if (!isNaN(n) && n < 0) {
-        e.cell.style.color = "#d32f2f";
-        e.cell.classList.add("negative-number");
-      }
-    }
-
-    if (RE_LEADING_DIGIT_PREFIX.test(text)) {
-      e.cell.textContent = text.replace(RE_LEADING_DIGIT_PREFIX, "");
-    }
-
-    if (e.cell.textContent === "DIFF") {
-      e.cell.textContent = "DIFF(cum)";
-    }
-  }
-
-  const currentText = e.cell.textContent;
-  if (currentText === "text-aggr_value") {
-    const agg = loadParams.value.aggregateType;
-    if (agg === "itemGroup") e.cell.textContent = t("text-item_group");
-    else if (agg === "demandType") e.cell.textContent = t("text-demand_type");
-    else if (agg === "region") e.cell.textContent = t("text-upper-region");
-    else if (agg === "cust") e.cell.textContent = t("text-upper-customer");
-  }
-
-  // 4) 월 헤더 DOM 변환은 한 번만. 이미 include-qty-uom 달린 셀은 재구성 스킵.
-  if (
-    currentText &&
-    !e.cell.classList.contains("include-qty-uom") &&
-    currentText.includes(t("text-month"))
-  ) {
-    e.cell.classList.add("include-qty-uom");
-    e.cell.textContent = "";
-
-    const container = document.createElement("div");
-    container.style.display = "flex";
-    container.style.flexDirection = "row";
-    container.style.justifyContent = "space-between";
-
-    const div = document.createElement("div");
-    div.textContent =
-      loadParams.value.uomType === "DEFAULT" ? "(단위: EA)" : "(단위: m\u00B2)";
-    container.appendChild(div);
-
-    const div2 = document.createElement("div");
-    div2.textContent = "월:";
-    container.appendChild(div2);
-
-    e.cell.appendChild(container);
-  }
-};
-
-// DIFF row 확인 함수
-const isDiffRowCheck = (dataItem: any): boolean => {
-  try {
-    const itemKey = "_item";
-    if (dataItem.$rowKey && dataItem.$rowKey[itemKey]) {
-      const rowKeyInfo = dataItem.$rowKey[itemKey];
-      return rowKeyInfo.plan_type === "DIFF" || rowKeyInfo.plan_type?.includes("DIFF");
-    }
-
-    if (dataItem.plan_type) {
-      return dataItem.plan_type === "DIFF" || dataItem.plan_type.includes("DIFF");
-    }
-
-    return false;
-  } catch {
-    return false;
-  }
-};
-
-// text-sum column 확인 함수
-const isTextSumColumnCheck = (s: PivotGrid, e: any): boolean => {
-  try {
-    const column = s.columns[e.col];
-    if (!column) return false;
-
-    if (e.cell.classList.contains("wj-aggregate")) {
-      return true;
-    }
-
-    return false;
-  } catch {
-    return false;
-  }
-};
-
-// 개별 데이터 컬럼이 아닌지 확인
-const isNotDataColumnCheck = (s: PivotGrid, e: any): boolean => {
-  try {
-    const column = s.columns[e.col];
-    if (!column) return true;
-
-    if (!column.aggregate && !e.cell.classList.contains("wj-aggregate")) {
-      const columnHeader = column.header || "";
-      if (!columnHeader.includes("합계") && !columnHeader.toLowerCase().includes("total")) {
-        return false;
-      }
-    }
-
-    return true;
-  } catch {
-    return true;
-  }
-};
-
-// 합계를 구성하는 값들 중 마지막 값 찾기
-const findLastValueInSum = (s: PivotGrid, e: any): number | null => {
-  try {
-    const currentRowIndex = e.row;
-
-    for (let colIndex = e.col - 1; colIndex >= 0; colIndex--) {
-      const column = s.columns[colIndex];
-      if (column && !column.aggregate) {
-        try {
-          const cellValue = s.getCellData(currentRowIndex, colIndex, false);
-          if (typeof cellValue === "number" && !isNaN(cellValue) && cellValue !== 0) {
-            return cellValue;
-          }
-        } catch {
-          continue;
-        }
-      }
-    }
-
-    for (let colIndex = e.col - 1; colIndex >= 0; colIndex--) {
-      const column = s.columns[colIndex];
-      if (column && !column.aggregate) {
-        try {
-          const cellValue = s.getCellData(currentRowIndex, colIndex, false);
-          if (typeof cellValue === "number" && !isNaN(cellValue)) {
-            return cellValue;
-          }
-        } catch {
-          continue;
-        }
-      }
-    }
-
-    return null;
-  } catch (error) {
-    console.error("마지막 값 찾기 실패:", error);
-    return null;
-  }
-};
-
-// text-week 부분합인지 확인
-const isTextWeekSubtotalCheck = (s: PivotGrid, e: any): boolean => {
-  try {
-    const column = s.columns[e.col];
-    if (!column || !column.header) return false;
-
-    const columnHeader = column.header;
-
-    const hasWeek = columnHeader.includes("주") || columnHeader.includes("text-week");
-    const hasMonth = columnHeader.includes("월") || columnHeader.includes("text-month");
-    const isWeekSubtotal = !hasWeek && hasMonth;
-
-    return isWeekSubtotal;
-  } catch {
-    return false;
-  }
-};
-
-// 총합계인지 확인
-const isGrandTotalCheck = (s: PivotGrid, e: any): boolean => {
-  try {
-    const column = s.columns[e.col];
-    if (!column || !column.header) return false;
-
-    const columnHeader = column.header;
-
-    const hasWeek = columnHeader.includes("주") || columnHeader.includes("text-week");
-    const hasMonth = columnHeader.includes("월") || columnHeader.includes("text-month");
-    const isMonthSubtotal = !hasWeek && !hasMonth;
-
-    return isMonthSubtotal;
-  } catch {
-    return false;
-  }
-};
-
-// 전체 데이터에서 마지막 주차의 마지막 날짜 값 찾기
-const findLastValueInAllData = (dataItem: any) => {
-  try {
-    const keys = Object.keys(dataItem);
-
-    const dateKeys = keys.filter((key) => key.includes("text-date") || key.includes("날짜"));
-
-    if (dateKeys.length === 0) {
-      return null;
-    }
-
-    let lastDateKey = "";
-    let maxDate = "";
-
-    for (const key of dateKeys) {
-      const m = key.includes("text-date")
-        ? key.match(RE_TEXT_DATE)
-        : key.includes("날짜")
-          ? key.match(RE_KO_DATE)
-          : null;
-      if (m) {
-        const currentDate = m[1];
-        if (currentDate > maxDate) {
-          maxDate = currentDate;
-          lastDateKey = key;
-        }
-      }
-    }
-
-    if (!lastDateKey) {
-      return null;
-    }
-
-    const lastValue = dataItem[lastDateKey];
-
-    return typeof lastValue === "number" ? lastValue : null;
-  } catch (error) {
-    console.error("findLastValueInAllData 에러:", error);
-    return null;
-  }
-};
-
-const updateView = () => {
-  if (extendPivot.value) {
-    extendPivot.value.hidePanel();
-  } else {
-    console.warn("첫 조회를 먼저 수행해 주세요.");
   }
 };
 
@@ -1359,20 +745,6 @@ const demandVerInfo = computed(() => {
   return "-";
 });
 
-watch(
-  demandSource,
-  (newValue) => {
-    if (
-      newValue &&
-      newValue.length > 0 &&
-      (!sharedCollectionView.value || (sharedDataSource.value as any)?.length === 0)
-    ) {
-      initializeSharedCollectionView();
-    }
-  },
-  { immediate: true },
-);
-
 // Demand source loading helper
 const loadDemandSourceData = async () => {
   await loadDemandSource({
@@ -1381,22 +753,13 @@ const loadDemandSourceData = async () => {
   });
 };
 
+onMounted(() => {
+  document.addEventListener("click", onDocumentClick);
+});
+
 // 컴포넌트 언마운트 시 이벤트 리스너 정리
 onBeforeUnmount(() => {
   document.removeEventListener("click", onDocumentClick);
-
-  if (grid.value?.hostElement) {
-    grid.value.hostElement.removeEventListener("click", onFlexGridClick);
-    grid.value.hostElement.removeEventListener("mousedown", onFlexGridInteraction);
-    grid.value.hostElement.removeEventListener("keydown", onFlexGridInteraction);
-  }
-
-  if (pivot.value?.hostElement) {
-    pivot.value.removeEventListener(pivot.value.hostElement, "click", onPivotCellClick);
-  }
-  if (pivot.value?.loadedRows) {
-    pivot.value.loadedRows.removeHandler(onPivotLoadedRows);
-  }
 });
 
 // FROZEN PLAN VER 정보 조회 (Vue file level)
@@ -1455,14 +818,6 @@ const callWatch = watch(
   },
   { immediate: true, flush: "post" },
 );
-
-watch([planVer, pivotDataSource], () => {
-  setTimeout(() => {
-    if (localState.collapsibleSubtotals) {
-      // toggleCollapsibleSubtotals();
-    }
-  }, 100);
-});
 </script>
 <style scoped lang="scss">
 .re-execute-plan-page {
@@ -1478,8 +833,19 @@ watch([planVer, pivotDataSource], () => {
   width: 100%;
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+
+  .pivot-uom-label {
+    flex: 0 0 auto;
+    padding: 2px 4px 4px;
+    font-size: 12px;
+    color: #434c60;
+  }
+
+  .pivot-grid-wrapper {
+    flex: 1;
+    min-height: 0;
+  }
 }
 
 .pivot-rendering-overlay {
@@ -1522,13 +888,28 @@ watch([planVer, pivotDataSource], () => {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  .demand-grid {
+    width: 100%;
+  }
 }
 
 // 음수 값 스타일
-:deep(.negative-number) {
-  span {
-    color: #dc5a5a !important;
-  }
+:deep(.ps-cell.negative-number) {
+  color: #dc5a5a !important;
+}
+
+// 실적 기간(actStartDate ~ actEndDate) 일자 셀
+:deep(.ps-cell.date-range-highlight) {
+  background-color: #357e631a;
+}
+
+// 열 소계: 일자 바로 뒤의 주 소계는 강조, 월 소계·총합계는 흰 배경
+:deep(.ps-cell.pivot-total) {
+  background-color: white !important;
+}
+:deep(.ps-cell.pivot-week-total) {
+  background-color: #d6def8 !important;
 }
 
 .info-frozen-plan-wrapper {
@@ -1571,19 +952,6 @@ watch([planVer, pivotDataSource], () => {
   .info-frozen-plan-ver {
     color: #4568e0;
   }
-}
-
-:deep(.include-qty-uom) {
-  .wj-cell-text {
-    width: 100% !important;
-  }
-}
-
-:deep(.wj-aggregate:not(.wj-header)) {
-  background-color: white !important;
-}
-:deep(.wj-cell:not(.wj-header):not(.wj-aggregate) + .wj-aggregate) {
-  background-color: #d6def8 !important;
 }
 
 .ver-info-container {

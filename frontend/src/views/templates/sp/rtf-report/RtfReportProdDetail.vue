@@ -64,27 +64,13 @@
 
     <!-- Production Plan Pivot Grid -->
     <div class="pivot-container">
-      <ExtendPivotGrid
-        ref="extendPivotGridRef"
-        :emptyState="{ isLoading: loading, isReadOnly: !loading && (!data || data.length === 0) }"
+      <MozGrid
         name="rtfProdDetailPivot"
+        :coreConfig="pivotCoreConfig"
         height="100%"
-        :itemsSource="data"
-        :engine-option="{
-          fields: pivotFields,
-          rowFields: rowFieldNames,
-          columnFields: columnFieldNames,
-          valueFields: valueFieldNames,
-          showRowTotals: showTotalsNone,
-          showColumnTotals: showTotalsGrand,
-          showZeros: false,
-          totalsBeforeData: false,
-        }"
         :useContextMenu="false"
-        :initialized="onInitialized"
-        :use-pivot-chart="false"
         :use-tool-box="true"
-        :loading="!data || data.length === 0"
+        :loading="loading"
       />
     </div>
 
@@ -95,44 +81,23 @@
           <!-- Demand Info Section -->
           <h4 class="popup-section-title">수요 정보</h4>
           <div class="popup-grid-wrapper popup-grid-small">
-            <ExtendFlexGrid
+            <MozGrid
               name="rtfDemandInfoGrid"
-              :itemsSource="demandInfoData"
+              :coreConfig="demandInfoCoreConfig"
               height="100%"
-              :isReadOnly="true"
               :use-tool-box="false"
-            >
-              <WjFlexGridColumn binding="demand_id" header="수요 ID" :width="120" />
-              <WjFlexGridColumn binding="item_id" header="제품 ID" :width="120" />
-              <WjFlexGridColumn binding="site_id" header="사이트" :width="80" />
-              <WjFlexGridColumn binding="buffer_id" header="버퍼" :width="80" />
-              <WjFlexGridColumn binding="demand_qty" header="수요량" :width="90" align="right" format="n0" />
-              <WjFlexGridColumn binding="due_date" header="납기일" :width="100" />
-            </ExtendFlexGrid>
+            />
           </div>
 
           <!-- Peg Info Detail Section -->
           <h4 class="popup-section-title">Peg 상세</h4>
           <div class="popup-grid-wrapper popup-grid-large">
-            <ExtendFlexGrid
+            <MozGrid
               name="rtfPegInfoDetailGrid"
-              :itemsSource="pegInfoData"
+              :coreConfig="pegInfoCoreConfig"
               height="100%"
-              :isReadOnly="true"
               :use-tool-box="false"
-            >
-              <WjFlexGridColumn binding="wip_id" header="WIP ID" :width="120" />
-              <WjFlexGridColumn binding="item_id" header="제품 ID" :width="120" />
-              <WjFlexGridColumn binding="wip_qty" header="WIP 수량" :width="90" align="right" format="n0" />
-              <WjFlexGridColumn binding="peg_qty" header="Peg 수량" :width="90" align="right" format="n0" />
-              <WjFlexGridColumn binding="target_qty" header="Target 수량" :width="100" align="right" format="n0" />
-              <WjFlexGridColumn binding="site_id" header="사이트" :width="80" />
-              <WjFlexGridColumn binding="buffer_id" header="버퍼" :width="80" />
-              <WjFlexGridColumn binding="oper_id" header="공정" :width="80" />
-              <WjFlexGridColumn binding="stage_id" header="스테이지" :width="90" />
-              <WjFlexGridColumn binding="routing_id" header="라우팅" :width="100" />
-              <WjFlexGridColumn binding="pegging_key" header="Pegging Key" :width="120" />
-            </ExtendFlexGrid>
+            />
           </div>
         </div>
       </template>
@@ -146,22 +111,11 @@
       <template #default>
         <div class="popup-content">
           <div class="popup-pivot-wrapper">
-            <ExtendPivotGrid
+            <MozGrid
               name="rtfBufferPlanTargetPivot"
+              :coreConfig="bufferPlanCoreConfig"
               height="100%"
-              :itemsSource="bufferPlanTargetData"
-              :engine-option="{
-                fields: bufferPlanFields,
-                rowFields: bufferPlanRowFieldNames,
-                columnFields: bufferPlanColumnFieldNames,
-                valueFields: bufferPlanValueFieldNames,
-                showRowTotals: showTotalsNone,
-                showColumnTotals: showTotalsNone,
-                showZeros: false,
-                totalsBeforeData: false,
-              }"
               :useContextMenu="false"
-              :use-pivot-chart="false"
               :use-tool-box="false"
             />
           </div>
@@ -176,15 +130,10 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import {
-  ExtendFlexGrid,
-  ExtendPivotGrid,
-  type ExtendGrid,
-} from "@vmscloud/moz-wijmo-grid";
-import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
-import { Aggregate, DataType } from "@vmscloud/moz-wijmo-grid/wijmo";
-import { type PivotGrid, ShowTotals } from "@vmscloud/moz-wijmo-grid/wijmo.olap";
-import { Popup, Button } from "@vmscloud/moz-ui-components";
+import { MozGrid } from "@vmscloud/moz-ui-grid-vue";
+import type { MaskConfig, MozGridCoreProps } from "@vmscloud/moz-ui-grid-vue";
+import { Popup, Button } from "@vmscloud/moz-ui-components-vue";
+import { GRID_ROW_KEY, withRowKey } from "./rtfReport";
 import type { RtfProdDetailData, RtfDemandSummaryData } from "./rtfReport";
 
 // === Props & Emits ===
@@ -214,13 +163,8 @@ const emit = defineEmits<{
 
 // === Local State ===
 
-const extendPivotGridRef = ref<InstanceType<typeof ExtendPivotGrid> | null>(null);
 const pegInfoPopupVisible = ref(false);
 const bufferPlanPopupVisible = ref(false);
-
-// ShowTotals constants
-const showTotalsNone = ShowTotals.None;
-const showTotalsGrand = ShowTotals.GrandTotals;
 
 // === Formatting Helpers ===
 
@@ -234,167 +178,93 @@ function formatRatio(val: any): string {
   return Number(val).toLocaleString(undefined, { maximumFractionDigits: 1 });
 }
 
-// === Main Pivot Grid Fields ===
+const N0_MASK: MaskConfig = { type: "numeric", pattern: "#,##0" };
 
-const pivotFields = computed(() => [
-  {
-    binding: "operGroupID",
-    header: "공정 그룹",
-    dataType: DataType.String,
-    align: "left" as const,
-    width: 100,
-  },
-  {
-    binding: "operID",
-    header: "공정",
-    dataType: DataType.String,
-    align: "left" as const,
-    width: 100,
-  },
-  {
-    binding: "itemID",
-    header: "제품",
-    dataType: DataType.String,
-    align: "left" as const,
-    width: 120,
-  },
-  {
-    binding: "siteID",
-    header: "사이트",
-    dataType: DataType.String,
-    align: "left" as const,
-    width: 80,
-  },
-  {
-    binding: "itemType",
-    header: "제품 유형",
-    dataType: DataType.String,
-    align: "left" as const,
-    width: 80,
-  },
-  {
-    binding: "wipQty",
-    header: "WIP 수량",
-    dataType: DataType.Number,
-    align: "right" as const,
-    aggregate: Aggregate.Sum,
-  },
-  {
-    binding: "pegQty",
-    header: "Peg 수량",
-    dataType: DataType.Number,
-    align: "right" as const,
-    aggregate: Aggregate.Sum,
-  },
-  {
-    binding: "usedTotalQty",
-    header: "사용 총량",
-    dataType: DataType.Number,
-    align: "right" as const,
-    aggregate: Aggregate.Sum,
-  },
-  {
-    binding: "outPlanQty",
-    header: "계획 산출량",
-    dataType: DataType.Number,
-    align: "right" as const,
-    width: 76,
-    aggregate: Aggregate.Sum,
-  },
-  {
-    binding: "planDate",
-    header: "계획일",
-    dataType: DataType.String,
-    align: "right" as const,
-    width: 76,
-  },
-  {
-    binding: "planMonth",
-    header: "계획월",
-    dataType: DataType.String,
-    align: "right" as const,
-    width: 76,
-  },
-]);
+// === Main Pivot Grid ===
 
-const rowFieldNames = [
-  "공정 그룹",
-  "공정",
-  "제품",
-  "사이트",
-  "제품 유형",
-  "WIP 수량",
-  "Peg 수량",
-  "사용 총량",
-];
-const columnFieldNames = ["계획월", "계획일"];
-const valueFieldNames = ["계획 산출량"];
+// 행 합계 없음 · 열 총합계만 표시. 값 컬럼 기본 너비 100
+const pivotCoreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "pivot",
+  data: props.data,
+  rowFields: [
+    { field: "operGroupID", header: "공정 그룹", dataType: "string", width: 100 },
+    { field: "operID", header: "공정", dataType: "string", width: 100 },
+    { field: "itemID", header: "제품", dataType: "string", width: 120 },
+    { field: "siteID", header: "사이트", dataType: "string", width: 80 },
+    { field: "itemType", header: "제품 유형", dataType: "string", width: 80 },
+    { field: "wipQty", header: "WIP 수량", dataType: "number" },
+    { field: "pegQty", header: "Peg 수량", dataType: "number" },
+    { field: "usedTotalQty", header: "사용 총량", dataType: "number" },
+  ],
+  columnFields: [
+    { field: "planMonth", header: "계획월", dataType: "string" },
+    { field: "planDate", header: "계획일", dataType: "string" },
+  ],
+  valueFields: [
+    { field: "outPlanQty", header: "계획 산출량", dataType: "number", aggregate: "sum", width: 100, align: "right", mask: N0_MASK },
+  ],
+  showRowGrandTotals: false,
+  showColumnGrandTotals: true,
+  showZeros: false,
+}));
 
-// === Buffer Plan Target Pivot Fields ===
+// === Buffer Plan Target Pivot ===
 
-const bufferPlanFields = computed(() => [
-  {
-    binding: "oper_group_id",
-    header: "공정 그룹",
-    dataType: DataType.String,
-    align: "left" as const,
-    width: 100,
-  },
-  {
-    binding: "oper_id",
-    header: "공정",
-    dataType: DataType.String,
-    align: "left" as const,
-    width: 100,
-  },
-  {
-    binding: "item_id",
-    header: "제품",
-    dataType: DataType.String,
-    align: "left" as const,
-    width: 120,
-  },
-  {
-    binding: "plan_type",
-    header: "계획 유형",
-    dataType: DataType.String,
-    align: "left" as const,
-    width: 80,
-  },
-  {
-    binding: "qty",
-    header: "수량",
-    dataType: DataType.Number,
-    align: "right" as const,
-    width: 76,
-    aggregate: Aggregate.Sum,
-  },
-  {
-    binding: "date",
-    header: "날짜",
-    dataType: DataType.String,
-    align: "right" as const,
-    width: 76,
-  },
-  {
-    binding: "month",
-    header: "월",
-    dataType: DataType.String,
-    align: "right" as const,
-    width: 76,
-  },
-]);
+const bufferPlanCoreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "pivot",
+  data: props.bufferPlanTargetData,
+  rowFields: [
+    { field: "oper_group_id", header: "공정 그룹", dataType: "string", width: 100 },
+    { field: "oper_id", header: "공정", dataType: "string", width: 100 },
+    { field: "item_id", header: "제품", dataType: "string", width: 120 },
+    { field: "plan_type", header: "계획 유형", dataType: "string", width: 80 },
+  ],
+  columnFields: [
+    { field: "month", header: "월", dataType: "string" },
+    { field: "date", header: "날짜", dataType: "string" },
+  ],
+  valueFields: [
+    { field: "qty", header: "수량", dataType: "number", aggregate: "sum", width: 76, align: "right", mask: N0_MASK },
+  ],
+  showRowGrandTotals: false,
+  showColumnGrandTotals: false,
+  showZeros: false,
+}));
 
-const bufferPlanRowFieldNames = ["공정 그룹", "공정", "제품", "계획 유형"];
-const bufferPlanColumnFieldNames = ["월", "날짜"];
-const bufferPlanValueFieldNames = ["수량"];
+// === Popup Grids ===
 
-// === Grid Initialization ===
+const demandInfoCoreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: [GRID_ROW_KEY],
+  data: withRowKey(props.demandInfoData),
+  fields: [
+    { id: "demand_id", header: "수요 ID", dataType: "string", width: 120 },
+    { id: "item_id", header: "제품 ID", dataType: "string", width: 120 },
+    { id: "site_id", header: "사이트", dataType: "string", width: 80 },
+    { id: "buffer_id", header: "버퍼", dataType: "string", width: 80 },
+    { id: "demand_qty", header: "수요량", dataType: "number", width: 90, align: "right", mask: N0_MASK },
+    { id: "due_date", header: "납기일", dataType: "string", width: 100 },
+  ],
+}));
 
-function onInitialized(pivotGrid: PivotGrid, _extendGrid: ExtendGrid) {
-  // Set default column width
-  pivotGrid.columns.defaultSize = 100;
-}
+const pegInfoCoreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: [GRID_ROW_KEY],
+  data: withRowKey(props.pegInfoData),
+  fields: [
+    { id: "wip_id", header: "WIP ID", dataType: "string", width: 120 },
+    { id: "item_id", header: "제품 ID", dataType: "string", width: 120 },
+    { id: "wip_qty", header: "WIP 수량", dataType: "number", width: 90, align: "right", mask: N0_MASK },
+    { id: "peg_qty", header: "Peg 수량", dataType: "number", width: 90, align: "right", mask: N0_MASK },
+    { id: "target_qty", header: "Target 수량", dataType: "number", width: 100, align: "right", mask: N0_MASK },
+    { id: "site_id", header: "사이트", dataType: "string", width: 80 },
+    { id: "buffer_id", header: "버퍼", dataType: "string", width: 80 },
+    { id: "oper_id", header: "공정", dataType: "string", width: 80 },
+    { id: "stage_id", header: "스테이지", dataType: "string", width: 90 },
+    { id: "routing_id", header: "라우팅", dataType: "string", width: 100 },
+    { id: "pegging_key", header: "Pegging Key", dataType: "string", width: 120 },
+  ],
+}));
 
 // === Demand ID Change → Open Modals ===
 

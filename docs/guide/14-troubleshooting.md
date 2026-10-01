@@ -6,29 +6,23 @@
 
 ## 1. 의존성 / 설치
 
-### `@vmscloud/moz-ui-components` 를 찾을 수 없음
+### `@vmscloud/*` 패키지 설치 실패 (401 / 404)
 
 ```
-원인: GitHub Packages 인증 토큰 미설정 또는 만료
+원인: 예전 .npmrc 의 @vmscloud 레지스트리 설정이 남아 있음
 ```
 
-`@vmscloud/moz-ui-components` 는 GitHub Packages 비공개 레지스트리에 있어 토큰이 필요합니다.
+`@vmscloud/moz-ui-components-vue`, `@vmscloud/moz-ui-grid-vue`, `@vmscloud/moz-ui-chart-vue` 등은 public npm 에 있어 토큰이 필요 없습니다. 그런데도 401·404 가 나면 다른 레지스트리로 요청이 가고 있는 경우가 대부분입니다.
 
-1. `frontend/.npmrc` 가 있는지 확인. 없으면 `frontend/.npmrc.example` 을 복사해 `<SET_PAT_TOKEN>` 을 본인 PAT(`ghp_...`)로 교체.
-   ```
-   @vmscloud:registry=https://npm.pkg.github.com
-   //npm.pkg.github.com/:_authToken=ghp_xxxxxxxx
-   ```
-2. PAT 권한에 `read:packages` 가 포함됐는지 확인 (만료되었으면 재발급).
+1. `frontend/.npmrc` 와 사용자 `~/.npmrc` 에 `@vmscloud:registry=...` 줄이나 인증 토큰 줄이 남아 있으면 지웁니다. 현재 `frontend/.npmrc.example` 에는 `legacy-peer-deps=true` 만 있습니다.
+2. 레지스트리 확인: `pnpm config get @vmscloud:registry` 결과가 비어 있거나 `undefined` 여야 합니다.
 3. 캐시 정리 후 재설치:
    ```powershell
    cd frontend
    pnpm store prune
    pnpm install
    ```
-4. 설치 확인: `pnpm ls @vmscloud/moz-ui-components`
-
-> ⚠️ `.npmrc` 는 `.gitignore` 로 추적 제외됩니다. 토큰을 저장소에 커밋하지 마세요. 실수로 푸시했다면 즉시 해당 PAT 을 revoke 하고 재발급하세요.
+4. 설치 확인: `pnpm ls @vmscloud/moz-ui-components-vue @vmscloud/moz-ui-grid-vue`
 
 ### 공유 라이브러리 버전 충돌
 
@@ -38,7 +32,7 @@
 
 Module Federation 의 `singleton` 의존성은 호스트와 버전이 어긋나면 런타임에 예측 불가한 에러를 냅니다.
 
-1. `frontend/package.json` 의 버전 확인 (`vue`, `pinia`, `@vmscloud/moz-ui-components`).
+1. `frontend/package.json` 의 버전 확인 (`vue`, `pinia`).
 2. 호스트가 기대하는 버전과 일치시킵니다.
 3. lockfile 갱신: `pnpm install`
 

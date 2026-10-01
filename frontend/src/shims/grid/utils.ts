@@ -1,8 +1,7 @@
 /**
- * Runtime shim for @vmscloud/moz-wijmo-grid/utils
+ * 그리드·화면 공용 유틸
  *
- * These functions are defined in the package's internal source but not
- * exported via package.json "exports". We provide local implementations.
+ * 레거시 패키지 내부에만 있던 함수들을 로컬로 구현한다.
  */
 import djs from "dayjs";
 import duration from "dayjs/plugin/duration";
@@ -11,7 +10,19 @@ djs.extend(duration);
 
 export const dayjs = djs;
 
-export { generateUUID, pxToRem } from "@vmscloud/moz-ui-components";
+/** 레거시 moz-ui-components 의 generateUUID 와 같은 구현 */
+export function generateUUID(): string {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
+/** 레거시 moz-ui-components 의 pxToRem 과 같은 구현 */
+export function pxToRem(px: number, base = 16): number {
+  return px / base;
+}
 
 /**
  * showMessage — 토스트 알림 (원본: message + isSuccess)
@@ -81,11 +92,6 @@ export const getValue = (value: any, placeholder: any) => {
   return value;
 };
 
-/**
- * isDataCell — wijmo 그리드 데이터 셀 여부 확인
- * 원본: (grid, e) => grid.cells === e.panel
- */
-export const isDataCell = (grid: any, e: any): boolean => grid.cells === e.panel;
 
 /**
  * getWidthByKey — 컬럼 키 기반 너비 조회 (기본값 반환)

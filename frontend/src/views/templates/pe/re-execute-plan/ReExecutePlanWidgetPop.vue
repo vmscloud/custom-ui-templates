@@ -64,7 +64,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useTranslation } from "i18next-vue";
-import { MultiSelect, Popup, Select, Tab } from "@vmscloud/moz-ui-components";
+import { MultiSelect, Popup, Select, Tab } from "@vmscloud/moz-ui-components-vue";
 import { api, getProjectId } from "@/api/client";
 
 // Widget settings API (inline — not exported from composable)

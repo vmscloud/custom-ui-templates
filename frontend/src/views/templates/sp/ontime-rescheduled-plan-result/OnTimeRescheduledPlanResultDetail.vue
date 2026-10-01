@@ -2,43 +2,17 @@
   <div class="ontime-replan-detail">
     <!-- Production Plan Grid -->
     <div class="pivot-container">
-      <ExtendFlexGrid
+      <MozGrid
         name="onTimeReplanProdDetail"
-        :itemsSource="gridData"
+        :coreConfig="coreConfig"
         height="100%"
-        :isReadOnly="true"
-        allowSorting="None"
-        :initialized="onInitialized"
-        :formatItem="onFormatItem"
         :loading="loading"
         :use-tool-box="true"
+        :use-sort="false"
         :emptyState="{
-          isLoading: loading,
           contentMsg: !gridData || gridData.length === 0 ? '수요를 선택하세요' : '',
         }"
-      >
-        <WjFlexGridColumn binding="oper_group_id" :header="t('text-oper_group_id')" :width="120" />
-        <WjFlexGridColumn binding="item_id" :header="t('text-item_id')" :width="120" />
-        <WjFlexGridColumn binding="total_prod_qty" :header="t('text-isu_used_total')" align="right" :width="100" />
-        <WjFlexGridColumn binding="oper_id" :header="t('text-oper_id')" :width="100" :visible="false" />
-        <WjFlexGridColumn binding="site_id" :header="t('text-site_id')" :width="80" :visible="false" />
-        <WjFlexGridColumn binding="item_type" :header="t('text-item_type')" :width="90" :visible="false" />
-        <WjFlexGridColumn binding="wip_qty" header="WIP" dataType="Number" align="right" :width="90" format="n0" :visible="false" />
-        <WjFlexGridColumn binding="peg_qty" :header="t('text-peg_qty')" dataType="Number" align="right" :width="90" format="n0" :visible="false" />
-        <WjFlexGridColumn binding="prod_qty" :header="t('text-prod_qty')" dataType="Number" align="right" :width="100" format="n2" />
-        <WjFlexGridColumn binding="plan_date" :header="t('text-plan_date')" :width="100" align="center" />
-        <WjFlexGridColumn binding="plan_month" :header="t('text-plan_month')" :width="90" align="center" />
-        <WjFlexGridColumn
-          v-for="period in periodColumns"
-          :key="period"
-          :binding="`date_${period}`"
-          :header="period"
-          dataType="Number"
-          align="right"
-          :width="90"
-          format="n2"
-        />
-      </ExtendFlexGrid>
+      />
     </div>
 
     <!-- Demand Info Popup -->
@@ -50,19 +24,12 @@
       preset="close"
       :onCancel="() => (demandInfoPopupVisible = false)"
     >
-      <ExtendFlexGrid
+      <MozGrid
         name="onTimeReplanDemandInfo"
-        :itemsSource="demandInfoData"
+        :coreConfig="demandInfoCoreConfig"
         height="100%"
-        :isReadOnly="true"
         :use-tool-box="false"
-      >
-        <WjFlexGridColumn binding="demand_id" :header="t('text-demand_id')" :width="120" />
-        <WjFlexGridColumn binding="item_id" :header="t('text-item_id')" :width="120" />
-        <WjFlexGridColumn binding="cust_id" :header="t('text-cust_name')" :width="100" />
-        <WjFlexGridColumn binding="due_date" :header="t('text-due_date')" :width="110" />
-        <WjFlexGridColumn binding="demand_qty" :header="t('text-demand_qty')" :width="90" align="right" format="n0" />
-      </ExtendFlexGrid>
+      />
     </Popup>
 
     <!-- Peg Info Popup -->
@@ -74,18 +41,12 @@
       preset="close"
       :onCancel="() => (pegInfoPopupVisible = false)"
     >
-      <ExtendFlexGrid
+      <MozGrid
         name="onTimeReplanPegInfo"
-        :itemsSource="pegInfoData"
+        :coreConfig="pegInfoCoreConfig"
         height="100%"
-        :isReadOnly="true"
         :use-tool-box="false"
-      >
-        <WjFlexGridColumn binding="demand_id" :header="t('text-demand_id')" :width="120" />
-        <WjFlexGridColumn binding="item_id" :header="t('text-item_id')" :width="120" />
-        <WjFlexGridColumn binding="peg_qty" :header="t('text-peg_qty')" :width="90" align="right" format="n0" />
-        <WjFlexGridColumn binding="plan_date" :header="t('text-plan_date')" :width="110" />
-      </ExtendFlexGrid>
+      />
     </Popup>
 
     <!-- BOM Map Popup -->
@@ -97,19 +58,12 @@
       preset="close"
       :onCancel="() => (bomMapPopupVisible = false)"
     >
-      <ExtendFlexGrid
+      <MozGrid
         name="onTimeReplanBomMap"
-        :itemsSource="bomMapData"
+        :coreConfig="bomMapCoreConfig"
         height="100%"
-        :isReadOnly="true"
         :use-tool-box="false"
-      >
-        <WjFlexGridColumn binding="item_id" :header="t('text-item_id')" :width="120" />
-        <WjFlexGridColumn binding="bom_id" :header="t('text-bom_id')" :width="120" />
-        <WjFlexGridColumn binding="routing_id" :header="t('text-routing_id')" :width="120" />
-        <WjFlexGridColumn binding="oper_id" :header="t('text-oper_id')" :width="100" />
-        <WjFlexGridColumn binding="qty" :header="t('text-short_qty')" :width="90" align="right" format="n0" />
-      </ExtendFlexGrid>
+      />
     </Popup>
   </div>
 </template>
@@ -117,10 +71,10 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useTranslation } from "i18next-vue";
-import { ExtendFlexGrid, type ExtendGrid } from "@vmscloud/moz-wijmo-grid";
-import { WjFlexGridColumn } from "@vmscloud/moz-wijmo-grid/wijmo.vue2.grid";
-import { type FlexGrid, CellType } from "@vmscloud/moz-wijmo-grid/wijmo.grid";
-import { Popup } from "@vmscloud/moz-ui-components";
+import { MozGrid } from "@vmscloud/moz-ui-grid-vue";
+import type { FieldDef, MaskConfig, MozGridCoreProps } from "@vmscloud/moz-ui-grid-vue";
+import { Popup } from "@vmscloud/moz-ui-components-vue";
+import { GRID_ROW_KEY, withRowKey } from "./onTimeRescheduledPlanResult";
 import type {
   ProdDetailResponse,
 } from "./onTimeRescheduledPlanResult";
@@ -149,10 +103,12 @@ const emit = defineEmits<{
 
 // === Local State ===
 
-const grid = ref<FlexGrid | null>(null);
 const demandInfoPopupVisible = ref(false);
 const pegInfoPopupVisible = ref(false);
 const bomMapPopupVisible = ref(false);
+
+const N0_MASK: MaskConfig = { type: "numeric", pattern: "#,##0" };
+const N2_MASK: MaskConfig = { type: "numeric", pattern: "#,##0.00" };
 
 // === Computed ===
 
@@ -165,11 +121,81 @@ const periodColumns = computed(() => {
 /** Flattened grid data: merge detail rows with date columns */
 const gridData = computed(() => {
   if (!props.data?.detail || props.data.detail.length === 0) return [];
-  return props.data.detail.map((row) => ({
-    ...row,
-    total_prod_qty: formatDecimal(row.total_prod_qty),
-  }));
+  return withRowKey(
+    props.data.detail.map((row) => ({
+      ...row,
+      total_prod_qty: formatDecimal(row.total_prod_qty),
+    })),
+  );
 });
+
+const coreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: [GRID_ROW_KEY],
+  data: gridData.value,
+  fields: [
+    { id: "oper_group_id", header: t("text-oper_group_id"), dataType: "string", width: 120 },
+    { id: "item_id", header: t("text-item_id"), dataType: "string", width: 120 },
+    { id: "total_prod_qty", header: t("text-isu_used_total"), dataType: "string", align: "right", width: 100 },
+    { id: "oper_id", header: t("text-oper_id"), dataType: "string", width: 100, hidden: true },
+    { id: "site_id", header: t("text-site_id"), dataType: "string", width: 80, hidden: true },
+    { id: "item_type", header: t("text-item_type"), dataType: "string", width: 90, hidden: true },
+    { id: "wip_qty", header: "WIP", dataType: "number", align: "right", width: 90, mask: N0_MASK, hidden: true },
+    { id: "peg_qty", header: t("text-peg_qty"), dataType: "number", align: "right", width: 90, mask: N0_MASK, hidden: true },
+    { id: "prod_qty", header: t("text-prod_qty"), dataType: "number", align: "right", width: 100, mask: N2_MASK },
+    { id: "plan_date", header: t("text-plan_date"), dataType: "string", width: 100, align: "center" },
+    { id: "plan_month", header: t("text-plan_month"), dataType: "string", width: 90, align: "center" },
+    ...periodColumns.value.map<FieldDef>((period) => ({
+      id: `date_${period}`,
+      header: period,
+      dataType: "number",
+      align: "right",
+      width: 90,
+      mask: N2_MASK,
+      // Highlight negative values in red
+      cellAttributes: ({ value }: { value: unknown }) =>
+        typeof value === "number" && value < 0 ? { class: "negative-number" } : undefined,
+    })),
+  ],
+}));
+
+const demandInfoCoreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: [GRID_ROW_KEY],
+  data: withRowKey(props.demandInfoData),
+  fields: [
+    { id: "demand_id", header: t("text-demand_id"), dataType: "string", width: 120 },
+    { id: "item_id", header: t("text-item_id"), dataType: "string", width: 120 },
+    { id: "cust_id", header: t("text-cust_name"), dataType: "string", width: 100 },
+    { id: "due_date", header: t("text-due_date"), dataType: "string", width: 110 },
+    { id: "demand_qty", header: t("text-demand_qty"), dataType: "number", width: 90, align: "right", mask: N0_MASK },
+  ],
+}));
+
+const pegInfoCoreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: [GRID_ROW_KEY],
+  data: withRowKey(props.pegInfoData),
+  fields: [
+    { id: "demand_id", header: t("text-demand_id"), dataType: "string", width: 120 },
+    { id: "item_id", header: t("text-item_id"), dataType: "string", width: 120 },
+    { id: "peg_qty", header: t("text-peg_qty"), dataType: "number", width: 90, align: "right", mask: N0_MASK },
+    { id: "plan_date", header: t("text-plan_date"), dataType: "string", width: 110 },
+  ],
+}));
+
+const bomMapCoreConfig = computed<MozGridCoreProps>(() => ({
+  mode: "flat",
+  keyFields: [GRID_ROW_KEY],
+  data: withRowKey(props.bomMapData),
+  fields: [
+    { id: "item_id", header: t("text-item_id"), dataType: "string", width: 120 },
+    { id: "bom_id", header: t("text-bom_id"), dataType: "string", width: 120 },
+    { id: "routing_id", header: t("text-routing_id"), dataType: "string", width: 120 },
+    { id: "oper_id", header: t("text-oper_id"), dataType: "string", width: 100 },
+    { id: "qty", header: t("text-short_qty"), dataType: "number", width: 90, align: "right", mask: N0_MASK },
+  ],
+}));
 
 // === Helpers ===
 
@@ -177,32 +203,6 @@ function formatDecimal(value: any): string {
   if (typeof value !== "number" || isNaN(value)) return String(value ?? "");
   return Number.isInteger(value) ? String(value) : value.toFixed(2);
 }
-
-// === Grid Initialization ===
-
-const onInitialized = (flexGrid: FlexGrid, _extendGrid: ExtendGrid) => {
-  grid.value = flexGrid;
-};
-
-// === FormatItem ===
-
-const onFormatItem = (_s: FlexGrid, e: any) => {
-  // Only format data cells
-  if (e.panel.cellType !== CellType.Cell) return;
-
-  const binding = e.getColumn()?.binding;
-  if (!binding) return;
-
-  // Highlight negative values in red
-  const item = e.getRow()?.dataItem;
-  if (!item) return;
-
-  if (binding.startsWith("date_") && typeof item[binding] === "number") {
-    if (item[binding] < 0) {
-      e.cell.classList.add("negative-number");
-    }
-  }
-};
 
 // === Public Methods (called from parent context menu) ===
 
@@ -242,7 +242,7 @@ defineExpose({ openDemandInfo, openPegInfo, openBomMap });
 </style>
 
 <style lang="scss">
-.negative-number span {
+.negative-number {
   color: #dc5a5a !important;
 }
 </style>

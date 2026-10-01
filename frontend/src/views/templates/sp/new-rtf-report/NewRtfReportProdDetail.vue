@@ -49,52 +49,32 @@
         </div>
       </div>
     </div>
-    <ExtendPivotGrid
-      v-memo="[dataSource, valueFields, getPlanByProdDetailQuery.isPending.value]"
+    <MozGrid
       :name="`${currentMenu.menuID}-plan-by-prod_pivot`"
       :id="`${currentMenu.menuID}-plan-by-prod_pivot-id`"
-      :use-preset="true"
       :emptyState="{
-        isLoading: detailQuery.isPending.value && getPlanByProdDetailQuery.isPending.value,
         contentMsg: '',
       }"
       class="prod-plan-ins-main"
-      ref="extendPivot"
       height="100%"
-      :itemsSource="dataSource"
-      :engine-option="{
-        fields: fields,
-        rowFields: rowFields,
-        columnFields: columnFields,
-        valueFields: valueFields,
-        showRowTotals: dataState.showRowTotals,
-        showColumnTotals: dataState.showColumnTotals,
-        showZeros: dataState.showZeros,
-        totalsBeforeData: dataState.totalsBeforeData,
-      }"
-      :initialized="onInitialized"
-      :panel-on-update="updateView"
-      :formatItem="formatItem"
-      :pivotRef="extendPivot"
-      :usePivotChart="false"
+      :coreConfig="pivotCoreConfig"
+      :usePivot="true"
       :use-tool-box-setting="true"
       :loading="detailQuery.isPending.value && getPlanByProdDetailQuery.isPending.value"
-      :setContextMenuProps="
-        (ht: any) => ({
-          customMenu: [
-            {
-              text: t('text-open-wip-info-detail-view'),
-              function: () => (popup = true),
-              disabled: () => false,
-            },
-            {
-              text: t('text-open-prod-plan-detail-view'),
-              function: () => (showTargetPlanView = true),
-              disabled: () => false,
-            },
-          ],
-        })
-      "
+      :contextMenuConfig="{
+        customMenu: [
+          {
+            id: 'openWipInfoDetail',
+            label: t('text-open-wip-info-detail-view'),
+            handler: () => (popup = true),
+          },
+          {
+            id: 'openProdPlanDetail',
+            label: t('text-open-prod-plan-detail-view'),
+            handler: () => (showTargetPlanView = true),
+          },
+        ],
+      }"
     >
       <template #tool-items>
         <div
@@ -109,7 +89,7 @@
           <IconCollapseArrow v-else />
         </div>
       </template>
-    </ExtendPivotGrid>
+    </MozGrid>
   </div>
   <Popup
     :width="popupWidth"
@@ -133,97 +113,31 @@
         <div class="peg-detail-label">
           {{ t('text-popup-selected_demand_info') }}
         </div>
-        <ExtendFlexGrid
-          :useFilter="false"
-          :allowSorting="'None'"
-          :itemsSource="demandInfoSource"
-          :initialized="onInitializedDemandInfo"
-          :formatItem="popupFormatItem"
-          :isReadOnly="true"
-          :allowPinning="false"
+        <MozGrid
+          :height="demandInfoGridHeight"
+          :coreConfig="demandInfoCoreConfig"
           :useContextMenu="false"
           :use-tool-box="false"
           :use-extend-footer="false"
+          :useSort="false"
           :name="`${currentMenu.menuID}_sub3_demand_info_modal`"
           :id="`${currentMenu.menuID}-sub3-demand-info-modal-id`"
-          :use-preset="true"
-        >
-          <!-- <WjFlexGridColumn binding="demand_id" :header="t('text-demand_id')" :width="getWidthByKey('S2')" /> -->
-          <WjFlexGridColumn binding="demand_id" :header="t('text-demand_id')" :width="'*'" />
-          <!-- <WjFlexGridColumn binding="demand_type" :header="t('text-demand_type')" :width="getWidthByKey('S2')" /> -->
-          <WjFlexGridColumn binding="demand_item_id" :header="t('text-item_id')" :width="'*'" />
-          <WjFlexGridColumn binding="site_id" :header="t('text-site_id')" :width="'*'" />
-          <WjFlexGridColumn binding="buffer_id" :header="t('text-buffer_id')" :width="getWidthByKey('S3')" />
-          <WjFlexGridColumn binding="prod_qty" :header="t('text-prod_qty')" :width="getWidthByKey('S3')" />
-          <WjFlexGridColumn binding="demand_qty" :header="t('text-demand_qty')" :width="getWidthByKey('S3')" />
-          <WjFlexGridColumn
-            binding="due_date"
-            :header="t('text-due_date')"
-            :width="getWidthByKey('S2')"
-            dataType="String"
-          />
-        </ExtendFlexGrid>
+        />
       </div>
       <div class="peg-detail-section">
         <div class="peg-detail-label">
           {{ t('text-popup-peg_info') }}
         </div>
         <div class="peg-detail-grid-wrapper">
-          <ExtendFlexGrid
-            :useFilter="false"
-            :allowSorting="'None'"
-            :itemsSource="pegInfoDetailSource"
-            :initialized="onInitializedPegInfo"
-            :formatItem="formatItemDetail"
-            :isReadOnly="true"
-            :allowPinning="false"
+          <MozGrid
+            :coreConfig="pegInfoCoreConfig"
             :useContextMenu="false"
             :height="340"
             :use-tool-box="false"
+            :useSort="false"
             :name="`${currentMenu.menuID}_sub3_peg_info_modal`"
             :id="`${currentMenu.menuID}-sub3-peg-info-modal-id`"
-            :use-preset="true"
-          >
-            <WjFlexGridColumn binding="wip_id" :header="t('text-wip_id')" :width="getWidthByKey('S1')" />
-            <WjFlexGridColumn binding="item_id" :header="t('text-item_id')" :width="getWidthByKey('S2')" />
-            <WjFlexGridColumn binding="wip_qty" :header="t('text-wip_qty')" :width="getWidthByKey('S3')" />
-            <WjFlexGridColumn binding="peg_qty" :header="t('text-peg_qty')" :width="getWidthByKey('S3')" />
-            <WjFlexGridColumn binding="target_qty" :header="t('text-target_qty')" :width="getWidthByKey('S3')" />
-            <WjFlexGridColumn binding="site_id" :header="t('text-site_id')" :width="getWidthByKey('S2')" />
-            <WjFlexGridColumn binding="buffer_id" :header="t('text-buffer_id')" :width="getWidthByKey('S2')" />
-            <WjFlexGridColumn binding="oper_id" :header="t('text-oper_id')" :width="getWidthByKey('S2')" />
-            <WjFlexGridColumn
-              binding="stage_id"
-              :header="t('text-stage_id')"
-              :width="getWidthByKey('S3')"
-              :visible="false"
-            />
-            <WjFlexGridColumn
-              binding="module_id"
-              :header="t('text-module_id')"
-              :width="getWidthByKey('S3')"
-              :visible="false"
-            />
-            <WjFlexGridColumn
-              binding="phase_no"
-              :header="t('text-phase_no')"
-              :width="getWidthByKey('S3')"
-              :visible="false"
-            />
-            <!--        PEG SEQ이 pegging_key가 맞는지 확인할 것! -->
-            <WjFlexGridColumn
-              binding="routing_id"
-              :header="t('text-routing_id')"
-              :width="getWidthByKey('S2')"
-              :visible="false"
-            />
-            <WjFlexGridColumn
-              binding="pegging_key"
-              :header="t('text-pegging_key')"
-              :width="getWidthByKey('S1')"
-              :visible="false"
-            />
-          </ExtendFlexGrid>
+          />
         </div>
       </div>
     </div>
@@ -279,40 +193,19 @@
                 `(${t('text-qty_uom')}: ${bufferPlanTargetSource[0]?.qty_uom ?? '-'}, ${t('text-oper_group_id')} ${t('기준')})`
               }}
             </div>
-            <ExtendPivotGrid
-              v-memo="[bufferPlanTargetSource, valueFields, bufferPlanTargetQuery.isFetching.value]"
+            <MozGrid
               :name="`${currentMenu.menuID}-buffer-plan-target_pivot`"
               :id="`${currentMenu.menuID}-buffer-plan-target_pivot-id`"
-              :use-preset="true"
-              :emptyState="{
-                isLoading: bufferPlanTargetQuery.isFetching.value,
-              }"
               class="buffer-plan-target-main"
-              ref="bufferPlanExtendPivot"
               height="100%"
-              :itemsSource="bufferPlanTargetSource"
-              :engine-option="{
-                fields: bufferPlanFields,
-                rowFields: bufferPlanRowFields,
-                columnFields: bufferPlanColumnFields,
-                valueFields: bufferPlanValueFields,
-                showRowTotals: bufferPlanDataState.showRowTotals,
-                showColumnTotals: bufferPlanDataState.showColumnTotals,
-                showZeros: bufferPlanDataState.showZeros,
-                totalsBeforeData: bufferPlanDataState.totalsBeforeData,
-              }"
-              :initialized="onInitializedBufferPlan"
-              :panel-on-update="updateViewBufferPlan"
-              :formatItem="formatItemBufferPlan"
-              :pivotRef="bufferPlanExtendPivot"
-              :usePivotChart="false"
+              :coreConfig="bufferPlanCoreConfig"
               :use-tool-box-setting="false"
               :use-tool-box="false"
-              :use-filter="false"
-              :use-sorting="false"
+              :usePivotBar="false"
+              :useSort="false"
               :loading="bufferPlanTargetQuery.isFetching.value"
-            >
-            </ExtendPivotGrid>
+              @ready="onBufferPlanReady"
+            />
           </div>
         </Pane>
       </SplitPane>
@@ -324,19 +217,17 @@ import { useMenuStore, usePlanCycleStore } from './adapters/stores';
 import { useProjectInfoStore } from './adapters/stores';
 import BomMapInterface from './components/bom-map/BomMapInterface.vue';
 import { IPlanByProdDetailSource } from './adapters/types';
-import { DataType } from '@vmscloud/moz-wijmo-grid/wijmo';
-import { CellType, FlexGrid, FormatItemEventArgs } from '@vmscloud/moz-wijmo-grid/wijmo.grid';
-import { PivotGrid, ShowTotals } from '@vmscloud/moz-wijmo-grid/wijmo.olap';
-import { WjFlexGridColumn } from '@vmscloud/moz-wijmo-grid/wijmo.vue2.grid';
-import { EmptyState, Pane, Popup, SplitPane } from '@vmscloud/moz-ui-components';
-import { ExtendFlexGrid, ExtendPivotGrid, type ExtendGrid } from '@vmscloud/moz-wijmo-grid';
+import { ROW_KEY, withRowKey } from './adapters/utils';
+import { MozGrid } from '@vmscloud/moz-ui-grid-vue';
+import type { FieldDef, GridChrome, MozGridCoreProps, PivotRowField, PureSheet } from '@vmscloud/moz-ui-grid-vue';
+import { EmptyState, Pane, Popup, SplitPane } from '@vmscloud/moz-ui-components-vue';
 import { IconCollapseArrow, IconExpandArrow } from '@moz-shared/icons';
-import { getWidthByKey, isDataCell } from '@vmscloud/moz-wijmo-grid/utils';
+import { getWidthByKey } from '@/shims/grid/utils';
 import { getValue, showMessage } from '@moz-shared/utils';
 import dayjs from 'dayjs';
 import { useTranslation } from 'i18next-vue';
 import { storeToRefs } from 'pinia';
-import { computed, inject, onBeforeUnmount, reactive, Ref, ref, toRaw, watch, watchEffect } from 'vue';
+import { computed, inject, reactive, ref, toRaw, watch, watchEffect } from 'vue';
 import { IRtfReportQuery } from './NewRtfReport';
 
 const planCycleStore = usePlanCycleStore();
@@ -385,161 +276,56 @@ const localState: {
 
 const menuModule = useMenuStore();
 const { currentMenu } = storeToRefs(menuModule);
-const dataState: {
-  menuName: string;
-  showRowTotals: ShowTotals;
-  showColumnTotals: ShowTotals;
-  showZeros: boolean;
-  totalsBeforeData: boolean;
-} = reactive({
-  menuName: '',
-  showRowTotals: ShowTotals.None,
-  showColumnTotals: ShowTotals.GrandTotals,
-  showZeros: false,
-  totalsBeforeData: false,
-});
-
-const fields = computed(() => {
-  const defaultFields: any[] = [
-    {
-      binding: 'itemID',
-      header: t('text-item_id'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-    {
-      binding: 'bufferSeq',
-      header: t('text-buffer_seq'),
-      dataType: DataType.Number,
-      align: 'right',
-    },
-    {
-      binding: 'bufferID',
-      header: t('text-buffer_id'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-    {
-      binding: 'operGroupID',
-      header: t('text-oper_group_id'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-    {
-      binding: 'operID',
-      header: t('text-oper_id'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-    {
-      binding: 'siteID',
-      header: t('text-site_id'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-    {
-      binding: 'itemType',
-      header: t('text-item_type'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-    {
-      binding: 'wipQty',
-      header: t('text-default-wip_qty'),
-      dataType: DataType.Number,
-      align: 'right',
-    },
-    {
-      binding: 'pegQty',
-      header: t('text-peg_qty'),
-      dataType: DataType.Number,
-      align: 'right',
-    },
-    {
-      binding: 'usedTotalQty',
-      header: t('text-used_total'),
-      dataType: DataType.Number,
-      align: 'right',
-    },
-    {
-      binding: 'outPlanQty',
-      header: t('text-out_plan_qty'),
-      dataType: DataType.Number,
-      align: 'right',
-    },
-    {
-      binding: 'planDate',
-      header: t('text-plan_date'),
-      dataType: DataType.String,
-      align: 'center',
-    },
-    // {
-    //   binding: 'planWeek',
-    //   header: t('text-plan_week'),
-    //   dataType: DataType.String,
-    //   align: 'center',
-    // },
-    {
-      binding: 'planMonth',
-      header: t('text-plan_month'),
-      dataType: DataType.String,
-      align: 'center',
-    },
-  ] satisfies any[];
-
-  return defaultFields;
-});
-
-const rowFields = computed(() => {
-  const baseRows = [
-    t('text-item_id'),
-    t('text-site_id'),
-    t('text-item_type'),
-    t('text-default-wip_qty'),
-    t('text-peg_qty'),
-    t('text-used_total'),
-  ];
-
-  return [t('text-oper_group_id'), t('text-oper_id'), ...baseRows];
-
-  // if (currentWidgetSetting?.value?.detailType === 'OPERGROUP') {
-  //   return [t('text-oper_group_id'), t('text-oper_id'), ...baseRows];
-  // }
-
-  // if (currentWidgetSetting?.value?.detailType === 'OPER') {
-  //   return [t('text-oper_id'), ...baseRows];
-  // }
-
-  // if (currentWidgetSetting?.value?.detailType === 'BUFFER') {
-  //   return [t('text-buffer_seq'), t('text-buffer_id'), ...baseRows];
-  // }
-
-  // return baseRows;
-});
-
-const columnFields: Ref<string[]> = ref([
-  t('text-plan_month'),
-  // t('text-plan_week'),
-  t('text-plan_date'),
-]);
-// const columnFields: Ref<string[]> = ref([t('text-plan_date')]);
-const valueFields: Ref<string[]> = ref([t('text-out_plan_qty')]);
 
 /**
- * @todo 백엔드 API 스네이크 케이스로 받고 하드코딩된 로직 제거
- * 서버에서 받는 케이스가 안 맞아서 `excelModule.createColumnMapForExport(grid as FlexGrid)`으로 처리 불가능 함
+ * 피벗 소계/합계 설정
+ * collapsibleSubtotals가 true일 때 열에서만 부분합 표시(접기/펼치기 가능), 행에서는 부분합 없음
  */
+const pivotTotals = computed(() => ({
+  showRowSubTotals: false,
+  showRowGrandTotals: false,
+  showColumnSubTotals: localState.collapsibleSubtotals,
+  showColumnGrandTotals: true,
+  columnCollapsible: localState.collapsibleSubtotals,
+  showZeros: false,
+}));
+
+const pivotCoreConfig = computed<MozGridCoreProps>(() => {
+  const rowField = (
+    field: string,
+    header: string,
+    dataType: PivotRowField['dataType'] = 'string',
+  ): PivotRowField => ({ field, header, dataType, width: 100 });
+  const rowFields = [
+    rowField('operGroupID', t('text-oper_group_id')),
+    rowField('operID', t('text-oper_id')),
+    rowField('itemID', t('text-item_id')),
+    rowField('siteID', t('text-site_id')),
+    rowField('itemType', t('text-item_type')),
+    rowField('wipQty', t('text-default-wip_qty'), 'number'),
+    rowField('pegQty', t('text-peg_qty'), 'number'),
+    rowField('usedTotalQty', t('text-used_total'), 'number'),
+  ];
+
+  // if (currentWidgetSetting?.value?.detailType === 'OPER') → operID 부터
+  // if (currentWidgetSetting?.value?.detailType === 'BUFFER') → bufferSeq, bufferID 부터
+
+  return {
+    mode: 'pivot',
+    data: dataSource.value,
+    rowFields,
+    columnFields: [
+      { field: 'planMonth', header: t('text-plan_month'), dataType: 'string' },
+      // { field: 'planWeek', header: t('text-plan_week'), dataType: 'string' },
+      { field: 'planDate', header: t('text-plan_date'), dataType: 'string' },
+    ],
+    valueFields: [{ field: 'outPlanQty', header: t('text-out_plan_qty'), dataType: 'number', aggregate: 'sum' }],
+    ...pivotTotals.value,
+  };
+});
 
 const detailDataSource = ref<GroupByPlanDateType[]>([]); // DataSource 객체 선언
 const planByProdSummarySource = ref<any>();
-
-// region PIVOT CODES
-const extendPivot = ref();
-const pivot = ref();
-
-const targetPlanPivot = ref();
-
-const bufferPlanExtendPivot = ref();
 
 const targetPlanTitle = computed(() => {
   const prefix = 'Target vs Plan';
@@ -564,125 +350,18 @@ const targetPlanTitle = computed(() => {
  * INITIALIZE
  */
 
-// -----------------------------------------Pivot Grid-----------------------------------------
-// GRID INITIALIZE
-const onInitialized = (_pivot: PivotGrid) => {
-  _pivot.rowHeaders.columns.defaultSize = 100;
-  // _pivot.columns.defaultSize = 50;
-  pivot.value = _pivot;
-
-  _pivot.loadedRows.addHandler(() => {
-    toggleCollapsibleSubtotals();
+// plan_type 값들의 정렬용 prefix 제거 (모든 "숫자_" 패턴에서 제거)
+const onBufferPlanReady = (grid: PureSheet, _chrome: GridChrome) => {
+  grid.formatRow.addHandler('bufferPlanPrefix', (info: any) => {
+    const cells = info?.ctx?.cells;
+    if (!cells) return;
+    Object.values(cells).forEach((cell: any) => {
+      const text = cell?.element?.textContent;
+      if (text && /^\d+_/.test(text)) {
+        cell.element.textContent = text.replace(/^\d+_/, '');
+      }
+    });
   });
-};
-
-// 펼치기/접기 토글 함수
-const toggleCollapsibleSubtotals = () => {
-  if (pivot.value) {
-    // PivotGrid의 collapsibleSubtotals 속성을 체크박스 상태에 따라 설정
-    pivot.value.collapsibleSubtotals = localState.collapsibleSubtotals;
-
-    // collapsibleSubtotals가 true일 때 열에서만 부분합 표시, 행에서는 부분합 없음
-    if (localState.collapsibleSubtotals) {
-      // 행은 부분합 없음, 열만 부분합 표시
-      dataState.showRowTotals = ShowTotals.None;
-      dataState.showColumnTotals = ShowTotals.Subtotals;
-
-      // PivotEngine의 설정도 업데이트
-      if (pivot.value.engine) {
-        pivot.value.engine.showRowTotals = ShowTotals.None;
-        pivot.value.engine.showColumnTotals = ShowTotals.Subtotals;
-      }
-    } else {
-      dataState.showRowTotals = ShowTotals.None;
-      dataState.showColumnTotals = ShowTotals.GrandTotals;
-
-      // PivotEngine의 설정도 업데이트
-      if (pivot.value.engine) {
-        pivot.value.engine.showRowTotals = ShowTotals.None;
-        pivot.value.engine.showColumnTotals = ShowTotals.GrandTotals;
-      }
-    }
-
-    // 그리드 새로고침
-    pivot.value.invalidate();
-
-    const collapse = () => {
-      (pivot.value as PivotGrid).collapseColumnsToLevel(2);
-      (pivot.value as PivotGrid).collectionView?.collectionChanged.removeHandler(collapse);
-    };
-    (pivot.value as PivotGrid).collectionView?.collectionChanged.addHandler(collapse);
-  }
-};
-
-const onInitializedBufferPlan = (_pivot: PivotGrid) => {
-  _pivot.rowHeaders.columns.defaultSize = 100;
-  _pivot.columnHeaders.columns.defaultSize = 90;
-
-  targetPlanPivot.value = _pivot;
-};
-
-onBeforeUnmount(() => {
-  if (pivot.value) {
-    pivot.value?.dispose();
-  }
-});
-
-// pivot panel update
-const updateView = () => {
-  if (extendPivot.value) {
-    extendPivot.value.hidePanel();
-  } else {
-    showMessage(t('msg-toast-first_search'), false);
-  }
-};
-
-const updateViewBufferPlan = () => {
-  if (bufferPlanExtendPivot.value) {
-    bufferPlanExtendPivot.value.hidePanel();
-  } else {
-    showMessage(t('msg-toast-first_search'), false);
-  }
-};
-
-const formatItem = (s: PivotGrid, e: any) => {
-  // topLeft 영역에서 row field 이름들 확인
-  if (e.panel.cellType === CellType.TopLeft) {
-    e.cell.style.justifyContent = 'start';
-  }
-};
-
-const formatItemBufferPlan = (s: PivotGrid, e: any) => {
-  // plan_type 값들의 prefix 제거 (모든 숫자-텍스트 패턴에서 제거)
-  if (e.cell.textContent) {
-    const text = e.cell.textContent;
-    const number = Number(text);
-
-    if (!isNaN(number) && number < 0) {
-      e.cell.classList.add('negative-number');
-    }
-
-    // 일단 모든 "숫자-" 패턴을 제거해보기
-    if (/^\d+_/.test(text)) {
-      e.cell.textContent = text.replace(/^\d+_/, '');
-    }
-  }
-};
-
-const demandInfoGrid = ref<FlexGrid | null>(null);
-const demandInfoExtendGrid = ref<ExtendGrid | null>(null); // Wijmo Grid 확장 기능
-
-const onInitializedDemandInfo = (flexGrid: FlexGrid, _extendGrid: ExtendGrid) => {
-  demandInfoGrid.value = flexGrid;
-  demandInfoExtendGrid.value = _extendGrid;
-};
-
-const pegInfoGrid = ref<FlexGrid | null>(null);
-const pegInfoExtendGrid = ref<ExtendGrid | null>(null); // Wijmo Grid 확장 기능
-
-const onInitializedPegInfo = (flexGrid: FlexGrid, _extendGrid: ExtendGrid) => {
-  pegInfoGrid.value = flexGrid;
-  pegInfoExtendGrid.value = _extendGrid;
 };
 
 /**
@@ -720,13 +399,6 @@ watchEffect(
     if (planVer.value && getPlanByProdDetailQuery.isSuccess.value) {
       if (getPlanByProdDetailQuery.data.value) {
         dataSource.value = toRaw(getPlanByProdDetailQuery.data.value.detail);
-
-        // 데이터 로드 후 펼치기/접기 기능 다시 적용
-        setTimeout(() => {
-          if (localState.collapsibleSubtotals) {
-            toggleCollapsibleSubtotals();
-          }
-        }, 100);
       } else {
         dataSource.value = [];
       }
@@ -741,158 +413,46 @@ watchEffect(
 );
 
 const bufferPlanTargetSource = ref<any[]>([]);
-const bufferPlanDataState: {
-  menuName: string;
-  showRowTotals: ShowTotals;
-  showColumnTotals: ShowTotals;
-  showZeros: boolean;
-  totalsBeforeData: boolean;
-} = reactive({
-  menuName: '',
-  showRowTotals: ShowTotals.None,
-  showColumnTotals: ShowTotals.None,
-  showZeros: false,
-  totalsBeforeData: false,
+
+const bufferPlanCoreConfig = computed<MozGridCoreProps>(() => {
+  const rowField = (field: string, header: string): PivotRowField => ({
+    field,
+    header,
+    dataType: 'string',
+    width: 100,
+  });
+
+  // if (currentWidgetSetting?.value?.detailType === 'OPER') → oper_id 부터
+  // if (currentWidgetSetting?.value?.detailType === 'BUFFER') → buffer_id 부터
+
+  return {
+    mode: 'pivot',
+    data: bufferPlanTargetSource.value,
+    rowFields: [
+      rowField('oper_group_id', t('text-oper_group_id')),
+      rowField('oper_id', t('text-oper_id')),
+      rowField('item_id', t('text-item_id')),
+      rowField('plan_type', t('text-plan_type')),
+    ],
+    columnFields: [
+      { field: 'month', header: t('text-plan_month'), dataType: 'string' },
+      // { field: 'week', header: t('text-plan_week'), dataType: 'string' },
+      { field: 'date', header: t('text-plan_date'), dataType: 'string' },
+    ],
+    valueFields: [
+      {
+        field: 'qty',
+        header: t('text-qty'),
+        dataType: 'number',
+        aggregate: 'sum',
+        width: 90,
+        cellAttributes: ({ value }: { value: unknown }) =>
+          typeof value === 'number' && value < 0 ? { class: 'negative-number' } : undefined,
+      },
+    ],
+    ...pivotTotals.value,
+  };
 });
-
-// 펼치기/접기 토글 함수
-const setTargetPlanSubtotals = () => {
-  if (targetPlanPivot.value) {
-    // PivotGrid의 collapsibleSubtotals 속성을 체크박스 상태에 따라 설정
-    targetPlanPivot.value.collapsibleSubtotals = localState.collapsibleSubtotals;
-
-    // collapsibleSubtotals가 true일 때 열에서만 부분합 표시, 행에서는 부분합 없음
-    if (localState.collapsibleSubtotals) {
-      // 행은 부분합 없음, 열만 부분합 표시
-      bufferPlanDataState.showRowTotals = ShowTotals.None;
-      bufferPlanDataState.showColumnTotals = ShowTotals.Subtotals;
-
-      // PivotEngine의 설정도 업데이트
-      if (targetPlanPivot.value.engine) {
-        targetPlanPivot.value.engine.showRowTotals = ShowTotals.None;
-        targetPlanPivot.value.engine.showColumnTotals = ShowTotals.Subtotals;
-      }
-    } else {
-      bufferPlanDataState.showRowTotals = ShowTotals.None;
-      bufferPlanDataState.showColumnTotals = ShowTotals.GrandTotals;
-
-      // PivotEngine의 설정도 업데이트
-      if (targetPlanPivot.value.engine) {
-        targetPlanPivot.value.engine.showRowTotals = ShowTotals.None;
-        targetPlanPivot.value.engine.showColumnTotals = ShowTotals.GrandTotals;
-      }
-    }
-
-    // 그리드 새로고침
-    targetPlanPivot.value.invalidate();
-  }
-};
-
-const bufferPlanFields = computed(() => {
-  const defaultFields: any[] = [
-    {
-      binding: 'buffer_id',
-      header: t('text-buffer_id'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-    {
-      binding: 'oper_group_id',
-      header: t('text-oper_group_id'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-    {
-      binding: 'oper_id',
-      header: t('text-oper_id'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-    {
-      binding: 'qty_uom',
-      header: t('text-qty_uom'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-    {
-      binding: 'plan_type',
-      header: t('text-plan_type'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-    {
-      binding: 'lot_id',
-      header: t('text-lot_id'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-    {
-      binding: 'date',
-      header: t('text-plan_date'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-    // {
-    //   binding: 'week',
-    //   header: t('text-plan_week'),
-    //   dataType: DataType.String,
-    //   align: 'left',
-    // },
-    {
-      binding: 'month',
-      header: t('text-plan_month'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-    {
-      binding: 'qty',
-      header: t('text-qty'),
-      dataType: DataType.Number,
-      align: 'right',
-    },
-    {
-      binding: 'item_id',
-      header: t('text-item_id'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-    {
-      binding: 'site_id',
-      header: t('text-site_id'),
-      dataType: DataType.String,
-      align: 'left',
-    },
-  ] satisfies any[];
-
-  return defaultFields;
-});
-
-const bufferPlanRowFields = computed(() => {
-  const baseRows = [t('text-item_id'), t('text-plan_type')];
-
-  return [t('text-oper_group_id'), t('text-oper_id'), ...baseRows];
-
-  // if (currentWidgetSetting?.value?.detailType === 'OPERGROUP') {
-  //   return [t('text-oper_group_id'), t('text-oper_id'), ...baseRows];
-  // }
-
-  // if (currentWidgetSetting?.value?.detailType === 'OPER') {
-  //   return [t('text-oper_id'), ...baseRows];
-  // }
-
-  // if (currentWidgetSetting?.value?.detailType === 'BUFFER') {
-  //   return [t('text-buffer_id'), ...baseRows];
-  // }
-
-  // return baseRows;
-});
-
-const bufferPlanColumnFields: Ref<string[]> = ref([
-  t('text-plan_month'),
-  // t('text-plan_week'),
-  t('text-plan_date'),
-]);
-const bufferPlanValueFields: Ref<string[]> = ref([t('text-qty')]);
 
 const addPrefix = (value: string) => {
   if (value === 'TARGET') {
@@ -921,12 +481,6 @@ watchEffect(
           // month: item.month === 'TOTAL' ? item.month : projectModule.convertToFormat('dateMonth', item.month),
           plan_type: addPrefix(item.plan_type),
         }));
-
-        setTimeout(() => {
-          if (localState.collapsibleSubtotals) {
-            setTargetPlanSubtotals();
-          }
-        }, 100);
       }
     } else if (bufferPlanTargetQuery.isError.value) {
       bufferPlanTargetSource.value = [];
@@ -979,20 +533,70 @@ const targetPlanPopupHeight = computed(() => Math.floor(windowHeight.value * 0.9
 
 const popupWidth = ref(setWidth(window.innerWidth));
 
-const popupFormatItem = (s: FlexGrid, e: FormatItemEventArgs) => {
-  //
-  if (!isDataCell(s, e)) return;
-  e.cell.style.borderBottom = 'none';
-};
-
 const demandInfoSource = ref<any[]>([]);
 const pegInfoDetailSource = ref<any[]>([]);
+
+// 수요 정보는 행 수만큼만 높이를 잡는다 (헤더 32px + 행 30px)
+const demandInfoGridHeight = computed(() => 34 + Math.max(demandInfoSource.value.length, 1) * 30);
+
+const demandInfoCoreConfig = computed<MozGridCoreProps>(() => {
+  const fields: FieldDef[] = [
+    // { id: 'demand_type', header: t('text-demand_type'), width: getWidthByKey('S2') },
+    { id: 'demand_id', header: t('text-demand_id'), dataType: 'string', flex: 1 },
+    { id: 'demand_item_id', header: t('text-item_id'), dataType: 'string', flex: 1 },
+    { id: 'site_id', header: t('text-site_id'), dataType: 'string', flex: 1 },
+    { id: 'buffer_id', header: t('text-buffer_id'), dataType: 'string', width: getWidthByKey('S3') },
+    { id: 'prod_qty', header: t('text-prod_qty'), dataType: 'number', width: getWidthByKey('S3') },
+    { id: 'demand_qty', header: t('text-demand_qty'), dataType: 'number', width: getWidthByKey('S3') },
+    { id: 'due_date', header: t('text-due_date'), dataType: 'string', width: getWidthByKey('S2') },
+  ];
+
+  return {
+    mode: 'flat',
+    keyFields: [ROW_KEY],
+    data: demandInfoSource.value,
+    headerHeight: 32,
+    rowHeight: 30,
+    fields: fields.map((field) => ({ ...field, sortable: false })),
+  };
+});
+
+const pegInfoCoreConfig = computed<MozGridCoreProps>(() => {
+  const fields: FieldDef[] = [
+    { id: 'wip_id', header: t('text-wip_id'), dataType: 'string', width: getWidthByKey('S1') },
+    { id: 'item_id', header: t('text-item_id'), dataType: 'string', width: getWidthByKey('S2') },
+    { id: 'wip_qty', header: t('text-wip_qty'), dataType: 'number', width: getWidthByKey('S3') },
+    { id: 'peg_qty', header: t('text-peg_qty'), dataType: 'number', width: getWidthByKey('S3') },
+    { id: 'target_qty', header: t('text-target_qty'), dataType: 'number', width: getWidthByKey('S3') },
+    { id: 'site_id', header: t('text-site_id'), dataType: 'string', width: getWidthByKey('S2') },
+    { id: 'buffer_id', header: t('text-buffer_id'), dataType: 'string', width: getWidthByKey('S2') },
+    { id: 'oper_id', header: t('text-oper_id'), dataType: 'string', width: getWidthByKey('S2') },
+    { id: 'stage_id', header: t('text-stage_id'), dataType: 'string', width: getWidthByKey('S3'), hidden: true },
+    { id: 'module_id', header: t('text-module_id'), dataType: 'string', width: getWidthByKey('S3'), hidden: true },
+    { id: 'phase_no', header: t('text-phase_no'), dataType: 'string', width: getWidthByKey('S3'), hidden: true },
+    //        PEG SEQ이 pegging_key가 맞는지 확인할 것!
+    { id: 'routing_id', header: t('text-routing_id'), dataType: 'string', width: getWidthByKey('S2'), hidden: true },
+    { id: 'pegging_key', header: t('text-pegging_key'), dataType: 'string', width: getWidthByKey('S1'), hidden: true },
+  ];
+
+  return {
+    mode: 'flat',
+    keyFields: [ROW_KEY],
+    data: pegInfoDetailSource.value,
+    fields: fields.map((field) => ({
+      ...field,
+      sortable: false,
+      cellAttributes: ({ rowIndex }: { rowIndex: number }) =>
+        rowIndex % 2 === 1 ? { class: 'peg-detail-row-even' } : undefined,
+    })),
+  };
+});
 
 watchEffect(
   () => {
     if (demandInfoQuery.isSuccess.value && demandInfoQuery.data.value) {
       if (demandInfoQuery.data.value.length) {
-        demandInfoSource.value = toRaw(demandInfoQuery.data.value).map((elem: any) => {
+        demandInfoSource.value = withRowKey(toRaw(demandInfoQuery.data.value)).map((elem: any) => {
           if (elem.due_date) {
             const [date, range] = elem.due_date.split(' ');
             return {
@@ -1015,20 +619,11 @@ watchEffect(
   },
 );
 
-const formatItemDetail = (s: FlexGrid, e: any) => {
-  if (!isDataCell(s, e)) return;
-
-  const rowNum = e.row;
-  if (rowNum % 2 === 1) {
-    e.cell.classList.add('peg-detail-row-even');
-  }
-};
-
 watchEffect(
   () => {
     if (pegInfoDetailQuery.isSuccess.value && pegInfoDetailQuery.data.value) {
       if (pegInfoDetailQuery.data.value.length) {
-        pegInfoDetailSource.value = toRaw(pegInfoDetailQuery.data.value);
+        pegInfoDetailSource.value = withRowKey(toRaw(pegInfoDetailQuery.data.value));
       } else {
         pegInfoDetailSource.value = [];
       }
@@ -1073,7 +668,7 @@ watchEffect(
 
 /**
  * @todo 백엔드 API 스네이크 케이스로 받고 하드코딩된 로직 제거
- * 서버에서 받는 케이스가 안 맞아서 `excelModule.createColumnMapForExport(grid as FlexGrid)`으로 처리 불가능 함
+ * 서버에서 받는 케이스가 안 맞아서 `createColumnMapForExport(coreConfig.fields)`로 처리 불가능 함
  */
 /* const COLUMN_MAP = {
   short_type: {
@@ -1144,131 +739,12 @@ watch(
   gap: 10px;
   height: 100%;
 
-  .wj-flexgrid .wj-cells .wj-row {
-    &:nth-child(n) {
-      .wj-cell.ratio-short {
-        // 흰 배경일때 ratio-short 일때
-        background-color: #f6d5d5 !important;
-
-        // 그 상태에서 clicked 했을때
-        &.aleatorik-clicked-state {
-          background-color: #eae0ec !important;
-        }
-      }
-
-      .wj-cell.ratio-late {
-        // 흰 배경일때 ratio-late 일때
-        background-color: #fde6c8 !important;
-
-        // 그 상태에서 clicked 했을때
-        &.aleatorik-clicked-state {
-          background-color: #eae0ec !important;
-        }
-      }
-    }
-
-    &:nth-child(2n) {
-      .wj-cell.ratio-short {
-        // 파란 배경에서 ratio-short 일때
-        background-color: #f1d0d4 !important;
-
-        &.aleatorik-clicked-state {
-          background-color: #e5daea !important;
-        }
-        .ratio-short-col {
-          color: #dc5a5a;
-        }
-      }
-
-      .wj-cell.ratio-late {
-        // 파란 배경에서 ratio-late 일때
-        background-color: #f8e1c7 !important;
-
-        &.aleatorik-clicked-state {
-          background-color: #e5daea !important;
-        }
-      }
-    }
-
-    .wj-cell.ratio-short:not(.wj-header) {
-      &.wj-state-multi-selected,
-      &.wj-state-active {
-        background-color: #d4cde8 !important;
-      }
-    }
-
-    &:hover {
-      .wj-cell.ratio-short:not(.wj-header) {
-        background-color: #d4cde8 !important;
-      }
-    }
-
-    .wj-cell.ratio-late:not(.wj-header) {
-      &.wj-state-multi-selected,
-      &.wj-state-active {
-        background-color: #d4cde8 !important;
-      }
-    }
-
-    &:hover {
-      .wj-cell.ratio-late:not(.wj-header) {
-        background-color: #d4cde8 !important;
-      }
-    }
-  }
-
-  .ratio-short-col span {
-    color: #dc5a5a !important;
-  }
-
   .moz-tabs-container {
     display: block !important;
   }
 
   .mouse-point {
     cursor: pointer;
-  }
-}
-
-.prod-plan-ins-master,
-.prod-plan-ins-detail {
-  .wj-colheaders {
-    .wj-cell.wj-header {
-      //   justify-content: center;
-      .spacer {
-        display: none;
-      }
-    }
-  }
-
-  .wj-colheaders {
-    .wj-row {
-      .wj-header.after-due-date {
-        border-left: 2px solid #dc5a5a;
-      }
-    }
-  }
-
-  .wj-cells {
-    .wj-row {
-      .wj-cell {
-        &.summary-row {
-          background-color: #d6def8;
-          font-weight: 500;
-        }
-
-        &.late {
-          color: #dc5a5a;
-          span {
-            color: #dc5a5a;
-          }
-        }
-
-        &.after-due-date {
-          border-left: 2px solid #dc5a5a;
-        }
-      }
-    }
   }
 }
 
@@ -1367,17 +843,18 @@ watch(
 }
 
 .negative-number {
+  color: #dc5a5a !important;
+
   span {
     color: #dc5a5a !important;
   }
 }
 
-.wj-aggregate:not(.wj-header) {
-  background-color: white !important;
-}
-
-.wj-cell:not(.wj-header):not(.wj-aggregate) + .wj-aggregate {
-  background-color: #d6def8 !important;
+.prod-plan-ins-main,
+.buffer-plan-target-main {
+  .ps-cell.ps-cell-column-subtotal {
+    background-color: #d6def8;
+  }
 }
 
 .zoom-button {

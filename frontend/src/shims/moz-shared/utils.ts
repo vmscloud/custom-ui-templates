@@ -15,7 +15,7 @@ export {
   generateUUID,
   addTooltipEvent,
   pxToRem,
-} from "../moz-wijmo-grid/utils";
+} from "../grid/utils";
 
 // ── Local implementations of missing functions ──
 

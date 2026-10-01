@@ -15,28 +15,11 @@
 
 ## 첫 세팅
 
-### 1) NPM 토큰 준비 (`.npmrc` 설정)
+### 1) 패키지 레지스트리 (설정 불필요)
 
-`@vmscloud/*` 패키지는 GitHub Packages 프라이빗 레지스트리라 **PAT(Personal Access Token)** 가 필요합니다.
+`@vmscloud/*` UI 패키지(`moz-ui-components-vue`, `moz-ui-grid-vue`, `moz-ui-chart-vue` 등)는 public npm 에 게시되어 있습니다. **토큰이나 `.npmrc` 레지스트리 설정 없이** 바로 설치됩니다.
 
-1. GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
-2. `read:packages` 권한으로 발급.
-3. 아래 방식으로 주입.
-
-```bash
-cd frontend
-cp .npmrc.example .npmrc
-# .npmrc 를 열어 <SET_PAT_TOKEN> 을 발급받은 ghp_... 값으로 교체
-```
-
-`.npmrc` 예시:
-
-```
-@vmscloud:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=ghp_xxxxxxxxxxxxxxxxxxxxx
-```
-
-
+`frontend/.npmrc.example` 에는 npm 사용 시 peer 충돌을 피하는 `legacy-peer-deps=true` 만 들어 있습니다. npm 으로 설치한다면 복사해 두세요 (pnpm 은 필요 없음).
 
 ### 2) 의존성 설치
 

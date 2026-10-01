@@ -65,20 +65,16 @@ frontend/dist/
 | `-Tag`          | `custom`            | 이미지 태그                         |
 | `-HostIP`       | `203.231.40.243`    | 레지스트리 호스트. 환경이 다르면 override    |
 | `-RegistryPort` | `6007`              | 레지스트리 포트                       |
-| `-GithubToken`  | `$env:GITHUB_TOKEN` | 프론트 빌드용 GitHub Packages 토큰     |
 | `-NoCache`      | (off)               | `docker build --no-cache`      |
 
 
 ### 사전 조건 (한 번만 설정)
 
-1. **GitHub Packages 토큰** — 프론트 이미지는 `@vmscloud/moz-ui-components` 를 받기 위해 인증이 필요합니다. 스크립트는 다음 순서로 토큰을 찾습니다.
-  - `-GithubToken` 파라미터
-  - `$env:GITHUB_TOKEN`
-  - `frontend/.npmrc` 의 `_authToken=` 값
-   토큰은 `docker build --secret` 로 주입되어 이미지 레이어에 남지 않습니다.
-2. **insecure registry 등록** (Docker Desktop) — 아래 "레지스트리 IP 설정" 참고.
+1. **insecure registry 등록** (Docker Desktop) — 아래 "레지스트리 IP 설정" 참고.
 
-스크립트는 토큰 누락·빌드 실패·푸시 거부 시 원인과 해결 방법을 콘솔에 자세히 출력합니다. 막히면 그 메시지를 먼저 읽으세요.
+프론트 이미지의 `@vmscloud/*` 패키지는 public npm 에서 받으므로 토큰 준비가 필요 없습니다.
+
+스크립트는 빌드 실패·푸시 거부 시 원인과 해결 방법을 콘솔에 자세히 출력합니다. 막히면 그 메시지를 먼저 읽으세요.
 
 ### 레지스트리 IP 설정: 두 곳을 맞춰야 하는 이유
 
@@ -147,8 +143,8 @@ param(
 ```dockerfile
 FROM node:22-alpine AS builder
 RUN corepack enable && corepack prepare pnpm@latest --activate
-# .npmrc 에 GitHub Packages 토큰을 secret 으로 주입 → pnpm install → 토큰 제거
-RUN node scripts/license.js
+# @vmscloud 패키지는 public npm 에서 받으므로 레지스트리 인증이 필요 없다.
+RUN pnpm install --no-frozen-lockfile
 RUN pnpm build
 
 FROM nginx:alpine
@@ -195,14 +191,13 @@ APS Host  ──(remoteEntry.js)──▶  custom-ui-frontend
 ```
 
 - 호스트 환경에서는 `window.__POWERED_BY_APS_HOST__ === true` 이며, `provide('hostData', ...)` 로 `planVer`·`projectInfo`·`menu` 등이 주입됩니다. (아키텍처 상세: [03-architecture](./03-architecture.md))
-- 공유 의존성(`vue`, `pinia`, `@vmscloud/moz-ui-components` 등)은 호스트와 **버전이 일치**해야 `provide/inject` 가 정상 동작합니다. 불일치 시 [14-troubleshooting](./14-troubleshooting.md) 의 "provide/inject 작동 안 함" 참고.
+- 공유 의존성(`vue`, `pinia`)은 호스트와 **버전이 일치**해야 `provide/inject` 가 정상 동작합니다. 불일치 시 [14-troubleshooting](./14-troubleshooting.md) 의 "provide/inject 작동 안 함" 참고.
 
 ## 6. 배포 전 체크리스트
 
 - `make build-frontend` 성공 (vue-tsc 타입체크 통과)
 - `frontend/dist/remoteEntry.js` 생성 확인
-- 공유 의존성 버전이 호스트와 일치 (`vue`, `pinia`, `@vmscloud/moz-ui-components`)
-- GitHub Packages 토큰 준비 (`$env:GITHUB_TOKEN` 또는 `frontend/.npmrc`)
+- 공유 의존성 버전이 호스트와 일치 (`vue`, `pinia`)
 - insecure-registry 등록 + Docker Desktop 재시작
 - `.\deploy-custom-ui.ps1` push 성공 (frontend + backend)
 - 배포 후 `/ext/remoteEntry.js` 응답 헤더가 `no-store` 인지 확인

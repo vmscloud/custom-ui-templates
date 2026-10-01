@@ -37,7 +37,7 @@ import {
   type ViewDef,
   type FilterDef,
   type ChartField,
-} from "@vmscloud/moz-ui-chart";
+} from "@vmscloud/moz-ui-chart-vue";
 
 // 매출 차트 컴포저블
 const { data, loading, error, loadData } = useSalesChart();
@@ -67,8 +67,6 @@ const chartDef = ref({});
 
 // 차트 초기화 핸들러
 const handleInitialized = (mozEChart: MozEChart) => {
-  mozEChart.category = "series";
-  mozEChart.type = "bar";
   console.log("차트 초기화 완료");
 };
 

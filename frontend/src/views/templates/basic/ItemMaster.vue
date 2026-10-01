@@ -79,7 +79,7 @@
 <script setup lang="ts">
 import { reactive, onMounted } from "vue";
 import { useItemMaster, type ItemMasterParams } from "./itemMaster";
-import { Input, Button } from "@vmscloud/moz-ui-components";
+import { Input, Button } from "@vmscloud/moz-ui-components-vue";
 
 // Item Master 컴포저블
 const { data, loading, error, count, loadData } = useItemMaster();

@@ -143,7 +143,7 @@ import {
   Radio,
   Button,
   EmptyState,
-} from "@vmscloud/moz-ui-components";
+} from "@vmscloud/moz-ui-components-vue";
 import {
   useHostPlanCycle,
   useHostUser,

@@ -45,7 +45,7 @@
       </template>
     </Controller>
     <div class="moz-frame-for-outer-control">
-      <!-- 확대 상태일 때 splitter 숨김 (v-show로 그리드 상태 유지) -->
+      <!-- 확대 상태일 때 splitter 숨김 (Pane hidden 으로 그리드 상태 유지) -->
       <SplitPane
         horizontal
         style="max-width: 100%"
@@ -55,7 +55,7 @@
           :size="isZoomedSub3 ? '0%' : '34%'"
           :max-size="isZoomedSub3 ? '0%' : '300%'"
           :min-size="isZoomedSub3 ? '0%' : '20%'"
-          v-show="!isZoomedSub3"
+          :hidden="isZoomedSub3"
         >
           <LoadFactorByOperGroupSub1
             :mainDataSource="mainDataSource"
@@ -70,7 +70,7 @@
           :size="isZoomedSub3 ? '0%' : '33%'"
           :max-size="isZoomedSub3 ? '0%' : '300%'"
           :min-size="isZoomedSub3 ? '0%' : '20%'"
-          v-show="!isZoomedSub3"
+          :hidden="isZoomedSub3"
         >
           <LoadFactorByOperGroupSub2
             :detailChartDataSource="detailChartDataSource"
@@ -175,7 +175,7 @@ import {
   Pane,
   Popup,
   SplitPane,
-} from "@vmscloud/moz-ui-components";
+} from "@vmscloud/moz-ui-components-vue";
 import { useTranslation } from "i18next-vue";
 import { computed, nextTick, onMounted, ref, toRaw, watch } from "vue";
 import { useHostPlanCycle, useHostNavigations } from "@/composables/useHostStores";
@@ -189,7 +189,7 @@ import LoadFactorByOperGroupSub1 from "./LoadFactorByOperGroupSub1.vue";
 import LoadFactorByOperGroupSub2 from "./LoadFactorByOperGroupSub2.vue";
 import LoadFactorByOperGroupSub3 from "./LoadFactorByOperGroupSub3.vue";
 import IconDownload from "./assets/IconDownload.vue";
-import { downloadBigData } from "@vmscloud/moz-wijmo-grid/excel";
+import { downloadBigData } from "@/shims/grid/excel";
 import { getProjectId } from "@/api/client";
 
 const { t } = useTranslation(); // 다국어
@@ -455,7 +455,7 @@ const showPopup = () => {
 };
 
 // LoadFactorByOperGroup Sub3 그리드와 동일한 바인딩/헤더 순서.
-//   원본 APS 에서는 Sub3 FlexGrid 인스턴스에서 createColumnMapForExport(grid) 로
+//   원본 APS 에서는 Sub3 그리드 인스턴스에서 createColumnMapForExport 로
 //   자동 추출했지만, 포팅본에선 Sub3 grid ref 를 부모로 노출하지 않아 정적 맵 사용.
 const LOAD_FACTOR_DETAIL_COLUMN_MAP: Record<string, string> = {
   oper_group_id: t("text-isu_oper_group_id"),
@@ -478,7 +478,7 @@ const downloadExcelData = async () => {
   // 원본 aps/LoadFactorByOperGroup.ts 의 downloadBigData 호출과 동일 형태.
   //   - 원본은 @/stores/queryStore 의 downloadBigData (aps-local) 를 사용했는데
   //     그 함수는 백엔드 Excel 큐 + SSE 인프라에 의존. 우리는 shim 의 downloadBigData
-  //     (proxy POST → JSON → wijmo Workbook → save) 로 동일 시그니처 유지.
+  //     (proxy POST → 백엔드 xlsx 생성 → save) 로 동일 시그니처 유지.
   try {
     await downloadBigData({
       file_name: "LoadFactorByOperGroup_Detail_Export",
@@ -575,7 +575,7 @@ watch(planVer, (newVal, oldVal) => {
 
 // 확대 상태일 때 splitter 숨김
 :deep(.hide-splitter) {
-  .splitpanes__splitter {
+  .resizer {
     display: none !important;
   }
 }

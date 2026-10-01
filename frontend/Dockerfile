@@ -6,16 +6,11 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# 🔥 GitHub Packages 인증
-RUN --mount=type=secret,id=npm_token \
-    echo "shamefully-hoist=true" > .npmrc && \
-    echo "@vmscloud:registry=https://npm.pkg.github.com/" >> .npmrc && \
-    echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)" >> .npmrc && \
-    pnpm install --no-frozen-lockfile && \
-    sed -i '/_authToken/d' .npmrc
+# @vmscloud 패키지는 public npm 에서 받으므로 레지스트리 인증이 필요 없다.
+RUN echo "shamefully-hoist=true" > .npmrc && \
+    pnpm install --no-frozen-lockfile
 
 COPY . .
-RUN node scripts/license.js
 RUN pnpm build
 
 # Production stage
