@@ -34,6 +34,28 @@ t("text-qty_uom");
 
 템플릿에서는 `{{ t('text-my_page_title') }}`. **UI 라벨을 문자열 리터럴로 박지 마세요.**
 
+### Host 에서 번역되는 방식
+
+APS Host 에 Module Federation 으로 올라가면 화면의 `useTranslation()`·`$t` 는 **Host 의 i18next** 를 씁니다. Host 는 접속할 때 용어관리(DB)의 번역을 불러오므로, 운영에서 보이는 번역은 **용어관리에 등록된 값**입니다. `frontend/src/lang/*.json` 은 dev 단독 실행에서만 쓰이고 Host 에서는 쓰이지 않습니다.
+
+**`import i18next from "i18next"` 로 직접 번역하지 마세요.** 리모트 번들에는 Host 와 분리된 i18next 사본이 따로 들어 있어서, 직접 import 하면 Host 번역이 아니라 이 사본으로 번역됩니다. 이 사본은 화면 갱신과 연결되어 있지 않아 첫 진입 때 번역이 반영되지 않고, 다른 메뉴로 이동했다 돌아와야 바뀝니다.
+
+- 컴포넌트·composable 에서는 setup 안에서 `useTranslation()` 의 `t` 를 씁니다.
+- 컬럼 정의처럼 번역값으로 만드는 목록은 `computed` 안에서 `t` 를 호출합니다. 언어가 바뀌거나 번역이 적재되면 다시 계산됩니다.
+- setup 밖(모듈 최상단 상수, 일반 `.ts` 함수)에서 번역하지 말고, 번역 키만 두었다가 화면에서 `t(key)` 로 바꿉니다.
+
+```ts
+// 잘못된 예 — 리모트 사본으로 번역되어 첫 진입 때 반영되지 않음
+import i18next from "i18next";
+const columns = [{ header: i18next.t("text-item_id") }];
+
+// 올바른 예 — Host i18next 로 번역되고 언어 전환도 반영됨
+import { computed } from "vue";
+import { useTranslation } from "i18next-vue";
+const { t } = useTranslation();
+const columns = computed(() => [{ header: t("text-item_id") }]);
+```
+
 ### 키 네이밍
 
 | 접두어 | 용도 |
@@ -43,7 +65,7 @@ t("text-qty_uom");
 | `msg-` | 사용자에게 보여지는 메시지/알림 |
 | `MOZ-` | 공용 상수성 메시지 (`MOZ-DATA_EMPTY` 등) |
 
-새 키는 ko/en/jp/zh 네 파일에 모두 추가해두는 것이 원칙입니다. 당장 번역이 어려우면 한국어/영어만 채우고 나머지는 fallback 되도록 비워두거나 영어 그대로 둡니다.
+새 키는 **APS 용어관리 화면에 프로젝트 키로 등록**해야 운영에서 번역됩니다. ko/en/zh/jp 언어 탭마다 각각 등록하세요. 프로젝트 키는 시스템 기본값으로 fallback 되지 않아서, 등록하지 않은 언어에서는 키 문자열이 그대로 보입니다. 등록 후에는 브라우저를 새로고침해야 반영됩니다. json 파일에만 추가한 키는 dev 에서만 번역됩니다.
 
 ### 언어 전환
 
@@ -52,7 +74,7 @@ import { loadLanguage } from "@/plugins/i18n";
 await loadLanguage("en");
 ```
 
-i18next 의 `languageChanged` 이벤트에 훅이 걸린 composable(예: `useQtyUomQuery`)은 자동으로 표시값을 재빌드합니다.
+`useTranslation()` 의 `t` 를 `computed` 안에서 쓰는 composable(예: `useQtyUomQuery`)은 언어가 바뀌면 자동으로 표시값을 다시 계산합니다. `loadLanguage` 는 dev 단독 실행 전용이며, Host 에서는 사용자 언어 설정을 따릅니다.
 
 ## UOM (수량 단위)
 

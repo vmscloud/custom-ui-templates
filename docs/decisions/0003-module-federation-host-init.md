@@ -27,9 +27,10 @@ dev 단독 실행 경로와 달라서 두 가지가 깨졌다.
 
 - 래퍼는 `setup()`에서 `inject(HOST_DATA_KEY)`로 Host의 `hostData`를 받아:
   - `setProjectIdResolver(() => hostData.value?.projectInfo?.currentProjectID)` 호출,
-  - `ensureRemoteI18n(hostData)`로 `SamLanguage/<lang>` API를 불러 리모트 i18next에 번들 주입.
+  - ~~`ensureRemoteI18n(hostData)`로 `SamLanguage/<lang>` API를 불러 리모트 i18next에 번들 주입.~~
+    → 2026-10-01 개정으로 제거 (아래 「개정」 참조).
 - 노출은 **static export가 아니라 동적 import 기반 `viewRegistry`** 만 제공한다.
-- `setup()`은 **반드시 동기**로 유지하고, 번역 로드는 **fire-and-forget**(`void ensureRemoteI18n(...)`)으로 처리한다.
+- `setup()`은 **반드시 동기**로 유지한다.
 
 ## Alternatives
 
@@ -60,3 +61,22 @@ dev 단독 실행 경로와 달라서 두 가지가 깨졌다.
   의도된 동작이지만, Host/dev 간 번역 소스가 달라 표시가 미세하게 다를 수 있다.
 - `hostData`에서 `projectInfo.currentProjectID` 등 **Host 데이터 형태에 강하게 의존**한다.
   Host 측 계약이 바뀌면 옵셔널 체이닝으로 조용히 빈 값이 되어 디버깅이 어렵다.
+
+## 개정 (2026-10-01, ITSM-2026-001701)
+
+Context 2번 「i18n 번역 공백」과 그 해결책 `ensureRemoteI18n`은 원인을 잘못 짚었다.
+
+- `vite.config.ts`의 MF `shared`에는 `vue`·`pinia`만 있어서 리모트 번들에는 Host와 **분리된 i18next 사본**이 들어 있다.
+- 반면 화면의 `useTranslation()`·`$t`는 i18next-vue가 **현재 Vue 앱(Host 앱)의 `globalProperties.$i18next`**에서 가져온다.
+  Host 안에 마운트된 리모트 화면은 처음부터 **Host i18next(용어관리 DB 번역)**로 번역되고 있었다.
+- `ensureRemoteI18n`은 쓰이지 않는 리모트 사본에 번역을 넣고 있었다. 이 사본은 화면 갱신과 연결되어 있지 않아서,
+  리모트 사본을 직접 쓰는 코드(`import i18next` 후 `i18next.t()`)는 첫 진입 때 번역이 반영되지 않고
+  다른 메뉴로 이동해 다시 마운트돼야 바뀌었다. VisionOX에서 보고된 「메뉴를 한 번 클릭해야 번역됨」 현상이 이것이다.
+
+변경:
+- `ensureRemoteI18n`과 `plugins/i18n.ts`의 `loadLanguageFromHost`를 제거했다.
+- `useQtyUomQuery`가 `i18next`를 직접 import하던 것을 `useTranslation()` + `computed`로 바꿨다.
+- 리모트 코드에서 `i18next` 직접 import를 금지한다 (`docs/guide/09-i18n-uom-datetime.md`).
+
+MF `shared`에 `i18next`를 singleton으로 추가하는 방안은 택하지 않았다. 리모트의 `plugins/i18n.ts`가 import될 때
+실행하는 `i18next.init({ lng: "ko", ... })`이 Host 인스턴스를 다시 초기화해 Host 전체 언어를 바꿀 수 있기 때문이다.
