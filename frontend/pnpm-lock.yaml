@@ -18,11 +18,11 @@ importers:
         specifier: ^0.1.4
         version: 0.1.4(vue-router@4.2.5(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))
       '@vmscloud/moz-ui-components-core':
-        specifier: ^0.1.54
-        version: 0.1.54
+        specifier: ^0.1.55
+        version: 0.1.55
       '@vmscloud/moz-ui-components-vue':
-        specifier: ^0.1.4
-        version: 0.1.4(vue@3.4.38(typescript@5.9.3))
+        specifier: ^0.1.5
+        version: 0.1.5(vue@3.4.38(typescript@5.9.3))
       '@vmscloud/moz-ui-grid-vue':
         specifier: ^0.2.6
         version: 0.2.6(axios@1.13.5)(dayjs@1.11.19)(file-saver@2.0.5)(pinia@2.1.7(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))
@@ -592,11 +592,11 @@ packages:
       vue: '>=3.4.0'
       vue-router: '>=4.2.0'
 
-  '@vmscloud/moz-ui-components-core@0.1.54':
-    resolution: {integrity: sha512-EWU4egMbFw3f8RltOgRbaoTnztmmIkDt51mhDUpJ+kWjjZjuhbBYkSwu+KJ+Hq/giIMr2pzWb2THysRNPFfAxw==}
+  '@vmscloud/moz-ui-components-core@0.1.55':
+    resolution: {integrity: sha512-JfJ3oxPBuXVzqUxzs5C9g5uS3mi4z9VXSR6awWjxHQI9aPZ9E3WK93SVWzdSgiF8BkJYINR0YagB2LGmRxLDsA==}
 
-  '@vmscloud/moz-ui-components-vue@0.1.4':
-    resolution: {integrity: sha512-tFCfKwUl9nS6QDNcfpAW2DVaZZO8AmYBRe3n0x3MkPm+Q9hChMbtbZAaoNRzduYT4UW4YgDJEm3DT+51jfahqw==}
+  '@vmscloud/moz-ui-components-vue@0.1.5':
+    resolution: {integrity: sha512-qYqduDNvnP6nYSGZPE6YozobyeggpBXqfzgZkCCxKMvV/Ygsgu6/wAUoYqm3maOz+8llERwnxDrz6IjCQJagRA==}
     peerDependencies:
       vue: '>=3.4.0'
 
@@ -1898,16 +1898,16 @@ snapshots:
       vue: 3.4.38(typescript@5.9.3)
       vue-router: 4.2.5(vue@3.4.38(typescript@5.9.3))
 
-  '@vmscloud/moz-ui-components-core@0.1.54':
+  '@vmscloud/moz-ui-components-core@0.1.55':
     dependencies:
       '@tanstack/virtual-core': 3.17.11
       clsx: 2.1.1
       dayjs: 1.11.19
       lit-html: 3.3.3
 
-  '@vmscloud/moz-ui-components-vue@0.1.4(vue@3.4.38(typescript@5.9.3))':
+  '@vmscloud/moz-ui-components-vue@0.1.5(vue@3.4.38(typescript@5.9.3))':
     dependencies:
-      '@vmscloud/moz-ui-components-core': 0.1.54
+      '@vmscloud/moz-ui-components-core': 0.1.55
       vue: 3.4.38(typescript@5.9.3)
 
   '@vmscloud/moz-ui-grid-core@0.1.46': {}
