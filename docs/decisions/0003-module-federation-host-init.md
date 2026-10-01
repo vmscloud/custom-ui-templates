@@ -74,7 +74,9 @@ Context 2번 「i18n 번역 공백」과 그 해결책 `ensureRemoteI18n`은 원
   다른 메뉴로 이동해 다시 마운트돼야 바뀌었다. VisionOX에서 보고된 「메뉴를 한 번 클릭해야 번역됨」 현상이 이것이다.
 
 변경:
-- `ensureRemoteI18n`과 `plugins/i18n.ts`의 `loadLanguageFromHost`를 제거했다.
+- `ensureRemoteI18n`을 제거했다. `plugins/i18n.ts`의 `loadLanguageFromHost`는 남겨 두되 Host 경로에서는 호출하지 않는다.
+  dev 단독 실행에서 용어관리 DB 번역을 받아오는 용도로 쓸 예정이며, 로컬 개발자 인증 방식이 정해지면
+  `bootstrap.ts`에서 호출한다 (ITSM-2026-001701).
 - `useQtyUomQuery`가 `i18next`를 직접 import하던 것을 `useTranslation()` + `computed`로 바꿨다.
 - 리모트 코드에서 `i18next` 직접 import를 금지한다 (`docs/guide/09-i18n-uom-datetime.md`).
 
