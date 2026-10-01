@@ -15,14 +15,14 @@ importers:
         specifier: ^3.13.18
         version: 3.13.18(vue@3.4.38(typescript@5.9.3))
       '@vmscloud/moz-ui-chart-vue':
-        specifier: ^0.1.4
-        version: 0.1.4(vue-router@4.2.5(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))
-      '@vmscloud/moz-ui-components-core':
-        specifier: ^0.1.55
-        version: 0.1.55
-      '@vmscloud/moz-ui-components-vue':
         specifier: ^0.1.5
-        version: 0.1.5(vue@3.4.38(typescript@5.9.3))
+        version: 0.1.5(vue-router@4.2.5(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))
+      '@vmscloud/moz-ui-components-core':
+        specifier: ^0.1.56
+        version: 0.1.56
+      '@vmscloud/moz-ui-components-vue':
+        specifier: ^0.1.6
+        version: 0.1.6(vue@3.4.38(typescript@5.9.3))
       '@vmscloud/moz-ui-grid-vue':
         specifier: ^0.2.6
         version: 0.2.6(axios@1.13.5)(dayjs@1.11.19)(file-saver@2.0.5)(pinia@2.1.7(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))
@@ -583,20 +583,20 @@ packages:
       vite: ^5.0.0 || ^6.0.0
       vue: ^3.2.25
 
-  '@vmscloud/moz-ui-chart-core@0.1.5':
-    resolution: {integrity: sha512-P/tLVVFk+VafBsbJxAQ0OEQqtRoAqo9C8ZRCGTkpGQjbm2Q5zWrG2n++QJEhyUsHnCiBeiAzzxqLFBwM6fID0g==}
+  '@vmscloud/moz-ui-chart-core@0.1.6':
+    resolution: {integrity: sha512-vxwG1DjpVGHmTxMkjhVTbBhsw6BUDwWsoHVJcRuZ/plVVIvGD8CsymWcp4+8SXNGICIi+FUtVKJVBlAh2rutfA==}
 
-  '@vmscloud/moz-ui-chart-vue@0.1.4':
-    resolution: {integrity: sha512-QzQT8IAqo4mLlMm7gaRPYjqVg5sno/VBwHvUBfQdF41g+UP9tvK7GFUP3jZg7+fWRJ9u3BSKINeh5SRbcwJQAg==}
+  '@vmscloud/moz-ui-chart-vue@0.1.5':
+    resolution: {integrity: sha512-AHYfrPThDSARFzJgAv4zpmFw3UWSn4t6YwuOg/Uuw4cX8YGy5lwDc0tPiSvnM3JIH9vPpcYiNI2UW77ObPaV9A==}
     peerDependencies:
       vue: '>=3.4.0'
       vue-router: '>=4.2.0'
 
-  '@vmscloud/moz-ui-components-core@0.1.55':
-    resolution: {integrity: sha512-JfJ3oxPBuXVzqUxzs5C9g5uS3mi4z9VXSR6awWjxHQI9aPZ9E3WK93SVWzdSgiF8BkJYINR0YagB2LGmRxLDsA==}
+  '@vmscloud/moz-ui-components-core@0.1.56':
+    resolution: {integrity: sha512-0L5OcI41DGizn9lXB5ohbwYSuYoEViLxrZBCcwsoqJXw7K6icuVnl+O/dMEDNkXC9RT6dwHiiDT6AtooW+eQdg==}
 
-  '@vmscloud/moz-ui-components-vue@0.1.5':
-    resolution: {integrity: sha512-qYqduDNvnP6nYSGZPE6YozobyeggpBXqfzgZkCCxKMvV/Ygsgu6/wAUoYqm3maOz+8llERwnxDrz6IjCQJagRA==}
+  '@vmscloud/moz-ui-components-vue@0.1.6':
+    resolution: {integrity: sha512-XUrh/QfHgACHkcBV6q9D8uleept4bl1B9XCZG89v3GlAp8GSyapT/ZNRQUHKIK6DJjRoXAwqTHmO1SdhVV1IdQ==}
     peerDependencies:
       vue: '>=3.4.0'
 
@@ -1881,7 +1881,7 @@ snapshots:
       vite: 6.4.1(@types/node@25.2.3)(less@4.5.1)(sass@1.97.3)
       vue: 3.4.38(typescript@5.9.3)
 
-  '@vmscloud/moz-ui-chart-core@0.1.5':
+  '@vmscloud/moz-ui-chart-core@0.1.6':
     dependencies:
       '@tanstack/virtual-core': 3.17.11
       arquero: 8.0.3
@@ -1892,22 +1892,22 @@ snapshots:
       es-toolkit: 1.44.0
       lit-html: 3.3.3
 
-  '@vmscloud/moz-ui-chart-vue@0.1.4(vue-router@4.2.5(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))':
+  '@vmscloud/moz-ui-chart-vue@0.1.5(vue-router@4.2.5(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))':
     dependencies:
-      '@vmscloud/moz-ui-chart-core': 0.1.5
+      '@vmscloud/moz-ui-chart-core': 0.1.6
       vue: 3.4.38(typescript@5.9.3)
       vue-router: 4.2.5(vue@3.4.38(typescript@5.9.3))
 
-  '@vmscloud/moz-ui-components-core@0.1.55':
+  '@vmscloud/moz-ui-components-core@0.1.56':
     dependencies:
       '@tanstack/virtual-core': 3.17.11
       clsx: 2.1.1
       dayjs: 1.11.19
       lit-html: 3.3.3
 
-  '@vmscloud/moz-ui-components-vue@0.1.5(vue@3.4.38(typescript@5.9.3))':
+  '@vmscloud/moz-ui-components-vue@0.1.6(vue@3.4.38(typescript@5.9.3))':
     dependencies:
-      '@vmscloud/moz-ui-components-core': 0.1.55
+      '@vmscloud/moz-ui-components-core': 0.1.56
       vue: 3.4.38(typescript@5.9.3)
 
   '@vmscloud/moz-ui-grid-core@0.1.46': {}
