@@ -893,7 +893,7 @@ const callWatch = watch(
 
 // 확대 상태일 때 splitter 숨김
 :deep(.hide-splitter) {
-  .splitpanes__splitter {
+  .resizer {
     display: none !important;
   }
 }

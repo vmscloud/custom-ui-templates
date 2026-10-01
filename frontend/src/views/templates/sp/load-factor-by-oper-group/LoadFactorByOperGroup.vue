@@ -57,14 +57,16 @@
           :min-size="isZoomedSub3 ? '0%' : '20%'"
           :hidden="isZoomedSub3"
         >
-          <LoadFactorByOperGroupSub1
-            :mainDataSource="mainDataSource"
-            :loading="loading"
-            :clickedSeriesData="clickedSeriesData"
-            :detailChartSelectSource="detailChartSelectSource"
-            @update:clickedSeriesData="onClickedSeriesDataUpdate"
-            @update:detailChartSelectSource="onDetailChartSelectSourceUpdate"
-          />
+          <div class="pane-box">
+            <LoadFactorByOperGroupSub1
+              :mainDataSource="mainDataSource"
+              :loading="loading"
+              :clickedSeriesData="clickedSeriesData"
+              :detailChartSelectSource="detailChartSelectSource"
+              @update:clickedSeriesData="onClickedSeriesDataUpdate"
+              @update:detailChartSelectSource="onDetailChartSelectSourceUpdate"
+            />
+          </div>
         </Pane>
         <Pane
           :size="isZoomedSub3 ? '0%' : '33%'"
@@ -72,28 +74,32 @@
           :min-size="isZoomedSub3 ? '0%' : '20%'"
           :hidden="isZoomedSub3"
         >
-          <LoadFactorByOperGroupSub2
-            :detailChartDataSource="detailChartDataSource"
-            :originDetailChartDataSource="originDetailChartDataSource"
-            :loading="loading"
-            :groupLoading="groupLoading"
-            :clickedSeriesData="clickedSeriesData"
-            :detailChartSelectSource="detailChartSelectSource"
-            @update:clickedSeriesData="onClickedSeriesDataUpdate"
-          />
+          <div class="pane-box">
+            <LoadFactorByOperGroupSub2
+              :detailChartDataSource="detailChartDataSource"
+              :originDetailChartDataSource="originDetailChartDataSource"
+              :loading="loading"
+              :groupLoading="groupLoading"
+              :clickedSeriesData="clickedSeriesData"
+              :detailChartSelectSource="detailChartSelectSource"
+              @update:clickedSeriesData="onClickedSeriesDataUpdate"
+            />
+          </div>
         </Pane>
         <Pane
           :size="isZoomedSub3 ? '100%' : '33%'"
           :max-size="isZoomedSub3 ? '100%' : '300%'"
           :min-size="isZoomedSub3 ? '100%' : '20%'"
         >
-          <LoadFactorByOperGroupSub3
-            :detailDataSource="detailDataSource"
-            :detailLoading="detailLoading"
-            :clickedSeriesData="clickedSeriesData"
-            :isZoomedSub3="isZoomedSub3"
-            @update:isZoomedSub3="isZoomedSub3 = $event"
-          />
+          <div class="pane-box">
+            <LoadFactorByOperGroupSub3
+              :detailDataSource="detailDataSource"
+              :detailLoading="detailLoading"
+              :clickedSeriesData="clickedSeriesData"
+              :isZoomedSub3="isZoomedSub3"
+              @update:isZoomedSub3="isZoomedSub3 = $event"
+            />
+          </div>
         </Pane>
       </SplitPane>
     </div>
@@ -566,8 +572,10 @@ watch(planVer, (newVal, oldVal) => {
   }
 }
 
-// Pane 외곽선 (원본과 동일)
-:deep(.splitpanes__pane) {
+// Pane 외곽선 — 신규 Pane 래퍼에는 클래스가 없어 내용 쪽 래퍼(pane-box)에 준다
+.pane-box {
+  height: 100%;
+  box-sizing: border-box;
   border: 1px solid #e4e6eb;
   border-radius: 8px;
   overflow: hidden;
