@@ -18,17 +18,17 @@ importers:
         specifier: ^0.1.4
         version: 0.1.4(vue-router@4.2.5(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))
       '@vmscloud/moz-ui-components-core':
-        specifier: ^0.1.53
-        version: 0.1.53
+        specifier: ^0.1.54
+        version: 0.1.54
       '@vmscloud/moz-ui-components-vue':
         specifier: ^0.1.4
         version: 0.1.4(vue@3.4.38(typescript@5.9.3))
       '@vmscloud/moz-ui-grid-vue':
-        specifier: ^0.2.4
-        version: 0.2.4(axios@1.13.5)(dayjs@1.11.19)(file-saver@2.0.5)(pinia@2.1.7(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))
+        specifier: ^0.2.6
+        version: 0.2.6(axios@1.13.5)(dayjs@1.11.19)(file-saver@2.0.5)(pinia@2.1.7(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))
       '@vmscloud/moz-ui-grid-wrapper':
-        specifier: ^0.1.17
-        version: 0.1.17
+        specifier: ^0.1.19
+        version: 0.1.19
       axios:
         specifier: ^1.13.5
         version: 1.13.5
@@ -592,8 +592,8 @@ packages:
       vue: '>=3.4.0'
       vue-router: '>=4.2.0'
 
-  '@vmscloud/moz-ui-components-core@0.1.53':
-    resolution: {integrity: sha512-XeTULGQqeWMGqfZs+kF6+AY+vsvuHoUdt0HdFF+1fWysP0ocEHgqYzYZYNSN0Oy0NgSJRfiuWuKJUSXeORHGQQ==}
+  '@vmscloud/moz-ui-components-core@0.1.54':
+    resolution: {integrity: sha512-EWU4egMbFw3f8RltOgRbaoTnztmmIkDt51mhDUpJ+kWjjZjuhbBYkSwu+KJ+Hq/giIMr2pzWb2THysRNPFfAxw==}
 
   '@vmscloud/moz-ui-components-vue@0.1.4':
     resolution: {integrity: sha512-tFCfKwUl9nS6QDNcfpAW2DVaZZO8AmYBRe3n0x3MkPm+Q9hChMbtbZAaoNRzduYT4UW4YgDJEm3DT+51jfahqw==}
@@ -603,8 +603,8 @@ packages:
   '@vmscloud/moz-ui-grid-core@0.1.46':
     resolution: {integrity: sha512-1hnzXQXnHS2XvwTijYVn/yVUSCBhtIji2brx9Tj3fS/t7dCYZZ8Dc2mIwqISS4jBR/+EeUbr7mkLAQ5gwvsrjw==}
 
-  '@vmscloud/moz-ui-grid-vue@0.2.4':
-    resolution: {integrity: sha512-AhwM35h18+O0AOEhlN4gkkTe1XUzGOTxUwTlsrk2Oxa1gwwaZua+Br8iygPUWiisO1G2hVEGJlFpa+4UjTlHuw==}
+  '@vmscloud/moz-ui-grid-vue@0.2.6':
+    resolution: {integrity: sha512-xSmgnOb00C+UQOtKwQvDJIR+3h1kt1B6ag95BpzcmwT/qkLlg0GBxhgTRu0kj43ssYtv+/3aVBNcJcHCzQKjkw==}
     peerDependencies:
       axios: '>=1.6.0'
       dayjs: '>=1.11.0'
@@ -621,8 +621,8 @@ packages:
       pinia:
         optional: true
 
-  '@vmscloud/moz-ui-grid-wrapper@0.1.17':
-    resolution: {integrity: sha512-burZ8oaWzDx/tTSOMmkc1RfjrxNE6kxJEwKEMcE46Wy6k2WJ6vie6R2lWuox2yUzVLRPKc+lRXE5uKLVmQKS8A==}
+  '@vmscloud/moz-ui-grid-wrapper@0.1.19':
+    resolution: {integrity: sha512-72RZAERCgMJeFiqTu8HhzRunwIQrib89IxjKqJZkJUscAca8Zr2Bg72ijWi1rpcrKLJxZsXtCFThNQET3tL0Kg==}
 
   '@volar/language-core@2.4.15':
     resolution: {integrity: sha512-3VHw+QZU0ZG9IuQmzT68IyN4hZNd9GchGPhbD9+pa8CVv7rnoOZwo7T8weIbrRmihqy3ATpdfXFnqRrfPVK6CA==}
@@ -1898,7 +1898,7 @@ snapshots:
       vue: 3.4.38(typescript@5.9.3)
       vue-router: 4.2.5(vue@3.4.38(typescript@5.9.3))
 
-  '@vmscloud/moz-ui-components-core@0.1.53':
+  '@vmscloud/moz-ui-components-core@0.1.54':
     dependencies:
       '@tanstack/virtual-core': 3.17.11
       clsx: 2.1.1
@@ -1907,15 +1907,15 @@ snapshots:
 
   '@vmscloud/moz-ui-components-vue@0.1.4(vue@3.4.38(typescript@5.9.3))':
     dependencies:
-      '@vmscloud/moz-ui-components-core': 0.1.53
+      '@vmscloud/moz-ui-components-core': 0.1.54
       vue: 3.4.38(typescript@5.9.3)
 
   '@vmscloud/moz-ui-grid-core@0.1.46': {}
 
-  '@vmscloud/moz-ui-grid-vue@0.2.4(axios@1.13.5)(dayjs@1.11.19)(file-saver@2.0.5)(pinia@2.1.7(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))':
+  '@vmscloud/moz-ui-grid-vue@0.2.6(axios@1.13.5)(dayjs@1.11.19)(file-saver@2.0.5)(pinia@2.1.7(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3)))(vue@3.4.38(typescript@5.9.3))':
     dependencies:
       '@vmscloud/moz-ui-grid-core': 0.1.46
-      '@vmscloud/moz-ui-grid-wrapper': 0.1.17
+      '@vmscloud/moz-ui-grid-wrapper': 0.1.19
       bytebuffer: 5.0.1
       crypto-js: 4.2.0
       echarts: 5.6.0
@@ -1928,7 +1928,7 @@ snapshots:
       file-saver: 2.0.5
       pinia: 2.1.7(typescript@5.9.3)(vue@3.4.38(typescript@5.9.3))
 
-  '@vmscloud/moz-ui-grid-wrapper@0.1.17':
+  '@vmscloud/moz-ui-grid-wrapper@0.1.19':
     dependencies:
       '@vmscloud/moz-ui-grid-core': 0.1.46
       echarts: 5.6.0

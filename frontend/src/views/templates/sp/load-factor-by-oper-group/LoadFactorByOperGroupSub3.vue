@@ -39,7 +39,7 @@ import { EmptyState } from "@vmscloud/moz-ui-components-vue";
 import { MozGrid } from "@vmscloud/moz-ui-grid-vue";
 import type { GridChrome, MozGridCoreProps, PureSheet } from "@vmscloud/moz-ui-grid-vue";
 import { useTranslation } from "i18next-vue";
-import { computed, ref } from "vue";
+import { computed, shallowRef } from "vue";
 import IconExpandArrow from "./assets/IconExpandArrow.vue";
 import IconCollapseArrow from "./assets/IconCollapseArrow.vue";
 
@@ -48,8 +48,9 @@ import IconCollapseArrow from "./assets/IconCollapseArrow.vue";
  */
 const { t } = useTranslation(); // 다국어
 
-const grid = ref<PureSheet | null>(null); // 코어 그리드
-const chrome = ref<GridChrome | null>(null); // 그리드 래퍼(툴박스·컨텍스트 메뉴 등)
+// 그리드 인스턴스는 깊은 반응성이 필요 없다(ref 로 감싸면 TS2589).
+const grid = shallowRef<PureSheet | null>(null); // 코어 그리드
+const chrome = shallowRef<GridChrome | null>(null); // 그리드 래퍼(툴박스·컨텍스트 메뉴 등)
 
 // ===== Props & Emits =====
 const props = defineProps<{
@@ -74,20 +75,20 @@ const coreConfig = computed<MozGridCoreProps>(() => ({
   keyFields: ["__rowKey"],
   data: props.detailDataSource.map((row, idx) => ({ ...row, __rowKey: idx })),
   fields: [
-    { id: "oper_group_id", header: t("text-isu_oper_group_id"), width: 160, readonly: true },
-    { id: "str_date", header: t("text-isu_str_date"), width: 120, readonly: true },
-    { id: "capa", header: t("text-isu_capa"), width: 120, readonly: true },
-    { id: "str_qty", header: t("text-isu_str_qty"), width: 120, readonly: true },
-    { id: "outer_str_area", header: t("text-isu_outer_str_area"), width: 120, readonly: true },
-    { id: "inner_str_area", header: t("text-isu_inner_str_area"), width: 120, readonly: true },
-    { id: "str_rate", header: t("text-isu_str_rate"), width: 120, readonly: true },
-    { id: "floor_number", header: t("text-isu_floor_number"), width: 120, readonly: true },
-    { id: "item_id", header: t("text-isu_item_id"), width: 140, readonly: true },
-    { id: "item_group_id", header: t("text-isu_item_group_id"), width: 140, readonly: true },
-    { id: "demand_id", header: t("text-isu_demand_id"), width: 140, readonly: true },
-    { id: "due_date", header: t("text-isu_due_date"), width: 120, readonly: true },
-    { id: "aps_due_date", header: t("text-isu_aps_due_date"), width: 120, readonly: true },
-    { id: "oper_id", header: t("text-isu_oper_id"), width: 120, readonly: true },
+    { id: "oper_group_id", header: t("text-isu_oper_group_id"), dataType: "string", width: 160, readonly: true },
+    { id: "str_date", header: t("text-isu_str_date"), dataType: "string", width: 120, readonly: true },
+    { id: "capa", header: t("text-isu_capa"), dataType: "number", width: 120, readonly: true },
+    { id: "str_qty", header: t("text-isu_str_qty"), dataType: "number", width: 120, readonly: true },
+    { id: "outer_str_area", header: t("text-isu_outer_str_area"), dataType: "number", width: 120, readonly: true },
+    { id: "inner_str_area", header: t("text-isu_inner_str_area"), dataType: "number", width: 120, readonly: true },
+    { id: "str_rate", header: t("text-isu_str_rate"), dataType: "number", width: 120, readonly: true },
+    { id: "floor_number", header: t("text-isu_floor_number"), dataType: "number", width: 120, readonly: true },
+    { id: "item_id", header: t("text-isu_item_id"), dataType: "string", width: 140, readonly: true },
+    { id: "item_group_id", header: t("text-isu_item_group_id"), dataType: "string", width: 140, readonly: true },
+    { id: "demand_id", header: t("text-isu_demand_id"), dataType: "string", width: 140, readonly: true },
+    { id: "due_date", header: t("text-isu_due_date"), dataType: "string", width: 120, readonly: true },
+    { id: "aps_due_date", header: t("text-isu_aps_due_date"), dataType: "string", width: 120, readonly: true },
+    { id: "oper_id", header: t("text-isu_oper_id"), dataType: "string", width: 120, readonly: true },
   ],
 }));
 

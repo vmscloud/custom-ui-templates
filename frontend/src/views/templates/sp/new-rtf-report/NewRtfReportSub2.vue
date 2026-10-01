@@ -189,7 +189,14 @@ import { useLoadStore, useProjectInfoStore } from './adapters/stores';
 import { convertToInternationalization, ROW_KEY, withRowKey } from './adapters/utils';
 import BomMapInterface from './components/bom-map/BomMapInterface.vue';
 import { CellTemplate, MozGrid } from '@vmscloud/moz-ui-grid-vue';
-import type { GridChrome, IContextMenuConfig, MozGridCoreProps, PureSheet } from '@vmscloud/moz-ui-grid-vue';
+import type {
+  FieldDef,
+  GridChrome,
+  IContextMenuConfig,
+  MaskConfig,
+  MozGridCoreProps,
+  PureSheet,
+} from '@vmscloud/moz-ui-grid-vue';
 import { EmptyState, Pane, Popup, SplitPane } from '@vmscloud/moz-ui-components-vue';
 import { useExcelStore } from '@/shims/grid/store';
 import { getWidthByKey } from '@/shims/grid/utils';
@@ -556,7 +563,7 @@ const ratioFields = ['rtfRatio', 'onTimeRatio', 'lateRatio'];
 /**
  * short이 그리드 표시 우선순위에 더 중요해서 다음과 같이 분기처리함
  */
-const ratioCellAttributes = ({ rowData, columnId }: { rowData: any; columnId: string }) => {
+const ratioCellAttributes = ({ row: rowData, columnId }: { row: any; columnId: string }) => {
   const classes: string[] = [];
   if (rowData?.rtfRatio < 100) {
     classes.push('ratio-short');
@@ -574,8 +581,8 @@ const ratioMask = {
 };
 
 const detailCoreConfig = computed<MozGridCoreProps>(() => {
-  const qtyMask = { type: 'numeric', pattern: '#,##0.###' };
-  const field = (id: string, header: string, extra: Record<string, any> = {}) => ({
+  const qtyMask: MaskConfig = { type: 'numeric', pattern: '#,##0.###' };
+  const field = (id: string, header: string, extra: Partial<FieldDef> = {}): FieldDef => ({
     id,
     header,
     dataType: 'string',
@@ -620,11 +627,8 @@ const detailCoreConfig = computed<MozGridCoreProps>(() => {
   };
 });
 
-const shortCoreConfig = computed<MozGridCoreProps>(() => ({
-  mode: 'flat',
-  keyFields: [ROW_KEY],
-  data: shortDataSource.value,
-  fields: [
+const shortCoreConfig = computed<MozGridCoreProps>(() => {
+  const fields: FieldDef[] = [
     { id: 'shortType', header: t('text-short_type'), dataType: 'string', width: getWidthByKey('S3'), align: 'center' },
     { id: 'shortCategory', header: t('text-short_category'), dataType: 'string', width: getWidthByKey('S2') },
     { id: 'shortReason', header: t('text-short_reason'), dataType: 'string', width: getWidthByKey('DF') },
@@ -643,8 +647,15 @@ const shortCoreConfig = computed<MozGridCoreProps>(() => ({
     { id: 'routingID', header: t('text-routing_id'), dataType: 'string', width: getWidthByKey('S1') },
     { id: 'operID', header: t('text-oper_id'), dataType: 'string', width: getWidthByKey('DF') },
     { id: 'resID', header: t('text-res_id'), dataType: 'string', width: getWidthByKey('DF') },
-  ].map((field) => ({ ...field, sortable: false })),
-}));
+  ];
+
+  return {
+    mode: 'flat',
+    keyFields: [ROW_KEY],
+    data: shortDataSource.value,
+    fields: fields.map((field) => ({ ...field, sortable: false })),
+  };
+});
 
 const itemInfoCoreConfig = computed<MozGridCoreProps>(() => ({
   mode: 'flat',
@@ -667,7 +678,7 @@ const itemInfoCoreConfig = computed<MozGridCoreProps>(() => ({
     { id: 'prod_type', header: t('text-prod_type'), dataType: 'string', width: getWidthByKey('S3') },
     { id: 'item_size', header: t('text-item_size'), dataType: 'string', width: getWidthByKey('S3') },
     { id: 'item_spec', header: t('text-item_spec'), dataType: 'string', width: getWidthByKey('S3') },
-    ...selectedItemColumnHeaders.value.map((col) => ({
+    ...selectedItemColumnHeaders.value.map((col): FieldDef => ({
       id: `${col}`,
       header: t(col),
       dataType: 'string',
@@ -678,8 +689,8 @@ const itemInfoCoreConfig = computed<MozGridCoreProps>(() => ({
 }));
 
 const demandInfoCoreConfig = computed<MozGridCoreProps>(() => {
-  const dateMask = { type: 'date', pattern: 'YYYY-MM-DD' };
-  const dateTimeMask = { type: 'date', pattern: 'YYYY-MM-DD HH:mm:ss' };
+  const dateMask: MaskConfig = { type: 'date', pattern: 'YYYY-MM-DD' };
+  const dateTimeMask: MaskConfig = { type: 'date', pattern: 'YYYY-MM-DD HH:mm:ss' };
 
   return {
     mode: 'flat',

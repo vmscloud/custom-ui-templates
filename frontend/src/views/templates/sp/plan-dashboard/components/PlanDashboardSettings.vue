@@ -494,11 +494,11 @@ const rtfGridConfig = computed<MozGridCoreProps>(() => ({
       align: "center",
       cellAttributes: { class: "rtf-grid-border-right" },
     },
-    { id: "apply_early", header: "Early", width: 120, align: "center" },
-    { id: "apply_on_time", header: "On-time", width: 120, align: "center" },
-    { id: "apply_late", header: "Late", width: 120, align: "center" },
-    { id: "apply_short", header: "Short", width: 120, align: "center" },
-    { id: "apply_excluded", header: t("text-excluded"), width: 120, align: "center" },
+    { id: "apply_early", header: "Early", dataType: "string", width: 120, align: "center" },
+    { id: "apply_on_time", header: "On-time", dataType: "string", width: 120, align: "center" },
+    { id: "apply_late", header: "Late", dataType: "string", width: 120, align: "center" },
+    { id: "apply_short", header: "Short", dataType: "string", width: 120, align: "center" },
+    { id: "apply_excluded", header: t("text-excluded"), dataType: "string", width: 120, align: "center" },
   ],
 }));
 

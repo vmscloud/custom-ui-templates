@@ -219,7 +219,7 @@ import BomMapInterface from './components/bom-map/BomMapInterface.vue';
 import { IPlanByProdDetailSource } from './adapters/types';
 import { ROW_KEY, withRowKey } from './adapters/utils';
 import { MozGrid } from '@vmscloud/moz-ui-grid-vue';
-import type { GridChrome, MozGridCoreProps, PureSheet } from '@vmscloud/moz-ui-grid-vue';
+import type { FieldDef, GridChrome, MozGridCoreProps, PivotRowField, PureSheet } from '@vmscloud/moz-ui-grid-vue';
 import { EmptyState, Pane, Popup, SplitPane } from '@vmscloud/moz-ui-components-vue';
 import { IconCollapseArrow, IconExpandArrow } from '@moz-shared/icons';
 import { getWidthByKey } from '@/shims/grid/utils';
@@ -291,7 +291,11 @@ const pivotTotals = computed(() => ({
 }));
 
 const pivotCoreConfig = computed<MozGridCoreProps>(() => {
-  const rowField = (field: string, header: string, dataType = 'string') => ({ field, header, dataType, width: 100 });
+  const rowField = (
+    field: string,
+    header: string,
+    dataType: PivotRowField['dataType'] = 'string',
+  ): PivotRowField => ({ field, header, dataType, width: 100 });
   const rowFields = [
     rowField('operGroupID', t('text-oper_group_id')),
     rowField('operID', t('text-oper_id')),
@@ -411,7 +415,12 @@ watchEffect(
 const bufferPlanTargetSource = ref<any[]>([]);
 
 const bufferPlanCoreConfig = computed<MozGridCoreProps>(() => {
-  const rowField = (field: string, header: string) => ({ field, header, dataType: 'string', width: 100 });
+  const rowField = (field: string, header: string): PivotRowField => ({
+    field,
+    header,
+    dataType: 'string',
+    width: 100,
+  });
 
   // if (currentWidgetSetting?.value?.detailType === 'OPER') → oper_id 부터
   // if (currentWidgetSetting?.value?.detailType === 'BUFFER') → buffer_id 부터
@@ -530,13 +539,8 @@ const pegInfoDetailSource = ref<any[]>([]);
 // 수요 정보는 행 수만큼만 높이를 잡는다 (헤더 32px + 행 30px)
 const demandInfoGridHeight = computed(() => 34 + Math.max(demandInfoSource.value.length, 1) * 30);
 
-const demandInfoCoreConfig = computed<MozGridCoreProps>(() => ({
-  mode: 'flat',
-  keyFields: [ROW_KEY],
-  data: demandInfoSource.value,
-  headerHeight: 32,
-  rowHeight: 30,
-  fields: [
+const demandInfoCoreConfig = computed<MozGridCoreProps>(() => {
+  const fields: FieldDef[] = [
     // { id: 'demand_type', header: t('text-demand_type'), width: getWidthByKey('S2') },
     { id: 'demand_id', header: t('text-demand_id'), dataType: 'string', flex: 1 },
     { id: 'demand_item_id', header: t('text-item_id'), dataType: 'string', flex: 1 },
@@ -545,14 +549,20 @@ const demandInfoCoreConfig = computed<MozGridCoreProps>(() => ({
     { id: 'prod_qty', header: t('text-prod_qty'), dataType: 'number', width: getWidthByKey('S3') },
     { id: 'demand_qty', header: t('text-demand_qty'), dataType: 'number', width: getWidthByKey('S3') },
     { id: 'due_date', header: t('text-due_date'), dataType: 'string', width: getWidthByKey('S2') },
-  ].map((field) => ({ ...field, sortable: false })),
-}));
+  ];
 
-const pegInfoCoreConfig = computed<MozGridCoreProps>(() => ({
-  mode: 'flat',
-  keyFields: [ROW_KEY],
-  data: pegInfoDetailSource.value,
-  fields: [
+  return {
+    mode: 'flat',
+    keyFields: [ROW_KEY],
+    data: demandInfoSource.value,
+    headerHeight: 32,
+    rowHeight: 30,
+    fields: fields.map((field) => ({ ...field, sortable: false })),
+  };
+});
+
+const pegInfoCoreConfig = computed<MozGridCoreProps>(() => {
+  const fields: FieldDef[] = [
     { id: 'wip_id', header: t('text-wip_id'), dataType: 'string', width: getWidthByKey('S1') },
     { id: 'item_id', header: t('text-item_id'), dataType: 'string', width: getWidthByKey('S2') },
     { id: 'wip_qty', header: t('text-wip_qty'), dataType: 'number', width: getWidthByKey('S3') },
@@ -567,13 +577,20 @@ const pegInfoCoreConfig = computed<MozGridCoreProps>(() => ({
     //        PEG SEQ이 pegging_key가 맞는지 확인할 것!
     { id: 'routing_id', header: t('text-routing_id'), dataType: 'string', width: getWidthByKey('S2'), hidden: true },
     { id: 'pegging_key', header: t('text-pegging_key'), dataType: 'string', width: getWidthByKey('S1'), hidden: true },
-  ].map((field) => ({
-    ...field,
-    sortable: false,
-    cellAttributes: ({ rowIndex }: { rowIndex: number }) =>
-      rowIndex % 2 === 1 ? { class: 'peg-detail-row-even' } : undefined,
-  })),
-}));
+  ];
+
+  return {
+    mode: 'flat',
+    keyFields: [ROW_KEY],
+    data: pegInfoDetailSource.value,
+    fields: fields.map((field) => ({
+      ...field,
+      sortable: false,
+      cellAttributes: ({ rowIndex }: { rowIndex: number }) =>
+        rowIndex % 2 === 1 ? { class: 'peg-detail-row-even' } : undefined,
+    })),
+  };
+});
 
 watchEffect(
   () => {

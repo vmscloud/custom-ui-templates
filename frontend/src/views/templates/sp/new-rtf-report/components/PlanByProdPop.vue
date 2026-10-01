@@ -99,7 +99,7 @@ import { useProjectInfoStore } from '../adapters/stores';
 import { ROW_KEY, useLoaderParams, withRowKey } from '../adapters/utils';
 import { IPlanByProdDetailSource, IPlanByProdMasterSource } from '../adapters/types';
 import { MozGrid } from '@vmscloud/moz-ui-grid-vue';
-import type { GridChrome, MozGridCoreProps, PureSheet } from '@vmscloud/moz-ui-grid-vue';
+import type { FieldDef, GridChrome, MozGridCoreProps, PureSheet } from '@vmscloud/moz-ui-grid-vue';
 import { Popup, Radio, Tab } from '@vmscloud/moz-ui-components-vue';
 
 import { getWidthByKey } from '@/shims/grid/utils';
@@ -404,7 +404,7 @@ const masterContextMenus = [
 /**
  * short이 그리드 표시 우선순위에 더 중요해서 다음과 같이 분기처리함
  */
-const masterCellAttributes = ({ rowData, columnId }: { rowData: any; columnId: string }) => {
+const masterCellAttributes = ({ row: rowData, columnId }: { row: any; columnId: string }) => {
   const classes = ['mouse-point'];
   if (rowData?.rtfRatio < 100) {
     classes.push('ratio-short');
@@ -420,64 +420,66 @@ const masterCoreConfig = computed<MozGridCoreProps>(() => {
   const qtyMask = projectModule.maskGrid('qty');
   const dateMask = projectModule.maskGrid('date');
 
+  const fields: FieldDef[] = [
+    { id: 'demandID', header: t('text-demand_id'), dataType: 'string', width: getWidthByKey('DF') },
+    { id: 'demandItemID', header: t('text-demand_item_id'), dataType: 'string', width: getWidthByKey('DF') },
+    { id: 'demandItemName', header: t('text-demand_item_name'), dataType: 'string', width: getWidthByKey('DF') },
+    { id: 'custName', header: t('text-cust_name'), dataType: 'string', width: getWidthByKey('D1') },
+    { id: 'demandQty', header: t('text-demand_qty'), dataType: 'number', width: getWidthByKey('D2'), mask: qtyMask },
+    {
+      id: 'dueDate',
+      header: t('text-due_date'),
+      dataType: 'date',
+      mask: dateMask,
+      align: 'center',
+      width: getWidthByKey('D2'),
+    },
+    {
+      id: 'warehousingDate',
+      header: t('text-upper-warehousing_date'),
+      dataType: 'date',
+      mask: dateMask,
+      align: 'center',
+      width: getWidthByKey('D2'),
+    },
+    {
+      id: 'shipmentDate',
+      header: t('text-shipment_date'),
+      dataType: 'date',
+      width: getWidthByKey('D2'),
+      mask: dateMask,
+      align: 'center',
+    },
+    {
+      id: 'dateDiff',
+      header: `${t('text-due_delay')}(${t('text-day')})`,
+      dataType: 'string',
+      width: getWidthByKey('D2'),
+    },
+    {
+      id: 'rtfRatio',
+      header: t('text-rtf_ratio'),
+      dataType: 'number',
+      width: getWidthByKey('D2'),
+      mask: { type: 'function', formatter: (value: unknown) => `${value ? value : '0'}%` },
+    },
+    { id: 'onTimeQty', header: t('text-on_time_qty'), dataType: 'number', width: getWidthByKey('D2'), mask: qtyMask },
+    { id: 'lateQty', header: t('text-late_qty'), dataType: 'number', width: getWidthByKey('D2'), mask: qtyMask },
+    {
+      id: 'shortQty',
+      header: t('text-short_qty'),
+      dataType: 'number',
+      width: getWidthByKey('N2'),
+      mask: qtyMask,
+      align: 'right',
+    },
+  ];
+
   return {
     mode: 'flat',
     keyFields: [ROW_KEY],
     data: masterDataSource.value,
-    fields: [
-      { id: 'demandID', header: t('text-demand_id'), dataType: 'string', width: getWidthByKey('DF') },
-      { id: 'demandItemID', header: t('text-demand_item_id'), dataType: 'string', width: getWidthByKey('DF') },
-      { id: 'demandItemName', header: t('text-demand_item_name'), dataType: 'string', width: getWidthByKey('DF') },
-      { id: 'custName', header: t('text-cust_name'), dataType: 'string', width: getWidthByKey('D1') },
-      { id: 'demandQty', header: t('text-demand_qty'), dataType: 'number', width: getWidthByKey('D2'), mask: qtyMask },
-      {
-        id: 'dueDate',
-        header: t('text-due_date'),
-        dataType: 'date',
-        mask: dateMask,
-        align: 'center',
-        width: getWidthByKey('D2'),
-      },
-      {
-        id: 'warehousingDate',
-        header: t('text-upper-warehousing_date'),
-        dataType: 'date',
-        mask: dateMask,
-        align: 'center',
-        width: getWidthByKey('D2'),
-      },
-      {
-        id: 'shipmentDate',
-        header: t('text-shipment_date'),
-        dataType: 'date',
-        width: getWidthByKey('D2'),
-        mask: dateMask,
-        align: 'center',
-      },
-      {
-        id: 'dateDiff',
-        header: `${t('text-due_delay')}(${t('text-day')})`,
-        dataType: 'string',
-        width: getWidthByKey('D2'),
-      },
-      {
-        id: 'rtfRatio',
-        header: t('text-rtf_ratio'),
-        dataType: 'number',
-        width: getWidthByKey('D2'),
-        mask: { type: 'function', formatter: (value: unknown) => `${value ? value : '0'}%` },
-      },
-      { id: 'onTimeQty', header: t('text-on_time_qty'), dataType: 'number', width: getWidthByKey('D2'), mask: qtyMask },
-      { id: 'lateQty', header: t('text-late_qty'), dataType: 'number', width: getWidthByKey('D2'), mask: qtyMask },
-      {
-        id: 'shortQty',
-        header: t('text-short_qty'),
-        dataType: 'number',
-        width: getWidthByKey('N2'),
-        mask: qtyMask,
-        align: 'right',
-      },
-    ].map((field) => ({ ...field, sortable: false, cellAttributes: masterCellAttributes })),
+    fields: fields.map((field) => ({ ...field, sortable: false, cellAttributes: masterCellAttributes })),
   };
 });
 
@@ -506,7 +508,7 @@ const dueDateClasses = (col: string) => {
   return classes;
 };
 
-const detailCellAttributes = ({ rowData, columnId }: { rowData: any; columnId: string }) => {
+const detailCellAttributes = ({ row: rowData, columnId }: { row: any; columnId: string }) => {
   const classes = dueDateClasses(columnId);
   if (rowData?.isSummaryRow) {
     classes.push('summary-row');
@@ -527,7 +529,7 @@ const DETAIL_SUMMARY_MERGE_COLUMNS = ['itemID', 'itemName', 'bufferID', 'siteID'
 
 const detailCoreConfig = computed<MozGridCoreProps>(() => {
   const qtyMask = projectModule.maskGrid('qty');
-  const fields = [
+  const baseFields: FieldDef[] = [
     { id: 'itemID', header: t('text-item_id'), dataType: 'string', width: getWidthByKey('D2') },
     { id: 'itemName', header: t('text-item_name'), dataType: 'string', width: getWidthByKey('D2') },
     { id: 'bufferID', header: t('text-buffer_id'), dataType: 'string', width: getWidthByKey('N3') },
@@ -536,7 +538,7 @@ const detailCoreConfig = computed<MozGridCoreProps>(() => {
     { id: 'wipQty', header: t('text-boh'), dataType: 'number', width: getWidthByKey('N3'), mask: qtyMask },
     { id: 'pegQty', header: t('text-use'), dataType: 'number', width: getWidthByKey('N3'), mask: qtyMask },
     { id: 'usedTotal', header: t('text-used_total'), dataType: 'number', width: getWidthByKey('N3'), mask: qtyMask },
-    ...itemColumns.value.map((col) => ({
+    ...itemColumns.value.map((col): FieldDef => ({
       id: col.binding,
       header: t(col.header),
       dataType: 'number',
@@ -544,7 +546,8 @@ const detailCoreConfig = computed<MozGridCoreProps>(() => {
       align: col.align,
       mask: qtyMask,
     })),
-  ].map((field) => {
+  ];
+  const fields = baseFields.map((field): FieldDef => {
     const headerClasses = dueDateClasses(field.id);
     return {
       ...field,

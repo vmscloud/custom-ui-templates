@@ -170,6 +170,8 @@ export const fetchScenarioList = () =>
 - 행 식별자: `coreConfig.keyFields`. **키가 중복되면 MozGrid 가 오류를 냅니다.** 고유 키가 없는 데이터는 행 순번 키(`_rowKey` 등)를 붙여 `keyFields` 로 지정하세요.
 - 숫자/날짜 표시 포맷: `format="n2"` 같은 문자열 대신 필드의 `mask` 로 지정 (`{ type: "numeric", pattern: "#,##0.00" }`, `{ type: "date", pattern: "YYYY-MM-DD" }`).
 - 그리드 객체: `@ready="(grid, chrome) => ..."` 로 코어 `PureSheet` 와 래퍼 `GridChrome` 을 받습니다.
+- 셀 서식 콜백: `cellAttributes` 는 행 데이터를 **`row`** 로 받습니다(`({ value, row, columnId }) => ...`). `CellTemplate` 슬롯은 `rowData` 라 헷갈리기 쉬우니, 콜백은 `const fn: CellAttributesFn = (...) => ...` 처럼 타입을 붙여 선언하세요.
+- 필드 배열을 computed 밖에서 만들면 `const fields: FieldDef[] = [...]` 처럼 타입을 붙이세요. 붙이지 않으면 `dataType: "string"` 이 `string` 으로 넓어져 타입 오류가 납니다. 그리드 인스턴스(`PureSheet`·`GridChrome`)를 담을 때는 `ref` 대신 `shallowRef` 를 씁니다.
 - 작성 기준 예제: `frontend/src/views/templates/grid/ProductGrid.vue`. API 전체는 `node_modules/@vmscloud/moz-ui-grid-vue/docs/manual/reference_vue.md`(래퍼)·`reference.md`(코어).
 
 ```vue

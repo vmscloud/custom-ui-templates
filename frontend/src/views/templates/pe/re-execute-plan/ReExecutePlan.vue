@@ -255,7 +255,7 @@ import {
   SplitPane,
 } from "@vmscloud/moz-ui-components-vue";
 import { MozGrid } from "@vmscloud/moz-ui-grid-vue";
-import type { GridChrome, MozGridCoreProps, PureSheet } from "@vmscloud/moz-ui-grid-vue";
+import type { CellAttributesFn, GridChrome, MozGridCoreProps, PureSheet } from "@vmscloud/moz-ui-grid-vue";
 import { useTranslation } from "i18next-vue";
 import {
   computed,
@@ -536,9 +536,9 @@ const formatQty = (value: unknown, rowData?: Record<string, any>, columnId?: str
 };
 
 // 셀 클래스: 음수 / 주 소계·그 외 소계 배경 / 실적 기간 일자 하이라이트
-const qtyCellAttributes = ({ value, rowData, columnId }: { value: unknown; rowData: Record<string, any>; columnId: string }) => {
+const qtyCellAttributes: CellAttributesFn = ({ value, row, columnId }) => {
   const classes: string[] = [];
-  const shown = Number(resolveQtyValue(value, rowData, columnId));
+  const shown = Number(resolveQtyValue(value, row, columnId));
   if (!isNaN(shown) && shown < 0) {
     classes.push("negative-number");
   }

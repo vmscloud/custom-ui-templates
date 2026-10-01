@@ -30,7 +30,7 @@
 import { downloadBigData, useMenuStore } from './adapters/stores';
 import { useProjectInfoStore } from './adapters/stores';
 import { MozGrid } from '@vmscloud/moz-ui-grid-vue';
-import type { GridChrome, MozGridCoreProps, PureSheet } from '@vmscloud/moz-ui-grid-vue';
+import type { FieldDef, GridChrome, MozGridCoreProps, PureSheet } from '@vmscloud/moz-ui-grid-vue';
 import { showMessage } from '@moz-shared/utils';
 import { useQueryClient } from '@tanstack/vue-query';
 import { useTranslation } from 'i18next-vue';
@@ -235,7 +235,7 @@ const ratioMask = {
   formatter: (value: unknown) => (typeof value === 'number' ? `${value.toLocaleString()}%` : String(value ?? '')),
 };
 
-const rowClass = ({ rowData }: { rowData: any }) => {
+const rowClass = ({ row: rowData }: { row: any }) => {
   switch (rowData?._kind) {
     case 'group':
       return { class: 'rtf-report-group-separator' };
@@ -249,7 +249,7 @@ const rowClass = ({ rowData }: { rowData: any }) => {
 const coreConfig = computed<MozGridCoreProps>(() => {
   const isGrouped = !!GROUP_BINDING[mainLoadParams.value.summary];
   const qtyMask = projectModule.maskGrid('qty');
-  const numberField = (id: string, header: string, extra: Record<string, any> = {}) => ({
+  const numberField = (id: string, header: string, extra: Partial<FieldDef> = {}): FieldDef => ({
     id,
     header,
     dataType: 'number',
@@ -259,7 +259,7 @@ const coreConfig = computed<MozGridCoreProps>(() => {
     cellAttributes: rowClass,
     ...extra,
   });
-  const textField = (id: string, header: string) => ({
+  const textField = (id: string, header: string): FieldDef => ({
     id,
     header,
     dataType: 'string',

@@ -6,7 +6,7 @@ import { ref, type Ref } from "vue";
 /**
  * 상품 데이터 타입
  */
-export interface Product {
+export type Product = {
   id: number;
   name: string;
   category: string;

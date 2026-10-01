@@ -297,7 +297,7 @@ import { apiCall } from '../../../adapters/stores';
 import { useProjectInfoStore } from '../../../adapters/stores';
 import { ROW_KEY, withRowKey } from '../../../adapters/utils';
 import { CellTemplate, MozGrid } from '@vmscloud/moz-ui-grid-vue';
-import type { GridChrome, MozGridCoreProps, PureSheet } from '@vmscloud/moz-ui-grid-vue';
+import type { FieldDef, GridChrome, MozGridCoreProps, PureSheet } from '@vmscloud/moz-ui-grid-vue';
 import { Tab } from '@vmscloud/moz-ui-components-vue';
 import { formatCompactNumber, showMessage, dayjs } from '@moz-shared/utils';
 import { useMutation } from '@tanstack/vue-query';
@@ -626,7 +626,24 @@ const routeCellAttributes = ({ value, columnId }: { value: unknown; columnId: st
 };
 
 const routeCoreConfig = computed<MozGridCoreProps>(() => {
-  const numberField = { dataType: 'number', align: 'right' };
+  const numberField: Pick<FieldDef, 'dataType' | 'align'> = { dataType: 'number', align: 'right' };
+  const fields: FieldDef[] = [
+    { id: 'oper_id', header: t('text-bom_map-oper_id'), dataType: 'string', width: 69 },
+    // TOTAL 행은 공정 유형 자리를 비운다 (옛 MultiRow 는 TOTAL 을 두 줄에 걸쳐 표시)
+    {
+      id: 'oper_type',
+      header: t('text-bom_map-oper_type'),
+      dataType: 'string',
+      width: 69,
+      mask: { type: 'function', formatter: (value: unknown) => (value === 'TOTAL' ? '' : String(value ?? '')) },
+    },
+    { id: 'target_qty', header: t('text-bom_map-target_qty'), width: 66, ...numberField },
+    { id: 'plan_qty', header: t('text-bom_map-plan_qty'), width: 66, ...numberField },
+    { id: 'total_tat', header: t('text-bom_map-total_tat'), width: 80, ...numberField },
+    { id: 'elapse_sec', header: t('text-elapse_time'), width: 80, ...numberField },
+    { id: 'all_res_list', header: t('text-available_res_id'), dataType: 'string', flex: 1 },
+    { id: 'res_list', header: t('text-used_res_id'), dataType: 'string', flex: 1 },
+  ];
   return {
     mode: 'flat',
     keyFields: [ROW_KEY],
@@ -651,23 +668,7 @@ const routeCoreConfig = computed<MozGridCoreProps>(() => {
         ],
       ],
     },
-    fields: [
-      { id: 'oper_id', header: t('text-bom_map-oper_id'), dataType: 'string', width: 69 },
-      // TOTAL 행은 공정 유형 자리를 비운다 (옛 MultiRow 는 TOTAL 을 두 줄에 걸쳐 표시)
-      {
-        id: 'oper_type',
-        header: t('text-bom_map-oper_type'),
-        dataType: 'string',
-        width: 69,
-        mask: { type: 'function', formatter: (value: unknown) => (value === 'TOTAL' ? '' : String(value ?? '')) },
-      },
-      { id: 'target_qty', header: t('text-bom_map-target_qty'), width: 66, ...numberField },
-      { id: 'plan_qty', header: t('text-bom_map-plan_qty'), width: 66, ...numberField },
-      { id: 'total_tat', header: t('text-bom_map-total_tat'), width: 80, ...numberField },
-      { id: 'elapse_sec', header: t('text-elapse_time'), width: 80, ...numberField },
-      { id: 'all_res_list', header: t('text-available_res_id'), dataType: 'string', flex: 1 },
-      { id: 'res_list', header: t('text-used_res_id'), dataType: 'string', flex: 1 },
-    ].map((field) => ({ ...field, sortable: false, cellAttributes: routeCellAttributes })),
+    fields: fields.map((field) => ({ ...field, sortable: false, cellAttributes: routeCellAttributes })),
   };
 });
 

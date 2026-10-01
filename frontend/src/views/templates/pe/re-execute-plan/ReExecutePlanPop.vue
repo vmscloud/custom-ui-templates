@@ -720,7 +720,7 @@
 import { computed, ref, shallowRef, toRaw, watch } from "vue";
 import { useTranslation } from "i18next-vue";
 import { CellTemplate, MozGrid } from "@vmscloud/moz-ui-grid-vue";
-import type { FieldDef, GridChrome, MozGridCoreProps, PureSheet } from "@vmscloud/moz-ui-grid-vue";
+import type { CellAttributesFn, FieldDef, GridChrome, MozGridCoreProps, PureSheet } from "@vmscloud/moz-ui-grid-vue";
 import { IconCheck, IconClose, IconDataCheck, IconResultCheck } from "@moz-shared/icons";
 import {
   Button,
@@ -1223,14 +1223,14 @@ const descriptionField = (): FieldDef => ({
 //   1) max_phase 를 초과한 phase_N 컬럼은 'union-null' 클래스로 음영 처리
 //      (module A는 phase_2까지인데 module B가 phase_1까지인 경우, 테이블 합집합 union 이므로 B의 phase_2 셀을 빈 셀로 마킹).
 //   2) option_id === 'DefaultRuleSet' + max_phase 내 phase 인데 값 없음 → 'error-mark' 로 표시.
-const phaseCellAttributes = ({ rowData, columnId }: { rowData: Record<string, any>; columnId: string }) => {
+const phaseCellAttributes: CellAttributesFn = ({ row, columnId }) => {
   const phaseMatch = columnId.match(/^phase_(\d+)$/);
-  if (!phaseMatch || rowData.max_phase == null) return undefined;
+  if (!phaseMatch || row.max_phase == null) return undefined;
   const phaseN = parseInt(phaseMatch[1], 10);
-  if (phaseN > rowData.max_phase) {
+  if (phaseN > Number(row.max_phase)) {
     return { class: "union-null" };
   }
-  if (!rowData[columnId] && rowData.option_id === "DefaultRuleSet") {
+  if (!row[columnId] && row.option_id === "DefaultRuleSet") {
     return { class: "error-mark error-cell" };
   }
   return undefined;
@@ -1289,8 +1289,8 @@ const subEditedGridConfig = computed<MozGridCoreProps>(() => ({
     ...buildDemandFields(t, props.propColumns, "popup").map(
       (field): FieldDef => ({
         ...field,
-        cellAttributes: ({ rowData, columnId }: { rowData: Record<string, any>; columnId: string }) =>
-          props.editedDemandFields[String(rowData?.demand_id)]?.includes(columnId)
+        cellAttributes: ({ row, columnId }) =>
+          props.editedDemandFields[String(row?.demand_id)]?.includes(columnId)
             ? { class: "edited-cell" }
             : undefined,
       }),

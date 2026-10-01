@@ -97,7 +97,7 @@
 import { useProjectInfoStore } from '../../../adapters/stores';
 import { ROW_KEY, withRowKey } from '../../../adapters/utils';
 import { CellTemplate, MozGrid } from '@vmscloud/moz-ui-grid-vue';
-import type { GridChrome, MozGridCoreProps, PureSheet } from '@vmscloud/moz-ui-grid-vue';
+import type { FieldDef, GridChrome, MozGridCoreProps, PureSheet } from '@vmscloud/moz-ui-grid-vue';
 import { convertToInternationalization } from '@moz-shared/utils';
 import { Diagram } from 'gojs';
 import { useTranslation } from 'i18next-vue';
@@ -146,8 +146,11 @@ const emptyCellAttributes = ({ value, columnId }: { value: unknown; columnId: st
 
 const buildCoreConfig = (expanded: boolean): MozGridCoreProps => {
   const qtyMask = projectModule.maskGrid('qty');
-  const fields = [
-    ...(isBomNode.value ? [{ id: 'oper_id', header: t('text-oper_id'), dataType: 'string', width: 73 }] : []),
+  const operFields: FieldDef[] = isBomNode.value
+    ? [{ id: 'oper_id', header: t('text-oper_id'), dataType: 'string', width: 73 }]
+    : [];
+  const fields: FieldDef[] = [
+    ...operFields,
     { id: 'short_reason', header: t('text-short_reason'), dataType: 'string', width: expanded ? 380 : 120 },
     {
       id: 'short_qty',

@@ -59,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, toRefs, watch } from "vue";
+import { ref, shallowRef, computed, toRefs, watch } from "vue";
 import { MozGrid } from "@vmscloud/moz-ui-grid-vue";
 import type {
   GridChrome,
@@ -180,7 +180,8 @@ const totalLastSortKey = (value: unknown) =>
   value === TOTAL_LABEL ? "1" : `0${String(value ?? "")}`;
 
 // Pivot grid chrome (filter controller)
-const gridChrome = ref<GridChrome | null>(null);
+// 그리드 인스턴스는 깊은 반응성이 필요 없다. ref 로 감싸면 클래스 타입을 깊게 풀다 TS2589 가 난다.
+const gridChrome = shallowRef<GridChrome | null>(null);
 
 const onGridReady = (grid: PureSheet, chrome: GridChrome) => {
   gridChrome.value = chrome;
