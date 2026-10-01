@@ -339,7 +339,7 @@
                 />
                 <div class="validator-buttons">
                   <Button @click="() => validate()">검증</Button>
-                  <Button variant="outlined" @click="() => initValidator()"
+                  <Button type="outline" @click="() => initValidator()"
                     >초기화</Button
                   >
                 </div>
