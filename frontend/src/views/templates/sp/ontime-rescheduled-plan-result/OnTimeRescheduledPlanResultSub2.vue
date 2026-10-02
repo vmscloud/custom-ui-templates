@@ -137,7 +137,7 @@ const pendingFirstRowSelect = ref(false);
 
 const contextMenuConfig: IContextMenuConfig = {
   useFilter: true,
-  useExportExcel: true,
+  useClientExcelExport: true,
 };
 
 // === Ratio Formatting ===

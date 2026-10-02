@@ -112,7 +112,7 @@ const demandRecordPopupVisible = ref(false);
 
 const contextMenuConfig: IContextMenuConfig = {
   useFilter: true,
-  useExportExcel: true,
+  useClientExcelExport: true,
   customMenu: [
     {
       id: "openItemProps",
