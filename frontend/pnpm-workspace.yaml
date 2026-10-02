@@ -4,3 +4,7 @@ allowBuilds:
   esbuild: true
   "@parcel/watcher": true
   vue-demi: true
+
+# 사내 패키지는 게시 직후 템플릿에 반영하므로 pnpm 11 의 게시 후 대기(minimumReleaseAge)에서 뺀다.
+minimumReleaseAgeExclude:
+  - "@vmscloud/*"

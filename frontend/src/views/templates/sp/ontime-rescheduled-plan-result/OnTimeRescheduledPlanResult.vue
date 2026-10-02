@@ -142,7 +142,7 @@
           :size="`${isZoomedDetail ? 0 : 60}%`"
           :max-size="`${isZoomedDetail ? 0 : 70}%`"
           :min-size="`${isZoomedDetail ? 0 : 30}%`"
-          v-show="!isZoomedDetail"
+          :hidden="isZoomedDetail"
         >
           <SplitPane>
             <Pane size="39%" min-size="30%">
