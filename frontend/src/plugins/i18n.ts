@@ -47,23 +47,25 @@ export async function loadLanguage(lang: string) {
 }
 
 /**
- * loadLanguageFromHost — APS SamLanguage API(용어관리 DB)로부터 번역 로드
+ * loadLanguageFromHost — systemmanagement SamLanguage API(용어관리 DB)로부터 번역 로드
  *
  * dev 단독 실행에서 정적 JSON 대신 용어관리 DB 번역을 쓰기 위한 함수다.
  * Host 에 로드된 화면은 Host 의 i18next 로 번역되므로 Host 경로에서는 호출하지 않는다.
  *
- * - 현재는 호출하는 곳이 없다. 세션 없는 dev 단독 실행에서는 apigateway 가 401 을 반환하기 때문이다.
- * - 로컬 개발자의 인증 방식(ITSM-2026-001701 방법 A/B)이 정해지면 bootstrap.ts 에서 호출하고,
- *   필요하면 URL·헤더를 그 방식에 맞게 바꾼다.
+ * - vite dev 는 로그인 없이 호출할 수 있는 openapi 경로를, 배포 빌드는 게이트웨이 경로를 쓴다.
+ * - 호출하는 곳은 DeveloperTool.ts 의 프로젝트 ID·언어 watcher 다.
  */
 export async function loadLanguageFromHost(
   projectId: string,
   lang: string,
 ): Promise<boolean> {
   if (!projectId || !lang) return false;
+  const base = import.meta.env.DEV
+    ? '/api/openapi/common/system'
+    : '/api/common/system';
   try {
     const res = await fetch(
-      `/api/aps/backend/${encodeURIComponent(projectId)}/SamLanguage/${encodeURIComponent(lang)}`,
+      `${base}/${encodeURIComponent(projectId)}/SamLanguage/${encodeURIComponent(lang)}`,
       { credentials: 'include' },
     );
     if (!res.ok) return false;
