@@ -24,16 +24,10 @@
 - 로컬에서 openapi 로 보내는 설정은 `frontend/vite.config.ts` 의 `server.proxy["/api/openapi/"]` 입니다.
 
 ```ts
-// src/plugins/i18n.ts 요약
+// src/plugins/i18n.ts 요약 — 번역 리소스 없이 초기화하고, 번역은 loadLanguageFromHost 가 용어관리(DB)에서 받아 넣습니다.
 i18next.init({
   fallbackLng: "ko",
   lng: "ko",
-  resources: {
-    ko: { translation: koData },
-    en: { translation: enData },
-    zh: { translation: zhData },
-    jp: { translation: jpData },
-  },
   interpolation: { escapeValue: false },
 });
 ```
@@ -79,7 +73,14 @@ const columns = computed(() => [{ header: t("text-item_id") }]);
 | `msg-` | 사용자에게 보여지는 메시지/알림 |
 | `MOZ-` | 공용 상수성 메시지 (`MOZ-DATA_EMPTY` 등) |
 
-새 키는 **APS 용어관리 화면에 프로젝트 키로 등록**해야 운영에서 번역됩니다. ko/en/zh/jp 언어 탭마다 각각 등록하세요. 프로젝트 키는 시스템 기본값으로 fallback 되지 않아서, 등록하지 않은 언어에서는 키 문자열이 그대로 보입니다. 등록 후에는 브라우저를 새로고침해야 반영됩니다. json 파일에만 추가한 키는 dev 에서만 번역됩니다. dev 단독 실행에서는 새로고침하면 등록한 키가 바로 보입니다.
+새 키는 **APS 용어관리 화면에 프로젝트 키로 등록**해야 번역됩니다. dev 단독 실행도 같은 용어관리(DB) 번역을 받으므로 등록 방법은 같습니다.
+
+1. APS 용어관리 화면에서 언어 탭(ko/en/zh/jp)을 선택합니다.
+2. 신규 KEY 를 추가하고 해당 언어의 값을 입력한 뒤 저장합니다.
+3. 나머지 언어 탭에서도 같은 키를 각각 등록합니다.
+4. 브라우저를 새로고침하면 반영됩니다. dev 단독 실행에서는 개발자 도구 설정에 프로젝트 ID 를 입력한 상태에서 새로고침하세요.
+
+프로젝트 키는 시스템 기본값으로 fallback 되지 않아서, 등록하지 않은 언어에서는 키 문자열이 그대로 보입니다. 시스템에 이미 있는 표준 키(`text-qty` 등)는 따로 등록하지 않아도 됩니다.
 
 ### 언어 전환
 

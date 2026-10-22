@@ -301,22 +301,16 @@ function onSearch() { load(planVer.value); }
 </style>
 ```
 
-### 2-3. i18n 키 추가
+### 2-3. i18n 키 확인·등록
 
-사용한 `text-*` 키가 용어관리(DB)에 없다면 등록하세요. 등록되지 않은 키는 dev 단독 실행에서 키 이름 그대로 표시됩니다.
+화면에서 쓴 `text-*` 키는 용어관리(DB)에서 번역을 받습니다. 이 예제의 키 중 `text-status`, `text-qty`, `text-due_date` 같은 표준 키는 이미 등록되어 있습니다(dev DB 기준). 새로 등록할 키는 아래 두 개입니다. 등록 방법은 [09-i18n-uom-datetime](./09-i18n-uom-datetime.md#키-네이밍) 를 보세요.
 
-```json
-{
-  "text-work_order_id": "작업 지시 번호",
-  "text-from_date": "시작일",
-  "text-to_date": "종료일",
-  "text-status": "상태",
-  "text-qty": "수량",
-  "text-item_id": "제품 코드",
-  "text-due_date": "납기일",
-  "text-work_order": "작업 지시"
-}
-```
+| 키 | ko 값(예시) |
+|----|-------------|
+| `text-work_order_id` | 작업 지시 번호 |
+| `text-work_order` | 작업 지시 |
+
+등록되지 않은 키는 dev 단독 실행에서 키 이름 그대로 표시됩니다.
 
 ### 2-4. Dev 라우트
 
@@ -392,6 +386,6 @@ git commit -m "feat: Work Order 화면 및 /work-order/list 엔드포인트 추�
 - SQL에서 `CAST(plan_date AS DATE)` 실행 실패 → `plan_date` 가 `YYYYMMDD` 문자열이면 문자열 비교로 바꾸세요. [07-data-sources](./07-data-sources.md#trino-타입-주의) 참조.
 - 숫자 컬럼에 `mask` 누락 → 소수점 표시 어긋남.
 - `keyFields` 값이 중복 → MozGrid 가 오류를 냄. 고유 키가 없으면 `rows.map((row, idx) => ({ ...row, _rowKey: idx }))` 처럼 행 순번 키를 붙여 `keyFields: ["_rowKey"]` 로 지정.
-- 다국어 JSON 에 키 누락 → 템플릿에 `text-...` 키가 그대로 표시됨.
+- 용어관리(DB)에 키가 등록되지 않았거나 프로젝트 ID 를 입력하지 않음 → 템플릿에 `text-...` 키가 그대로 표시됨. 등록 방법은 [09-i18n-uom-datetime](./09-i18n-uom-datetime.md#키-네이밍) 참고.
 
 다음: [07-data-sources](./07-data-sources.md) 에서 PG/Trino/APS Host API를 언제 쓰는지 정리.

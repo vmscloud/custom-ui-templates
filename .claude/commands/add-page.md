@@ -704,6 +704,7 @@ GET /api/custom/backend/{project_id}/{kebab-case}/main?planVer=...
 - [ ] SQL 쿼리 작성 (queries 파일)
 - [ ] 그리드 컬럼 정의 (vue 파일의 `coreConfig.fields`) · `keyFields` 고유성 확인
 - [ ] Pydantic 스키마 필드 추가
+- [ ] 새 `text-*` 키를 용어관리(DB)에 등록 (없으면 dev 에서 키 이름 그대로 표시)
 ```
 
 # 주의사항
