@@ -303,7 +303,7 @@ function onSearch() { load(planVer.value); }
 
 ### 2-3. i18n 키 추가
 
-사용한 `text-*` 키가 `src/lang/{ko,en,jp,zh}.json` 에 없다면 추가하세요. 최소한 `ko.json` 은 채워야 한글 라벨이 표시됩니다.
+사용한 `text-*` 키가 용어관리(DB)에 없다면 등록하세요. 등록되지 않은 키는 dev 단독 실행에서 키 이름 그대로 표시됩니다.
 
 ```json
 {
@@ -379,7 +379,7 @@ export const viewRegistry = {
 ## 4. 커밋
 
 ```bash
-git add backend/app/... frontend/src/views/.../work-order/ frontend/src/lang/*.json \
+git add backend/app/... frontend/src/views/.../work-order/ \
         frontend/src/router/index.ts frontend/src/expose.ts
 # work-order/ 폴더에는 CLAUDE.md(페이지 전용 컨텍스트)도 함께 커밋됩니다.
 git commit -m "feat: Work Order 화면 및 /work-order/list 엔드포인트 추가"

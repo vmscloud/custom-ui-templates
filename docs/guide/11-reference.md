@@ -17,7 +17,7 @@ frontend/src/
 │   └─ types/
 ├─ shims/grid/                ← 그리드 공용 유틸·엑셀 다운로드 (utils / store / excel)
 ├─ plugins/i18n.ts            ← i18next 세팅
-├─ lang/{ko,en,jp,zh}.json    ← 번역 리소스
+├─ lang/{ko,en,jp,zh}.json    ← deprecated (미사용, 번역은 용어관리 DB)
 ├─ expose.ts                  ← Module Federation viewRegistry
 └─ router/index.ts            ← dev 라우트
 
