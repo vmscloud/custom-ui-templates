@@ -75,7 +75,7 @@ frontend/src/
  │    └─ MyPagePop.vue              (필요 시) 팝업
  ├─ router/index.ts                ← dev 라우트 추가
  ├─ expose.ts                      ← Host 용 viewRegistry 등록
- └─ lang/{ko,en,jp,zh}.json         (사용한 text 키가 없다면 추가)
+ └─ lang/{ko,en,jp,zh}.json         (deprecated·미사용 — 키는 용어관리(DB)에 등록)
 
 backend/app/
  ├─ schemas/my_page.py             ← Pydantic 요청/응답

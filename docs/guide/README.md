@@ -51,7 +51,7 @@ custom-ui-templates/
 │       ├── api/client.ts           ← axios + projectId 리졸버
 │       ├── shims/moz-shared/       ← 공용 아이콘·유틸 shim
 │       ├── shims/grid/             ← 그리드 유틸·엑셀 다운로드 shim
-│       ├── lang/                   ← i18n 정적 JSON
+│       ├── lang/                   ← deprecated (미사용 i18n 정적 JSON)
 │       └── plugins/i18n.ts         ← i18next 세팅
 │
 ├── backend/                        ← FastAPI

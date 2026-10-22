@@ -203,7 +203,7 @@ const { t } = useTranslation();
 t("text-my_page_title");
 ```
 
-`<template>` 에서는 `{{ t('text-my_page_title') }}`. 문자열 리터럴을 직접 박지 마세요. 키가 없으면 `src/lang/*.json` 네 개 파일 모두에 추가합니다. [09-i18n-uom-datetime](./09-i18n-uom-datetime.md) 참조.
+`<template>` 에서는 `{{ t('text-my_page_title') }}`. 문자열 리터럴을 직접 박지 마세요. 키가 없으면 용어관리(DB)에 등록합니다. [09-i18n-uom-datetime](./09-i18n-uom-datetime.md) 참조.
 
 ## Dayjs 규칙
 

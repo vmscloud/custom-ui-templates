@@ -7,7 +7,7 @@
 ### 설정 위치
 
 - 플러그인: `frontend/src/plugins/i18n.ts` 에서 `i18next` + `I18NextVue` 초기화.
-- 리소스: `frontend/src/lang/{ko,en,jp,zh}.json` (dev 단독 실행에서 용어관리 번역을 받지 못할 때 쓰는 fallback).
+- 리소스: 용어관리(DB) 번역만 사용합니다. `frontend/src/lang/{ko,en,jp,zh}.json` 은 **deprecated** 이며 어디에서도 읽지 않습니다. 키가 없으면 용어관리에 등록합니다.
 - dev 단독 실행: 개발자 도구 설정에 입력한 프로젝트 ID·언어로 용어관리(DB) 번역을 불러옵니다. 로그인은 필요 없습니다.
 
 #### 번역 조회 API
@@ -50,7 +50,7 @@ t("text-qty_uom");
 
 ### Host 에서 번역되는 방식
 
-APS Host 에 Module Federation 으로 올라가면 화면의 `useTranslation()`·`$t` 는 **Host 의 i18next** 를 씁니다. Host 는 접속할 때 용어관리(DB)의 번역을 불러오므로, 운영에서 보이는 번역은 **용어관리에 등록된 값**입니다. `frontend/src/lang/*.json` 은 dev 단독 실행에서만 쓰이고 Host 에서는 쓰이지 않습니다. dev 단독 실행에서도 용어관리 번역을 받으면 그 값이 json 보다 우선합니다.
+APS Host 에 Module Federation 으로 올라가면 화면의 `useTranslation()`·`$t` 는 **Host 의 i18next** 를 씁니다. Host 는 접속할 때 용어관리(DB)의 번역을 불러오므로, 운영에서 보이는 번역은 **용어관리에 등록된 값**입니다.
 
 **`import i18next from "i18next"` 로 직접 번역하지 마세요.** 리모트 번들에는 Host 와 분리된 i18next 사본이 따로 들어 있어서, 직접 import 하면 Host 번역이 아니라 이 사본으로 번역됩니다. 이 사본은 화면 갱신과 연결되어 있지 않아 첫 진입 때 번역이 반영되지 않고, 다른 메뉴로 이동했다 돌아와야 바뀝니다.
 
@@ -83,18 +83,18 @@ const columns = computed(() => [{ header: t("text-item_id") }]);
 
 ### 언어 전환
 
-dev 단독 실행에서는 개발자 도구 설정의 **프로젝트 ID** 또는 **현재 언어**를 바꾸면 용어관리 번역을 다시 불러옵니다. 프로젝트 ID 를 입력하지 않았거나 불러오지 못하면 `lang/*.json` 으로 표시합니다.
+dev 단독 실행에서는 개발자 도구 설정의 **프로젝트 ID** 또는 **현재 언어**를 바꾸면 용어관리 번역을 다시 불러옵니다. 프로젝트 ID 를 입력하지 않았거나 불러오지 못하면 번역이 없는 키는 키 이름 그대로 표시됩니다.
 
 호출 경로는 환경마다 다릅니다. [번역 조회 API](#번역-조회-api) 표를 보세요.
 
-코드에서 직접 바꿀 때는 `loadLanguage` (json) 또는 `loadLanguageFromHost` (용어관리) 를 씁니다.
+코드에서 직접 바꿀 때는 `loadLanguageFromHost` 를 씁니다.
 
 ```ts
-import { loadLanguage } from "@/plugins/i18n";
-await loadLanguage("en");
+import { loadLanguageFromHost } from "@/plugins/i18n";
+await loadLanguageFromHost(projectId, "en");
 ```
 
-`useTranslation()` 의 `t` 를 `computed` 안에서 쓰는 composable(예: `useQtyUomQuery`)은 언어가 바뀌면 자동으로 표시값을 다시 계산합니다. 두 함수 모두 dev 단독 실행 전용이며, Host 에서는 사용자 언어 설정을 따릅니다.
+`useTranslation()` 의 `t` 를 `computed` 안에서 쓰는 composable(예: `useQtyUomQuery`)은 언어가 바뀌면 자동으로 표시값을 다시 계산합니다. `loadLanguageFromHost` 는 dev 단독 실행 전용이며, Host 에서는 사용자 언어 설정을 따릅니다.
 
 ## UOM (수량 단위)
 
@@ -140,7 +140,7 @@ URL 쿼리 우선 규칙 덕분에 Host 가 `?qtyUOM=...` 을 포함해 리모�
 - `text-default_uom`: 프로젝트 현장에 따라 "EA" 등
 - `text-conversion_uom`: 환산 단위 기호 (예: "㎡")
 
-현장 단위를 바꾸고 싶으면 `src/lang/*.json` 의 번역값만 수정. 코드 수정은 필요 없습니다.
+현장 단위를 바꾸고 싶으면 용어관리의 번역값만 수정. 코드 수정은 필요 없습니다.
 
 ## 날짜 (Dayjs)
 

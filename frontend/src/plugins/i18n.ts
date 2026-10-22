@@ -7,49 +7,19 @@ import I18NextVue from 'i18next-vue';
 import type { App } from 'vue';
 import ko from '@/locales/ko';
 
-import koData from '@/lang/ko.json';
-import enData from '@/lang/en.json';
-import zhData from '@/lang/zh.json';
-import jpData from '@/lang/jp.json';
-
-// 언어 코드 → 리소스 매핑
-const langResources: Record<string, Record<string, string>> = {
-  ko: koData,
-  en: enData,
-  zh: zhData,
-  jp: jpData,
-};
-
 // 기본 초기화 (APS와 동일한 방식)
 i18next.init({
   fallbackLng: 'ko',
   lng: 'ko',
-  resources: {
-    ko: { translation: koData },
-    en: { translation: enData },
-    zh: { translation: zhData },
-    jp: { translation: jpData },
-  },
   interpolation: {
     escapeValue: false,
   },
 });
 
 /**
- * loadLanguage — 정적 JSON 기반 언어 전환 (dev 단독 실행 전용)
- */
-export async function loadLanguage(lang: string) {
-  const data = langResources[lang];
-  if (data) {
-    i18next.addResourceBundle(lang, 'translation', data, true, true);
-  }
-  await i18next.changeLanguage(lang);
-}
-
-/**
  * loadLanguageFromHost — systemmanagement SamLanguage API(용어관리 DB)로부터 번역 로드
  *
- * dev 단독 실행에서 정적 JSON 대신 용어관리 DB 번역을 쓰기 위한 함수다.
+ * dev 단독 실행에서 용어관리 DB 번역을 받기 위한 함수다. 번역이 없는 키는 DB(용어관리)에 등록한다.
  * Host 에 로드된 화면은 Host 의 i18next 로 번역되므로 Host 경로에서는 호출하지 않는다.
  *
  * - vite dev 는 로그인 없이 호출할 수 있는 openapi 경로를, 배포 빌드는 게이트웨이 경로를 쓴다.
