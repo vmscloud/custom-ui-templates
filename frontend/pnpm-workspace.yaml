@@ -4,6 +4,8 @@ allowBuilds:
   esbuild: true
   "@parcel/watcher": true
   vue-demi: true
+  # postinstall 이 Playwright 브라우저를 내려받는 개발용 스크립트라 빌드에서는 실행하지 않는다.
+  less: false
 
 # 사내 패키지는 게시 직후 템플릿에 반영하므로 pnpm 11 의 게시 후 대기(minimumReleaseAge)에서 뺀다.
 minimumReleaseAgeExclude:

@@ -57,8 +57,8 @@ dev 단독 실행 경로와 달라서 두 가지가 깨졌다.
   맨 import를 직접 등록하면 resolver/i18n이 조용히 누락된다 — 컴파일 타임에 강제되지 않는 규칙이다.
 - i18n이 fire-and-forget이라, 초기 렌더 순간에는 키 또는 이전 언어가 잠깐 보일 수 있다
   (`languageChanged` 이벤트로 곧 교체됨).
-- dev 단독 실행에서는 `SamLanguage` 호출이 401로 실패하고 정적 JSON(`plugins/i18n.ts`) fallback을 쓴다 —
-  의도된 동작이지만, Host/dev 간 번역 소스가 달라 표시가 미세하게 다를 수 있다.
+- dev 단독 실행에서는 프로젝트 ID를 입력해야 용어관리 번역을 받고, 못 받으면 정적 JSON(`plugins/i18n.ts`) fallback을 쓴다 —
+  Host/dev 간 번역 소스가 달라 표시가 미세하게 다를 수 있다.
 - `hostData`에서 `projectInfo.currentProjectID` 등 **Host 데이터 형태에 강하게 의존**한다.
   Host 측 계약이 바뀌면 옵셔널 체이닝으로 조용히 빈 값이 되어 디버깅이 어렵다.
 
@@ -75,8 +75,9 @@ Context 2번 「i18n 번역 공백」과 그 해결책 `ensureRemoteI18n`은 원
 
 변경:
 - `ensureRemoteI18n`을 제거했다. `plugins/i18n.ts`의 `loadLanguageFromHost`는 남겨 두되 Host 경로에서는 호출하지 않는다.
-  dev 단독 실행에서 용어관리 DB 번역을 받아오는 용도로 쓸 예정이며, 로컬 개발자 인증 방식이 정해지면
-  `bootstrap.ts`에서 호출한다 (ITSM-2026-001701).
+  dev 단독 실행에서 용어관리 DB 번역을 받아오는 용도로, 호출 경로를 systemmanagement(`/api/common/system/...`,
+  vite dev는 로그인 불필요한 `/api/openapi/common/system/...`)로 옮기고 `DeveloperTool.ts`의
+  프로젝트 ID·언어 watcher에서 호출한다 (ITSM-2026-003957).
 - `useQtyUomQuery`가 `i18next`를 직접 import하던 것을 `useTranslation()` + `computed`로 바꿨다.
 - 리모트 코드에서 `i18next` 직접 import를 금지한다 (`docs/guide/09-i18n-uom-datetime.md`).
 

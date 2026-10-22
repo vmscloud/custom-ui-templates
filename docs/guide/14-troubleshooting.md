@@ -123,6 +123,7 @@ console.log("host mode:", isRunningInHost());
 
 단독 dev 에서는 **정상**입니다. APS C# 호스트 API 는 세션 쿠키(`fusionauth.sid`)가 필요하고, dev 단독 실행에는 세션이 없습니다.
 
+- 번역(`SamLanguage`)은 APS Host API 가 아니라 systemmanagement 로 옮겨져 단독 dev 에서도 401 이 나지 않습니다. ([09-i18n-uom-datetime](./09-i18n-uom-datetime.md) 참고.)
 - 커스텀 로직이 필요하면 APS Host API(C) 대신 커스텀 백엔드(A: PostgreSQL / B: Trino)로 대체하는 쪽이 안전합니다. ([07-data-sources](./07-data-sources.md) 참고.)
 
 ## 4. 개발 서버

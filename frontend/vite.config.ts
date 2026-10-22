@@ -78,6 +78,11 @@ export default defineConfig(({ mode }) => {
         changeOrigin: true,
         secure: false,
       },
+      "/api/openapi/": {
+        target: "https://dev.mozart-cloud.com",
+        changeOrigin: true,
+        secure: false,
+      },
       "/api": {
         target: API_TARGET,
         changeOrigin: true,

@@ -1,4 +1,5 @@
 import { HOST_DATA_KEY } from '@/composables/useHostStores.ts';
+import { loadLanguage, loadLanguageFromHost } from '@/plugins/i18n';
 import { useMutation } from '@tanstack/vue-query';
 import { onMounted, Ref, ref, watch } from 'vue';
 
@@ -75,6 +76,17 @@ export const useDeveloperTool = () => {
   watch(() => settingsValue.value.projectInfo.currentProjectID, () => {
     if (settingsValue.value.projectInfo.currentProjectID) {
       getPlanCycleSource.mutateAsync();
+    }
+  }, {immediate: true})
+
+  // 용어관리 번역 로드. 프로젝트 ID 는 부팅 후 입력되므로 ID·언어가 바뀔 때마다 다시 부른다.
+  // DB 에서 못 받으면(ID 미입력·네트워크 오류) 정적 JSON 으로 전환한다.
+  watch([
+    () => settingsValue.value.projectInfo.currentProjectID,
+    () => settingsValue.value.projectInfo.userInfo.language,
+  ], async ([projectId, lang]) => {
+    if (!(await loadLanguageFromHost(projectId, lang))) {
+      await loadLanguage(lang);
     }
   }, {immediate: true})
 

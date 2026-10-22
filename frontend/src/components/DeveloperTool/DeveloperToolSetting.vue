@@ -88,4 +88,10 @@ watch(() => ([settingsValue.value, settingsRef.value?.state]), () => {
 .dev-tool-setting-select {
   
 }
+
+// 설정 패널(context-menu, z-index 1501) 뒤로 Select 목록(.list-box, z-index 1000)이 가려진다.
+// 목록은 body 로 portal 되어 클래스를 줄 수 없으므로, Host 에 영향이 없게 dev 단독 화면(.dev-header)에서만 올린다.
+body:has(.dev-header) .moz-overlay-portal > .list-box {
+  z-index: 1600;
+}
 </style>

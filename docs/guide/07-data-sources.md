@@ -87,7 +87,8 @@ async def _trino_all(self, project_id, sql, page_size=50000, max_pages=500):
 
 ### C. APS C# 호스트 API
 
-- **언제**: 사용자 설정(`ComUserLayout`, `ComUserBookmark`), 시나리오 관리(`PlmScenarioMaster`), 번역/메뉴(`SamLanguage`), 실행 플로우(`PlmExecutionFlowMaster`) 등 APS 표준 API.
+- **언제**: 사용자 설정(`ComUserLayout`, `ComUserBookmark`), 시나리오 관리(`PlmScenarioMaster`), 실행 플로우(`PlmExecutionFlowMaster`) 등 APS 표준 API.
+- **번역은 해당 없음**: 번역(`SamLanguage`) 조회는 C 가 아니라 systemmanagement 입니다. ([09-i18n-uom-datetime](./09-i18n-uom-datetime.md) 참고.)
 - **인증**: 브라우저에 APS 세션 쿠키(`fusionauth.sid`) 필요. Dev 단독 실행에서는 401 이 나옵니다.
 - **호출**: 프론트에서 `api.get('/api/aps/backend/{pid}/<path>')` 직접 호출. vite dev 프록시가 호스트로 forward.
 
