@@ -57,8 +57,8 @@ dev 단독 실행 경로와 달라서 두 가지가 깨졌다.
   맨 import를 직접 등록하면 resolver/i18n이 조용히 누락된다 — 컴파일 타임에 강제되지 않는 규칙이다.
 - i18n이 fire-and-forget이라, 초기 렌더 순간에는 키 또는 이전 언어가 잠깐 보일 수 있다
   (`languageChanged` 이벤트로 곧 교체됨).
-- dev 단독 실행에서는 프로젝트 ID를 입력해야 용어관리 번역을 받고, 못 받으면 정적 JSON(`plugins/i18n.ts`) fallback을 쓴다 —
-  Host/dev 간 번역 소스가 달라 표시가 미세하게 다를 수 있다.
+- ~~dev 단독 실행에서는 프로젝트 ID를 입력해야 용어관리 번역을 받고, 못 받으면 정적 JSON(`plugins/i18n.ts`) fallback을 쓴다 —
+  Host/dev 간 번역 소스가 달라 표시가 미세하게 다를 수 있다.~~ → 개정(2026-10-22) 참조: 정적 JSON fallback을 제거했다.
 - `hostData`에서 `projectInfo.currentProjectID` 등 **Host 데이터 형태에 강하게 의존**한다.
   Host 측 계약이 바뀌면 옵셔널 체이닝으로 조용히 빈 값이 되어 디버깅이 어렵다.
 
@@ -83,3 +83,14 @@ Context 2번 「i18n 번역 공백」과 그 해결책 `ensureRemoteI18n`은 원
 
 MF `shared`에 `i18next`를 singleton으로 추가하는 방안은 택하지 않았다. 리모트의 `plugins/i18n.ts`가 import될 때
 실행하는 `i18next.init({ lng: "ko", ... })`이 Host 인스턴스를 다시 초기화해 Host 전체 언어를 바꿀 수 있기 때문이다.
+
+## 개정 (2026-10-22, ITSM-2026-003957)
+
+dev 단독 실행의 정적 JSON fallback을 제거했다.
+
+- `plugins/i18n.ts`는 `src/lang/*.json`을 import하지 않고, `loadLanguage`도 제거했다. i18next는 리소스 없이 초기화하고
+  번역은 `loadLanguageFromHost`가 용어관리(DB)에서 받아 넣는다.
+- `DeveloperTool.ts`의 프로젝트 ID·언어 watcher는 용어관리 로드가 실패해도 JSON으로 전환하지 않는다.
+  프로젝트 ID를 입력하지 않았거나 키가 등록되지 않았으면 키 이름이 그대로 표시된다.
+- `src/lang/*.json`은 삭제하지 않고 deprecated·미사용으로 남긴다(`frontend/src/lang/README.md`). 신규 키는 JSON이 아니라 용어관리(DB)에 등록한다.
+- 이로써 dev 단독 실행과 Host의 번역 소스가 모두 용어관리(DB)로 같아졌다.
