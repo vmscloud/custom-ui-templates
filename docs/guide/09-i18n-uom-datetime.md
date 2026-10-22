@@ -7,7 +7,21 @@
 ### 설정 위치
 
 - 플러그인: `frontend/src/plugins/i18n.ts` 에서 `i18next` + `I18NextVue` 초기화.
-- 리소스: `frontend/src/lang/{ko,en,jp,zh}.json`.
+- 리소스: `frontend/src/lang/{ko,en,jp,zh}.json` (dev 단독 실행에서 용어관리 번역을 받지 못할 때 쓰는 fallback).
+- dev 단독 실행: 개발자 도구 설정에 입력한 프로젝트 ID·언어로 용어관리(DB) 번역을 불러옵니다. 로그인은 필요 없습니다.
+
+#### 번역 조회 API
+
+번역(`SamLanguage`) **조회는 모두 systemmanagement 가 제공**합니다. APS C# 호스트 API(`/api/aps/backend/...`)는 쓰지 않습니다. (번역 키의 등록·수정은 아래 [키 네이밍](#키-네이밍)에 적힌 대로 APS 용어관리 화면에서 합니다.)
+
+| 환경 | 호출 경로 | 비고 |
+|------|-----------|------|
+| `pnpm dev` (`import.meta.env.DEV`) | `/api/openapi/common/system/{pid}/SamLanguage/{lang}` | 로그인 불필요. `vite.config.ts` 의 `/api/openapi/` 프록시가 dev 게이트웨이의 openapi 경로로 전달합니다. |
+| 배포 빌드 (Host 밖에서 단독으로 열 때) | `/api/common/system/{pid}/SamLanguage/{lang}` | 게이트웨이를 거쳐 systemmanagement 로 라우팅. 로그인 세션 필요. **`/openapi/` 경로는 쓰지 않으며** 빌드 산출물에도 들어가지 않습니다. |
+| APS Host 에 올린 화면 | 호출하지 않음 | Host 의 i18next 가 같은 systemmanagement 번역을 이미 불러와 둡니다. |
+
+- 분기는 Vite 내장 플래그 `import.meta.env.DEV` 로 합니다 (`pnpm dev` 에서 `true`, 빌드 산출물에서 `false`). 별도 `.env` 파일이나 환경 변수를 만들지 않습니다.
+- 로컬에서 openapi 로 보내는 설정은 `frontend/vite.config.ts` 의 `server.proxy["/api/openapi/"]` 입니다.
 
 ```ts
 // src/plugins/i18n.ts 요약
@@ -36,7 +50,7 @@ t("text-qty_uom");
 
 ### Host 에서 번역되는 방식
 
-APS Host 에 Module Federation 으로 올라가면 화면의 `useTranslation()`·`$t` 는 **Host 의 i18next** 를 씁니다. Host 는 접속할 때 용어관리(DB)의 번역을 불러오므로, 운영에서 보이는 번역은 **용어관리에 등록된 값**입니다. `frontend/src/lang/*.json` 은 dev 단독 실행에서만 쓰이고 Host 에서는 쓰이지 않습니다.
+APS Host 에 Module Federation 으로 올라가면 화면의 `useTranslation()`·`$t` 는 **Host 의 i18next** 를 씁니다. Host 는 접속할 때 용어관리(DB)의 번역을 불러오므로, 운영에서 보이는 번역은 **용어관리에 등록된 값**입니다. `frontend/src/lang/*.json` 은 dev 단독 실행에서만 쓰이고 Host 에서는 쓰이지 않습니다. dev 단독 실행에서도 용어관리 번역을 받으면 그 값이 json 보다 우선합니다.
 
 **`import i18next from "i18next"` 로 직접 번역하지 마세요.** 리모트 번들에는 Host 와 분리된 i18next 사본이 따로 들어 있어서, 직접 import 하면 Host 번역이 아니라 이 사본으로 번역됩니다. 이 사본은 화면 갱신과 연결되어 있지 않아 첫 진입 때 번역이 반영되지 않고, 다른 메뉴로 이동했다 돌아와야 바뀝니다.
 
@@ -65,16 +79,22 @@ const columns = computed(() => [{ header: t("text-item_id") }]);
 | `msg-` | 사용자에게 보여지는 메시지/알림 |
 | `MOZ-` | 공용 상수성 메시지 (`MOZ-DATA_EMPTY` 등) |
 
-새 키는 **APS 용어관리 화면에 프로젝트 키로 등록**해야 운영에서 번역됩니다. ko/en/zh/jp 언어 탭마다 각각 등록하세요. 프로젝트 키는 시스템 기본값으로 fallback 되지 않아서, 등록하지 않은 언어에서는 키 문자열이 그대로 보입니다. 등록 후에는 브라우저를 새로고침해야 반영됩니다. json 파일에만 추가한 키는 dev 에서만 번역됩니다.
+새 키는 **APS 용어관리 화면에 프로젝트 키로 등록**해야 운영에서 번역됩니다. ko/en/zh/jp 언어 탭마다 각각 등록하세요. 프로젝트 키는 시스템 기본값으로 fallback 되지 않아서, 등록하지 않은 언어에서는 키 문자열이 그대로 보입니다. 등록 후에는 브라우저를 새로고침해야 반영됩니다. json 파일에만 추가한 키는 dev 에서만 번역됩니다. dev 단독 실행에서는 새로고침하면 등록한 키가 바로 보입니다.
 
 ### 언어 전환
+
+dev 단독 실행에서는 개발자 도구 설정의 **프로젝트 ID** 또는 **현재 언어**를 바꾸면 용어관리 번역을 다시 불러옵니다. 프로젝트 ID 를 입력하지 않았거나 불러오지 못하면 `lang/*.json` 으로 표시합니다.
+
+호출 경로는 환경마다 다릅니다. [번역 조회 API](#번역-조회-api) 표를 보세요.
+
+코드에서 직접 바꿀 때는 `loadLanguage` (json) 또는 `loadLanguageFromHost` (용어관리) 를 씁니다.
 
 ```ts
 import { loadLanguage } from "@/plugins/i18n";
 await loadLanguage("en");
 ```
 
-`useTranslation()` 의 `t` 를 `computed` 안에서 쓰는 composable(예: `useQtyUomQuery`)은 언어가 바뀌면 자동으로 표시값을 다시 계산합니다. `loadLanguage` 는 dev 단독 실행 전용이며, Host 에서는 사용자 언어 설정을 따릅니다.
+`useTranslation()` 의 `t` 를 `computed` 안에서 쓰는 composable(예: `useQtyUomQuery`)은 언어가 바뀌면 자동으로 표시값을 다시 계산합니다. 두 함수 모두 dev 단독 실행 전용이며, Host 에서는 사용자 언어 설정을 따릅니다.
 
 ## UOM (수량 단위)
 

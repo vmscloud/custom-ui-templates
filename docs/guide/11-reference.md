@@ -84,6 +84,7 @@ URL 규칙:
 
 - `/api/custom/backend/${getProjectId()}/<domain>/<action>` → 로컬 FastAPI
 - `/api/aps/backend/${getProjectId()}/<APS route>` → APS C# 호스트 (세션 필요)
+- 번역 조회(`SamLanguage`)는 위 경로가 아니라 systemmanagement: `/api/common/system/{pid}/SamLanguage/{lang}` (`pnpm dev` 는 `/api/openapi/common/system/...`). [09-i18n-uom-datetime](./09-i18n-uom-datetime.md) 참고.
 
 ## 아이콘 (shims)
 

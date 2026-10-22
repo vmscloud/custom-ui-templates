@@ -60,19 +60,21 @@ cd frontend
 - 단독 진입: `http://localhost:5300/ext/<path>`
 - 라우트 목록은 `src/router/index.ts` 에 정의
 
-### vite 의 두 가지 proxy
+### vite 의 세 가지 proxy
 
-`frontend/vite.config.ts` 가 두 개의 API prefix를 다른 서버로 프록시합니다.
+`frontend/vite.config.ts` 가 세 개의 API prefix를 다른 서버로 프록시합니다.
 
 ```ts
 proxy: {
-  "/api/aps/":   { target: "https://dev.mozart-cloud.com", ... },
-  "/api":        { target: API_TARGET || "http://localhost:8000", ... },
+  "/api/aps/":     { target: "https://dev.mozart-cloud.com", ... },
+  "/api/openapi/": { target: "https://dev.mozart-cloud.com", ... },  // 위의 /api 보다 먼저 와야 함
+  "/api":          { target: API_TARGET || "http://localhost:8000", ... },
 }
 ```
 
 - `api.post("/api/custom/backend/...")` → **로컬 FastAPI**
 - `api.post("/api/aps/backend/...")` → **APS C# Host**
+- `fetch("/api/openapi/common/system/...")` → **dev 게이트웨이의 openapi 경로 → systemmanagement** (번역 조회, 로그인 불필요, `pnpm dev` 에서만 사용). 배포 빌드는 이 경로 대신 `/api/common/system/...` 을 씁니다. ([09-i18n-uom-datetime](./09-i18n-uom-datetime.md) 참고.)
 
 ※ `/api/aps/` 호출은 세션 쿠키가 필요합니다. 로컬 dev에서는 401이 정상.
 

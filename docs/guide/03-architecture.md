@@ -74,6 +74,8 @@ const { userInfo, isAdmin } = useHostUser();
 | `/api/aps/backend/{pid}/...`    | **APS C# 호스트**      | fusionauth 세션 쿠키 | APS 표준 API (`PlmScenarioMaster`, `OdlReport`, `ComUserLayout` 등) |
 
 
+※ 번역(`SamLanguage`) 조회는 이 두 경로가 아니라 **systemmanagement** (`/api/common/system/...`, `pnpm dev` 에서는 `/api/openapi/common/system/...`)를 씁니다. [09-i18n-uom-datetime](./09-i18n-uom-datetime.md) 참고.
+
 **규칙**: 우리가 직접 제어할 수 있는 로직은 **모두 FastAPI 쪽**에 개발해야 합니다. 세션 기반 표준 기능만 `/api/aps/` 를 씁니다. 이렇게 해야 Mock · Dev 단독 실행에서도 같은 코드를 재현할 수 있습니다.
 
 ## 데이터 저장소 두 가지

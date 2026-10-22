@@ -56,8 +56,10 @@
 | 경로                                    | 대상                     | 쓰는 상황                                          |
 | ------------------------------------- | ---------------------- | ---------------------------------------------- |
 | `/api/custom/backend/{projectId}/...` | **이 저장소의 FastAPI**     | 대부분의 새 페이지는 여기를 쓴다. Trino/PG 직접 조회, 프로젝트 전용 집계 |
-| `/api/aps/backend/{projectId}/...`    | **APS C# 호스트의 표준 API** | 메뉴·번역·프로젝트 정보·시나리오 관리 등 APS 표준 기능. **세션 필요**   |
+| `/api/aps/backend/{projectId}/...`    | **APS C# 호스트의 표준 API** | 메뉴·프로젝트 정보·시나리오 관리 등 APS 표준 기능. **세션 필요**   |
 
+
+※ 번역(`SamLanguage`) 조회는 위 두 경로가 아니라 **systemmanagement** 를 씁니다 (dev: `/api/openapi/common/system/...`, 배포: `/api/common/system/...`). [09-i18n-uom-datetime](./09-i18n-uom-datetime.md) 참고.
 
 실무 지침: **커스텀 기능은 `custom` 경로에만** 담으세요. `aps` 경로는 "APS의 표준 API 값 그대로가 필요한" 경우만 조심스럽게 사용합니다. 자세한 선택 기준은 [07-data-sources](./07-data-sources.md).
 
