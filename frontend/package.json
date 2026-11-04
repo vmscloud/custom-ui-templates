@@ -40,7 +40,7 @@
     ]
   },
   "devDependencies": {
-    "@module-federation/vite": "^1.11.0",
+    "@module-federation/vite": "^1.23.9",
     "@types/file-saver": "^2.0.7",
     "@types/node": "^25.2.3",
     "@vitejs/plugin-vue": "^5.2.4",
