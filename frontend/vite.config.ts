@@ -4,14 +4,17 @@ import { federation } from "@module-federation/vite";
 import path from "path";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   const DEV_PORT = Number(env.VITE_DEV_PORT || 5300);
   const API_TARGET = env.VITE_API_TARGET || "http://localhost:8000";
 
   return {
-  base: "/ext/",
+  // 빌드는 상대 base — chunk·정적 파일을 remoteEntry.js 를 불러온 경로 기준으로 요청한다.
+  //   EKS 경로 /ext/{project_id}/ 를 그대로 따르므로 project_id 를 빌드에 넣지 않는다(ITSM-2026-004444).
+  //   dev 서버는 상대 base 를 지원하지 않아 /ext/ 유지
+  base: command === "build" ? "./" : "/ext/",
   plugins: [
     vue(),
     federation({
