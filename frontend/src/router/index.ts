@@ -81,8 +81,14 @@ export const routes: RouteRecordRaw[] = [
   },
 ];
 
+// 빌드는 상대 base("./") 라 BASE_URL 로는 서빙 경로를 알 수 없다("./" 는 vue-router 가 "/." 로 정규화).
+//   이 모듈이 든 chunk(assets/) 의 상위 = 실제 서빙 경로(/ext/ 또는 /ext/{project_id}/)
+const historyBase = import.meta.env.DEV
+  ? import.meta.env.BASE_URL
+  : new URL("..", import.meta.url).pathname;
+
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(historyBase),
   routes,
 });
 
