@@ -14,7 +14,17 @@ COPY . .
 RUN pnpm build
 
 # Production stage
-FROM nginx:alpine
+FROM nginx:stable-alpine
+
+# Enforce the security floor even when a different stable image is published.
+RUN set -eu; \
+    actual="$(nginx -v 2>&1)"; \
+    version="${actual#nginx version: nginx/}"; \
+    printf '%s\n' "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; \
+    comparison="$(apk version -t "$version" 1.30.7)"; \
+    case "$comparison" in '='|'>') ;; *) echo "NGINX $version is below 1.30.7" >&2; exit 1 ;; esac; \
+    printf 'NGINX_BASE nginx=%s minimum=1.30.7 result=PASS\n' "$version"
+
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
